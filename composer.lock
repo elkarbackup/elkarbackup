@@ -76,8 +76,8 @@
         {
             "package": "kriswallsmith/assetic",
             "version": "dev-master",
-            "source-reference": "dfbb776288baf9319d1693195af2cb6e00729901",
-            "commit-date": "1347039484"
+            "source-reference": "412f2d7be2925b4b5e7e94a74fd485b765f7f547",
+            "commit-date": "1347532710"
         },
         {
             "package": "monolog/monolog",
