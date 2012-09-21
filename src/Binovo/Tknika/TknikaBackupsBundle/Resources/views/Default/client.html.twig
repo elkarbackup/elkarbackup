@@ -1,0 +1,11 @@
+{% extends 'BinovoTknikaTknikaBackupsBundle:Default:base.html.twig' %}
+
+{% block body %}
+<form class="form-horizontal" action="{{ path('saveClient', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
+    <legend>Edit client</legend>
+{% form_theme form 'BinovoTknikaTknikaBackupsBundle:Default:fields.html.twig' %}
+    {{ form_widget(form) }}
+    <input class="btn" type="submit" value="Guardar"/>
+</form>
+
+{% endblock %}

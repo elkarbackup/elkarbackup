@@ -1,0 +1,40 @@
+{% extends 'BinovoTknikaTknikaBackupsBundle:Default:base.html.twig' %}
+
+{% block body %}
+
+<h3>Clients</h3>
+
+<table class="table table-condensed table-bordered table-striped">
+    <tr>
+        {# sorting of properties based on query components #}
+        <th>{{ pagination.sortable('Id', 'c.id')|raw }}</th>
+        <th{% if pagination.isSorted('c.name') %} class="sorted"{% endif %}>{{ pagination.sortable('Name', 'c.name')|raw }}</th>
+        <th>Actions</th>
+    </tr>
+
+    {# table body #}
+    {% for client in pagination %}
+    <tr onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'">
+        <td><a href="{{ path('editClient', {id: client.id}) }}">{{ client.id }}</a></td>
+        <td>{{ client.name }}</td>
+        <td>
+            <form action="{{ path('editClient', {id: client.id}) }}" style="display:inline">
+                <input class="btn" type="submit" value="Edit" />
+            </form>
+            <form action="{{ path('deleteClient', {id: client.id}) }}" method="POST" style="display:inline">
+                <input class="btn" type="submit" value="Delete" />
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<button class="btn" type="button" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">New</button>
+
+{# display navigation #}
+<div class="navigation">
+    {{ pagination.render()|raw }}
+</div>
+
+
+{% endblock %}

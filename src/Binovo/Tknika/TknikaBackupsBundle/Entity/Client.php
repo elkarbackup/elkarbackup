@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Client
 {
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $description;
 
@@ -26,17 +26,17 @@ class Client
     protected $jobs;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     protected $name;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $postScript;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $preScript;
 
@@ -52,7 +52,7 @@ class Client
     {
         $this->jobs = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Set description
      *
@@ -62,14 +62,14 @@ class Client
     public function setDescription($description)
     {
         $this->description = $description;
-    
+
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -79,7 +79,7 @@ class Client
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -95,14 +95,14 @@ class Client
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -118,14 +118,14 @@ class Client
     public function setPostScript($postScript)
     {
         $this->postScript = $postScript;
-    
+
         return $this;
     }
 
     /**
      * Get postScript
      *
-     * @return string 
+     * @return string
      */
     public function getPostScript()
     {
@@ -141,14 +141,14 @@ class Client
     public function setPreScript($preScript)
     {
         $this->preScript = $preScript;
-    
+
         return $this;
     }
 
     /**
      * Get preScript
      *
-     * @return string 
+     * @return string
      */
     public function getPreScript()
     {
@@ -164,14 +164,14 @@ class Client
     public function setUrl($url)
     {
         $this->url = $url;
-    
+
         return $this;
     }
 
     /**
      * Get url
      *
-     * @return string 
+     * @return string
      */
     public function getUrl()
     {
@@ -187,7 +187,7 @@ class Client
     public function addJob(\Binovo\Tknika\TknikaBackupsBundle\Entity\Job $jobs)
     {
         $this->jobs[] = $jobs;
-    
+
         return $this;
     }
 
@@ -204,7 +204,7 @@ class Client
     /**
      * Get jobs
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getJobs()
     {

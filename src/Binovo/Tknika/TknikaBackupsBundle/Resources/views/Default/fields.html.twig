@@ -1,0 +1,48 @@
+{#
+ Customizations for
+ vendor/symfony/symfony/src/Symfony/Bridge/Twig/Resources/views/Form/
+
+#}
+
+{% block form_row %}
+{% spaceless %}
+    <div class="control-group">
+        {{ form_label(form) }}
+        {{ form_errors(form) }}
+        {{ form_widget(form) }}
+    </div>
+{% endspaceless %}
+{% endblock form_row %}
+
+{% block form_label %}
+{% spaceless %}
+    {% if not compound %}
+        {% set label_attr = label_attr|merge({'for': id}) %}
+    {% endif %}
+    {% if required %}
+        {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+    {% endif %}
+    {% if label is empty %}
+        {% set label = name|humanize %}
+    {% endif %}
+    {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' control-label')|trim}) %}
+    <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}</label>
+{% endspaceless %}
+{% endblock form_label %}
+
+{% block form_widget_simple %}
+{% spaceless %}
+    {% set type = type|default('text') %}
+    <div class="controls">
+        <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+    </div>
+{% endspaceless %}
+{% endblock form_widget_simple %}
+
+{% block textarea_widget %}
+{% spaceless %}
+    <div class="controls">
+        <textarea {{ block('widget_attributes') }}>{{ value }}</textarea>
+    </div>
+{% endspaceless %}
+{% endblock textarea_widget %}
