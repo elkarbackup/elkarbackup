@@ -1,7 +1,6 @@
 {#
  Customizations for
  vendor/symfony/symfony/src/Symfony/Bridge/Twig/Resources/views/Form/
-
 #}
 
 {% block form_row %}
@@ -9,7 +8,9 @@
     <div class="control-group">
         {{ form_label(form) }}
         {{ form_errors(form) }}
-        {{ form_widget(form) }}
+        <div class="controls">
+            {{ form_widget(form) }}
+        </div>
     </div>
 {% endspaceless %}
 {% endblock form_row %}
@@ -30,19 +31,3 @@
 {% endspaceless %}
 {% endblock form_label %}
 
-{% block form_widget_simple %}
-{% spaceless %}
-    {% set type = type|default('text') %}
-    <div class="controls">
-        <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
-    </div>
-{% endspaceless %}
-{% endblock form_widget_simple %}
-
-{% block textarea_widget %}
-{% spaceless %}
-    <div class="controls">
-        <textarea {{ block('widget_attributes') }}>{{ value }}</textarea>
-    </div>
-{% endspaceless %}
-{% endblock textarea_widget %}

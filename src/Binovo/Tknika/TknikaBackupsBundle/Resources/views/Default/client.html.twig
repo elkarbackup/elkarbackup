@@ -1,11 +1,45 @@
 {% extends 'BinovoTknikaTknikaBackupsBundle:Default:base.html.twig' %}
 
 {% block body %}
+
 <form class="form-horizontal" action="{{ path('saveClient', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
     <legend>Edit client</legend>
 {% form_theme form 'BinovoTknikaTknikaBackupsBundle:Default:fields.html.twig' %}
-    {{ form_widget(form) }}
-    <input class="btn" type="submit" value="Guardar"/>
+    <div>
+    {{ form_row(form.name) }}
+    {{ form_row(form.description) }}
+    {{ form_row(form.url) }}
+    {{ form_row(form.preScript) }}
+    {{ form_row(form.postScript) }}
+    </div>
+    <legend>Jobs</legend>
+    <div>
+        {% for job in form.jobs %}
+        <div id="job-{{job.vars.value.id}}">
+            <div class="controls control-row">
+                {{ form_widget(job.name, {'attr': {'class': 'input-medium'}}) }}
+                {{ form_widget(job.url, {'attr': {'class': 'input-xlarge'}}) }}
+            </div>
+            <div class="controls">
+                {{ form_widget(job.description, {'attr': {'class': 'input-xxlarge'}}) }}
+            </div>
+            <div class="controls control-row">
+                <input class="btn" type="button" value="Delete" onclick="dojo.query('#job-{{job.vars.value.id}}').remove();"/>
+                <input class="btn" type="button" value="Edit" onclick="document.location.href='{{ path('editJob', {idJob: job.vars.value.id, idClient: form.vars.value.id}) }}'"/>
+            </div>
+            <br/>
+        </div>
+        {% else %}
+        <div class="controls">
+            There are no jobs
+        </div>
+        {% endfor %}
+        <div class="controls control-row">
+            <input class="btn" {% if not form.vars.value.id %}disabled="true" {% endif %}type="button" value="Add job" onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: form.vars.value.id}) }}'"/>
+        </div>
+        {{ form_widget(form._token) }}
+    </div>
+    <input class="btn" type="submit" value="Save"/>
 </form>
 
 {% endblock %}
