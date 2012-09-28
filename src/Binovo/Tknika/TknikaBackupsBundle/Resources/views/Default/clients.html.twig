@@ -1,15 +1,16 @@
 {% extends 'BinovoTknikaTknikaBackupsBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoTknikaBackups' %}
 
 {% block body %}
 
-<h3>Clients</h3>
+<h3>{% trans %}Clients{% endtrans %}</h3>
 
 <table class="table table-condensed table-bordered table-striped">
     <tr>
         {# sorting of properties based on query components #}
-        <th>{{ pagination.sortable('Id', 'c.id')|raw }}</th>
-        <th{% if pagination.isSorted('c.name') %} class="sorted"{% endif %}>{{ pagination.sortable('Name', 'c.name')|raw }}</th>
-        <th>Actions</th>
+        <th>{% trans %}Id{% endtrans %}</th>
+        <th>{% trans %}Name{% endtrans %}</th>
+        <th>{% trans %}Actions{% endtrans %}</th>
     </tr>
 
     {# table body #}
@@ -19,17 +20,17 @@
         <td>{{ client.name }}</td>
         <td>
             <form action="{{ path('editClient', {id: client.id}) }}" style="display:inline">
-                <input class="btn" type="submit" value="Edit" />
+                <input class="btn" type="submit" value="{% trans %}Edit{% endtrans %}" />
             </form>
             <form action="{{ path('deleteClient', {id: client.id}) }}" method="POST" style="display:inline">
-                <input class="btn" type="submit" value="Delete" />
+                <input class="btn" type="submit" value="{% trans %}Delete{% endtrans %}" />
             </form>
         </td>
     </tr>
     {% endfor %}
 </table>
 
-<button class="btn" type="button" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">New</button>
+<button class="btn" type="button" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">{% trans %}New{% endtrans %}</button>
 
 {# display navigation #}
 <div class="navigation">

@@ -47,6 +47,7 @@ class DefaultController extends Controller
      */
     public function editClientAction(Request $request, $id)
     {
+        $t = $this->get('translator');
         if ('new' === $id) {
             $client = new Client();
         } else {
@@ -54,7 +55,7 @@ class DefaultController extends Controller
                 ->getRepository('BinovoTknikaTknikaBackupsBundle:Client');
             $client = $repository->find($id);
         }
-        $form = $this->createForm(new ClientType(), $client);
+        $form = $this->createForm(new ClientType(), $client, array('translator' => $t));
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:client.html.twig',
                              array('form' => $form->createView()));
     }
@@ -125,19 +126,20 @@ class DefaultController extends Controller
      */
     public function editJobAction(Request $request, $idClient, $idJob)
     {
+        $t = $this->get('translator');
         if ('new' === $idJob) {
             $job = new Job();
             $client = $this->getDoctrine()
                 ->getRepository('BinovoTknikaTknikaBackupsBundle:Client')->find($idClient);
             if (null == $client) {
-                throw $this->createNotFoundException('Unable to find Client entity ' . $idClient);
+                throw $this->createNotFoundException($t->trans('Unable to find Client entity: ') . $idClient, array(), 'BinovoTknikaBackups');
             }
             $job->setClient($client);
         } else {
             $job = $this->getDoctrine()
                 ->getRepository('BinovoTknikaTknikaBackupsBundle:Job')->find($idJob);
         }
-        $form = $this->createForm(new JobType(), $job);
+        $form = $this->createForm(new JobType(), $job, array('translator' => $t));
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:job.html.twig',
                              array('form' => $form->createView()));
     }
@@ -150,21 +152,21 @@ class DefaultController extends Controller
      */
     public function saveJobAction(Request $request, $idClient, $idJob)
     {
+        $t = $this->get('translator');
         if ("-1" === $idJob) {
             $job = new Job();
             $client = $this->getDoctrine()
                 ->getRepository('BinovoTknikaTknikaBackupsBundle:Client')->find($idClient);
             if (null == $client) {
-                throw $this->createNotFoundException('Unable to find Client entity ' . $idClient);
+                throw $this->createNotFoundException($t->trans('Unable to find Client entity: ') . $idClient, array(), 'BinovoTknikaBackups');
             }
             $job->setClient($client);
-            // $job->setPolicy(new Policy());
         } else {
             $repository = $this->getDoctrine()
                 ->getRepository('BinovoTknikaTknikaBackupsBundle:Job');
             $job = $repository->find($idJob);
         }
-        $form = $this->createForm(new JobType(), $job);
+        $form = $this->createForm(new JobType(), $job, array('translator' => $t));
         $form->bind($request);
 
         if ($form->isValid())

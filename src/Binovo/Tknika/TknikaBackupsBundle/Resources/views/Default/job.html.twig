@@ -1,9 +1,10 @@
 {% extends 'BinovoTknikaTknikaBackupsBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoTknikaBackups' %}
 
 {% block body %}
 
 <form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_enctype(form) }}>
-    <legend>Edit Job</legend>
+    <legend>{% trans %}Edit Job{% endtrans %}</legend>
 {% form_theme form 'BinovoTknikaTknikaBackupsBundle:Default:fields.html.twig' %}
     <div>
     {{ form_row(form.name) }}
@@ -13,7 +14,7 @@
     {{ form_row(form.postScript) }}
     {{ form_rest(form) }}
     </div>
-    <input class="btn" type="submit" value="Save"/>
+    <input class="btn" type="submit" value="{% trans %}Save{% endtrans %}"/>
 </form>
 
 {% endblock %}

@@ -98,22 +98,23 @@ class Builder extends ContainerAware
      */
     public function mainMenu(FactoryInterface $factory, array $options)
     {
-        $menu = array(array('label'    => 'Home',
-                            'children' => array(array('label'    => 'Show home page',
+        $t = $this->container->get('translator');
+        $menu = array(array('label'    => $t->trans('Home', array(), 'BinovoTknikaBackups'),
+                            'children' => array(array('label'    => $t->trans('Show home page', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'home'))),
-                      array('label'    => 'Clients',
-                            'children' => array(array('label'    => 'Show',
+                      array('label'    => $t->trans('Clients', array(), 'BinovoTknikaBackups'),
+                            'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'showClients'),
-                                                array('label'    => 'Add',
+                                                array('label'    => $t->trans('Add', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'editClient',
                                                       'routeParameters' => array('id' => 'new')))),
-                      array('label'    => 'Policies',
-                            'children' => array(array('label'    => 'Show',
+                      array('label'    => $t->trans('Policies', array(), 'BinovoTknikaBackups'),
+                            'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'showPolicies'),
-                                                array('label'    => 'Add',
+                                                array('label'    => $t->trans('Add', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'newPolicy'))),
-                      array('label'    => 'Help',
-                            'children' => array(array('label'    => 'About',
+                      array('label'    => $t->trans('Help', array(), 'BinovoTknikaBackups'),
+                            'children' => array(array('label'    => $t->trans('About', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'about'))));
 
         return $this->generateMenuBar($factory, $menu);

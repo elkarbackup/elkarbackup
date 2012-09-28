@@ -9,7 +9,7 @@ class JobShortType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name'        , 'text', array('label' => 'Name'))
+        $builder->add('name'        , 'text')
                 ->add('description' , 'textarea')
                 ->add('url'         , 'text');
     }
