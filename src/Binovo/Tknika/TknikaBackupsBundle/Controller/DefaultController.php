@@ -21,7 +21,7 @@ class DefaultController extends Controller
      */
     public function aboutAction(Request $request)
     {
-
+        return $this->render('BinovoTknikaTknikaBackupsBundle:Default:about.html.twig');
     }
 
     /**
@@ -208,7 +208,7 @@ class DefaultController extends Controller
      */
     public function newPolicyAction(Request $request)
     {
-
+        return $this->render('BinovoTknikaTknikaBackupsBundle:Default:policy.html.twig');
     }
 
     /**
@@ -239,7 +239,7 @@ class DefaultController extends Controller
      */
     public function showPoliciesAction(Request $request)
     {
-
+        return $this->render('BinovoTknikaTknikaBackupsBundle:Default:policies.html.twig');
     }
 
 }

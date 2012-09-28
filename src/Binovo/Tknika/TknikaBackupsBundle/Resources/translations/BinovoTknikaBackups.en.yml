@@ -1,26 +1,28 @@
-'Add job': '__Add job'
-'Edit client': '__Edit client'
-'Edit Job': '__Edit Job'
-'Post script': '__Post script'
-'Pre script': '__Pre script'
-'Show home page': '__Show home page'
-'There are no jobs': '__There are no jobs'
-'Unable to find Client entity ': '__Unable to find Client entity: '
-'Welcome to the backup server configuration application.': '__Welcome to the backup server configuration application.'
-About: __About
-Actions: __Actions
-Add: __Add
-Clients: __Clients
-Delete: __Delete
-Description: __Description
-Edit: __Edit
-Help: __Help
-Home: __Home
-Id: __Id
-Jobs: __Jobs
-Name: __Name
-New: __New
-Save: __Save
-Show: __Show
-Policies: __Policies
-Url: __Url
+'Add job': 'Add job'
+'Documentation will be available soon': 'Documentation will be available soon'
+'Edit client': 'Edit client'
+'Edit Job': 'Edit Job'
+'Post script': 'Post script'
+'Pre script': 'Pre script'
+'Show home page': 'Show home page'
+'There are no jobs': 'There are no jobs'
+'Unable to find Client entity ': 'Unable to find Client entity: '
+'Welcome to the backup server configuration application.': 'Welcome to the backup server configuration application.'
+About: About
+Actions: Actions
+Add: Add
+Clients: Clients
+Delete: Delete
+Description: Description
+Edit: Edit
+Help: Help
+Home: Home
+Id: Id
+Jobs: Jobs
+Name: Name
+New: New
+Save: Save
+Show: Show
+TODO: TODO
+Policies: Policies
+Url: Url
