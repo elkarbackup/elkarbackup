@@ -67,6 +67,7 @@ class DefaultController extends Controller
      */
     public function saveClientAction(Request $request, $id)
     {
+        $t = $this->get('translator');
         if ("-1" === $id) {
             $client = new Client();
         } else {
@@ -78,7 +79,7 @@ class DefaultController extends Controller
         foreach ($client->getJobs() as $job) {
             $jobsToDelete[$job->getId()] = $job;
         }
-        $form = $this->createForm(new ClientType(), $client);
+        $form = $this->createForm(new ClientType(), $client, array('translator' => $t));
         $form->bind($request);
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();

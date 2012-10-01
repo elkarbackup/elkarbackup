@@ -10,14 +10,18 @@ class ClientType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $t = $options['translator'];
-        $builder->add('name'        , 'text'      , array('label' => $t->trans('Name', array(), 'BinovoTknikaBackups')))
-                ->add('description' , 'textarea'  , array('label' => $t->trans('Description', array(), 'BinovoTknikaBackups')))
-                ->add('url'         , 'text'      , array('label' => $t->trans('Url', array(), 'BinovoTknikaBackups')))
-                ->add('preScript'   , 'text'      , array('label' => $t->trans('Pre script', array(), 'BinovoTknikaBackups')))
-                ->add('postScript'  , 'text'      , array('label' => $t->trans('Post script', array(), 'BinovoTknikaBackups')))
-                ->add('jobs'        , 'collection', array('type'         => new JobShortType(),
-                                                          'allow_delete' => true,
-                                                          'label'        => $t->trans('Jobs', array(), 'BinovoTknikaBackups')));
+        $builder->add('name'          , 'text'      , array('label' => $t->trans('Name', array(), 'BinovoTknikaBackups')))
+                ->add('description'   , 'textarea'  , array('label' => $t->trans('Description', array(), 'BinovoTknikaBackups')))
+                ->add('url'           , 'text'      , array('label' => $t->trans('Url', array(), 'BinovoTknikaBackups')))
+                ->add('preScript'     , 'hidden'    , array('label' => $t->trans('Pre script', array(), 'BinovoTknikaBackups')))
+                ->add('preScriptFile' , 'file'      , array('label'    => $t->trans('Upload pre script', array(), 'BinovoTknikaBackups'),
+                                                            'required' => false))
+                ->add('postScript'    , 'hidden'    , array('label' => $t->trans('Post script', array(), 'BinovoTknikaBackups')))
+                ->add('postScriptFile', 'file'      , array('label'    => $t->trans('Upload post script', array(), 'BinovoTknikaBackups'),
+                                                            'required' => false))
+                ->add('jobs'          , 'collection', array('type'         => new JobShortType(),
+                                                            'allow_delete' => true,
+                                                            'label'        => $t->trans('Jobs', array(), 'BinovoTknikaBackups')));
     }
 
     public function getDefaultOptions(array $options)

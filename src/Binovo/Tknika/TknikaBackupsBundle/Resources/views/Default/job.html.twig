@@ -10,7 +10,55 @@
     {{ form_row(form.name) }}
     {{ form_row(form.description) }}
     {{ form_row(form.url) }}
+    <div class="controls"><div class="input-append"><input class="input-large" id="Job_preScriptCurrent" type="text" disabled="true" value="{{form.vars.value.preScript}}" /><a id="Job_preScriptDelete" class="btn">{% trans %}Delete{% endtrans %}</a></div></div>
+    {{ form_row(form.preScriptFile) }}
+    <script type="text/javascript">
+    dojo.addOnLoad(function() {
+        dojo.connect(dojo.byId('Job_preScriptFile'),
+                     'onchange',
+                     function() {
+                         dojo.byId('Job_preScriptCurrent').value = dojo.byId('Job_preScriptFile').value;
+                         dojo.byId('Job_preScript').value = dojo.byId('Job_preScriptFile').value;
+                         if ('' !== dojo.byId('Job_preScriptFile').value) {
+                             dojo.byId('Job_preScriptDelete').disabled = false;
+                         }
+                     });
+        dojo.connect(dojo.byId('Job_preScriptDelete'),
+                     'onclick',
+                     function() {
+                         dojo.byId('Job_preScript').value = '';
+                         dojo.byId('Job_preScriptFile').value = '';
+                         dojo.byId('visual_Job_preScriptFile').value = '';
+                         dojo.byId('Job_preScriptCurrent').value = '{% trans %}No script{% endtrans %}';
+                         this.disabled = true;
+                     });
+    });
+    </script>
     {{ form_row(form.preScript) }}
+    <div class="controls"><div class="input-append"><input class="input-large" id="Job_postScriptCurrent" type="text" disabled="true" value="{{form.vars.value.postScript}}" /><a id="Job_postScriptDelete" class="btn">{% trans %}Delete{% endtrans %}</a></div></div>
+    {{ form_row(form.postScriptFile) }}
+    <script type="text/javascript">
+    dojo.addOnLoad(function() {
+        dojo.connect(dojo.byId('Job_postScriptFile'),
+                     'onchange',
+                     function() {
+                         dojo.byId('Job_postScriptCurrent').value = dojo.byId('Job_postScriptFile').value;
+                         dojo.byId('Job_postScript').value = dojo.byId('Job_postScriptFile').value;
+                         if ('' !== dojo.byId('Job_postScriptFile').value) {
+                             dojo.byId('Job_postScriptDelete').disabled = false;
+                         }
+                     });
+        dojo.connect(dojo.byId('Job_postScriptDelete'),
+                     'onclick',
+                     function() {
+                         dojo.byId('Job_postScript').value = '';
+                         dojo.byId('Job_postScriptFile').value = '';
+                         dojo.byId('visual_Job_postScriptFile').value = '';
+                         dojo.byId('Job_postScriptCurrent').value = '{% trans %}No script{% endtrans %}';
+                         this.disabled = true;
+                     });
+    });
+    </script>
     {{ form_row(form.postScript) }}
     {{ form_rest(form) }}
     </div>

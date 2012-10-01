@@ -1,13 +1,18 @@
 <?php
 
 namespace Binovo\Tknika\TknikaBackupsBundle\Entity;
+
+use Binovo\Tknika\TknikaBackupsBundle\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class Job
 {
+    private $filenameForRemoval;
+
     /**
      * @ORM\ManyToOne(targetEntity="Client", inversedBy="jobs")
      */
@@ -36,20 +41,106 @@ class Job
     protected $policy;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $postScript;
+    protected $deletePostScriptFile = false;
+    protected $postScriptFile;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $preScript;
+    protected $deletePreScriptFile = false;
+    protected $preScriptFile;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
     protected $url;
 
+    private function isNewFileOrMustDeleteExistingFile($currentName, $file)
+    {
+        return null === $currentName || null !== $file;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function preUpload()
+    {
+        if ($this->isNewFileOrMustDeleteExistingFile($this->preScript, $this->preScriptFile)) {
+            $this->deletePreScriptFile = true;
+        }
+        if (null !== $this->preScriptFile) {
+            $this->setPreScript($this->preScriptFile->getClientOriginalName());
+        }
+        if ($this->isNewFileOrMustDeleteExistingFile($this->postScript, $this->postScriptFile)) {
+            $this->deletePostScriptFile = true;
+        }
+        if (null !== $this->postScriptFile) {
+            $this->setPostScript($this->postScriptFile->getClientOriginalName());
+        }
+    }
+
+    /**
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
+     */
+    public function upload()
+    {
+        if ($this->deletePreScriptFile && file_exists($this->getScriptpath('pre'))) {
+            if (!unlink($this->getScriptpath('pre'))) {
+                throw new RuntimeException("Error removing file " . $this->getScriptpath('pre'));
+            }
+        }
+        if (null !== $this->preScriptFile) {
+            $this->preScriptFile->move($this->getScriptDirectory(), $this->getScriptName('pre'));
+            unset($this->preScriptFile);
+        }
+        if ($this->deletePostScriptFile && file_exists($this->getScriptpath('post'))) {
+            if (!unlink($this->getScriptpath('post'))) {
+                throw new RuntimeException("Error removing file " . $this->getScriptpath('post'));
+            }
+        }
+        if (null !== $this->postScriptFile) {
+            $this->postScriptFile->move($this->getScriptDirectory(), $this->getScriptName('post'));
+            unset($this->postScriptFile);
+        }
+    }
+
+    /**
+     * @ORM\PostRemove()
+     */
+    public function removeUpload()
+    {
+        if (file_exists($this->getScriptpath('pre'))) {
+            if (!unlink($this->getScriptpath('pre'))) {
+                throw new RuntimeException("Error removing file " . $this->getScriptpath('pre'));
+            }
+        }
+        if (file_exists($this->getScriptpath('post'))) {
+            if (!unlink($this->getScriptpath('post'))) {
+                throw new RuntimeException("Error removing file " . $this->getScriptpath('post'));
+            }
+        }
+    }
+
+    public function getScriptPath($scriptType)
+    {
+        return sprintf('%s/%s', $this->getScriptDirectory(), $this->getScriptName($scriptType));
+    }
+
+    public function getScriptDirectory()
+    {
+        return Globals::getUploadDir();
+    }
+
+    public function getScriptName($scriptType)
+    {
+        return sprintf('%s_%04d_%04d.bin', $scriptType, $this->getClient()->getId(), $this->getId());
+    }
 
     /**
      * Set description
@@ -60,14 +151,14 @@ class Job
     public function setDescription($description)
     {
         $this->description = $description;
-    
+
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -77,7 +168,7 @@ class Job
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -93,14 +184,14 @@ class Job
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -116,14 +207,14 @@ class Job
     public function setPostScript($postScript)
     {
         $this->postScript = $postScript;
-    
+
         return $this;
     }
 
     /**
      * Get postScript
      *
-     * @return string 
+     * @return string
      */
     public function getPostScript()
     {
@@ -139,18 +230,64 @@ class Job
     public function setPreScript($preScript)
     {
         $this->preScript = $preScript;
-    
+
         return $this;
     }
 
     /**
      * Get preScript
      *
-     * @return string 
+     * @return string
      */
     public function getPreScript()
     {
         return $this->preScript;
+    }
+
+    /**
+     * Set preScriptFile
+     *
+     * @param string $preScriptFile
+     * @return Job
+     */
+    public function setPreScriptFile($preScriptFile)
+    {
+        $this->preScriptFile = $preScriptFile;
+
+        return $this;
+    }
+
+    /**
+     * Get preScriptFile
+     *
+     * @return string
+     */
+    public function getPreScriptFile()
+    {
+        return $this->preScriptFile;
+    }
+
+    /**
+     * Set postScriptFile
+     *
+     * @param string $postScriptFile
+     * @return Job
+     */
+    public function setPostScriptFile($postScriptFile)
+    {
+        $this->postScriptFile = $postScriptFile;
+
+        return $this;
+    }
+
+    /**
+     * Get postScriptFile
+     *
+     * @return string
+     */
+    public function getPostScriptFile()
+    {
+        return $this->postScriptFile;
     }
 
     /**
@@ -162,14 +299,14 @@ class Job
     public function setUrl($url)
     {
         $this->url = $url;
-    
+
         return $this;
     }
 
     /**
      * Get url
      *
-     * @return string 
+     * @return string
      */
     public function getUrl()
     {
@@ -185,14 +322,14 @@ class Job
     public function setClient(\Binovo\Tknika\TknikaBackupsBundle\Entity\Client $client = null)
     {
         $this->client = $client;
-    
+
         return $this;
     }
 
     /**
      * Get client
      *
-     * @return Binovo\Tknika\TknikaBackupsBundle\Entity\Client 
+     * @return Binovo\Tknika\TknikaBackupsBundle\Entity\Client
      */
     public function getClient()
     {
@@ -208,14 +345,14 @@ class Job
     public function setPolicy(\Binovo\Tknika\TknikaBackupsBundle\Entity\Policy $policy = null)
     {
         $this->policy = $policy;
-    
+
         return $this;
     }
 
     /**
      * Get policy
      *
-     * @return Binovo\Tknika\TknikaBackupsBundle\Entity\Policy 
+     * @return Binovo\Tknika\TknikaBackupsBundle\Entity\Policy
      */
     public function getPolicy()
     {

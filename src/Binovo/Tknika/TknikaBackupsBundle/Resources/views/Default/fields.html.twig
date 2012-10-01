@@ -31,3 +31,29 @@
 {% endspaceless %}
 {% endblock form_label %}
 
+{% block form_widget_simple %}
+{% spaceless %}
+    {% set type = type|default('text') %}
+    {% if type == 'file' %}
+    <input type="file" style="display:none" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+    <div class="input-append">
+        <input class="input-large" id="visual_{{id}}" type="text">
+        <a class="btn" onclick="dojo.byId('{{id}}').click();">Browse</a>
+    </div>
+
+    <script type="text/javascript">
+        dojo.connect(dojo.byId('{{id}}'), 'onchange',
+                     function() {
+                         dojo.byId('visual_{{id}}').value = dojo.byId('{{id}}').value;
+                     });
+        dojo.connect(dojo.byId('visual_{{id}}'), 'onchange',
+                     function(){
+                         dojo.byId('{{id}}').value = dojo.byId('visual_{{id}}').value;
+                     });
+    </script>
+    {% else %}
+    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+    {% endif %}
+{% endspaceless %}
+{% endblock form_widget_simple %}
+
