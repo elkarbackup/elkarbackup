@@ -65,9 +65,11 @@
     <div>
         {% for job in form.jobs %}
         <div id="job-{{job.vars.value.id}}">
-            <div class="controls control-row">
+            <div class="controls">
                 {{ form_widget(job.name, {'attr': {'class': 'input-medium'}}) }}
-                {{ form_widget(job.url, {'attr': {'class': 'input-xlarge'}}) }}
+            </div>
+            <div class="controls">
+                {{ form_widget(job.url, {'attr': {'class': 'input-xxlarge'}}) }}
             </div>
             <div class="controls">
                 {{ form_widget(job.description, {'attr': {'class': 'input-xxlarge'}}) }}

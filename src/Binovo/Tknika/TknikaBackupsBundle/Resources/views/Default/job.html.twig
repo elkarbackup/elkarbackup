@@ -8,8 +8,8 @@
 {% form_theme form 'BinovoTknikaTknikaBackupsBundle:Default:fields.html.twig' %}
     <div>
     {{ form_row(form.name) }}
-    {{ form_row(form.description) }}
-    {{ form_row(form.url) }}
+    {{ form_row(form.description, {attr: {class: 'input-xxlarge'}}) }}
+    {{ form_row(form.url, {attr: {class: 'input-xxlarge'}}) }}
     <div class="controls"><div class="input-append"><input class="input-large" id="Job_preScriptCurrent" type="text" disabled="true" value="{{form.vars.value.preScript}}" /><a id="Job_preScriptDelete" class="btn">{% trans %}Delete{% endtrans %}</a></div></div>
     {{ form_row(form.preScriptFile) }}
     <script type="text/javascript">
