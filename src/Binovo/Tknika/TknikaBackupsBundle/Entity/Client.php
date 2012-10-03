@@ -24,6 +24,11 @@ class Client
     protected $id;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $isActive = true;
+
+    /**
      * @ORM\OneToMany(targetEntity="Job", mappedBy="client", cascade={"remove"})
      */
     protected $jobs;
@@ -369,5 +374,28 @@ class Client
     public function getJobs()
     {
         return $this->jobs;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     * @return Client
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
     }
 }

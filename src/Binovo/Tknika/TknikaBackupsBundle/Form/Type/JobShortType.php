@@ -11,7 +11,9 @@ class JobShortType extends AbstractType
     {
         $builder->add('name'        , 'text')
                 ->add('description' , 'textarea', array('required' => false))
-                ->add('url'         , 'text');
+                ->add('url'         , 'text')
+                ->add('isActive'    , 'checkbox', array('required' => false));
+
     }
 
     public function getDefaultOptions(array $options)

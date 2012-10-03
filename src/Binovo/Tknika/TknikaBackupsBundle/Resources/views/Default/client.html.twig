@@ -10,6 +10,7 @@
     {{ form_row(form.name) }}
     {{ form_row(form.description) }}
     {{ form_row(form.url) }}
+    {{ form_row(form.isActive) }}
     <div class="controls"><div class="input-append"><input class="input-large" id="Client_preScriptCurrent" type="text" disabled="true" value="{{form.vars.value.preScript}}" /><a id="Client_preScriptDelete" class="btn">{% trans %}Delete{% endtrans %}</a></div></div>
     {{ form_row(form.preScriptFile) }}
     <script type="text/javascript">
@@ -67,6 +68,7 @@
         <div id="job-{{job.vars.value.id}}">
             <div class="controls">
                 {{ form_widget(job.name, {'attr': {'class': 'input-medium'}}) }}
+                {{ form_widget(job.isActive) }} {% trans %}active{% endtrans %}
             </div>
             <div class="controls">
                 {{ form_widget(job.url, {'attr': {'class': 'input-xxlarge'}}) }}

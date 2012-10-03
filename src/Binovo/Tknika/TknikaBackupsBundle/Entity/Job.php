@@ -31,6 +31,11 @@ class Job
     protected $id;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $isActive = true;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     protected $name;
@@ -381,5 +386,28 @@ class Job
     public function getPolicy()
     {
         return $this->policy;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     * @return Job
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean 
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
     }
 }

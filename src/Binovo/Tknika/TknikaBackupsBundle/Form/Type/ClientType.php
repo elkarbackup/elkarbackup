@@ -20,6 +20,8 @@ class ClientType extends AbstractType
                 ->add('postScript'    , 'hidden'    , array('label' => $t->trans('Post script', array(), 'BinovoTknikaBackups')))
                 ->add('postScriptFile', 'file'      , array('label'    => $t->trans('Upload post script', array(), 'BinovoTknikaBackups'),
                                                             'required' => false))
+                ->add('isActive'      , 'checkbox'  , array('label'    => $t->trans('Is active', array(), 'BinovoTknikaBackups'),
+                                                            'required' => false))
                 ->add('jobs'          , 'collection', array('type'         => new JobShortType(),
                                                             'allow_delete' => true,
                                                             'label'        => $t->trans('Jobs', array(), 'BinovoTknikaBackups')));

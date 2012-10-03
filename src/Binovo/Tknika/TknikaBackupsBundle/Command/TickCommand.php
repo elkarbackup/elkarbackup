@@ -78,6 +78,10 @@ class TickCommand extends ContainerAwareCommand
             ->getQuery();
         $clients = $query->getResult();
         foreach ($clients as $client) {
+            if (!$client->getIsActive()) {
+                $output->writeln(sprintf('Client "%s" is deactivated. Ignoring.', $client->getId()));
+                continue;
+            }
             $idClient  = $client->getId();
             $scriptName = $client->getPreScript();
             $scriptFile = $client->getScriptPath('pre');
@@ -86,6 +90,10 @@ class TickCommand extends ContainerAwareCommand
                 continue;
             }
             foreach ($client->getJobs() as $job) {
+                if (!$job->getIsActive()) {
+                    $output->writeln(sprintf('Client "%s", Job "%s" is deactivated. Ignoring.', $client->getId(), $job->getId()));
+                    continue;
+                }
                 $idJob     = $job->getId();
                 $url       = $job->getUrl();
                 $content = $engine->render('BinovoTknikaTknikaBackupsBundle:Default:rsnapshotconfig.txt.twig',

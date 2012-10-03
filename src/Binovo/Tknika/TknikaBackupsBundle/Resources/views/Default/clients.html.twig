@@ -10,6 +10,7 @@
         {# sorting of properties based on query components #}
         <th>{% trans %}Id{% endtrans %}</th>
         <th>{% trans %}Name{% endtrans %}</th>
+        <th>{% trans %}Status{% endtrans %}</th>
         <th>{% trans %}Actions{% endtrans %}</th>
     </tr>
 
@@ -18,6 +19,7 @@
     <tr onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'">
         <td><a href="{{ path('editClient', {id: client.id}) }}">{{ client.id }}</a></td>
         <td>{{ client.name }}</td>
+        <td>{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
         <td>
             <form action="{{ path('editClient', {id: client.id}) }}" style="display:inline">
                 <input class="btn" type="submit" value="{% trans %}Edit{% endtrans %}" />
