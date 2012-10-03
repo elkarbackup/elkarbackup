@@ -13,7 +13,8 @@
 
 <p>
     {% for file in content %}
-    <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file}) }}">{{ file }}</a><br />
+    <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file, action: 'view'}) }}">{{ file }}</a>
+    {% if file != ".." and file != "." %} <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file, action: 'download'}) }}"> <b>{% trans %}Download as .tgz{% endtrans %}</b></a> {% endif %}<br />
     {% endfor %}
 </p>
 

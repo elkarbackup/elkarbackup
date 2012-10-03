@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DefaultController extends Controller
 {
@@ -214,10 +215,10 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/client/{idClient}/job/{idJob}/backup/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*"}, defaults={"path" = ""}, name="showJobBackup")
+     * @Route("/client/{idClient}/job/{idJob}/backup/{action}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "action" = "view|download"}, defaults={"path" = "/"}, name="showJobBackup")
      * @Method("GET")
      */
-    public function showJobBackupAction(Request $request, $idClient, $idJob, $path)
+    public function showJobBackupAction(Request $request, $idClient, $idJob, $action, $path)
     {
         $t = $this->get('translator');
         $repository = $this->getDoctrine()
@@ -235,24 +236,32 @@ class DefaultController extends Controller
             throw $this->createNotFoundException($t->trans('Path not found: ', array(), 'BinovoTknikaBackups') . $path);
         }
         if (is_dir($realPath)) {
-            $content = scandir($realPath);
-            if (false === $content) {
-                $content = array();
-            }
+            if ('download' == $action) {
+                $headers = array('Content-Type'        => 'application/x-gzip',
+                                 'Content-Disposition' => sprintf('attachment; filename="%s.tar.gz"', basename($realPath)));
+                $f = function() use ($realPath){
+                    $command = sprintf('cd %s; tar zc %s', dirname($realPath), basename($realPath));
+                    passthru($command);
+                };
+                return new StreamedResponse($f, 200, $headers);
+            } else {
+                $content = scandir($realPath);
+                if (false === $content) {
+                    $content = array();
+                }
 
-            return $this->render('BinovoTknikaTknikaBackupsBundle:Default:directory.html.twig',
-                                 array('content'  => $content,
-                                       'job'      => $job,
-                                       'path'     => $path,
-                                       'realPath' => $realPath));
+                return $this->render('BinovoTknikaTknikaBackupsBundle:Default:directory.html.twig',
+                                     array('content'  => $content,
+                                           'job'      => $job,
+                                           'path'     => $path,
+                                           'realPath' => $realPath));
+            }
         } else {
             $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
             $mimeType = finfo_file($finfo, $realPath);
             finfo_close($finfo);
-            $headers = array(
-                'Content-Type' => $mimeType,
-                'Content-Disposition' => sprintf('attachment; filename="%s"', basename($realPath))
-                );
+            $headers = array('Content-Type' => $mimeType,
+                             'Content-Disposition' => sprintf('attachment; filename="%s"', basename($realPath)));
 
             return new Response(file_get_contents($realPath), 200, $headers);
         }
