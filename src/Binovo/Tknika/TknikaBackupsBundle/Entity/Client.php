@@ -24,7 +24,7 @@ class Client
     protected $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="Job", mappedBy="client")
+     * @ORM\OneToMany(targetEntity="Job", mappedBy="client", cascade={"remove"})
      */
     protected $jobs;
 
@@ -51,6 +51,11 @@ class Client
      * @ORM\Column(type="string", length=255)
      */
     protected $url;
+
+    /**
+     * Helper variable to remember the script time for PostRemove actions
+     */
+    protected $filesToRemove;
 
     private function isNewFileOrMustDeleteExistingFile($currentName, $file)
     {
@@ -118,18 +123,23 @@ class Client
     }
 
     /**
+     * @ORM\PreRemove()
+     */
+    public function prepareRemoveUpload()
+    {
+        $this->filesToRemove = array($this->getScriptPath('pre'), $this->getScriptPath('post'));
+    }
+
+    /**
      * @ORM\PostRemove()
      */
     public function removeUpload()
     {
-        if (file_exists($this->getScriptPath('pre'))) {
-            if (!unlink($this->getScriptPath('pre'))) {
-                throw new RuntimeException("Error removing file " . $this->getScriptPath('pre'));
-            }
-        }
-        if (file_exists($this->getScriptPath('post'))) {
-            if (!unlink($this->getScriptPath('post'))) {
-                throw new RuntimeException("Error removing file " . $this->getScriptPath('post'));
+        foreach ($this->filesToRemove as $file) {
+            if (file_exists($file)) {
+                if (!unlink($file)) {
+                    throw new RuntimeException("Error removing file " . $file);
+                }
             }
         }
     }
