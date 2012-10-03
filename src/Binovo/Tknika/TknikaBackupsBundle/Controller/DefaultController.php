@@ -169,6 +169,7 @@ class DefaultController extends Controller
                                    'idJob'         => sprintf('%04d', $idJob),
                                    'backupDir'     => $this->container->getParameter('backup_dir'),
                                    'tmp'           => '/tmp',
+                                   'snapshotRoot'  => $job->getSnapshotRoot(),
                                    'url'           => $job->getUrl()),
                              $response);
     }

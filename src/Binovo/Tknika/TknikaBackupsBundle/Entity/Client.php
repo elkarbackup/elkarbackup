@@ -71,6 +71,14 @@ class Client
     }
 
     /**
+     * Returns the full path of the snapshot directory
+     */
+    public function getSnapshotRoot()
+    {
+        return sprintf('%s/%04d', Globals::getBackupDir(), $this->getId());
+    }
+
+    /**
      * @ORM\PrePersist()
      * @ORM\PreUpdate()
      */
@@ -127,7 +135,7 @@ class Client
      */
     public function prepareRemoveUpload()
     {
-        $this->filesToRemove = array($this->getScriptPath('pre'), $this->getScriptPath('post'));
+        $this->filesToRemove = array($this->getScriptPath('pre'), $this->getScriptPath('post'), $this->getSnapshotRoot());
     }
 
     /**
@@ -137,7 +145,7 @@ class Client
     {
         foreach ($this->filesToRemove as $file) {
             if (file_exists($file)) {
-                if (!unlink($file)) {
+                if (!Globals::delTree($file)) {
                     throw new RuntimeException("Error removing file " . $file);
                 }
             }
@@ -156,7 +164,7 @@ class Client
 
     public function getScriptName($scriptType)
     {
-        return sprintf('%s_%04d.bin', $scriptType, $this->getId());
+        return sprintf('%04d.%s', $this->getId(), $scriptType);
     }
 
     /**

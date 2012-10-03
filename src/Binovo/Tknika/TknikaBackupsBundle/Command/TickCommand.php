@@ -95,6 +95,7 @@ class TickCommand extends ContainerAwareCommand
                                                  'idJob'         => sprintf('%04d', $idJob),
                                                  'backupDir'     => $backupDir,
                                                  'tmp'           => $tmpDir,
+                                                 'snapshotRoot'  => $job->getSnapshotRoot(),
                                                  'url'           => $url));
                 $confFileName = sprintf("%s/rsnapshot.%s_%s.cfg", $tmpDir, $idClient, $idJob);
                 $fd = fopen($confFileName, 'w');
