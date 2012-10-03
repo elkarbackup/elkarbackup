@@ -7,6 +7,8 @@
     <h3>
     {{ job.client.name ~ '/' ~ job.name ~ '/' ~ path }}
     </h3>
+    <a href="{{ path('editClient', {id: job.client.id}) }}"><b>{% trans %}Back to client{% endtrans %}</b></a><br />
+    <a href="{{ path('editJob',    {idClient: job.client.id, idJob: job.id}) }}"><b>{% trans %}Back to job{% endtrans %}</b></a>
 </p>
 
 <p>
