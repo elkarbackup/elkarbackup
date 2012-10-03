@@ -214,6 +214,51 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/client/{idClient}/job/{idJob}/backup/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*"}, defaults={"path" = ""}, name="showJobBackup")
+     * @Method("GET")
+     */
+    public function showJobBackupAction(Request $request, $idClient, $idJob, $path)
+    {
+        $t = $this->get('translator');
+        $repository = $this->getDoctrine()
+            ->getRepository('BinovoTknikaTknikaBackupsBundle:Job');
+        $job = $repository->find($idJob);
+        if ($job->getClient()->getId() != $idClient) {
+            throw $this->createNotFoundException($t->trans('Unable to find Job entity: ', array(), 'BinovoTknikaBackups') . $idClient . " " . $idJob);
+        }
+
+        $realPath = realpath($job->getSnapshotRoot() . '/' . $path);
+        if (false == $realPath) {
+            throw $this->createNotFoundException($t->trans('Path not found: ', array(), 'BinovoTknikaBackups') . $path);
+        }
+        if (0 !== strpos($realPath, $job->getSnapshotRoot())) {
+            throw $this->createNotFoundException($t->trans('Path not found: ', array(), 'BinovoTknikaBackups') . $path);
+        }
+        if (is_dir($realPath)) {
+            $content = scandir($realPath);
+            if (false === $content) {
+                $content = array();
+            }
+
+            return $this->render('BinovoTknikaTknikaBackupsBundle:Default:directory.html.twig',
+                                 array('content'  => $content,
+                                       'job'      => $job,
+                                       'path'     => $path,
+                                       'realPath' => $realPath));
+        } else {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+            $mimeType = finfo_file($finfo, $realPath);
+            finfo_close($finfo);
+            $headers = array(
+                'Content-Type' => $mimeType,
+                'Content-Disposition' => sprintf('attachment; filename="%s"', basename($realPath))
+                );
+
+            return new Response(file_get_contents($realPath), 200, $headers);
+        }
+    }
+
+    /**
      * @Route("/", name="home")
      * @Template()
      */

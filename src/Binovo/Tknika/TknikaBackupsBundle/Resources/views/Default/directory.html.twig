@@ -1,0 +1,18 @@
+{% extends 'BinovoTknikaTknikaBackupsBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoTknikaBackups' %}
+
+{% block body %}
+
+<p>
+    <h3>
+    {{ job.client.name ~ '/' ~ job.name ~ '/' ~ path }}
+    </h3>
+</p>
+
+<p>
+    {% for file in content %}
+    <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file}) }}">{{ file }}</a><br />
+    {% endfor %}
+</p>
+
+{% endblock %}

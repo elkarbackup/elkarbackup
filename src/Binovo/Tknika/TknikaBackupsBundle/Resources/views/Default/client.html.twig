@@ -68,7 +68,7 @@
         <div id="job-{{job.vars.value.id}}">
             <div class="controls">
                 {{ form_widget(job.name, {'attr': {'class': 'input-medium'}}) }}
-                {{ form_widget(job.isActive) }} {% trans %}active{% endtrans %}
+                {{ form_widget(job.isActive) }} {% trans %}active{% endtrans %} <a href="{{path('showJobBackup', {idClient: job.vars.value.client.id, idJob: job.vars.value.id}) }}">{% trans %}Backups{% endtrans %}</a>
             </div>
             <div class="controls">
                 {{ form_widget(job.url, {'attr': {'class': 'input-xxlarge'}}) }}
