@@ -73,12 +73,20 @@ cmd_logger	/usr/bin/logger
 # Specify the path to a script (and any optional arguments) to run right
 # before rsnapshot syncs files
 #
+{% if cmdPreExec %}
+cmd_preexec	{{cmdPreExec}}
+{% else %}
 #cmd_preexec	/path/to/preexec/script
+{% endif %}
 
 # Specify the path to a script (and any optional arguments) to run right
 # after rsnapshot syncs files
 #
+{% if cmdPostExec %}
+cmd_postexec	{{cmdPostExec}}
+{% else %}
 #cmd_postexec	/path/to/postexec/script
+{% endif %}
 
 #########################################
 #           BACKUP INTERVALS            #

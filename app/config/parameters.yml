@@ -13,3 +13,6 @@ parameters:
     secret: fba546d6ab6abc4a01391d161772a14e093c7aa2
     database_path: null
     upload_dir: /srv/web/tknikabackups-devel/uploaded
+    backup_dir: /srv/web/tknikabackups-devel/backups
+    tmp_dir: /srv/web/tknikabackups-devel/tmp
+    rsnapshot: /usr/bin/rsnapshot

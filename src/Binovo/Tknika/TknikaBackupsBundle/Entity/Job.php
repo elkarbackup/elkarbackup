@@ -19,7 +19,7 @@ class Job
     protected $client;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $description;
 
@@ -90,22 +90,28 @@ class Job
      */
     public function upload()
     {
-        if ($this->deletePreScriptFile && file_exists($this->getScriptpath('pre'))) {
-            if (!unlink($this->getScriptpath('pre'))) {
-                throw new RuntimeException("Error removing file " . $this->getScriptpath('pre'));
+        if ($this->deletePreScriptFile && file_exists($this->getScriptPath('pre'))) {
+            if (!unlink($this->getScriptPath('pre'))) {
+                throw new RuntimeException("Error removing file " . $this->getScriptPath('pre'));
             }
         }
         if (null !== $this->preScriptFile) {
             $this->preScriptFile->move($this->getScriptDirectory(), $this->getScriptName('pre'));
+            if (!chmod($this->getScriptPath('pre'), 0755)) {
+                throw new RuntimeException("Error setting file permission " . $this->getScriptPath('pre'));
+            }
             unset($this->preScriptFile);
         }
-        if ($this->deletePostScriptFile && file_exists($this->getScriptpath('post'))) {
-            if (!unlink($this->getScriptpath('post'))) {
-                throw new RuntimeException("Error removing file " . $this->getScriptpath('post'));
+        if ($this->deletePostScriptFile && file_exists($this->getScriptPath('post'))) {
+            if (!unlink($this->getScriptPath('post'))) {
+                throw new RuntimeException("Error removing file " . $this->getScriptPath('post'));
             }
         }
         if (null !== $this->postScriptFile) {
             $this->postScriptFile->move($this->getScriptDirectory(), $this->getScriptName('post'));
+            if (!chmod($this->getScriptPath('post'), 0755)) {
+                throw new RuntimeException("Error setting file permission " . $this->getScriptPath('post'));
+            }
             unset($this->postScriptFile);
         }
     }
@@ -115,14 +121,14 @@ class Job
      */
     public function removeUpload()
     {
-        if (file_exists($this->getScriptpath('pre'))) {
-            if (!unlink($this->getScriptpath('pre'))) {
-                throw new RuntimeException("Error removing file " . $this->getScriptpath('pre'));
+        if (file_exists($this->getScriptPath('pre'))) {
+            if (!unlink($this->getScriptPath('pre'))) {
+                throw new RuntimeException("Error removing file " . $this->getScriptPath('pre'));
             }
         }
-        if (file_exists($this->getScriptpath('post'))) {
-            if (!unlink($this->getScriptpath('post'))) {
-                throw new RuntimeException("Error removing file " . $this->getScriptpath('post'));
+        if (file_exists($this->getScriptPath('post'))) {
+            if (!unlink($this->getScriptPath('post'))) {
+                throw new RuntimeException("Error removing file " . $this->getScriptPath('post'));
             }
         }
     }

@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
@@ -145,6 +146,32 @@ class DefaultController extends Controller
                              array('form' => $form->createView()));
     }
 
+    /**
+     * @Route("/client/{idClient}/job/{idJob}/config", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="showJobConfig")
+     * @Method("GET")
+     * @Template()
+     */
+    public function showJobConfigAction(Request $request, $idClient, $idJob)
+    {
+        $t = $this->get('translator');
+        $repository = $this->getDoctrine()->getRepository('BinovoTknikaTknikaBackupsBundle:Job');
+        $job = $repository->find($idJob);
+        if (null == $job || $job->getClient()->getId() != $idClient) {
+            throw $this->createNotFoundException($t->trans('Unable to find Job entity: ', array(), 'BinovoTknikaBackups') . $idClient . " " . $idJob);
+        }
+        $response = new Response();
+        $response->headers->set('Content-Type', 'text/plain');
+
+        return $this->render('BinovoTknikaTknikaBackupsBundle:Default:rsnapshotconfig.txt.twig',
+                             array('cmdPreExec'    => $job->getPreScript()  ? $job->getScriptPath('pre') : '',
+                                   'cmdPostExec'   => $job->getPostScript() ? $job->getScriptPath('post'): '',
+                                   'idClient'      => sprintf('%04d', $idClient),
+                                   'idJob'         => sprintf('%04d', $idJob),
+                                   'backupDir'     => $this->container->getParameter('backup_dir'),
+                                   'tmp'           => '/tmp',
+                                   'url'           => $job->getUrl()),
+                             $response);
+    }
 
     /**
      * @Route("/client/{idClient}/job/{idJob}", requirements={"idClient" = "\d+", "idJob" = "\d+"}, defaults={"idJob" = "-1"}, name="saveJob")
@@ -159,7 +186,7 @@ class DefaultController extends Controller
             $client = $this->getDoctrine()
                 ->getRepository('BinovoTknikaTknikaBackupsBundle:Client')->find($idClient);
             if (null == $client) {
-                throw $this->createNotFoundException($t->trans('Unable to find Client entity: ') . $idClient, array(), 'BinovoTknikaBackups');
+                throw $this->createNotFoundException($t->trans('Unable to find Client entity: ', array(), 'BinovoTknikaBackups') . $idClient);
             }
             $job->setClient($client);
         } else {
