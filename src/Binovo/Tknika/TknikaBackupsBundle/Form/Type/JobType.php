@@ -11,7 +11,8 @@ class JobType extends AbstractType
     {
         $t = $options['translator'];
         $builder->add('name'          , 'text'    , array('label' => $t->trans('Name', array(), 'BinovoTknikaBackups')))
-                ->add('description'   , 'textarea', array('label' => $t->trans('Description', array(), 'BinovoTknikaBackups')))
+                ->add('description'   , 'textarea', array('label' => $t->trans('Description', array(), 'BinovoTknikaBackups'),
+                                                          'required' => false))
                 ->add('url'           , 'text'    , array('label' => $t->trans('Url', array(), 'BinovoTknikaBackups')))
                 ->add('preScript'     , 'hidden'  , array('label' => $t->trans('Pre script', array(), 'BinovoTknikaBackups')))
                 ->add('preScriptFile' , 'file'    , array('label'    => $t->trans('Upload pre script', array(), 'BinovoTknikaBackups'),
