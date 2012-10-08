@@ -5,8 +5,10 @@ namespace Binovo\Tknika\TknikaBackupsBundle\Controller;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Client;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Job;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Policy;
+use Binovo\Tknika\TknikaBackupsBundle\Entity\User;
 use Binovo\Tknika\TknikaBackupsBundle\Form\Type\ClientType;
 use Binovo\Tknika\TknikaBackupsBundle\Form\Type\JobType;
+use Binovo\Tknika\TknikaBackupsBundle\Form\Type\UserType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -350,4 +352,144 @@ class DefaultController extends Controller
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:policies.html.twig');
     }
 
+    /**
+     * @Route("/password", name="changePassword")
+     * @Template()
+     */
+    public function changePasswordAction(Request $request)
+    {
+        $t = $this->get('translator');
+        $defaultData = array();
+        $form = $this->createFormBuilder($defaultData)
+            ->add('oldPassword' , 'password')
+            ->add('newPassword' , 'password')
+            ->add('newPassword2', 'password')
+            ->getForm();
+        if ($request->isMethod('POST')) {
+            $form->bind($request);
+            $data = $form->getData();
+            $user = $this->get('security.context')->getToken()->getUser();
+            $encoder = $this->get('security.encoder_factory')->getEncoder($user);
+            $ok = true;
+            if (empty($data['newPassword']) || $data['newPassword'] !== $data['newPassword2']) {
+                $ok = false;
+                $this->get('session')->getFlashBag()->add('changePassword',
+                                                          $t->trans("Passwords do not match", array(), 'BinovoTknikaBackups'));
+            }
+            if ($encoder->encodePassword($data['oldPassword'], $user->getSalt()) !== $user->getPassword()) {
+                $ok = false;
+                $this->get('session')->getFlashBag()->add('changePassword',
+                                                          $t->trans("Wrong old password", array(), 'BinovoTknikaBackups'));
+            }
+            if ($ok) {
+                $user->setPassword($encoder->encodePassword($data['newPassword'], $user->getSalt()));
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($user);
+                $manager->flush();
+                $this->get('session')->getFlashBag()->add('changePassword',
+                                                          $t->trans("Password changed", array(), 'BinovoTknikaBackups'));
+            }
+
+            return $this->redirect($this->generateUrl('changePassword'));
+        } else {
+
+            return $this->render('BinovoTknikaTknikaBackupsBundle:Default:password.html.twig',
+                                 array('form'    => $form->createView()));
+        }
+    }
+
+    /**
+     * @Route("/user/{id}/delete", name="deleteUser")
+     * @Method("POST")
+     * @Template()
+     */
+    public function deleteUserAction(Request $request, $id)
+    {
+        $db = $this->getDoctrine();
+        $repository = $db->getRepository('BinovoTknikaTknikaBackupsBundle:User');
+        $manager = $db->getManager();
+        $user = $repository->find($id);
+        $manager->remove($user);
+        $manager->flush();
+
+        return $this->redirect($this->generateUrl('showUsers'));
+    }
+
+    /**
+     * @Route("/user/{id}", name="editUser")
+     * @Method("GET")
+     * @Template()
+     */
+    public function editUserAction(Request $request, $id)
+    {
+        $t = $this->get('translator');
+        if ('new' === $id) {
+            $user = new User();
+        } else {
+            $repository = $this->getDoctrine()
+                ->getRepository('BinovoTknikaTknikaBackupsBundle:User');
+            $user = $repository->find($id);
+        }
+        $form = $this->createForm(new UserType(), $user, array('translator' => $t));
+        return $this->render('BinovoTknikaTknikaBackupsBundle:Default:user.html.twig',
+                             array('form' => $form->createView()));
+    }
+
+    /**
+     * @Route("/user/{id}", requirements={"id" = "\d+"}, defaults={"id" = "-1"}, name="saveUser")
+     * @Method("POST")
+     * @Template()
+     */
+    public function saveUserAction(Request $request, $id)
+    {
+        $t = $this->get('translator');
+        if ("-1" === $id) {
+            $user = new User();
+        } else {
+            $repository = $this->getDoctrine()
+                ->getRepository('BinovoTknikaTknikaBackupsBundle:User');
+            $user = $repository->find($id);
+        }
+        $form = $this->createForm(new UserType(), $user, array('translator' => $t));
+        $form->bind($request);
+        if ($form->isValid()) {
+            if ($user->newPassword) {
+                $factory = $this->get('security.encoder_factory');
+                $encoder = $factory->getEncoder($user);
+                $password = $encoder->encodePassword($user->newPassword, $user->getSalt());
+                $user->setPassword($password);
+            }
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('showUsers'));
+        } else {
+
+            return $this->render('BinovoTknikaTknikaBackupsBundle:Default:user.html.twig',
+                                 array('form' => $form->createView()));
+        }
+    }
+
+    /**
+     * @Route("/users", name="showUsers")
+     * @Template()
+     */
+    public function showUsersAction(Request $request)
+    {
+        $repository = $this->getDoctrine()
+            ->getRepository('BinovoTknikaTknikaBackupsBundle:User');
+        $query = $repository->createQueryBuilder('c')
+            ->getQuery();
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1)/*page number*/,
+            10/*limit per page*/
+            );
+
+        return $this->render('BinovoTknikaTknikaBackupsBundle:Default:users.html.twig',
+                             array('pagination' => $pagination));
+    }
 }

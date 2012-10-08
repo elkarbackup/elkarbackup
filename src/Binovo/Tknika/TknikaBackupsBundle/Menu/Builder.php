@@ -115,7 +115,14 @@ class Builder extends ContainerAware
                                                       'route'    => 'newPolicy'))),
                       array('label'    => $t->trans('Help', array(), 'BinovoTknikaBackups'),
                             'children' => array(array('label'    => $t->trans('About', array(), 'BinovoTknikaBackups'),
-                                                      'route'    => 'about'))));
+                                                      'route'    => 'about'))),
+                      array('label'    => $t->trans('Users', array(), 'BinovoTknikaBackups'),
+                            'children' => array(array('label'    => $t->trans('Logout', array(), 'BinovoTknikaBackups'),
+                                                      'route'    => 'logout'),
+                                                array('label'    => $t->trans('Change password', array(), 'BinovoTknikaBackups'),
+                                                      'route'    => 'changePassword'),
+                                                array('label'    => $t->trans('Show', array(), 'BinovoTknikaBackups'),
+                                                      'route'    => 'showUsers'))));
 
         return $this->generateMenuBar($factory, $menu);
     }

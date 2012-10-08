@@ -5,6 +5,8 @@ namespace Binovo\Tknika\TknikaBackupsBundle\Entity;
 use Binovo\Tknika\TknikaBackupsBundle\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\Validator\Constraint as SecurityAssert;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
@@ -33,6 +35,7 @@ class User implements AdvancedUserInterface
      * @ORM\Column(type="string", length=100)
      */
     private $password;
+    public $newPassword;
 
     /**
      * @ORM\Column(type="string", length=60, unique=true)
@@ -43,6 +46,11 @@ class User implements AdvancedUserInterface
      * @ORM\Column(type="boolean")
      */
     private $isActive;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $roles = 'ROLE_USER';
 
     public function __construct()
     {
@@ -99,7 +107,17 @@ class User implements AdvancedUserInterface
      */
     public function getRoles()
     {
+        return explode(',', $this->roles);
         return array('ROLE_ADMIN');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setRoles(array $roles)
+    {
+        $this->roles = implode(',', $roles);
+        return $this;
     }
 
     /**

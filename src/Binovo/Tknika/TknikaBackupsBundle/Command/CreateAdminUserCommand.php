@@ -28,6 +28,7 @@ class CreateAdminUserCommand extends ContainerAwareCommand
         $user->setPassword($password);
         $user->setUsername('root');
         $user->setEmail('root@localhost');
+        $user->setRoles(array('ROLE_ADMIN'));
         $em->persist($user);
         $em->flush();
     }

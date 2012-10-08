@@ -4,3 +4,5 @@ binovo_tknika_tknika_backups:
     prefix:   /
 login_check:
     pattern:   /login_check
+logout:
+    pattern: /logout
