@@ -11,10 +11,11 @@ class UserType extends AbstractType
     {
         $t = $options['translator'];
         $builder->add('username'    , 'text'    , array('label' => $t->trans('Name'     , array(), 'BinovoTknikaBackups')))
-                ->add('newPassword' , 'password', array('label' => $t->trans('Password' , array(), 'BinovoTknikaBackups')))
+                ->add('newPassword' , 'password', array('label' => $t->trans('Password' , array(), 'BinovoTknikaBackups'),
+                                                        'required' => false))
                 ->add('email'       , 'email'   , array('label' => $t->trans('Email'    , array(), 'BinovoTknikaBackups')))
                 ->add('isActive'    , 'checkbox', array('label' => $t->trans('Is active', array(), 'BinovoTknikaBackups'),
-                                                          'required' => false));
+                                                        'required' => false));
     }
 
     public function getDefaultOptions(array $options)

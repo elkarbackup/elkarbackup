@@ -1,8 +1,169 @@
 {% extends 'BinovoTknikaTknikaBackupsBundle:Default:base.html.twig' %}
 {% trans_default_domain 'BinovoTknikaBackups' %}
 
+{% block scripts %}
+    {{ parent() }}
+    {% javascripts '@BinovoTknikaTknikaBackupsBundle/Resources/public/js/edit-policy.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
 {% block body %}
 
-{% trans %}TODO{% endtrans %}
+<form id="form" class="form-horizontal" action="{{ path('savePolicy', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
+    <legend>{% trans %}Edit policy{% endtrans %}</legend>
+{% form_theme form 'BinovoTknikaTknikaBackupsBundle:Default:fields.html.twig' %}
+    <div>
+        {{ form_widget(form) }}
+    </div>
+    <div class="control-group">
+        <label class="control-label">
+            {% trans %}Hourly{% endtrans %}
+        </label>
+        <div class="controls" id="hourlyHours">
+            <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId:'hourlyCount'">
+                {% trans %} The number of copies to make during the day {% endtrans %}
+            </div>
+            <input data-dojo-type="dijit/form/NumberSpinner"
+                   value="0"
+                   data-dojo-props="id: 'hourlyCount', intermediateChanges: true, smallDelta: 1, constraints: {min:0,max:24,places:0}, style: 'width: 100px'" />
+        </div>
+
+        <div class="controls" id="hourlyDays">
+            <label class="checkbox">
+                <input id="hourly-monday" type="checkbox" /> {% trans %}Monday{% endtrans %}
+            </label>
+            <label class="checkbox">
+                <input id="hourly-tuesday" type="checkbox" /> {% trans %}Tuesday{% endtrans %}
+            </label>
+            <label class="checkbox">
+                <input id="hourly-wednesday" type="checkbox" /> {% trans %}Wednesday{% endtrans %}
+            </label>
+            <label class="checkbox">
+                <input id="hourly-thursday" type="checkbox" /> {% trans %}Thursday{% endtrans %}
+            </label>
+            <label class="checkbox">
+                <input id="hourly-friday" type="checkbox" /> {% trans %}Friday{% endtrans %}
+            </label>
+            <label class="checkbox">
+                <input id="hourly-saturday" type="checkbox" /> {% trans %}Saturday{% endtrans %}
+            </label>
+            <label class="checkbox">
+                <input id="hourly-sunday" type="checkbox" /> {% trans %}Sunday{% endtrans %}
+            </label>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">
+            {% trans %}Daily{% endtrans %}
+        </label>
+        <div class="controls" id="daily">
+            <input data-dojo-type="dijit/form/NumberSpinner"
+                   value="0"
+                   data-dojo-props="id: 'dailyCount', readOnly: true, intermediateChanges: true, smallDelta: 1, constraints: {min:0,max:24,places:0}, style: 'width: 100px'" />
+            <input id="dailyHour" data-dojo-type="dijit/form/TimeTextBox" data-dojo-props="constraints:{timePattern: 'HH:mm', clickableIncrement: 'T00:15:00',visibleIncrement: 'T00:15:00', visibleRange: 'T01:00:00'}, value: '09:00'" />
+        </div>
+        <div class="controls">
+            <label class="checkbox">
+                <input id="daily-monday" type="checkbox" /> {% trans %}Monday{% endtrans %}
+            </label>
+            <label class="checkbox">
+                <input id="daily-tuesday" type="checkbox" /> {% trans %}Tuesday{% endtrans %}
+            </label>
+            <label class="checkbox">
+                <input id="daily-wednesday" type="checkbox" /> {% trans %}Wednesday{% endtrans %}
+            </label>
+            <label class="checkbox">
+                <input id="daily-thursday" type="checkbox" /> {% trans %}Thursday{% endtrans %}
+            </label>
+            <label class="checkbox">
+                <input id="daily-friday" type="checkbox" /> {% trans %}Friday{% endtrans %}
+            </label>
+            <label class="checkbox">
+                <input id="daily-saturday" type="checkbox" /> {% trans %}Saturday{% endtrans %}
+            </label>
+            <label class="checkbox">
+                <input id="daily-sunday" type="checkbox" /> {% trans %}Sunday{% endtrans %}
+            </label>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">
+            {% trans %}Weekly{% endtrans %}
+        </label>
+        <div class="controls" id="weekly">
+            <input id="weeklyCount"
+                   data-dojo-type="dijit/form/NumberSpinner"
+                   data-dojo-props="id: 'weeklyCount', intermediateChanges: true, smallDelta: 1, constraints: {min:0,max:12,places:0}, style: 'width: 100px'" />
+            <input id="weeklyHour"
+                   data-dojo-type="dijit/form/TimeTextBox"
+                   data-dojo-props="constraints:{timePattern: 'HH:mm', clickableIncrement: 'T00:15:00',visibleIncrement: 'T00:15:00', visibleRange: 'T01:00:00'}, value: '09:00'" />
+
+        </div>
+        <div class="controls">
+            <label class="radio">
+                <input name="weekly-day" id="weekly-monday" type="radio" /> {% trans %}Monday{% endtrans %}
+            </label>
+            <label class="radio">
+                <input name="weekly-day" id="weekly-tuesday" type="radio" /> {% trans %}Tuesday{% endtrans %}
+            </label>
+            <label class="radio">
+                <input name="weekly-day" id="weekly-wednesday" type="radio" /> {% trans %}Wednesday{% endtrans %}
+            </label>
+            <label class="radio">
+                <input name="weekly-day" id="weekly-thursday" type="radio" /> {% trans %}Thursday{% endtrans %}
+            </label>
+            <label class="radio">
+                <input name="weekly-day" id="weekly-friday" type="radio" /> {% trans %}Friday{% endtrans %}
+            </label>
+            <label class="radio">
+                <input name="weekly-day" id="weekly-saturday" type="radio" /> {% trans %}Saturday{% endtrans %}
+            </label>
+            <label class="radio">
+                <input name="weekly-day" id="weekly-sunday" type="radio" /> {% trans %}Sunday{% endtrans %}
+            </label>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">
+            {% trans %}Monthly{% endtrans %}
+        </label>
+        <div class="controls" id="monthly">
+            <input id="monthlyCount"
+                   data-dojo-type="dijit/form/NumberSpinner"
+                   data-dojo-props="id: 'monthlyCount', intermediateChanges: true, smallDelta: 1, constraints: {min:0,max:12,places:0}, style: 'width: 100px'" />
+            <input id="monthlyHour"
+                   data-dojo-type="dijit/form/TimeTextBox"
+                   data-dojo-props="constraints:{timePattern: 'HH:mm', clickableIncrement: 'T00:15:00',visibleIncrement: 'T00:15:00', visibleRange: 'T01:00:00'}, value: '09:00'" />
+        </div>
+        <div class="controls" id="monthly">
+            {% trans %} Day of month: {% endtrans %} <br/>
+            <input id="dayOfMonth"
+                   data-dojo-type="dijit/form/NumberSpinner"
+                   data-dojo-props="id: 'dayOfMonth', intermediateChanges: true, smallDelta: 1, constraints: {min:1,max:31,places:0}, style: 'width: 100px'" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">
+            {% trans %}Yearly{% endtrans %}
+        </label>
+        <div class="controls" id="yearly">
+            <input id="yearlyCount"
+                   data-dojo-type="dijit/form/NumberSpinner"
+                   data-dojo-props="id: 'yearlyCount', intermediateChanges: true, smallDelta: 1, constraints: {min:0,max:12,places:0}, style: 'width: 100px'" />
+            <input id="yearlyHour"
+                   data-dojo-type="dijit/form/TimeTextBox"
+                   data-dojo-props="constraints:{timePattern: 'HH:mm', clickableIncrement: 'T00:15:00',visibleIncrement: 'T00:15:00', visibleRange: 'T01:00:00'}, value: '09:00'" />
+        </div>
+        <div class="controls" id="yearly">
+            {% trans %} Day of year: {% endtrans %} <br/>
+            <input id="dayOfYear"
+                   data-dojo-type="dijit/form/DateTextBox"
+                   data-dojo-props="style:'width: 100px'"
+                   />
+        </div>
+    </div>
+    <input class="btn" type="submit" value="{% trans %}Save{% endtrans %}"/>
+</form>
 
 {% endblock %}

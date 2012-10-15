@@ -9,11 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Policy
 {
     /**
-     * @ORM\Column(type="text")
-     */
-    protected $description;
-
-    /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -21,9 +16,9 @@ class Policy
     protected $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="Job", mappedBy="policy")
+     * @ORM\Column(type="text", nullable=true)
      */
-    protected $jobs;
+    protected $description;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -31,23 +26,180 @@ class Policy
     protected $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="Retain", mappedBy="policy")
+     * Regex to match the time (H:i format in date) for hourly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    protected $retains;
+    protected $hourlyHours;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * Regex to match the day of month (d format in date) for hourly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    protected $url;
+    protected $hourlyDaysOfMonth;
+
+    /**
+     * Regex to match the day of the week (N format in date) for hourly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $hourlyDaysOfWeek;
+
+    /**
+     * Regex to match the month (m format in date) for hourly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $hourlyMonths;
+
+    /**
+     * Number of retains
+     * @ORM\Column(type="integer")
+     */
+    protected $hourlyCount = 0;
+
+    /**
+     * Regex to match the time (H:i format in date) for daily intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $dailyHours;
+
+    /**
+     * Regex to match the day of month (d format in date) for daily intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $dailyDaysOfMonth;
+
+    /**
+     * Regex to match the day of the week (N format in date) for daily intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $dailyDaysOfWeek;
+
+    /**
+     * Regex to match the month (m format in date) for daily intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $dailyMonths;
+
+    /**
+     * Number of retains
+     * @ORM\Column(type="integer")
+     */
+    protected $dailyCount = 0;
+
+    /**
+     * Regex to match the time (H:i format in date) for weekly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $weeklyHours;
+
+    /**
+     * Regex to match the day of month (d format in date) for weekly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $weeklyDaysOfMonth;
+
+    /**
+     * Regex to match the day of the week (N format in date) for weekly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $weeklyDaysOfWeek;
+
+    /**
+     * Regex to match the month (m format in date) for weekly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $weeklyMonths;
+
+    /**
+     * Number of retains
+     * @ORM\Column(type="integer")
+     */
+    protected $weeklyCount = 0;
+
+    /**
+     * Regex to match the time (H:i format in date) for monthly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $monthlyHours;
+
+    /**
+     * Regex to match the day of month (d format in date) for monthly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $monthlyDaysOfMonth;
+
+    /**
+     * Regex to match the day of the week (N format in date) for monthly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $monthlyDaysOfWeek;
+
+    /**
+     * Regex to match the month (m format in date) for monthly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $monthlyMonths;
+
+    /**
+     * Number of retains
+     * @ORM\Column(type="integer")
+     */
+    protected $monthlyCount = 0;
+
+    /**
+     * Regex to match the time (H:i format in date) for yearly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $yearlyHours;
+
+    /**
+     * Regex to match the day of month (d format in date) for yearly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $yearlyDaysOfMonth;
+
+    /**
+     * Regex to match the day of the week (N format in date) for yearly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $yearlyDaysOfWeek;
+
+    /**
+     * Regex to match the month (m format in date) for yearly intervals
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $yearlyMonths;
+
+    /**
+     * Number of retains
+     * @ORM\Column(type="integer")
+     */
+    protected $yearlyCount = 0;
+
+    /**
+     * Include expressions
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $include;
+
+    /**
+     * Exclude expressions
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $exclude;
+
+    /**
+     * Whether to use rsnapshot sync_first option
+     * @ORM\Column(type="boolean")
+     */
+    protected $syncFirst;
+
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->jobs = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->retains = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Set description
      *
@@ -57,14 +209,14 @@ class Policy
     public function setDescription($description)
     {
         $this->description = $description;
-    
+
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -74,7 +226,7 @@ class Policy
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -90,106 +242,662 @@ class Policy
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
         return $this->name;
     }
 
+
     /**
-     * Set url
+     * Set hourlyHours
      *
-     * @param string $url
+     * @param string $hourlyHours
      * @return Policy
      */
-    public function setUrl($url)
+    public function setHourlyHours($hourlyHours)
     {
-        $this->url = $url;
-    
+        $this->hourlyHours = $hourlyHours;
+
         return $this;
     }
 
     /**
-     * Get url
+     * Get hourlyHours
      *
-     * @return string 
+     * @return string
      */
-    public function getUrl()
+    public function getHourlyHours()
     {
-        return $this->url;
+        return $this->hourlyHours;
     }
 
     /**
-     * Add jobs
+     * Set hourlyDaysOfMonth
      *
-     * @param Binovo\Tknika\TknikaBackupsBundle\Entity\Job $jobs
+     * @param string $hourlyDaysOfMonth
      * @return Policy
      */
-    public function addJob(\Binovo\Tknika\TknikaBackupsBundle\Entity\Job $jobs)
+    public function setHourlyDaysOfMonth($hourlyDaysOfMonth)
     {
-        $this->jobs[] = $jobs;
-    
+        $this->hourlyDaysOfMonth = $hourlyDaysOfMonth;
+
         return $this;
     }
 
     /**
-     * Remove jobs
+     * Get hourlyDaysOfMonth
      *
-     * @param Binovo\Tknika\TknikaBackupsBundle\Entity\Job $jobs
+     * @return string
      */
-    public function removeJob(\Binovo\Tknika\TknikaBackupsBundle\Entity\Job $jobs)
+    public function getHourlyDaysOfMonth()
     {
-        $this->jobs->removeElement($jobs);
+        return $this->hourlyDaysOfMonth;
     }
 
     /**
-     * Get jobs
+     * Set hourlyDaysOfWeek
      *
-     * @return Doctrine\Common\Collections\Collection 
-     */
-    public function getJobs()
-    {
-        return $this->jobs;
-    }
-
-    /**
-     * Add retains
-     *
-     * @param Binovo\Tknika\TknikaBackupsBundle\Entity\Retain $retains
+     * @param string $hourlyDaysOfWeek
      * @return Policy
      */
-    public function addRetain(\Binovo\Tknika\TknikaBackupsBundle\Entity\Retain $retains)
+    public function setHourlyDaysOfWeek($hourlyDaysOfWeek)
     {
-        $this->retains[] = $retains;
-    
+        $this->hourlyDaysOfWeek = $hourlyDaysOfWeek;
+
         return $this;
     }
 
     /**
-     * Remove retains
+     * Get hourlyDaysOfWeek
      *
-     * @param Binovo\Tknika\TknikaBackupsBundle\Entity\Retain $retains
+     * @return string
      */
-    public function removeRetain(\Binovo\Tknika\TknikaBackupsBundle\Entity\Retain $retains)
+    public function getHourlyDaysOfWeek()
     {
-        $this->retains->removeElement($retains);
+        return $this->hourlyDaysOfWeek;
     }
 
     /**
-     * Get retains
+     * Set hourlyMonths
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @param string $hourlyMonths
+     * @return Policy
      */
-    public function getRetains()
+    public function setHourlyMonths($hourlyMonths)
     {
-        return $this->retains;
+        $this->hourlyMonths = $hourlyMonths;
+
+        return $this;
+    }
+
+    /**
+     * Get hourlyMonths
+     *
+     * @return string
+     */
+    public function getHourlyMonths()
+    {
+        return $this->hourlyMonths;
+    }
+
+    /**
+     * Set hourlyCount
+     *
+     * @param integer $hourlyCount
+     * @return Policy
+     */
+    public function setHourlyCount($hourlyCount)
+    {
+        $this->hourlyCount = $hourlyCount;
+
+        return $this;
+    }
+
+    /**
+     * Get hourlyCount
+     *
+     * @return integer
+     */
+    public function getHourlyCount()
+    {
+        return $this->hourlyCount;
+    }
+
+    /**
+     * Set dailyHours
+     *
+     * @param string $dailyHours
+     * @return Policy
+     */
+    public function setDailyHours($dailyHours)
+    {
+        $this->dailyHours = $dailyHours;
+
+        return $this;
+    }
+
+    /**
+     * Get dailyHours
+     *
+     * @return string
+     */
+    public function getDailyHours()
+    {
+        return $this->dailyHours;
+    }
+
+    /**
+     * Set dailyDaysOfMonth
+     *
+     * @param string $dailyDaysOfMonth
+     * @return Policy
+     */
+    public function setDailyDaysOfMonth($dailyDaysOfMonth)
+    {
+        $this->dailyDaysOfMonth = $dailyDaysOfMonth;
+
+        return $this;
+    }
+
+    /**
+     * Get dailyDaysOfMonth
+     *
+     * @return string
+     */
+    public function getDailyDaysOfMonth()
+    {
+        return $this->dailyDaysOfMonth;
+    }
+
+    /**
+     * Set dailyDaysOfWeek
+     *
+     * @param string $dailyDaysOfWeek
+     * @return Policy
+     */
+    public function setDailyDaysOfWeek($dailyDaysOfWeek)
+    {
+        $this->dailyDaysOfWeek = $dailyDaysOfWeek;
+
+        return $this;
+    }
+
+    /**
+     * Get dailyDaysOfWeek
+     *
+     * @return string
+     */
+    public function getDailyDaysOfWeek()
+    {
+        return $this->dailyDaysOfWeek;
+    }
+
+    /**
+     * Set dailyMonths
+     *
+     * @param string $dailyMonths
+     * @return Policy
+     */
+    public function setDailyMonths($dailyMonths)
+    {
+        $this->dailyMonths = $dailyMonths;
+
+        return $this;
+    }
+
+    /**
+     * Get dailyMonths
+     *
+     * @return string
+     */
+    public function getDailyMonths()
+    {
+        return $this->dailyMonths;
+    }
+
+    /**
+     * Set dailyCount
+     *
+     * @param integer $dailyCount
+     * @return Policy
+     */
+    public function setDailyCount($dailyCount)
+    {
+        $this->dailyCount = $dailyCount;
+
+        return $this;
+    }
+
+    /**
+     * Get dailyCount
+     *
+     * @return integer
+     */
+    public function getDailyCount()
+    {
+        return $this->dailyCount;
+    }
+
+    /**
+     * Set weeklyHours
+     *
+     * @param string $weeklyHours
+     * @return Policy
+     */
+    public function setWeeklyHours($weeklyHours)
+    {
+        $this->weeklyHours = $weeklyHours;
+
+        return $this;
+    }
+
+    /**
+     * Get weeklyHours
+     *
+     * @return string
+     */
+    public function getWeeklyHours()
+    {
+        return $this->weeklyHours;
+    }
+
+    /**
+     * Set weeklyDaysOfMonth
+     *
+     * @param string $weeklyDaysOfMonth
+     * @return Policy
+     */
+    public function setWeeklyDaysOfMonth($weeklyDaysOfMonth)
+    {
+        $this->weeklyDaysOfMonth = $weeklyDaysOfMonth;
+
+        return $this;
+    }
+
+    /**
+     * Get weeklyDaysOfMonth
+     *
+     * @return string
+     */
+    public function getWeeklyDaysOfMonth()
+    {
+        return $this->weeklyDaysOfMonth;
+    }
+
+    /**
+     * Set weeklyDaysOfWeek
+     *
+     * @param string $weeklyDaysOfWeek
+     * @return Policy
+     */
+    public function setWeeklyDaysOfWeek($weeklyDaysOfWeek)
+    {
+        $this->weeklyDaysOfWeek = $weeklyDaysOfWeek;
+
+        return $this;
+    }
+
+    /**
+     * Get weeklyDaysOfWeek
+     *
+     * @return string
+     */
+    public function getWeeklyDaysOfWeek()
+    {
+        return $this->weeklyDaysOfWeek;
+    }
+
+    /**
+     * Set weeklyMonths
+     *
+     * @param string $weeklyMonths
+     * @return Policy
+     */
+    public function setWeeklyMonths($weeklyMonths)
+    {
+        $this->weeklyMonths = $weeklyMonths;
+
+        return $this;
+    }
+
+    /**
+     * Get weeklyMonths
+     *
+     * @return string
+     */
+    public function getWeeklyMonths()
+    {
+        return $this->weeklyMonths;
+    }
+
+    /**
+     * Set weeklyCount
+     *
+     * @param integer $weeklyCount
+     * @return Policy
+     */
+    public function setWeeklyCount($weeklyCount)
+    {
+        $this->weeklyCount = (int)$weeklyCount;
+
+        return $this;
+    }
+
+    /**
+     * Get weeklyCount
+     *
+     * @return integer
+     */
+    public function getWeeklyCount()
+    {
+        return $this->weeklyCount;
+    }
+
+    /**
+     * Set monthlyHours
+     *
+     * @param string $monthlyHours
+     * @return Policy
+     */
+    public function setMonthlyHours($monthlyHours)
+    {
+        $this->monthlyHours = $monthlyHours;
+
+        return $this;
+    }
+
+    /**
+     * Get monthlyHours
+     *
+     * @return string
+     */
+    public function getMonthlyHours()
+    {
+        return $this->monthlyHours;
+    }
+
+    /**
+     * Set monthlyDaysOfMonth
+     *
+     * @param string $monthlyDaysOfMonth
+     * @return Policy
+     */
+    public function setMonthlyDaysOfMonth($monthlyDaysOfMonth)
+    {
+        $this->monthlyDaysOfMonth = $monthlyDaysOfMonth;
+
+        return $this;
+    }
+
+    /**
+     * Get monthlyDaysOfMonth
+     *
+     * @return string
+     */
+    public function getMonthlyDaysOfMonth()
+    {
+        return $this->monthlyDaysOfMonth;
+    }
+
+    /**
+     * Set monthlyDaysOfWeek
+     *
+     * @param string $monthlyDaysOfWeek
+     * @return Policy
+     */
+    public function setMonthlyDaysOfWeek($monthlyDaysOfWeek)
+    {
+        $this->monthlyDaysOfWeek = $monthlyDaysOfWeek;
+
+        return $this;
+    }
+
+    /**
+     * Get monthlyDaysOfWeek
+     *
+     * @return string
+     */
+    public function getMonthlyDaysOfWeek()
+    {
+        return $this->monthlyDaysOfWeek;
+    }
+
+    /**
+     * Set monthlyMonths
+     *
+     * @param string $monthlyMonths
+     * @return Policy
+     */
+    public function setMonthlyMonths($monthlyMonths)
+    {
+        $this->monthlyMonths = $monthlyMonths;
+
+        return $this;
+    }
+
+    /**
+     * Get monthlyMonths
+     *
+     * @return string
+     */
+    public function getMonthlyMonths()
+    {
+        return $this->monthlyMonths;
+    }
+
+    /**
+     * Set monthlyCount
+     *
+     * @param integer $monthlyCount
+     * @return Policy
+     */
+    public function setMonthlyCount($monthlyCount)
+    {
+        $this->monthlyCount = (int)$monthlyCount;
+
+        return $this;
+    }
+
+    /**
+     * Get monthlyCount
+     *
+     * @return integer
+     */
+    public function getMonthlyCount()
+    {
+        return $this->monthlyCount;
+    }
+
+    /**
+     * Set yearlyHours
+     *
+     * @param string $yearlyHours
+     * @return Policy
+     */
+    public function setYearlyHours($yearlyHours)
+    {
+        $this->yearlyHours = $yearlyHours;
+
+        return $this;
+    }
+
+    /**
+     * Get yearlyHours
+     *
+     * @return string
+     */
+    public function getYearlyHours()
+    {
+        return $this->yearlyHours;
+    }
+
+    /**
+     * Set yearlyDaysOfMonth
+     *
+     * @param string $yearlyDaysOfMonth
+     * @return Policy
+     */
+    public function setYearlyDaysOfMonth($yearlyDaysOfMonth)
+    {
+        $this->yearlyDaysOfMonth = $yearlyDaysOfMonth;
+
+        return $this;
+    }
+
+    /**
+     * Get yearlyDaysOfMonth
+     *
+     * @return string
+     */
+    public function getYearlyDaysOfMonth()
+    {
+        return $this->yearlyDaysOfMonth;
+    }
+
+    /**
+     * Set yearlyDaysOfWeek
+     *
+     * @param string $yearlyDaysOfWeek
+     * @return Policy
+     */
+    public function setYearlyDaysOfWeek($yearlyDaysOfWeek)
+    {
+        $this->yearlyDaysOfWeek = $yearlyDaysOfWeek;
+
+        return $this;
+    }
+
+    /**
+     * Get yearlyDaysOfWeek
+     *
+     * @return string
+     */
+    public function getYearlyDaysOfWeek()
+    {
+        return $this->yearlyDaysOfWeek;
+    }
+
+    /**
+     * Set yearlyMonths
+     *
+     * @param string $yearlyMonths
+     * @return Policy
+     */
+    public function setYearlyMonths($yearlyMonths)
+    {
+        $this->yearlyMonths = $yearlyMonths;
+
+        return $this;
+    }
+
+    /**
+     * Get yearlyMonths
+     *
+     * @return string
+     */
+    public function getYearlyMonths()
+    {
+        return $this->yearlyMonths;
+    }
+
+    /**
+     * Set yearlyCount
+     *
+     * @param integer $yearlyCount
+     * @return Policy
+     */
+    public function setYearlyCount($yearlyCount)
+    {
+        $this->yearlyCount = (int)$yearlyCount;
+
+        return $this;
+    }
+
+    /**
+     * Get yearlyCount
+     *
+     * @return integer
+     */
+    public function getYearlyCount()
+    {
+        return $this->yearlyCount;
+    }
+
+    /**
+     * Set include
+     *
+     * @param string $include
+     * @return Policy
+     */
+    public function setInclude($include)
+    {
+        $this->include = $include;
+
+        return $this;
+    }
+
+    /**
+     * Get include
+     *
+     * @return string
+     */
+    public function getInclude()
+    {
+        return $this->include;
+    }
+
+    /**
+     * Set exclude
+     *
+     * @param string $exclude
+     * @return Policy
+     */
+    public function setExclude($exclude)
+    {
+        $this->exclude = $exclude;
+
+        return $this;
+    }
+
+    /**
+     * Get exclude
+     *
+     * @return string
+     */
+    public function getExclude()
+    {
+        return $this->exclude;
+    }
+
+    /**
+     * Set syncFirst
+     *
+     * @param boolean $syncFirst
+     * @return Policy
+     */
+    public function setSyncFirst($syncFirst)
+    {
+        $this->syncFirst = $syncFirst;
+
+        return $this;
+    }
+
+    /**
+     * Get syncFirst
+     *
+     * @return boolean
+     */
+    public function getSyncFirst()
+    {
+        return $this->syncFirst;
     }
 }

@@ -8,6 +8,7 @@ use Binovo\Tknika\TknikaBackupsBundle\Entity\Policy;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\User;
 use Binovo\Tknika\TknikaBackupsBundle\Form\Type\ClientType;
 use Binovo\Tknika\TknikaBackupsBundle\Form\Type\JobType;
+use Binovo\Tknika\TknikaBackupsBundle\Form\Type\PolicyType;
 use Binovo\Tknika\TknikaBackupsBundle\Form\Type\UserType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -313,12 +314,68 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/policy/new", name="newPolicy")
+     * @Route("/policy/{id}", name="editPolicy")
+     * @Method("GET")
      * @Template()
      */
-    public function newPolicyAction(Request $request)
+    public function editPolicyAction(Request $request, $id)
     {
-        return $this->render('BinovoTknikaTknikaBackupsBundle:Default:policy.html.twig');
+        $t = $this->get('translator');
+        if ('new' === $id) {
+            $policy = new Policy();
+        } else {
+            $policy = $this->getDoctrine()
+                ->getRepository('BinovoTknikaTknikaBackupsBundle:Policy')->find($id);
+        }
+        $form = $this->createForm(new PolicyType(), $policy, array('translator' => $t));
+        return $this->render('BinovoTknikaTknikaBackupsBundle:Default:policy.html.twig',
+                             array('form' => $form->createView()));
+    }
+
+    /**
+     * @Route("/policy/{id}/delete", name="deletePolicy")
+     * @Method("POST")
+     * @Template()
+     */
+    public function deletePolicyAction(Request $request, $id)
+    {
+        $db = $this->getDoctrine();
+        $repository = $db->getRepository('BinovoTknikaTknikaBackupsBundle:Policy');
+        $manager = $db->getManager();
+        $policy = $repository->find($id);
+        $manager->remove($policy);
+        $manager->flush();
+        return $this->redirect($this->generateUrl('showPolicies'));
+    }
+
+    /**
+     * @Route("/policy/{id}", requirements={"id" = "\d+"}, defaults={"id" = "-1"}, name="savePolicy")
+     * @Method("POST")
+     * @Template()
+     */
+    public function savePolicyAction(Request $request, $id)
+    {
+        $t = $this->get('translator');
+        if ("-1" === $id) {
+            $policy = new Policy();
+        } else {
+            $repository = $this->getDoctrine()
+                ->getRepository('BinovoTknikaTknikaBackupsBundle:Policy');
+            $policy = $repository->find($id);
+        }
+        $form = $this->createForm(new PolicyType(), $policy, array('translator' => $t));
+        $form->bind($request);
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($policy);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('showPolicies'));
+        } else {
+
+            return $this->render('BinovoTknikaTknikaBackupsBundle:Default:policy.html.twig',
+                                 array('form' => $form->createView()));
+        }
     }
 
     /**
@@ -349,7 +406,20 @@ class DefaultController extends Controller
      */
     public function showPoliciesAction(Request $request)
     {
-        return $this->render('BinovoTknikaTknikaBackupsBundle:Default:policies.html.twig');
+        $repository = $this->getDoctrine()
+            ->getRepository('BinovoTknikaTknikaBackupsBundle:Policy');
+        $query = $repository->createQueryBuilder('c')
+            ->getQuery();
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1)/*page number*/,
+            10/*limit per page*/
+            );
+
+        return $this->render('BinovoTknikaTknikaBackupsBundle:Default:policies.html.twig',
+                             array('pagination' => $pagination));
     }
 
     /**

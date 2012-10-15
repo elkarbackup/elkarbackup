@@ -41,7 +41,7 @@ class Job
     protected $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Policy", inversedBy="jobs")
+     * @ORM\ManyToOne(targetEntity="Policy")
      */
     protected $policy;
 
@@ -397,14 +397,14 @@ class Job
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
-    
+
         return $this;
     }
 
     /**
      * Get isActive
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsActive()
     {
