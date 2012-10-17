@@ -2,12 +2,69 @@
 
 namespace Binovo\Tknika\TknikaBackupsBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use \DateTime;
 
 /**
  * @ORM\Entity
  */
 class Policy
 {
+    private $allRetains = array('Yearly', 'Monthly', 'Weekly', 'Daily', 'Hourly');
+
+    /**
+     * Returns the retains that should be run in $time in the right order.
+     * @param  DateTime $time
+     * @return array of strings
+     */
+    public function getRunnableRetains(DateTime $time)
+    {
+        $allRetains = $this->allRetains;
+        $retains = array();
+        list($year, $month, $day, $hour, $dayOfWeek) = explode('-', $time->format('Y-m-d-H:i-N'));
+        foreach ($allRetains as $retain) {
+            $getCount       = "get{$retain}Count";
+            $getDaysOfMonth = "get{$retain}DaysOfMonth";
+            $getDaysOfWeek  = "get{$retain}DaysOfWeek";
+            $getHours       = "get{$retain}Hours";
+            $getMonth       = "get{$retain}Months";
+            if ($this->$getCount() != 0 &&
+                ($this->$getDaysOfMonth() == null || preg_match('/^'.$this->$getDaysOfMonth().'$/', $day)) &&
+                ($this->$getDaysOfWeek()  == null || preg_match('/^'.$this->$getDaysOfWeek() .'$/', $dayOfWeek)) &&
+                ($this->$getHours()       == null || preg_match('/^'.$this->$getHours()      .'$/', $hour)) &&
+                ($this->$getMonth()       == null || preg_match('/^'.$this->$getMonth()      .'$/', $month))) {
+                $retains[] = $retain;
+            }
+        }
+
+        return $retains;
+    }
+
+    /**
+     * Returns the retains for this Policy in the order they should have in the config file.
+     * @return array of array(string, int)
+     */
+    public function getRetains()
+    {
+        $allRetains = $this->allRetains;
+        foreach ($allRetains as $retain) {
+            $getCount       = "get{$retain}Count";
+            if ($this->$getCount() != 0) {
+                $retains[] = array($retain, $this->$getCount());
+            }
+        }
+
+        return array_reverse($retains);
+    }
+
+    /**
+     * Returns true if running the retain $retain requires a previous sync operation
+     */
+    public function mustSync($retain)
+    {
+        $retains = $this->getRetains();
+        return $this->getSyncFirst() && count($retains) && $retains[0][0] == $retain;
+    }
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

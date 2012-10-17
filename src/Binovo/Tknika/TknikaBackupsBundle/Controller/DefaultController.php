@@ -188,18 +188,35 @@ class DefaultController extends Controller
         if (null == $job || $job->getClient()->getId() != $idClient) {
             throw $this->createNotFoundException($t->trans('Unable to find Job entity: ', array(), 'BinovoTknikaBackups') . $idClient . " " . $idJob);
         }
+        $policy = $job->getPolicy();
+        $retains = $policy->getRetains();
+        $includes = array();
+        $include = $policy->getInclude();
+        if ($include) {
+            $includes = explode("\n", $include);
+        }
+        $excludes = array();
+        $exclude = $policy->getExclude();
+        if ($exclude) {
+            $excludes = explode("\n", $exclude);
+        }
+        $syncFirst = $policy->getSyncFirst();
         $response = new Response();
         $response->headers->set('Content-Type', 'text/plain');
 
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:rsnapshotconfig.txt.twig',
-                             array('cmdPreExec'    => $job->getPreScript()  ? $job->getScriptPath('pre') : '',
-                                   'cmdPostExec'   => $job->getPostScript() ? $job->getScriptPath('post'): '',
-                                   'idClient'      => sprintf('%04d', $idClient),
-                                   'idJob'         => sprintf('%04d', $idJob),
-                                   'backupDir'     => $this->container->getParameter('backup_dir'),
-                                   'tmp'           => '/tmp',
-                                   'snapshotRoot'  => $job->getSnapshotRoot(),
-                                   'url'           => $job->getUrl()),
+                             array('cmdPreExec'   => $job->getPreScript()  ? $job->getScriptPath('pre') : '',
+                                   'cmdPostExec'  => $job->getPostScript() ? $job->getScriptPath('post'): '',
+                                   'excludes'     => $excludes,
+                                   'idClient'     => sprintf('%04d', $idClient),
+                                   'idJob'        => sprintf('%04d', $idJob),
+                                   'includes'     => $includes,
+                                   'backupDir'    => $this->container->getParameter('backup_dir'),
+                                   'retains'      => $retains,
+                                   'tmp'          => '/tmp',
+                                   'snapshotRoot' => $job->getSnapshotRoot(),
+                                   'syncFirst'    => $syncFirst,
+                                   'url'          => $job->getUrl()),
                              $response);
     }
 

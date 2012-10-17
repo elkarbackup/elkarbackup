@@ -94,10 +94,9 @@ cmd_postexec	{{cmdPostExec}}
 # i.e. hourly, daily, weekly, etc.      #
 #########################################
 
-retain	hourly	4
-retain	daily	7
-retain	weekly	4
-#retain	monthly	3
+{% for retain in retains %}
+retain	{{retain[0]}}	{{retain[1]}}
+{% endfor %}
 
 ############################################
 #              GLOBAL OPTIONS              #
@@ -160,6 +159,12 @@ ssh_args	-o BatchMode=yes
 #include	???
 #exclude	???
 #exclude	???
+{% for include in includes %}
+include	{{ include }}
+{% endfor %}
+{% for exclude in excludes %}
+exclude	{{ exclude }}
+{% endfor %}
 
 # The include_file and exclude_file parameters, if enabled, simply get
 # passed directly to rsync. Please look up the --include-from and
@@ -182,6 +187,11 @@ ssh_args	-o BatchMode=yes
 # details. The default is 0 (off).
 #
 #sync_first	0
+{% if syncFirst %}
+sync_first	1
+{% else %}
+sync_first	0
+{% endif %}
 
 # If enabled, rsnapshot will move the oldest directory for each interval
 # to [interval_name].delete, then it will remove the lockfile and delete

@@ -12,6 +12,9 @@ class JobShortType extends AbstractType
         $builder->add('name'        , 'text')
                 ->add('description' , 'textarea', array('required' => false))
                 ->add('url'         , 'text')
+                ->add('policy'      , 'entity'  , array('required' => false,
+                                                        'class'    => 'BinovoTknikaTknikaBackupsBundle:Policy',
+                                                        'property' => 'name'))
                 ->add('isActive'    , 'checkbox', array('required' => false));
 
     }
