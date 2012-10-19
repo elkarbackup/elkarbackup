@@ -159,11 +159,25 @@ class TickCommand extends ContainerAwareCommand
         return $time;
     }
 
+    protected function err($msg, $translatorParams = array(), $source = 'TickCommand')
+    {
+        $logger = $this->getContainer()->get('BnvWebLogger');
+        $translator = $this->getContainer()->get('translator');
+        $logger->err($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), array('source' => $source));
+    }
+
+    protected function info($msg, $translatorParams = array(), $source = 'TickCommand')
+    {
+        $logger = $this->getContainer()->get('BnvWebLogger');
+        $translator = $this->getContainer()->get('translator');
+        $logger->info($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), array('source' => $source));
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $time = $this->_parseTime($input->getArgument('time'));
         if (!$time) {
-            $output->writeln('Invalid time specified.');
+            $this->err('Invalid time specified.'); // :TODO: trans
             return false;
         }
         $job = $this->_parseTime($input->getArgument('time'));
@@ -185,7 +199,7 @@ class TickCommand extends ContainerAwareCommand
             }
         }
         if (count($policies) == 0) {
-            $output->writeln('Nothing to run.');
+            $this->info('Nothing to run.');
             return true;
         }
         $policyQuery = array();
@@ -210,9 +224,9 @@ EOF;
                 if ($job->getClient() == $lastClient) {
                     $retains = $policies[$job->getPolicy()->getId()];
                     if ($this->runJob($job, $output, $retains)) {
-                        $output->writeln(sprintf('Client "%s", Job "%s" ok.', $job->getClient()->getId(), $job->getId()));
+                        $this->info('Client "%clientid%", Job "%jobid%" ok.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()));
                     } else {
-                        $output->writeln(sprintf('Client "%s", Job "%s" error.', $job->getClient()->getId(), $job->getId()));
+                        $this->err('Client "%clientid%", Job "%jobid%" error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()));
                     }
                     ++$i;
                 } else {
@@ -225,9 +239,9 @@ EOF;
                     $scriptFile = $lastClient->getScriptPath('post');
                     $scriptName = $lastClient->getPostScript();
                     if ($this->runScript('post', $idClient, $scriptName, $scriptFile, $output)) {
-                        $output->writeln(sprintf('Client "%s" post script ok.', $idClient));
+                        $this->info('Client "%clientid%" post script ok.', array('%clientid%' => $idClient));
                     } else {
-                        $output->writeln(sprintf('Client "%s" post script failed.', $idClient));
+                        $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient));
                     }
                 }
                 $client = $job->getClient();
@@ -235,10 +249,10 @@ EOF;
                 $scriptFile = $client->getScriptPath('pre');
                 $scriptName = $client->getPreScript();
                 if ($this->runScript('pre', $idClient, $scriptName, $scriptFile, $output)) {
-                    $output->writeln(sprintf('Client "%s" pre script ok.', $idClient));
+                    $this->info('Client "%clientid%" pre script ok.', array('%clientid%' => $idClient));
                     $state = self::RUN_JOB;
                 } else {
-                    $output->writeln(sprintf('Client "%s" pre script failed. Aborting backup.', $idClient));
+                    $this->err('Client "%clientid%" pre script failed. Aborting backup.', array('%clientid%' => $idClient));
                     $state = self::SKIP_CLIENT;
                 }
                 $lastClient = $client;
@@ -260,9 +274,9 @@ EOF;
             $scriptFile = $lastClient->getScriptPath('post');
             $scriptName = $lastClient->getPostScript();
             if ($this->runScript('post', $idClient, $scriptName, $scriptFile, $output)) {
-                $output->writeln(sprintf('Client "%s" post script ok.', $idClient));
+                $this->info('Client "%clientid%" post script ok.', array('%clientid%' => $idClient));
             } else {
-                $output->writeln(sprintf('Client "%s" post script failed.', $idClient));
+                $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient));
             }
         }
     }

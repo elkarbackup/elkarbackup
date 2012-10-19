@@ -21,6 +21,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 
 class DefaultController extends Controller
 {
+
     /**
      * @Route("/about", name="about")
      * @Template()
@@ -28,6 +29,11 @@ class DefaultController extends Controller
     public function aboutAction(Request $request)
     {
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:about.html.twig');
+    }
+
+    public function trans($msg, $params = array(), $domain = 'BinovoTknikaBackups')
+    {
+        return $this->get('translator')->trans($msg, $params, $domain);
     }
 
     /**
@@ -77,7 +83,6 @@ class DefaultController extends Controller
      */
     public function editClientAction(Request $request, $id)
     {
-        $t = $this->get('translator');
         if ('new' === $id) {
             $client = new Client();
         } else {
@@ -85,7 +90,7 @@ class DefaultController extends Controller
                 ->getRepository('BinovoTknikaTknikaBackupsBundle:Client');
             $client = $repository->find($id);
         }
-        $form = $this->createForm(new ClientType(), $client, array('translator' => $t));
+        $form = $this->createForm(new ClientType(), $client, array('translator' => $this->get('translator')));
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:client.html.twig',
                              array('form' => $form->createView()));
     }
@@ -157,20 +162,19 @@ class DefaultController extends Controller
      */
     public function editJobAction(Request $request, $idClient, $idJob)
     {
-        $t = $this->get('translator');
         if ('new' === $idJob) {
             $job = new Job();
             $client = $this->getDoctrine()
                 ->getRepository('BinovoTknikaTknikaBackupsBundle:Client')->find($idClient);
             if (null == $client) {
-                throw $this->createNotFoundException($t->trans('Unable to find Client entity: ') . $idClient, array(), 'BinovoTknikaBackups');
+                throw $this->createNotFoundException($this->trans('Unable to find Client entity: ') . $idClient);
             }
             $job->setClient($client);
         } else {
             $job = $this->getDoctrine()
                 ->getRepository('BinovoTknikaTknikaBackupsBundle:Job')->find($idJob);
         }
-        $form = $this->createForm(new JobType(), $job, array('translator' => $t));
+        $form = $this->createForm(new JobType(), $job, array('translator' => $this->get('translator')));
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:job.html.twig',
                              array('form' => $form->createView()));
     }

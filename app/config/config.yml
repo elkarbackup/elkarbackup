@@ -57,3 +57,39 @@ swiftmailer:
     username:  %mailer_user%
     password:  %mailer_password%
     spool:     { type: memory }
+
+monolog:
+    handlers:
+        main:
+            type:  stream
+            path:  %kernel.logs_dir%/%kernel.environment%.log
+            level: debug
+        firephp:
+            type:  firephp
+            level: info
+
+services:
+    BnvWebLogger:
+        class: Symfony\Bridge\Monolog\Logger
+        arguments: [BnvWeb]
+        calls:
+            - [pushProcessor, [@BnvWebUserLoggerProcessor]]
+            - [pushHandler,   [@StreamHandler]]
+            - [pushHandler,   [@BnvLoggerHandler]]
+    BnvLoggerHandler:
+        class: Binovo\Tknika\TknikaBackupsBundle\Logger\LoggerHandler
+        calls:
+            - [setContainer,  [@service_container] ]
+    StreamHandler:
+        class: Monolog\Handler\StreamHandler
+        # 200 = INFO, see Monolog::Logger for the values of log levels
+        arguments: [%kernel.logs_dir%/BnvLog.log, 200]
+        calls:
+            - [setFormatter, [@BnvWebLoggerFormatter]]
+    BnvWebUserLoggerProcessor:
+        class: Binovo\Tknika\TknikaBackupsBundle\Logger\WebUserLoggerProcessor
+        calls:
+            - [setContainer, [@service_container] ]
+    BnvWebLoggerFormatter:
+        class: Monolog\Formatter\LineFormatter
+        arguments: ["[%%datetime%%] %%channel%%.%%level_name%%: %%message%% %%context%% %%extra.user_name%% %%extra.user_email%%\n"]
