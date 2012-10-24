@@ -36,7 +36,12 @@ class LogRecord
     protected $levelName;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $link;
+
+    /**
+     * @ORM\Column(type="text")
      */
     protected $message;
 
@@ -55,12 +60,13 @@ class LogRecord
      */
     protected $userName;
 
-    public function __construct($channel, $dateTime, $level, $levelName, $message, $source = NULL, $userId = NULL, $userName = NULL)
+    public function __construct($channel, $dateTime, $level, $levelName, $message, $link = NULL, $source = NULL, $userId = NULL, $userName = NULL)
     {
         $this->channel   = $channel;
         $this->dateTime  = $dateTime;
         $this->level     = $level;
         $this->levelName = $levelName;
+        $this->link      = $link;
         $this->message   = $message;
         $this->source    = $source;
         $this->userId    = $userId;
@@ -259,5 +265,28 @@ class LogRecord
     public function getUserName()
     {
         return $this->userName;
+    }
+
+    /**
+     * Set link
+     *
+     * @param string $link
+     * @return LogRecord
+     */
+    public function setLink($link)
+    {
+        $this->link = $link;
+
+        return $this;
+    }
+
+    /**
+     * Get link
+     *
+     * @return string
+     */
+    public function getLink()
+    {
+        return $this->link;
     }
 }

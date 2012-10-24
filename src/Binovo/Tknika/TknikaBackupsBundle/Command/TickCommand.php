@@ -17,6 +17,19 @@ class TickCommand extends ContainerAwareCommand
     const SKIP_CLIENT = 2;
     const RUN_JOB     = 3;
 
+    protected function generateClientRoute($id)
+    {
+        return $this->getContainer()->get('router')->generate('editClient', array('id' => $id), true);
+    }
+
+    protected function generateJobRoute($idJob, $idClient)
+    {
+        return $this->getContainer()->get('router')->generate('editJob',
+                                                              array('idClient' => $idClient,
+                                                                    'idJob'    => $idJob),
+                                                              true);
+    }
+
     protected function configure()
     {
         parent::configure();
@@ -51,6 +64,7 @@ class TickCommand extends ContainerAwareCommand
             $excludes = explode("\n", $exclude);
         }
         $syncFirst = (int)$job->getPolicy()->getSyncFirst();
+        $context = array('link' => $this->generateJobRoute($idJob, $idClient));
 
         $content = $engine->render('BinovoTknikaTknikaBackupsBundle:Default:rsnapshotconfig.txt.twig',
                                    array('cmdPreExec'   => $job->getPreScript()  ? $job->getScriptPath('pre') : '',
@@ -68,19 +82,19 @@ class TickCommand extends ContainerAwareCommand
         $confFileName = sprintf("%s/rsnapshot.%s_%s.cfg", $tmpDir, $idClient, $idJob);
         $fd = fopen($confFileName, 'w');
         if (false === $fd) {
-            $output->writeln(sprintf('Error opening config file %s. Aborting backup.', $confFileName));
+            $this->err('Error opening config file %filename%. Aborting backup.', array('%filename%' => $confFileName), $context);
 
             return false;
         }
         $bytesWriten = fwrite($fd, $content);
         if (false === $bytesWriten) {
-            $output->writeln(sprintf('Error writing to config file %s. Aborting backup.', $confFileName));
+            $this->err('Error writing to config file %filename%. Aborting backup.', array('%filename%' => $confFileName), $context);
 
             return false;
         }
         $ok = fclose($fd);
         if (false === $ok) {
-            $output->writeln(sprintf('Error closing config file %s.', $confFileName));
+            $this->warn('Error closing config file %filename%.', array('%filename%' => $confFileName), $context);
         }
         foreach ($runnableRetains as $retain) {
             if ($job->getPolicy()->mustSync($retain)) {
@@ -90,19 +104,25 @@ class TickCommand extends ContainerAwareCommand
             }
             $commandOutput = array();
             $status        = 0;
-            $output->writeln(sprintf('Running %s', $command));
+            $this->info('Running %command%', array('%command%' => $command), $context);
             exec($command, $commandOutput, $status);
             if (0 != $status) {
-                $output->writeln(sprintf('Command %s failed. Diagnostic information follows:', $command));
-                $output->writeln(implode("\n", $commandOutput));
+                $this->err('Command %command% failed. Diagnostic information follows: %output%',
+                           array('%command%' => $command,
+                                 '%output%'  => "\n" . implode("\n", $commandOutput)),
+                           $context);
             } else {
-                $output->writeln(sprintf('Command %s succeeded with output:', $command));
-                $output->writeln(implode("\n", $commandOutput));
+                $this->info('Command %command% succeeded with output: %output%',
+                            array('%command%' => $command,
+                                  '%output%'  => implode("\n", $commandOutput)),
+                            $context);
             }
         }
         $ok = unlink($confFileName);
         if (false === $ok) {
-            $output->writeln(sprintf('Error unlinking config file %s.', $confFileName));
+            $this->warn('Error unlinking config file %filename%.',
+                        array('%filename%' => $confFileName),
+                        $context);
         }
 
         return $ok;
@@ -129,9 +149,15 @@ class TickCommand extends ContainerAwareCommand
         if ($scriptName === null) {
             return true;
         }
+        $context = array('link' => $this->generateClientRoute($idClient));
         if (!file_exists($scriptFile)) {
-            $output->writeln(sprintf('Client "%s" %s script "%s" present but file "%s" missing.',
-                                     $idClient, $type, $scriptName, $scriptFile));
+            $this->err('Client "%clientid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.',
+                       array('%clientid%'   => $idClient,
+                             '%scriptfile%' => $scriptFile,
+                             '%scriptname%' => $scriptName,
+                             '%scripttype%' => $type),
+                       $context);
+
             return false;
         }
         $command       = sprintf('env TYPE=%s CLIENTID=%s "%s" 2>&1', $type, $idClient, $scriptFile);
@@ -139,9 +165,13 @@ class TickCommand extends ContainerAwareCommand
         $status        = 0;
         exec($command, $commandOutput, $status);
         if (0 != $status) {
-            $output->writeln(sprintf('Client "%s" %s script "%s" execution failed. Diagnostic information follows:',
-                                     $idClient, $type, $scriptFile));
-            $output->writeln(implode("\n", $commandOutput));
+            $this->err('Client "%clientid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%',
+                       array('%clientid%'   => $idClient,
+                             '%output%'     => "\n" . implode("\n", $commandOutput),
+                             '%scriptname%' => $scriptName,
+                             '%scripttype%' => $type),
+                       $context);
+
             return false;
         }
         $output->writeln(sprintf('Client "%s" %s script "%s" execution succeeded',
@@ -159,25 +189,36 @@ class TickCommand extends ContainerAwareCommand
         return $time;
     }
 
-    protected function err($msg, $translatorParams = array(), $source = 'TickCommand')
+    protected function err($msg, $translatorParams = array(), $context = array())
     {
         $logger = $this->getContainer()->get('BnvWebLogger');
         $translator = $this->getContainer()->get('translator');
-        $logger->err($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), array('source' => $source));
+        $context = array_merge(array('source' => 'TickCommand'), $context);
+        $logger->err($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), $context);
     }
 
-    protected function info($msg, $translatorParams = array(), $source = 'TickCommand')
+    protected function info($msg, $translatorParams = array(), $context = array())
     {
         $logger = $this->getContainer()->get('BnvWebLogger');
         $translator = $this->getContainer()->get('translator');
-        $logger->info($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), array('source' => $source));
+        $context = array_merge(array('source' => 'TickCommand'), $context);
+        $logger->info($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), $context);
+    }
+
+    protected function warn($msg, $translatorParams = array(), $context = array())
+    {
+        $logger = $this->getContainer()->get('BnvWebLogger');
+        $translator = $this->getContainer()->get('translator');
+        $context = array_merge(array('source' => 'TickCommand'), $context);
+        $logger->warn($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), $context);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->getContainer()->get('router')->getContext()->setHost(gethostname());
         $time = $this->_parseTime($input->getArgument('time'));
         if (!$time) {
-            $this->err('Invalid time specified.'); // :TODO: trans
+            $this->err('Invalid time specified.');
             return false;
         }
         $job = $this->_parseTime($input->getArgument('time'));
@@ -221,12 +262,13 @@ EOF;
             $job = $jobs[$i];
             switch ($state) {
             case self::RUN_JOB:
+                $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
                 if ($job->getClient() == $lastClient) {
                     $retains = $policies[$job->getPolicy()->getId()];
                     if ($this->runJob($job, $output, $retains)) {
-                        $this->info('Client "%clientid%", Job "%jobid%" ok.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()));
+                        $this->info('Client "%clientid%", Job "%jobid%" ok.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     } else {
-                        $this->err('Client "%clientid%", Job "%jobid%" error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()));
+                        $this->err('Client "%clientid%", Job "%jobid%" error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     }
                     ++$i;
                 } else {
@@ -238,21 +280,23 @@ EOF;
                     $idClient   = $lastClient->getId();
                     $scriptFile = $lastClient->getScriptPath('post');
                     $scriptName = $lastClient->getPostScript();
+                    $context = array('link' => $this->generateClientRoute($idClient));
                     if ($this->runScript('post', $idClient, $scriptName, $scriptFile, $output)) {
-                        $this->info('Client "%clientid%" post script ok.', array('%clientid%' => $idClient));
+                        $this->info('Client "%clientid%" post script ok.', array('%clientid%' => $idClient), $context);
                     } else {
-                        $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient));
+                        $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
                     }
                 }
                 $client = $job->getClient();
                 $idClient   = $client->getId();
                 $scriptFile = $client->getScriptPath('pre');
                 $scriptName = $client->getPreScript();
+                $context = array('link' => $this->generateClientRoute($idClient));
                 if ($this->runScript('pre', $idClient, $scriptName, $scriptFile, $output)) {
-                    $this->info('Client "%clientid%" pre script ok.', array('%clientid%' => $idClient));
+                    $this->info('Client "%clientid%" pre script ok.', array('%clientid%' => $idClient), $context);
                     $state = self::RUN_JOB;
                 } else {
-                    $this->err('Client "%clientid%" pre script failed. Aborting backup.', array('%clientid%' => $idClient));
+                    $this->err('Client "%clientid%" pre script failed. Aborting backup.', array('%clientid%' => $idClient), $context);
                     $state = self::SKIP_CLIENT;
                 }
                 $lastClient = $client;
@@ -273,10 +317,11 @@ EOF;
             $idClient   = $lastClient->getId();
             $scriptFile = $lastClient->getScriptPath('post');
             $scriptName = $lastClient->getPostScript();
+            $context = array('link' => $this->generateClientRoute($idClient));
             if ($this->runScript('post', $idClient, $scriptName, $scriptFile, $output)) {
-                $this->info('Client "%clientid%" post script ok.', array('%clientid%' => $idClient));
+                $this->info('Client "%clientid%" post script ok.', array('%clientid%' => $idClient), $context);
             } else {
-                $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient));
+                $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
             }
         }
     }

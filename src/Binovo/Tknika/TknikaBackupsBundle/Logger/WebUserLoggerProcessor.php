@@ -49,4 +49,9 @@ class WebUserLoggerProcessor extends WebProcessor implements ContainerAwareInter
 
         return $record;
     }
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
 }
