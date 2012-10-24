@@ -30,6 +30,40 @@ class TickCommand extends ContainerAwareCommand
                                                               true);
     }
 
+    protected function parseTime($time)
+    {
+        if (empty($time)) {
+            $time = new DateTime();
+        } else {
+            $time = DateTime::createFromFormat("Y-m-d H:i", $time);
+        }
+        return $time;
+    }
+
+    protected function err($msg, $translatorParams = array(), $context = array())
+    {
+        $logger = $this->getContainer()->get('BnvWebLogger');
+        $translator = $this->getContainer()->get('translator');
+        $context = array_merge(array('source' => 'TickCommand'), $context);
+        $logger->err($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), $context);
+    }
+
+    protected function info($msg, $translatorParams = array(), $context = array())
+    {
+        $logger = $this->getContainer()->get('BnvWebLogger');
+        $translator = $this->getContainer()->get('translator');
+        $context = array_merge(array('source' => 'TickCommand'), $context);
+        $logger->info($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), $context);
+    }
+
+    protected function warn($msg, $translatorParams = array(), $context = array())
+    {
+        $logger = $this->getContainer()->get('BnvWebLogger');
+        $translator = $this->getContainer()->get('translator');
+        $context = array_merge(array('source' => 'TickCommand'), $context);
+        $logger->warn($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), $context);
+    }
+
     protected function configure()
     {
         parent::configure();
@@ -40,7 +74,7 @@ class TickCommand extends ContainerAwareCommand
              ->addArgument('retain', InputArgument::OPTIONAL, 'hourly|daily|weekly|monthly|yearly|all');
     }
 
-    protected function runJob(Job $job, OutputInterface $output, $runnableRetains)
+    protected function runJob(Job $job, $runnableRetains)
     {
         $container = $this->getContainer();
 
@@ -139,12 +173,10 @@ class TickCommand extends ContainerAwareCommand
      *
      * @param  string   $scriptFile Full path to script in filesystem
      *
-     * @param  object   $output     Write output here
-     *
      * @return boolean  true on success, false on error.
      *
      */
-    protected function runScript($type, $idClient, $scriptName, $scriptFile, OutputInterface $output)
+    protected function runScript($type, $idClient, $scriptName, $scriptFile)
     {
         if ($scriptName === null) {
             return true;
@@ -174,54 +206,24 @@ class TickCommand extends ContainerAwareCommand
 
             return false;
         }
-        $output->writeln(sprintf('Client "%s" %s script "%s" execution succeeded',
-                                 $idClient, $type, $scriptFile));
+        $this->info('Client "%clientid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%',
+                    array('%clientid%'   => $idClient,
+                          '%output%'     => "\n" . implode("\n", $commandOutput),
+                          '%scriptname%' => $scriptName,
+                          '%scripttype%' => $type),
+                    $context);
         return true;
-    }
-
-    protected function _parseTime($time)
-    {
-        if (empty($time)) {
-            $time = new DateTime();
-        } else {
-            $time = DateTime::createFromFormat("Y-m-d H:i", $time);
-        }
-        return $time;
-    }
-
-    protected function err($msg, $translatorParams = array(), $context = array())
-    {
-        $logger = $this->getContainer()->get('BnvWebLogger');
-        $translator = $this->getContainer()->get('translator');
-        $context = array_merge(array('source' => 'TickCommand'), $context);
-        $logger->err($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), $context);
-    }
-
-    protected function info($msg, $translatorParams = array(), $context = array())
-    {
-        $logger = $this->getContainer()->get('BnvWebLogger');
-        $translator = $this->getContainer()->get('translator');
-        $context = array_merge(array('source' => 'TickCommand'), $context);
-        $logger->info($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), $context);
-    }
-
-    protected function warn($msg, $translatorParams = array(), $context = array())
-    {
-        $logger = $this->getContainer()->get('BnvWebLogger');
-        $translator = $this->getContainer()->get('translator');
-        $context = array_merge(array('source' => 'TickCommand'), $context);
-        $logger->warn($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), $context);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->getContainer()->get('router')->getContext()->setHost(gethostname());
-        $time = $this->_parseTime($input->getArgument('time'));
+        $time = $this->parseTime($input->getArgument('time'));
         if (!$time) {
             $this->err('Invalid time specified.');
             return false;
         }
-        $job = $this->_parseTime($input->getArgument('time'));
+        $job = $this->parseTime($input->getArgument('time'));
         $retain = $input->getArgument('retain');
         if (!$retain) {
             $retain = 'all';
@@ -265,7 +267,7 @@ EOF;
                 $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
                 if ($job->getClient() == $lastClient) {
                     $retains = $policies[$job->getPolicy()->getId()];
-                    if ($this->runJob($job, $output, $retains)) {
+                    if ($this->runJob($job, $retains)) {
                         $this->info('Client "%clientid%", Job "%jobid%" ok.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     } else {
                         $this->err('Client "%clientid%", Job "%jobid%" error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
@@ -281,7 +283,7 @@ EOF;
                     $scriptFile = $lastClient->getScriptPath('post');
                     $scriptName = $lastClient->getPostScript();
                     $context = array('link' => $this->generateClientRoute($idClient));
-                    if ($this->runScript('post', $idClient, $scriptName, $scriptFile, $output)) {
+                    if ($this->runScript('post', $idClient, $scriptName, $scriptFile)) {
                         $this->info('Client "%clientid%" post script ok.', array('%clientid%' => $idClient), $context);
                     } else {
                         $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
@@ -292,7 +294,7 @@ EOF;
                 $scriptFile = $client->getScriptPath('pre');
                 $scriptName = $client->getPreScript();
                 $context = array('link' => $this->generateClientRoute($idClient));
-                if ($this->runScript('pre', $idClient, $scriptName, $scriptFile, $output)) {
+                if ($this->runScript('pre', $idClient, $scriptName, $scriptFile)) {
                     $this->info('Client "%clientid%" pre script ok.', array('%clientid%' => $idClient), $context);
                     $state = self::RUN_JOB;
                 } else {
@@ -318,7 +320,7 @@ EOF;
             $scriptFile = $lastClient->getScriptPath('post');
             $scriptName = $lastClient->getPostScript();
             $context = array('link' => $this->generateClientRoute($idClient));
-            if ($this->runScript('post', $idClient, $scriptName, $scriptFile, $output)) {
+            if ($this->runScript('post', $idClient, $scriptName, $scriptFile)) {
                 $this->info('Client "%clientid%" post script ok.', array('%clientid%' => $idClient), $context);
             } else {
                 $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
