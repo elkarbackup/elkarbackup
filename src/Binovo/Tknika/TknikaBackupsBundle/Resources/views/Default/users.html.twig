@@ -27,7 +27,7 @@
                 <input class="btn" type="submit" value="{% trans %}Edit{% endtrans %}" />
             </form>
             <form action="{{ path('deleteUser', {id: user.id}) }}" method="POST" style="display:inline">
-                <input class="btn" type="submit" value="{% trans %}Delete{% endtrans %}" />
+                <input class="btn" {% if user.isSuperuser() %}disabled="true" {% endif %}type="submit" value="{% trans %}Delete{% endtrans %}" />
             </form>
         </td>
     </tr>

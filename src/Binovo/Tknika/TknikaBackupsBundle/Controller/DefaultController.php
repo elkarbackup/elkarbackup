@@ -617,15 +617,17 @@ class DefaultController extends Controller
      */
     public function deleteUserAction(Request $request, $id)
     {
-        $db = $this->getDoctrine();
-        $repository = $db->getRepository('BinovoTknikaTknikaBackupsBundle:User');
-        $manager = $db->getManager();
-        $user = $repository->find($id);
-        $manager->remove($user);
-        $manager->flush();
-        $this->info('Delete user %username%.',
-                    array('%username%' => $user->getUsername()),
-                    array('link' => $this->generateUserRoute($id)));
+        if (User::SUPERUSER_ID != $id) {
+            $db = $this->getDoctrine();
+            $repository = $db->getRepository('BinovoTknikaTknikaBackupsBundle:User');
+            $manager = $db->getManager();
+            $user = $repository->find($id);
+            $manager->remove($user);
+            $manager->flush();
+            $this->info('Delete user %username%.',
+                        array('%username%' => $user->getUsername()),
+                        array('link' => $this->generateUserRoute($id)));
+        }
 
         return $this->redirect($this->generateUrl('showUsers'));
     }

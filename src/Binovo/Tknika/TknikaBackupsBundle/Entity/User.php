@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User implements AdvancedUserInterface
 {
+    const SUPERUSER_ID = 1;
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -76,6 +77,11 @@ class User implements AdvancedUserInterface
     public function isEnabled()
     {
         return $this->isActive;
+    }
+
+    public function isSuperuser()
+    {
+        return $this->id == self::SUPERUSER_ID;
     }
 
     /**
