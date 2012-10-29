@@ -49,13 +49,19 @@ class TickCommand extends ContainerAwareCommand
      */
     protected function sendNotifications(Job $job, $messages)
     {
-        $adminEmail = $this->getContainer()->get('doctrine')->getRepository('BinovoTknikaTknikaBackupsBundle:User')->find(User::SUPERUSER_ID)->getEmail();
-        $idClient   = $job->getClient()->getId();
-        $idJob      = $job->getId();
-        $translator = $this->getContainer()->get('translator');
-        $recipients = array();
-        $engine     = $this->getContainer()->get('templating');
-        if (count($messages) && $job->getNotificationsTo()) { // we have something to send and people willing to receive it
+        $adminEmail       = $this->getContainer()->get('doctrine')->getRepository('BinovoTknikaTknikaBackupsBundle:User')->find(User::SUPERUSER_ID)->getEmail();
+        $idClient         = $job->getClient()->getId();
+        $idJob            = $job->getId();
+        $translator       = $this->getContainer()->get('translator');
+        $recipients       = array();
+        $engine           = $this->getContainer()->get('templating');
+        $filteredMessages = array();
+        foreach ($messages as $aMessage) {
+            if ($aMessage->getLevel() >= $job->getMinNotificationLevel()) {
+                $filteredMessages[] = $aMessage;
+            }
+        }
+        if (count($filteredMessages) && $job->getNotificationsTo()) { // we have something to send and people willing to receive it
             foreach ($job->getNotificationsTo() as $recipient) { // decode emails
                 switch ($recipient) {
                 case Job::NOTIFY_TO_ADMIN:
@@ -77,7 +83,7 @@ class TickCommand extends ContainerAwareCommand
                 ->setTo($recipients)
                 ->setBody($engine->render('BinovoTknikaTknikaBackupsBundle:Default:logreport.html.twig',
                                           array('job' => $job,
-                                                'messages' => $messages)),
+                                                'messages' => $filteredMessages)),
                           'text/html');
             $this->getContainer()->get('mailer')->send($message);
         }
@@ -261,6 +267,7 @@ class TickCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logHandler = $this->getContainer()->get('BnvLoggerHandler');
+        $logHandler->startRecordingMessages();
         $this->getContainer()->get('router')->getContext()->setHost(gethostname());
         $time = $this->parseTime($input->getArgument('time'));
         if (!$time) {
@@ -303,6 +310,7 @@ EOF;
         $i = 0;
         $lastClient = null;
         $state = self::NEW_CLIENT;
+        $clientMessages = array();
         while ($i < count($jobs)) { // the last clients post script runs after the loop
             $job = $jobs[$i];
             switch ($state) {
@@ -311,13 +319,12 @@ EOF;
                 if ($job->getClient() == $lastClient) {
                     $retains = $policies[$job->getPolicy()->getId()];
                     $logHandler->clearMessages();
-                    $logHandler->setMinLevel($job->getMinNotificationLevel());
                     if ($this->runJob($job, $retains)) {
                         $this->info('Client "%clientid%", Job "%jobid%" ok.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     } else {
                         $this->err('Client "%clientid%", Job "%jobid%" error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     }
-                    $this->sendNotifications($job, $logHandler->getMessages());
+                    $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
                     ++$i;
                 } else {
                     $state = self::NEW_CLIENT;
@@ -340,6 +347,7 @@ EOF;
                 $scriptFile = $client->getScriptPath('pre');
                 $scriptName = $client->getPreScript();
                 $context = array('link' => $this->generateClientRoute($idClient));
+                $logHandler->clearMessages();
                 if ($this->runScript('pre', $idClient, $scriptName, $scriptFile)) {
                     $this->info('Client "%clientid%" pre script ok.', array('%clientid%' => $idClient), $context);
                     $state = self::RUN_JOB;
@@ -347,12 +355,14 @@ EOF;
                     $this->err('Client "%clientid%" pre script failed. Aborting backup.', array('%clientid%' => $idClient), $context);
                     $state = self::SKIP_CLIENT;
                 }
+                $clientMessages = $logHandler->getMessages();
                 $lastClient = $client;
                 break;
             case self::SKIP_CLIENT:
                 if ($lastClient != $job->getClient()) {
                     $state = self::NEW_CLIENT;
                 } else {
+                    $this->sendNotifications($job, $clientMessages);
                     ++$i;
                 }
                 break;

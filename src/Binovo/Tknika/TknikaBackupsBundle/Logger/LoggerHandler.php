@@ -15,13 +15,13 @@ class LoggerHandler extends AbstractProcessingHandler implements ContainerAwareI
 {
     private $container;
     private $messages;
-    private $messagesLevel;
+    private $isRecordingMessage;
 
     public function __construct($level = Logger::DEBUG, $bubble = true)
     {
         parent::__construct($level, $bubble);
         $this->messages = array();
-        $this->messageLevel = Job::NOTIFICATION_LEVEL_NONE;
+        $this->isRecordingMessages = false;
     }
 
     /**
@@ -41,7 +41,7 @@ class LoggerHandler extends AbstractProcessingHandler implements ContainerAwareI
                                    isset($record['extra']['user_name']) ? $record['extra']['user_name'] : null);
         $em->persist($logRecord);
         $em->flush();
-        if (((int)$record['level']) >= $this->messageLevel) {
+        if ($this->isRecordingMessages) {
             $this->messages[] = $logRecord;
         }
     }
@@ -61,8 +61,13 @@ class LoggerHandler extends AbstractProcessingHandler implements ContainerAwareI
         $this->messages = array();
     }
 
-    public function setMinLevel($level)
+    public function startRecordingMessages()
     {
-        $this->messageLevel = $level;
+        $this->isRecordingMessages = true;
+    }
+
+    public function stopRecordingMessages()
+    {
+        $this->isRecordingMessages = false;
     }
 }
