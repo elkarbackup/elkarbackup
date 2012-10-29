@@ -1,0 +1,26 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <th>Client</th>
+                <th>Job</th>
+                <th>Time</th>
+                <th>Level</th>
+                <th>Message</th>
+                <th>Link</th>
+            </tr>
+{% for message in messages %}
+            <tr>
+                <td>{{job.getClient.getName}}</td>
+                <td>{{job.getName}}</td>
+                <td>{{ message.dateTime.format('Y-m-d H:i:s') }}</td>
+                <td>{{ message.levelName }}</td>
+                <td>{{ message.message }}</td>
+                <td><a href="{{ message.link }}">{{ message.link }}</a></td>
+            </tr>
+{% endfor %}
+        </table>
+    </body>
+</html>

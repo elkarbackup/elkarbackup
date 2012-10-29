@@ -4,6 +4,7 @@ namespace Binovo\Tknika\TknikaBackupsBundle\Command;
 
 use \DateTime;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Job;
+use Binovo\Tknika\TknikaBackupsBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -38,6 +39,48 @@ class TickCommand extends ContainerAwareCommand
             $time = DateTime::createFromFormat("Y-m-d H:i", $time);
         }
         return $time;
+    }
+
+    /**
+     * Send email with error log data.
+     *
+     * @param Job              $job      The Job whose log we are about to send.
+     * @param array(LogRecord) $messages An array of LogRecords with the error information.
+     */
+    protected function sendNotifications(Job $job, $messages)
+    {
+        $adminEmail = $this->getContainer()->get('doctrine')->getRepository('BinovoTknikaTknikaBackupsBundle:User')->find(User::SUPERUSER_ID)->getEmail();
+        $idClient   = $job->getClient()->getId();
+        $idJob      = $job->getId();
+        $translator = $this->getContainer()->get('translator');
+        $recipients = array();
+        $engine     = $this->getContainer()->get('templating');
+        if (count($messages) && $job->getNotificationsTo()) { // we have something to send and people willing to receive it
+            foreach ($job->getNotificationsTo() as $recipient) { // decode emails
+                switch ($recipient) {
+                case Job::NOTIFY_TO_ADMIN:
+                    $recipients[] = $adminEmail;
+                    break;
+                case Job::NOTIFY_TO_OWNER:
+                    $recipients[] = $job->getOwner()->getEmail();
+                    break;
+                case Job::NOTIFY_TO_EMAIL:
+                    $recipients[] = $job->getNotificationsEmail();
+                    break;
+                default:
+                    // do nothing
+                }
+            }
+            $message = \Swift_Message::newInstance()
+                ->setSubject($translator->trans('Error log for backup from job %joburl%', array('%joburl%' => $job->getUrl()), 'BinovoTknikaBackups'))
+                ->setFrom($adminEmail)
+                ->setTo($recipients)
+                ->setBody($engine->render('BinovoTknikaTknikaBackupsBundle:Default:logreport.html.twig',
+                                          array('job' => $job,
+                                                'messages' => $messages)),
+                          'text/html');
+            $this->getContainer()->get('mailer')->send($message);
+        }
     }
 
     protected function err($msg, $translatorParams = array(), $context = array())
@@ -78,10 +121,10 @@ class TickCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
 
-        $backupDir = $container->getParameter('backup_dir');
-        $rsnapshot = $container->getParameter('rsnapshot');
-        $tmpDir    = $container->getParameter('tmp_dir');
-        $engine    = $container->get('templating');
+        $backupDir  = $container->getParameter('backup_dir');
+        $rsnapshot  = $container->getParameter('rsnapshot');
+        $tmpDir     = $container->getParameter('tmp_dir');
+        $engine     = $container->get('templating');
 
         $idClient = $job->getClient()->getId();
         $idJob    = $job->getId();
@@ -217,6 +260,7 @@ class TickCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $logHandler = $this->getContainer()->get('BnvLoggerHandler');
         $this->getContainer()->get('router')->getContext()->setHost(gethostname());
         $time = $this->parseTime($input->getArgument('time'));
         if (!$time) {
@@ -230,7 +274,6 @@ class TickCommand extends ContainerAwareCommand
         }
         $container = $this->getContainer();
         $repository = $container->get('doctrine')->getRepository('BinovoTknikaTknikaBackupsBundle:Client');
-
 
         $repository = $container->get('doctrine')->getRepository('BinovoTknikaTknikaBackupsBundle:Policy');
         $query = $repository->createQueryBuilder('policy')->getQuery();
@@ -267,11 +310,14 @@ EOF;
                 $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
                 if ($job->getClient() == $lastClient) {
                     $retains = $policies[$job->getPolicy()->getId()];
+                    $logHandler->clearMessages();
+                    $logHandler->setMinLevel($job->getMinNotificationLevel());
                     if ($this->runJob($job, $retains)) {
                         $this->info('Client "%clientid%", Job "%jobid%" ok.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     } else {
                         $this->err('Client "%clientid%", Job "%jobid%" error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     }
+                    $this->sendNotifications($job, $logHandler->getMessages());
                     ++$i;
                 } else {
                     $state = self::NEW_CLIENT;

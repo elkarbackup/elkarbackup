@@ -20,6 +20,8 @@ class Job
     const NOTIFICATION_LEVEL_INFO    = Logger::INFO;
     const NOTIFICATION_LEVEL_WARNING = Logger::WARNING;
     const NOTIFICATION_LEVEL_ERROR   = Logger::ERROR;
+    const NOTIFICATION_LEVEL_NONE    = 1000;
+
 
     private $filenameForRemoval;
 

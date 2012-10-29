@@ -1,3 +1,4 @@
+
 parameters:
     database_driver: pdo_mysql
     database_host: localhost
@@ -5,10 +6,10 @@ parameters:
     database_name: tknikabackups
     database_user: root
     database_password: root
-    mailer_transport: smtp
+    mailer_transport: gmail
     mailer_host: localhost
-    mailer_user: null
-    mailer_password: null
+    mailer_user: tknikabackups
+    mailer_password: n6dC4P9w
     locale: en
     secret: fba546d6ab6abc4a01391d161772a14e093c7aa2
     database_path: null

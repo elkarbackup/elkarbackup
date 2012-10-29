@@ -34,7 +34,8 @@ class JobType extends AbstractType
                                                                 'choices'      => array(Job::NOTIFICATION_LEVEL_ALL     => $t->trans('All messages'   , array(), 'BinovoTknikaBackups'),
                                                                                         Job::NOTIFICATION_LEVEL_INFO    => $t->trans('Notices and up' , array(), 'BinovoTknikaBackups'),
                                                                                         Job::NOTIFICATION_LEVEL_WARNING => $t->trans('Warnings and up', array(), 'BinovoTknikaBackups'),
-                                                                                        Job::NOTIFICATION_LEVEL_ERROR   => $t->trans('Errors and up'  , array(), 'BinovoTknikaBackups'))))
+                                                                                        Job::NOTIFICATION_LEVEL_ERROR   => $t->trans('Errors and up'  , array(), 'BinovoTknikaBackups'),
+                                                                                        Job::NOTIFICATION_LEVEL_NONE    => $t->trans('None'           , array(), 'BinovoTknikaBackups'))))
                 ->add('preScript'         , 'hidden'  , array('label' => $t->trans('Pre script', array(), 'BinovoTknikaBackups')))
                 ->add('preScriptFile'     , 'file'    , array('label'    => $t->trans('Upload pre script', array(), 'BinovoTknikaBackups'),
                                                               'required' => false))
