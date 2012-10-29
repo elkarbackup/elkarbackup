@@ -223,6 +223,7 @@ class DefaultController extends Controller
                 throw $this->createNotFoundException($this->trans('Unable to find Client entity: ') . $idClient);
             }
             $job->setClient($client);
+            $job->setOwner($this->get('security.context')->getToken()->getUser());
         } else {
             $job = $this->getDoctrine()
                 ->getRepository('BinovoTknikaTknikaBackupsBundle:Job')->find($idJob);
@@ -310,6 +311,9 @@ class DefaultController extends Controller
 
         if ($form->isValid()) {
             $job = $form->getData();
+            if ($job->getOwner() == null) {
+                $job->setOwner($this->get('security.context')->getToken()->getUser());
+            }
             $em = $this->getDoctrine()->getManager();
             $em->persist($job);
             $em->flush();

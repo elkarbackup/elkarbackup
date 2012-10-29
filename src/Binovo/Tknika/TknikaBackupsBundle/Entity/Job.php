@@ -4,6 +4,7 @@ namespace Binovo\Tknika\TknikaBackupsBundle\Entity;
 
 use Binovo\Tknika\TknikaBackupsBundle\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
+use Monolog\Logger;
 
 /**
  * @ORM\Entity
@@ -11,6 +12,15 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Job
 {
+    const NOTIFY_TO_ADMIN = 'admin';
+    const NOTIFY_TO_OWNER = 'owner';
+    const NOTIFY_TO_EMAIL = 'email';
+
+    const NOTIFICATION_LEVEL_ALL     = 0;
+    const NOTIFICATION_LEVEL_INFO    = Logger::INFO;
+    const NOTIFICATION_LEVEL_WARNING = Logger::WARNING;
+    const NOTIFICATION_LEVEL_ERROR   = Logger::ERROR;
+
     private $filenameForRemoval;
 
     /**
@@ -39,6 +49,26 @@ class Job
      * @ORM\Column(type="string", length=255)
      */
     protected $name;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    protected $notificationsEmail;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    protected $notificationsTo = '["owner"]';
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $minNotificationLevel = self::NOTIFICATION_LEVEL_ERROR;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="User")
+     */
+    protected $owner;
 
     /**
      * @ORM\ManyToOne(targetEntity="Policy")
@@ -409,5 +439,98 @@ class Job
     public function getIsActive()
     {
         return $this->isActive;
+    }
+
+    /**
+     * Set owner
+     *
+     * @param Binovo\Tknika\TknikaBackupsBundle\Entity\User $owner
+     * @return Job
+     */
+    public function setOwner(User $owner)
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * Get owner
+     *
+     * @return Binovo\Tknika\TknikaBackupsBundle\Entity\User
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+
+    /**
+     * Set notificationsTo
+     *
+     * @param string $notificationsTo
+     * @return Job
+     */
+    public function setNotificationsTo($notificationsTo)
+    {
+        $this->notificationsTo = json_encode(array_values($notificationsTo));
+
+        return $this;
+    }
+
+    /**
+     * Get notificationsTo
+     *
+     * @return string
+     */
+    public function getNotificationsTo()
+    {
+        return json_decode($this->notificationsTo, true);
+    }
+
+    /**
+     * Set notificationsEmail
+     *
+     * @param string $notificationsEmail
+     * @return Job
+     */
+    public function setNotificationsEmail($notificationsEmail)
+    {
+        $this->notificationsEmail = $notificationsEmail;
+
+        return $this;
+    }
+
+    /**
+     * Get notificationsEmail
+     *
+     * @return string
+     */
+    public function getNotificationsEmail()
+    {
+        return $this->notificationsEmail;
+    }
+
+    /**
+     * Set minNotificationLevel
+     *
+     * @param integer $minNotificationLevel
+     * @return Job
+     */
+    public function setMinNotificationLevel($minNotificationLevel)
+    {
+        $this->minNotificationLevel = $minNotificationLevel;
+
+        return $this;
+    }
+
+    /**
+     * Get minNotificationLevel
+     *
+     * @return integer
+     */
+    public function getMinNotificationLevel()
+    {
+        return $this->minNotificationLevel;
     }
 }

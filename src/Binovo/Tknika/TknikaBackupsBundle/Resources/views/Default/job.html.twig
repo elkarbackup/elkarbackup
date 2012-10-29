@@ -1,6 +1,14 @@
 {% extends 'BinovoTknikaTknikaBackupsBundle:Default:base.html.twig' %}
 {% trans_default_domain 'BinovoTknikaBackups' %}
 
+{% block scripts %}
+    {{ parent() }}
+    {% javascripts '@BinovoTknikaTknikaBackupsBundle/Resources/public/js/edit-job.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+
 {% block body %}
 
 <form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_enctype(form) }}>
@@ -14,6 +22,17 @@
     {{ form_row(form.description, {attr: {class: 'input-xxlarge'}}) }}
     {{ form_row(form.url, {attr: {class: 'input-xxlarge'}}) }}
     {{ form_row(form.isActive) }}
+    <div class="control-group">
+        <label class="control-label">
+            {% trans %}Owner{% endtrans %}
+        </label>
+        <div class="controls">
+            <a href="{{path('editUser', {id:form.vars.value.owner.id})}}">{{ form.vars.value.owner.username }}</a>
+        </div>
+    </div>
+    {{ form_row(form.notificationsTo) }}
+    {{ form_row(form.notificationsEmail, {attr: {class: 'input-xxlarge'}}) }}
+    {{ form_row(form.minNotificationLevel) }}
     <div class="controls"><div class="input-append"><input class="input-large" id="Job_preScriptCurrent" type="text" disabled="true" value="{{form.vars.value.preScript}}" /><a id="Job_preScriptDelete" class="btn">{% trans %}Delete{% endtrans %}</a></div></div>
     {{ form_row(form.preScriptFile) }}
     <script type="text/javascript">
