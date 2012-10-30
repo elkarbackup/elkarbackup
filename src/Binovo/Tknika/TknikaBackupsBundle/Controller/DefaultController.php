@@ -220,7 +220,7 @@ class DefaultController extends Controller
             $client = $this->getDoctrine()
                 ->getRepository('BinovoTknikaTknikaBackupsBundle:Client')->find($idClient);
             if (null == $client) {
-                throw $this->createNotFoundException($this->trans('Unable to find Client entity: ') . $idClient);
+                throw $this->createNotFoundException($this->trans('Unable to find Client entity:') . $idClient);
             }
             $job->setClient($client);
             $job->setOwner($this->get('security.context')->getToken()->getUser());
@@ -298,7 +298,7 @@ class DefaultController extends Controller
             $client = $this->getDoctrine()
                 ->getRepository('BinovoTknikaTknikaBackupsBundle:Client')->find($idClient);
             if (null == $client) {
-                throw $this->createNotFoundException($t->trans('Unable to find Client entity: ', array(), 'BinovoTknikaBackups') . $idClient);
+                throw $this->createNotFoundException($t->trans('Unable to find Client entity:', array(), 'BinovoTknikaBackups') . $idClient);
             }
             $job->setClient($client);
         } else {
@@ -346,10 +346,10 @@ class DefaultController extends Controller
 
         $realPath = realpath($job->getSnapshotRoot() . '/' . $path);
         if (false == $realPath) {
-            throw $this->createNotFoundException($t->trans('Path not found: ', array(), 'BinovoTknikaBackups') . $path);
+            throw $this->createNotFoundException($t->trans('Path not found:', array(), 'BinovoTknikaBackups') . $path);
         }
         if (0 !== strpos($realPath, $job->getSnapshotRoot())) {
-            throw $this->createNotFoundException($t->trans('Path not found: ', array(), 'BinovoTknikaBackups') . $path);
+            throw $this->createNotFoundException($t->trans('Path not found:', array(), 'BinovoTknikaBackups') . $path);
         }
         if (is_dir($realPath)) {
             if ('download' == $action) {
@@ -625,9 +625,9 @@ class DefaultController extends Controller
         $t = $this->get('translator');
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)
-            ->add('oldPassword' , 'password')
-            ->add('newPassword' , 'password')
-            ->add('newPassword2', 'password')
+            ->add('oldPassword' , 'password', array('label' => $t->trans('Old password'        , array(), 'BinovoTknikaBackups')))
+            ->add('newPassword' , 'password', array('label' => $t->trans('New password'        , array(), 'BinovoTknikaBackups')))
+            ->add('newPassword2', 'password', array('label' => $t->trans('Confirm new password', array(), 'BinovoTknikaBackups')))
             ->getForm();
         if ($request->isMethod('POST')) {
             $form->bind($request);

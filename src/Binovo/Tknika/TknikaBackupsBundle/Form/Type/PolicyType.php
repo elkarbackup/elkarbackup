@@ -38,9 +38,12 @@ class PolicyType extends AbstractType
                 ->add('yearlyDaysOfWeek'  , 'hidden'  , array('required' => false))
                 ->add('yearlyMonths'      , 'hidden'  , array('required' => false))
                 ->add('yearlyCount'       , 'hidden'  , array('required' => false))
-                ->add('include'           , 'textarea', array('required' => false))
-                ->add('exclude'           , 'textarea', array('required' => false))
-                ->add('syncFirst'         , 'checkbox', array('required' => false))
+                ->add('include'           , 'textarea', array('label' => $t->trans('Include', array(), 'BinovoTknikaBackups'),
+                                                              'required' => false))
+                ->add('exclude'           , 'textarea', array('label' => $t->trans('Exclude', array(), 'BinovoTknikaBackups'),
+                                                              'required' => false))
+                ->add('syncFirst'         , 'checkbox', array('label' => $t->trans('Sync first', array(), 'BinovoTknikaBackups'),
+                                                              'required' => false))
             ;
     }
 
