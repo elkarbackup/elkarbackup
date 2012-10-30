@@ -114,16 +114,21 @@ class Builder extends ContainerAware
                                                 array('label'    => $t->trans('Add', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'editPolicy',
                                                       'routeParameters' => array('id' => 'new')))),
-                      array('label'    => $t->trans('Help', array(), 'BinovoTknikaBackups'),
-                            'children' => array(array('label'    => $t->trans('About', array(), 'BinovoTknikaBackups'),
-                                                      'route'    => 'about'))),
                       array('label'    => $t->trans('Users', array(), 'BinovoTknikaBackups'),
                             'children' => array(array('label'    => $t->trans('Logout', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'logout'),
                                                 array('label'    => $t->trans('Change password', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'changePassword'),
                                                 array('label'    => $t->trans('Show', array(), 'BinovoTknikaBackups'),
-                                                      'route'    => 'showUsers'))));
+                                                      'route'    => 'showUsers'))),
+                      array('label'    => $t->trans('Logs', array(), 'BinovoTknikaBackups'),
+                            'children' => array(array('label'    => $t->trans('Show Logs', array(), 'BinovoTknikaBackups'),
+                                                      'route'    => 'showLogs'))),
+                      array('label'    => $t->trans('Help', array(), 'BinovoTknikaBackups'),
+                            'children' => array(array('label'    => $t->trans('About', array(), 'BinovoTknikaBackups'),
+                                                      'route'    => 'about'))),
+
+            );
 
         return $this->generateMenuBar($factory, $menu);
     }

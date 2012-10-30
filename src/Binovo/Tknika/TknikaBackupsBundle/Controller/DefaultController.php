@@ -535,6 +535,63 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/logs", name="showLogs")
+     * @Template()
+     */
+    public function showLogsAction(Request $request)
+    {
+        $formValues = array();
+        $t = $this->get('translator');
+        $repository = $this->getDoctrine()
+            ->getRepository('BinovoTknikaTknikaBackupsBundle:LogRecord');
+        $queryBuilder = $repository->createQueryBuilder('l')
+            ->addOrderBy('l.dateTime', 'DESC');
+        $queryParamCounter = 1;
+        if ($request->get('filter')) {
+            $queryBuilder->where("1 = 1");
+            foreach ($request->get('filter') as $op => $filterValues) {
+                if (!in_array($op, array('gte', 'eq'))) {
+                    $op = 'eq';
+                }
+                foreach ($filterValues as $columnName => $value) {
+                    if ($value) {
+                        $queryBuilder->andWhere($queryBuilder->expr()->$op($columnName, "?$queryParamCounter"));
+                        $queryBuilder->setParameter($queryParamCounter, $value);
+                        ++$queryParamCounter;
+                        $formValues["filter[$op][$columnName]"] = $value;
+                    }
+                }
+            }
+        }
+        $query = $queryBuilder->getQuery();
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1)/*page number*/,
+            10/*limit per page*/
+            );
+        $this->info('View logs',
+                    array(),
+                    array('link' => $this->generateUrl('showLogs')));
+
+        return $this->render('BinovoTknikaTknikaBackupsBundle:Default:logs.html.twig',
+                             array('pagination' => $pagination,
+                                   'levels' => array('options' => array(Job::NOTIFICATION_LEVEL_ALL     => $t->trans('All messages'   , array(), 'BinovoTknikaBackups'),
+                                                                        Job::NOTIFICATION_LEVEL_INFO    => $t->trans('Notices and up' , array(), 'BinovoTknikaBackups'),
+                                                                        Job::NOTIFICATION_LEVEL_WARNING => $t->trans('Warnings and up', array(), 'BinovoTknikaBackups'),
+                                                                        Job::NOTIFICATION_LEVEL_ERROR   => $t->trans('Errors and up'  , array(), 'BinovoTknikaBackups'),
+                                                                        Job::NOTIFICATION_LEVEL_NONE    => $t->trans('None'           , array(), 'BinovoTknikaBackups')),
+                                                     'value'   => isset($formValues['filter[gte][l.level]']) ? $formValues['filter[gte][l.level]'] : null,
+                                                     'name'    => 'filter[gte][l.level]'),
+                                   'source' => array('options' => array(''                  => $t->trans('All', array(), 'BinovoTknikaBackups'),
+                                                                        'DefaultController' => 'DefaultController',
+                                                                        'TickCommand'       => 'TickCommand'),
+                                                     'value'   => isset($formValues['filter[eq][l.source]']) ? $formValues['filter[eq][l.source]'] : null,
+                                                     'name'    => 'filter[eq][l.source]')));
+    }
+
+    /**
      * @Route("/policies", name="showPolicies")
      * @Template()
      */

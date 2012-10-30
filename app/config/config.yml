@@ -102,3 +102,7 @@ services:
         class: Twig_Extension_Debug
         tags:
             - { name: 'twig.extension' }
+    BnvTwigExtension:
+        class: Binovo\Tknika\TknikaBackupsBundle\Twig\Extension
+        tags:
+            - { name: 'twig.extension' }
