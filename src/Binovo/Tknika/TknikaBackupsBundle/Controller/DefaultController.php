@@ -550,13 +550,17 @@ class DefaultController extends Controller
         if ($request->get('filter')) {
             $queryBuilder->where("1 = 1");
             foreach ($request->get('filter') as $op => $filterValues) {
-                if (!in_array($op, array('gte', 'eq'))) {
+                if (!in_array($op, array('gte', 'eq', 'like'))) {
                     $op = 'eq';
                 }
                 foreach ($filterValues as $columnName => $value) {
                     if ($value) {
                         $queryBuilder->andWhere($queryBuilder->expr()->$op($columnName, "?$queryParamCounter"));
-                        $queryBuilder->setParameter($queryParamCounter, $value);
+                        if ('like' == $op) {
+                            $queryBuilder->setParameter($queryParamCounter, '%' . $value . '%');
+                        } else {
+                            $queryBuilder->setParameter($queryParamCounter, $value);
+                        }
                         ++$queryParamCounter;
                         $formValues["filter[$op][$columnName]"] = $value;
                     }
@@ -584,6 +588,8 @@ class DefaultController extends Controller
                                                                         Job::NOTIFICATION_LEVEL_NONE    => $t->trans('None'           , array(), 'BinovoTknikaBackups')),
                                                      'value'   => isset($formValues['filter[gte][l.level]']) ? $formValues['filter[gte][l.level]'] : null,
                                                      'name'    => 'filter[gte][l.level]'),
+                                   'object' => array('value'   => isset($formValues['filter[like][l.link]']) ? $formValues['filter[like][l.link]'] : null,
+                                                     'name'    => 'filter[like][l.link]'),
                                    'source' => array('options' => array(''                  => $t->trans('All', array(), 'BinovoTknikaBackups'),
                                                                         'DefaultController' => 'DefaultController',
                                                                         'TickCommand'       => 'TickCommand'),
@@ -761,7 +767,6 @@ class DefaultController extends Controller
      */
     public function setLanguage(Request $request, $locale)
     {
-        xdebug_break();
         $this->get('session')->set('_locale', $locale);
         $referer = $request->headers->get('referer');
 

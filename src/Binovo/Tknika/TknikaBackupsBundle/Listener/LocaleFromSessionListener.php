@@ -25,7 +25,6 @@ class LocaleFromSessionListener
 	 */
 	public function onKernelRequest(GetResponseEvent $event)
 	{
-        xdebug_break();
         $request = $event->getRequest();
         if (!$request->hasPreviousSession()) {
             return;

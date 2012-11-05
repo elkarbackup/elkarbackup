@@ -8,6 +8,7 @@ class Extension extends \Twig_Extension
     {
         return array(
             'filterSelect' => new \Twig_Function_Method($this, 'filterSelect', array('is_safe' => array('html'))),
+            'filterText'   => new \Twig_Function_Method($this, 'filterText',   array('is_safe' => array('html'))),
         );
     }
 
@@ -37,6 +38,19 @@ class Extension extends \Twig_Extension
         }
         $select .= "</select>";
         return $select;
+    }
+
+    public function filterText($params, $extraParams = array())
+    {
+        $defaultParams = array(
+            'onchange' => 'this.form.submit();');
+        $params = array_merge($defaultParams, $params, $extraParams);
+        $input = '<input';
+        foreach ($params as $name => $value) {
+            $input .= " $name=\"$value\"";
+        }
+        $input .= '>';
+        return $input;
     }
 
     public function getName()

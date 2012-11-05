@@ -16,7 +16,8 @@
             {{ filterSelect(source, {style: "width: 150px;"}) }}</th>
         <th>{% trans %}User{% endtrans %}</th>
         <th>{% trans %}Message{% endtrans %}</th>
-        <th>{% trans %}Link{% endtrans %}</th>
+        <th>{% trans %}Object{% endtrans %}<br />
+            {{ filterText(object, {style: "width: 150px;"}) }}</th>
     </tr>
 
     {# table body #}
