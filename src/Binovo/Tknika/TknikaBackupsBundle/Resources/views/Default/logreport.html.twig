@@ -1,5 +1,6 @@
 <html>
     <head>
+        <base href="{{base}}" target="_blank" />
     </head>
     <body>
         <table>
@@ -9,7 +10,6 @@
                 <th>Time</th>
                 <th>Level</th>
                 <th>Message</th>
-                <th>Link</th>
             </tr>
 {% for message in messages %}
             <tr>
@@ -18,7 +18,6 @@
                 <td>{{ message.dateTime.format('Y-m-d H:i:s') }}</td>
                 <td>{{ message.levelName }}</td>
                 <td>{{ message.message }}</td>
-                <td><a href="{{ message.link }}">{{ message.link }}</a></td>
             </tr>
 {% endfor %}
         </table>

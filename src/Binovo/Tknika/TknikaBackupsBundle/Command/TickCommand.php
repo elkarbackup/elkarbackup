@@ -20,15 +20,14 @@ class TickCommand extends ContainerAwareCommand
 
     protected function generateClientRoute($id)
     {
-        return $this->getContainer()->get('router')->generate('editClient', array('id' => $id), true);
+        return $this->getContainer()->get('router')->generate('editClient', array('id' => $id));
     }
 
     protected function generateJobRoute($idJob, $idClient)
     {
         return $this->getContainer()->get('router')->generate('editJob',
                                                               array('idClient' => $idClient,
-                                                                    'idJob'    => $idJob),
-                                                              true);
+                                                                    'idJob'    => $idJob));
     }
 
     protected function parseTime($time)
@@ -82,7 +81,8 @@ class TickCommand extends ContainerAwareCommand
                 ->setFrom($adminEmail)
                 ->setTo($recipients)
                 ->setBody($engine->render('BinovoTknikaTknikaBackupsBundle:Default:logreport.html.twig',
-                                          array('job' => $job,
+                                          array('base'     => gethostname(),
+                                                'job'      => $job,
                                                 'messages' => $filteredMessages)),
                           'text/html');
             $this->getContainer()->get('mailer')->send($message);
@@ -261,6 +261,7 @@ class TickCommand extends ContainerAwareCommand
                           '%scriptname%' => $scriptName,
                           '%scripttype%' => $type),
                     $context);
+
         return true;
     }
 
@@ -268,7 +269,6 @@ class TickCommand extends ContainerAwareCommand
     {
         $logHandler = $this->getContainer()->get('BnvLoggerHandler');
         $logHandler->startRecordingMessages();
-        $this->getContainer()->get('router')->getContext()->setHost(gethostname());
         $time = $this->parseTime($input->getArgument('time'));
         if (!$time) {
             $this->err('Invalid time specified.');
@@ -293,6 +293,7 @@ class TickCommand extends ContainerAwareCommand
         }
         if (count($policies) == 0) {
             $this->info('Nothing to run.');
+
             return true;
         }
         $policyQuery = array();
