@@ -112,7 +112,9 @@ class DefaultController extends Controller
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:login.html.twig', array(
                                  'last_username' => $session->get(SecurityContext::LAST_USERNAME),
                                  'error'         => $error,
-                                 ));
+                                 'supportedLocales' => array(array('es', 'Español'),
+                                                             array('en', 'English'),
+                                                             array('eu', 'Euskara'))));
     }
 
     /**
@@ -754,6 +756,18 @@ class DefaultController extends Controller
             return $this->render('BinovoTknikaTknikaBackupsBundle:Default:user.html.twig',
                                  array('form' => $form->createView()));
         }
+    }
+
+    /**
+     * @Route("/setlocale/{locale}", name="setLocale")
+     */
+    public function setLanguage(Request $request, $locale)
+    {
+        xdebug_break();
+        $this->get('session')->set('_locale', $locale);
+        $referer = $request->headers->get('referer');
+
+        return $this->redirect($referer);
     }
 
     /**

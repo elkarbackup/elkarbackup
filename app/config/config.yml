@@ -106,3 +106,7 @@ services:
         class: Binovo\Tknika\TknikaBackupsBundle\Twig\Extension
         tags:
             - { name: 'twig.extension' }
+    kernel.listener.LocaleFromSessionListener:
+        class: Binovo\Tknika\TknikaBackupsBundle\Listener\LocaleFromSessionListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
