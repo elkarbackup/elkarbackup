@@ -363,7 +363,11 @@ EOF;
                 if ($lastClient != $job->getClient()) {
                     $state = self::NEW_CLIENT;
                 } else {
-                    $this->sendNotifications($job, $clientMessages);
+                    // report the client error to the people who might be interested on the fact that the job was not run.
+                    $logHandler->clearMessages();
+                    $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
+                    $this->err('Client "%clientid%", Job "%jobid%" error. Client level error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
+                    $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
                     ++$i;
                 }
                 break;
