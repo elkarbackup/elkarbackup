@@ -12,9 +12,27 @@
 </p>
 
 <p>
+    <table class="table table-condensed table-bordered table-striped">
+        <tr>
+            <th colspan="3">{{ realPath }}</th>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <th>Modification date</th>
+            <th>Actions</th>
+        </tr>
     {% for file in content %}
-    <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file, action: 'view'}) }}">{{ file }}</a>
-    {% if file != ".." and file != "." %} <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file, action: 'download'}) }}"> <b>{% trans %}Download as .tgz{% endtrans %}</b></a> {% endif %}<br />
+        <tr>
+            <td>
+                <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'view'}) }}">{{ file.0 }}</a>
+            </td>
+            <td>
+                {{ file.1.format('Y-m-d H:i:s') }}
+            </td>
+            <td>
+                {% if file.0 != ".." and file.0 != "." %} <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download'}) }}"> <b>{% trans %}Download as .tgz{% endtrans %}</b></a> {% endif %}
+            </td>
+        </tr>
     {% endfor %}
 </p>
 

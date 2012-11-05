@@ -32,30 +32,26 @@ class DefaultController extends Controller
     protected function generateClientRoute($id)
     {
         return $this->generateUrl('editClient',
-                                  array('id' => $id),
-                                  true);
+                                  array('id' => $id));
     }
 
     protected function generateJobRoute($idJob, $idClient)
     {
         return $this->generateUrl('editJob',
                                   array('idClient' => $idClient,
-                                        'idJob'    => $idJob),
-                                  true);
+                                        'idJob'    => $idJob));
     }
 
     protected function generatePolicyRoute($id)
     {
         return $this->generateUrl('editPolicy',
-                                  array('id' => $id),
-                                  true);
+                                  array('id' => $id));
     }
 
     protected function generateUserRoute($id)
     {
         return $this->generateUrl('editUser',
-                                  array('id' => $id),
-                                  true);
+                                  array('id' => $id));
     }
 
     /**
@@ -369,14 +365,18 @@ class DefaultController extends Controller
                                                                array('action'   => $action,
                                                                      'idClient' => $idClient,
                                                                      'idJob'    => $idJob,
-                                                                     'path'     => $path),
-                                                               true)));
+                                                                     'path'     => $path))));
 
                 return new StreamedResponse($f, 200, $headers);
             } else {
                 $content = scandir($realPath);
                 if (false === $content) {
                     $content = array();
+                }
+                foreach ($content as &$aFile) {
+                    $date = new \DateTime();
+                    $date->setTimestamp(filemtime($realPath . '/' . $aFile));
+                    $aFile = array($aFile, $date);
                 }
                 $this->info('View backup directory %clientid%, %jobid% %path%',
                             array('%clientid%' => $idClient,
@@ -386,8 +386,7 @@ class DefaultController extends Controller
                                                                array('action'   => $action,
                                                                      'idClient' => $idClient,
                                                                      'idJob'    => $idJob,
-                                                                     'path'     => $path),
-                                                               true)));
+                                                                     'path'     => $path))));
 
                 return $this->render('BinovoTknikaTknikaBackupsBundle:Default:directory.html.twig',
                                      array('content'  => $content,
@@ -409,8 +408,7 @@ class DefaultController extends Controller
                                                            array('action'   => $action,
                                                                  'idClient' => $idClient,
                                                                  'idJob'    => $idJob,
-                                                                 'path'     => $path),
-                                                           true)));
+                                                                 'path'     => $path))));
 
             return new Response(file_get_contents($realPath), 200, $headers);
         }
