@@ -77,6 +77,9 @@
             <div class="controls">
                 {{ form_widget(job.description, {'attr': {'class': 'input-xxlarge'}}) }}
             </div>
+            <div class="controls">
+                {{job.vars.value.logEntry.dateTime.format('Y-m-d H:i:s')|default('')}} {{job.vars.value.logEntry.levelName|default('')}} {{ job.vars.value.logEntry.message|default('')|slice(0, 50) }}{% if job.vars.value.logEntry.message|default('')|length > 50 %}[...]{% endif %}
+            </div>
             <div class="controls control-row">
                 <input class="btn" type="button" value="{% trans %}Delete{% endtrans %}" onclick="dojo.query('#job-{{job.vars.value.id}}').remove();"/>
                 <input class="btn" type="button" value="{% trans %}Edit{% endtrans %}" onclick="document.location.href='{{ path('editJob', {idJob: job.vars.value.id, idClient: form.vars.value.id}) }}'"/>

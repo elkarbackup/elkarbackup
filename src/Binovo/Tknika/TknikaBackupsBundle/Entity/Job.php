@@ -101,6 +101,12 @@ class Job
      */
     protected $filesToRemove;
 
+    /**
+     * Helper variable to store the LogEntry to show on screen,
+     * typically the last log LogRecord related to this client.
+     */
+    protected $logEntry = null;
+
     private function isNewFileOrMustDeleteExistingFile($currentName, $file)
     {
         return null === $currentName || null !== $file;
@@ -534,5 +540,28 @@ class Job
     public function getMinNotificationLevel()
     {
         return $this->minNotificationLevel;
+    }
+
+    /**
+     * Set LogEntry
+     *
+     * @param LogRecord $LogEntry
+     * @return Client
+     */
+    public function setLogEntry(LogRecord $logEntry = null)
+    {
+        $this->logEntry = $logEntry;
+
+        return $this;
+    }
+
+    /**
+     * Get LogEntry
+     *
+     * @return LogRecord
+     */
+    public function getLogEntry()
+    {
+        return $this->logEntry;
     }
 }

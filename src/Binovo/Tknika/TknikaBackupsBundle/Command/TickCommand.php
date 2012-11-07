@@ -3,6 +3,7 @@
 namespace Binovo\Tknika\TknikaBackupsBundle\Command;
 
 use \DateTime;
+use \Exception;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Job;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -85,7 +86,11 @@ class TickCommand extends ContainerAwareCommand
                                                 'job'      => $job,
                                                 'messages' => $filteredMessages)),
                           'text/html');
-            $this->getContainer()->get('mailer')->send($message);
+            try {
+                $this->getContainer()->get('mailer')->send($message);
+            } catch (Exception $e) {
+                $this->err('TickCommand.php was unable to send the notification message: %exception%', array('%exception%' => $e->getMessage()));
+            }
         }
     }
 
