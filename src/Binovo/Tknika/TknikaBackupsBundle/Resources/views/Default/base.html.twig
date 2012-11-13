@@ -5,13 +5,13 @@
         <title>{% block title %}Backup server{% endblock %}</title>
         <!-- Bootstrap -->
         {% stylesheets '@BinovoTknikaTknikaBackupsBundle/Resources/public/css/bootstrap.min.css' %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
+        <link rel="stylesheet" href="{{ asset_url }}" media="screen" />
         {% endstylesheets %}
-        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.8/dijit/themes/claro/claro.css" media="screen">
+        <link rel="stylesheet" href="{{ asset('js/dojo-release-1.8.1/dijit/themes/claro/claro.css') }}" media="screen" />
 
         {% block scripts %}
-        <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.8.0/dojo/dojo.js" data-dojo-config="async: true, parseOnLoad: true"></script>
-        <script>dojoConfig = {async: true, parseOnLoad: true}</script>
+        <script type="text/javascript" src="{{ asset('js/dojo-release-1.8.1/dojo/dojo.js') }}" data-dojo-config="async: true, parseOnLoad: true"></script>
+
         <script type="text/javascript">
             require(["dojo", "dojo/parser", "dijit/form/Button", "dijit/MenuBar", "dijit/MenuBarItem", "dijit/PopupMenuBarItem", "dijit/DropDownMenu", "dijit/MenuItem", "dojo/NodeList-manipulate"]);
         </script>
