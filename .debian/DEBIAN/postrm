@@ -11,5 +11,9 @@ fi
 if [ "$1" = "remove" ]; then
     . /usr/share/debconf/confmodule
     a2dissite tknikabackups
+    if [ -f /etc/init.d/apache2 ]
+    then
+        invoke-rc.d apache2 reload
+    fi
     db_purge
 fi

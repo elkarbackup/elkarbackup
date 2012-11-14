@@ -1,14 +1,21 @@
 #!/bin/bash
 
 # # copy source for build
-if [! -d .debian/usr/share/tknikabackups ]
+if [ ! -d .debian/usr/share/tknikabackups ]
 then
-    mkdir -p .debian/usr/share/
-    svn export https://intranet.binovo.es/svn/tknika-backups/trunk .debian/usr/share/tknikabackups
-    pushd .debian/usr/share/tknikabackups
-    composer install
-    popd
+    if [ "$FROM_SVN" != "" ]
+    then
+        mkdir -p .debian/usr/share/
+        svn export https://intranet.binovo.es/svn/tknika-backups/trunk .debian/usr/share/tknikabackups
+        pushd .debian/usr/share/tknikabackups
+        composer install
+        popd
+    else
+        mkdir -p .debian/usr/share/tknikabackups
+        cp -r * .debian/usr/share/tknikabackups
+    fi
 fi
+
 find .debian/usr/share -type d -name ".svn"| xargs rm -rf
 find .debian/usr/share -name ".git*" -o -name "*~"| xargs rm -rf
 find .debian/usr/share -name "*.png" -o -name "*.gif" -o -name "*.php" -o -name "README" -o -name "*.md" -o -name "*.dist" -o -name "*.ini" -o -name "*.yml" -o -name "*.rst" -o -name "*.xml" -o -name "*.js"| xargs chmod a-x

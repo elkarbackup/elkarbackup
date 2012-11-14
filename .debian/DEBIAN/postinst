@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 set -e
 
 # Source debconf library.
@@ -6,7 +6,19 @@ set -e
 
 db_get tknikabackups/backupsusername
 username="$RET"
+sed -i "s/www-data\|backup/$username/" /etc/cron.d/tknikabackups
+chow $username.$username /var/{cache,log}/tknikabackups
+if [ x"$username" == xbackup ]
+then
+    setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/{cache,log}/tknikabackups
+    setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/{cache,log}/tknikabackups
+fi
 
 a2ensite tknikabackups
+# reload apache
+if [ -f /etc/init.d/apache2 ]
+then
+    invoke-rc.d apache2 reload
+fi
 
 db_stop
