@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 set -e
 
 # Source debconf library.
@@ -9,7 +9,7 @@ ACL_ENABLED=`cat /proc/mounts |grep " $MOUNTDIR "|tr , \\\n | grep acl`
 RSNAPSHOTUSER=www-data
 if [ x"$ACL_ENABLED" != x ]
 then
-    RSNAPSHOTUSER=backup
+    RSNAPSHOTUSER=tknikabackups
 fi
 db_set tknikabackups/backupsusername $RSNAPSHOTUSER
 db_go

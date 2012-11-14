@@ -1,7 +1,7 @@
 <VirtualHost tknikabackups:80>
 	ServerAdmin webmaster@localhost
 
-	DocumentRoot /srv/web/tknikabackups-devel/web/
+	DocumentRoot /usr/share/tknikabackups/web/
 
 	ErrorLog ${APACHE_LOG_DIR}/tknikabackups.error.log
 

@@ -9,6 +9,12 @@ if [ "$1" = "purge" -a -e /usr/share/debconf/confmodule ]; then
 fi
 
 if [ "$1" = "remove" ]; then
+    db_get tknikabackups/backupsusername
+    username="$RET"
+    if test "x$username" != xwww-data
+    then
+        deluser --system $username
+    fi
     . /usr/share/debconf/confmodule
     a2dissite tknikabackups
     if [ -f /etc/init.d/apache2 ]

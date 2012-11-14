@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 set -e
 
 # Source debconf library.
@@ -6,13 +6,24 @@ set -e
 
 db_get tknikabackups/backupsusername
 username="$RET"
-sed -i "s/www-data\|backup/$username/" /etc/cron.d/tknikabackups
-chow $username.$username /var/{cache,log}/tknikabackups
-if [ x"$username" == xbackup ]
+sed -i "s/www-data/$username/" /etc/cron.d/tknikabackups
+if test "x$username" != xwww-data -a "x$username" != x
 then
-    setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/{cache,log}/tknikabackups
-    setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/{cache,log}/tknikabackups
+    if test x`grep $username /etc/passwd` = x
+    then
+        adduser --system --home /var/lib/tknikabackups --group $username
+    fi
+    # set rwx permissions for www-data and the backup user in the cache and log directories
+    # as described in http://symfony.com/doc/current/book/installation.html#configuration-and-setup
+    setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/cache/tknikabackups
+    setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/cache/tknikabackups
+    setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/log/tknikabackups
+    setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/log/tknikabackups
+    # the same in the spool directory
+    setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/spool/tknikabackups
+    setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/spool/tknikabackups
 fi
+chown $username.$username /var/cache/tknikabackups /var/log/tknikabackups
 
 a2ensite tknikabackups
 # reload apache
