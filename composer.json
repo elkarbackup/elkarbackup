@@ -8,7 +8,7 @@
         "doctrine/doctrine-migrations-bundle": "dev-master",
         "php": ">=5.3.3",
         "symfony/symfony": "2.1.*",
-        "doctrine/orm": ">=2.2.3,<2.4-dev",
+        "doctrine/orm": ">=2.2.3,<2.3-dev",
         "doctrine/doctrine-bundle": "1.0.*",
         "knplabs/knp-menu-bundle": "dev-master",
         "knplabs/knp-paginator-bundle": "dev-master",

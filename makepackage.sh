@@ -13,6 +13,9 @@ mkdir -p .debian/var/cache/tknikabackups
 mkdir -p .debian/var/log/tknikabackups
 ln -s /var/cache/tknikabackups .debian/usr/share/tknikabackups/app/cache
 ln -s /var/log/tknikabackups   .debian/usr/share/tknikabackups/app/logs
+sed -i '1c#!/bin/bash' .debian/usr/share/tknikabackups/vendor/swiftmailer/swiftmailer/test-suite/lib/simpletest/packages/build_tarball.sh
+sed -i 's/app_dev/app/' .debian/usr/share/tknikabackups/web/.htaccess
+rm .debian/usr/share/tknikabackups/web/app_dev.php
 
 # put copyright notices and changelog in its place
 mkdir -p .debian/usr/share/doc/tknikabackups
@@ -24,6 +27,6 @@ gzip -f --best .debian/usr/share/doc/tknikabackups/changelog.Debian
 find .debian -type d | xargs chmod 755
 
 # build an verify
-fakeroot dpkg-deb --build .debian Tknikabackups_1.0B1-1_all.deb
+fakeroot dpkg-deb --build .debian Tknikabackups_1.0_all.deb
 
-lintian Tknikabackups_1.0B1-1_all.deb | tee lintian.log
+lintian Tknikabackups_1.0_all.deb | tee lintian.log
