@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+
+# Source debconf library.
+. /usr/share/debconf/confmodule
+
+db_get tknikabackups/backupsusername
+username="$RET"
+
+a2ensite tknikabackups
+
+db_stop

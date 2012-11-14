@@ -1,0 +1,13 @@
+<VirtualHost tknikabackups:80>
+	ServerAdmin webmaster@localhost
+
+	DocumentRoot /srv/web/tknikabackups-devel/web/
+
+	ErrorLog ${APACHE_LOG_DIR}/tknikabackups.error.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel warn
+
+	CustomLog ${APACHE_LOG_DIR}/tknikabackups.access.log combined
+</VirtualHost>

@@ -1,0 +1,9 @@
+Package: tknikabackups
+Version: 1.0B1
+Section: devel
+Priority: optional
+Architecture: all
+Depends: debconf, php5, php5-cli, rsnapshot, mysql-server, php5-mysql
+Maintainer: Victor Laskurain <blaskurain@binovo.es>
+Description: Web configurator for rsnapshot
+ Simple Web configurator for rsnapshot

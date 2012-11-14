@@ -1,0 +1,4 @@
+Template: tknikabackups/backupsusername
+Type: string
+Description: Username:
+This is the user that under which rsnapshot will run.
