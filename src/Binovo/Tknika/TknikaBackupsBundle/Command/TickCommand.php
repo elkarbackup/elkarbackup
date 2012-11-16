@@ -121,7 +121,7 @@ class TickCommand extends ContainerAwareCommand
     protected function configure()
     {
         parent::configure();
-        $this->setName('backups:tick')
+        $this->setName('tknikabackups:tick')
              ->setDescription('Look for backup jobs to execute')
              ->addArgument('time'  , InputArgument::OPTIONAL, 'As by date("Y-m-d H:i")')
              ->addArgument('job'   , InputArgument::OPTIONAL, 'jobId')

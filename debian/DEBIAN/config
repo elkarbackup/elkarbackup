@@ -5,11 +5,14 @@ set -e
 . /usr/share/debconf/confmodule
 
 MOUNTDIR=`df -P /var/log | tail -n 1 |sed 's/.* //'`
-ACL_ENABLED=`cat /proc/mounts |grep " $MOUNTDIR "|tr , \\\n | grep acl`
+echo /var/log mounted in $MOUNTDIR
+ACL_ENABLED=`cat /proc/mounts |grep " $MOUNTDIR "|tr , \\\n | grep acl` || true
+echo ACL enabled: $ACL_ENABLED
 RSNAPSHOTUSER=www-data
 if [ x"$ACL_ENABLED" != x ]
 then
     RSNAPSHOTUSER=tknikabackups
 fi
+echo User for rsnapshot: $RSNAPSHOTUSER
 db_set tknikabackups/backupsusername $RSNAPSHOTUSER
 db_go

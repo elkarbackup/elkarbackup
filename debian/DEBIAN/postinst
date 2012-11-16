@@ -23,9 +23,14 @@ then
     setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/spool/tknikabackups
     setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/spool/tknikabackups
 fi
-chown $username.$username /var/cache/tknikabackups /var/log/tknikabackups
+chown -R $username.$username /var/cache/tknikabackups /var/log/tknikabackups /var/spool/tknikabackups
+echo Update DB
+php /usr/share/tknikabackups/app/console doctrine:migrations:migrate --no-interaction
+echo Create root user
+php /usr/share/tknikabackups/app/console tknikabackups:create_admin
 
 a2ensite tknikabackups
+a2enmod  rewrite
 # reload apache
 if [ -f /etc/init.d/apache2 ]
 then

@@ -59,6 +59,7 @@ mkdir -p .debian/var/spool/tknikabackups/uploads
 #
 # build an verify
 #
-fakeroot dpkg-deb --build .debian Tknikabackups_1.0_all.deb
+fakeroot dpkg-deb --build .debian tknikabackups_1.0_all.deb
+echo Package created
 
-lintian Tknikabackups_1.0_all.deb | tee lintian.log
+lintian tknikabackups_1.0_all.deb | tee lintian.log | egrep '^E'

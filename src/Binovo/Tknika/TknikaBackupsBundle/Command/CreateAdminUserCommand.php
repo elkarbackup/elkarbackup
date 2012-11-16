@@ -12,7 +12,7 @@ class CreateAdminUserCommand extends ContainerAwareCommand
     protected function configure()
     {
         parent::configure();
-        $this->setName('backups:create_admin')
+        $this->setName('tknikabackups:create_admin')
              ->setDescription('Creates initial admin user');
     }
 
