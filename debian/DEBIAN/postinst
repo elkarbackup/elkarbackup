@@ -4,6 +4,48 @@ set -e
 # Source debconf library.
 . /usr/share/debconf/confmodule
 
+db_get tknikabackups/dbhost
+dbhost="$RET"
+db_get tknikabackups/dbname
+dbname="$RET"
+db_get tknikabackups/dbusername
+dbusername="$RET"
+db_get tknikabackups/dbuserpassword
+dbuserpassword="$RET"
+
+if ! mysql -u"$dbusername" -p"$dbuserpassword" -h"$dbhost" "$dbname" </dev/null
+then
+    db_reset tknikabackups/dbadminname
+    db_reset tknikabackups/dbadminpassword
+    db_input high tknikabackups/dbadminname
+    db_input high tknikabackups/dbadminpassword
+    db_go
+    db_get tknikabackups/dbadminname
+    dbadminusername="$RET"
+    db_reset tknikabackups/dbadminname
+    db_get tknikabackups/dbadminpassword
+    dbadminpassword="$RET"
+    db_reset tknikabackups/dbadminpassword
+    echo "Attempting to create DB $dbname and user $dbusername in $dbhost"
+    echo 'Create database'
+    echo "CREATE DATABASE IF NOT EXISTS $dbname DEFAULT CHARACTER SET utf8;" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost"
+    echo 'Create user'
+    if [ "$dbhost" = localhost ]
+    then
+        user="'$dbusername'@localhost"
+    else
+        user="'$dbusername'"
+    fi
+    echo "CREATE USER $user IDENTIFIED BY '$dbuserpassword';" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost" || true
+    echo "GRANT ALL ON $dbname.* TO $user;" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost" || true
+else
+    echo DB seems to be ready
+fi
+echo Update DB
+php /usr/share/tknikabackups/app/console doctrine:migrations:migrate --no-interaction || true
+echo Create root user
+php /usr/share/tknikabackups/app/console tknikabackups:create_admin || true
+
 db_get tknikabackups/backupsusername
 username="$RET"
 sed -i "s/www-data/$username/" /etc/cron.d/tknikabackups
@@ -24,10 +66,6 @@ then
     setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/spool/tknikabackups
 fi
 chown -R $username.$username /var/cache/tknikabackups /var/log/tknikabackups /var/spool/tknikabackups
-echo Update DB
-php /usr/share/tknikabackups/app/console doctrine:migrations:migrate --no-interaction
-echo Create root user
-php /usr/share/tknikabackups/app/console tknikabackups:create_admin
 
 a2ensite tknikabackups
 a2enmod  rewrite

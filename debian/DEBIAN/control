@@ -4,6 +4,7 @@ Section: devel
 Priority: optional
 Architecture: all
 Depends: debconf, php5, php5-cli, rsnapshot, mysql-server, php5-mysql
+Recommends: acl
 Maintainer: Victor Laskurain <blaskurain@binovo.es>
 Description: Web configurator for rsnapshot
  Simple Web configurator for rsnapshot

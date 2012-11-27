@@ -184,6 +184,14 @@ class TickCommand extends ContainerAwareCommand
         if (false === $ok) {
             $this->warn('Error closing config file %filename%.', array('%filename%' => $confFileName), $context);
         }
+        if (!is_dir($job->getSnapshotRoot())) {
+            $ok = mkdir($job->getSnapshotRoot(), 0777, true);
+            if (false === $ok) {
+                $this->err('Error creating snapshot root %filename%. Aborting backup.', array('%filename%' => $job->getSnapshotRoot()), $context);
+
+                return false;
+            }
+        }
         foreach ($runnableRetains as $retain) {
             if ($job->getPolicy()->mustSync($retain)) {
                 $command = sprintf('"%s" -c "%s" sync 2>&1 && "%s" -c "%s" %s 2>&1', $rsnapshot, $confFileName, $rsnapshot, $confFileName, $retain);
