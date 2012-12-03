@@ -2,6 +2,7 @@
 
 namespace Binovo\Tknika\TknikaBackupsBundle\Controller;
 
+use \Exception;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Client;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Job;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Policy;
@@ -646,6 +647,89 @@ EOF;
 
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:policies.html.twig',
                              array('pagination' => $pagination));
+    }
+
+    /**
+     * @Route("/config/params", name="manageParameters")
+     * @Template()
+     */
+    public function manageParametersAction(Request $request)
+    {
+        $t = $this->get('translator');
+        $params = array('database_host'     => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('MySQL host'     , array(), 'BinovoTknikaBackups')),
+                        'database_port'     => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('MySQL port'     , array(), 'BinovoTknikaBackups')),
+                        'database_name'     => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('MySQL DB name'  , array(), 'BinovoTknikaBackups')),
+                        'database_user'     => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('MySQL user'     , array(), 'BinovoTknikaBackups')),
+                        'database_password' => array('type' => 'password', 'required' => false, 'label' => $t->trans('MySQL password' , array(), 'BinovoTknikaBackups')),
+                        'mailer_transport'  => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Mailer transpor', array(), 'BinovoTknikaBackups')),
+                        'mailer_host'       => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Mailer host'    , array(), 'BinovoTknikaBackups')),
+                        'mailer_user'       => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Mailer user'    , array(), 'BinovoTknikaBackups')),
+                        'mailer_password'   => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Mailer password', array(), 'BinovoTknikaBackups')),
+                        'upload_dir'        => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Upload dir'     , array(), 'BinovoTknikaBackups')),
+                        'backup_dir'        => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Backups dir'    , array(), 'BinovoTknikaBackups')),
+            );
+        $defaultData = array();
+        foreach ($params as $paramName => $formField) {
+            if ('password' != $formField['type']) {
+                $defaultData[$paramName] = $this->container->getParameter($paramName);
+            }
+        }
+        $formBuilder = $this->createFormBuilder($defaultData);
+        foreach ($params as $paramName => $formField) {
+            $formBuilder->add($paramName, $formField['type'], array_diff_key($formField, array('type' => true)));
+        }
+        $form = $formBuilder->getForm();
+        if ($request->isMethod('POST')) {
+            $form->bind($request);
+            $data = $form->getData();
+            $allOk = true;
+            foreach ($data as $paramName => $paramValue) {
+                $ok = true;
+                if ('password' == $params[$paramName]['type']) {
+                    if (!empty($paramValue)) {
+                        $ok = $this->setParameter($paramName, $paramValue);
+                    }
+                } else {
+                    if ($paramValue != $this->container->getParameter($paramName)) {
+                        $ok = $this->setParameter($paramName, $paramValue);
+                    }
+                }
+                if (!$ok) {
+                    $this->get('session')->getFlashBag()->add('manageParameters',
+                                                              $t->trans('Error saving parameter "%param%"',
+                                                                        array('%param%' => $params[$paramName]['label']),
+                                                                        'BinovoTknikaBackups'));
+                    $allOk = false;
+                }
+            }
+            if ($allOk) {
+                $this->get('session')->getFlashBag()->add('manageParameters',
+                                                          $t->trans('Parameters updated',
+                                                                    array(),
+                                                                    'BinovoTknikaBackups'));
+            }
+
+            return $this->redirect($this->generateUrl('manageParameters'));
+        } else {
+
+            return $this->render('BinovoTknikaTknikaBackupsBundle:Default:params.html.twig',
+                                 array('form'    => $form->createView()));
+        }
+    }
+
+    /**
+     * Sets the value of a filed in the parameters.yml file to the given value
+     */
+    public function setParameter($name, $value)
+    {
+        $paramsFilename = dirname(__FILE__) . '/../../../../../app/config/parameters.yml';
+        $paramsFile = file_get_contents($paramsFilename);
+        if (false == $paramsFile) {
+            return false;
+        }
+        $updated = preg_replace("/$name:.*/", "$name: $value", $paramsFile);
+        $ok = file_put_contents($paramsFilename, $updated);
+        return $ok;
     }
 
     /**

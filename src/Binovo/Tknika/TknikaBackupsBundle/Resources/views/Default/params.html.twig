@@ -1,0 +1,20 @@
+{% extends 'BinovoTknikaTknikaBackupsBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoTknikaBackups' %}
+
+{% block body %}
+
+<form class="form-horizontal" action="{{ path('manageParameters') }}" method="post" {{ form_enctype(form) }}>
+    <legend>{% trans %}Manage parameters{% endtrans %}</legend>
+{% for flashMessage in app.session.flashbag.get('manageParameters') %}
+    <div class="controls help-block">
+        {{ flashMessage }}
+    </div>
+{% endfor %}
+{% form_theme form 'BinovoTknikaTknikaBackupsBundle:Default:fields.html.twig' %}
+    <div>
+        {{ form_widget(form) }}
+    </div>
+    <input class="btn" type="submit" value="{% trans %}Change{% endtrans %}"/>
+</form>
+
+{% endblock %}
