@@ -1,4 +1,5 @@
 /etc/apache2/sites-available/tknikabackups
+/etc/apache2/conf.d/tknikabackups
 /etc/cron.d/tknikabackups
 /etc/tknikabackups/config.yml
 /etc/tknikabackups/config_dev.yml

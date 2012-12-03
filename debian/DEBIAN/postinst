@@ -36,8 +36,14 @@ then
     else
         user="'$dbusername'"
     fi
+    echo 'Create user'
     echo "CREATE USER $user IDENTIFIED BY '$dbuserpassword';" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost" || true
     echo "GRANT ALL ON $dbname.* TO $user;" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost" || true
+    echo 'Configure parameters'
+    sed -i "s#database_host:.*#database_host: $dbhost#"                 /etc/tknikabackups/parameters.yml
+    sed -i "s#database_name:.*#database_name: $dbname#"                 /etc/tknikabackups/parameters.yml
+    sed -i "s#database_user:.*#database_user: $dbusername#"             /etc/tknikabackups/parameters.yml
+    sed -i "s#database_password:.*#database_password: $dbuserpassword#" /etc/tknikabackups/parameters.yml
 else
     echo DB seems to be ready
 fi

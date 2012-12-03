@@ -29,10 +29,10 @@ Template: tknikabackups/dbusername
 Type: string
 Default: tknikabackups
 Description: DB user:
- The application will connect to the databse using this user.
+ The application will connect to the database using this user.
 
 Template: tknikabackups/dbuserpassword
 Type: password
 Default: tknikabackups
 Description: DB user password:
- The application will connect to the databse using this password.
+ The application will connect to the database using this password.

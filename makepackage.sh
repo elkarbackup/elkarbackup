@@ -53,13 +53,18 @@ find .debian -type d | xargs chmod 755
 sed -i 's#tmp_dir:.*#tmp_dir: /tmp#'                                   .debian/etc/tknikabackups/parameters.yml
 sed -i 's#backup_dir:.*#backup_dir: /var/spool/tknikabackups/backups#' .debian/etc/tknikabackups/parameters.yml
 sed -i 's#upload_dir:.*#upload_dir: /var/spool/tknikabackups/uploads#' .debian/etc/tknikabackups/parameters.yml
+sed -i 's#mailer_transport:.*#mailer_transport: smtp#'                 .debian/etc/tknikabackups/parameters.yml
+sed -i 's#mailer_user:.*#mailer_user: #'                               .debian/etc/tknikabackups/parameters.yml
+sed -i 's#mailer_password:.*#mailer_password: #'                       .debian/etc/tknikabackups/parameters.yml
+sed -i 's#mailer_host:.*#mailer_host: localhost#'                      .debian/etc/tknikabackups/parameters.yml
+VERSION=$(cat debian/DEBIAN/control | grep 'Version' | sed -e 's/Version: //' -e 's/ *//')
 mkdir -p .debian/var/spool/tknikabackups/backups
 mkdir -p .debian/var/spool/tknikabackups/uploads
 
 #
 # build an verify
 #
-fakeroot dpkg-deb --build .debian tknikabackups_1.0_all.deb
+fakeroot dpkg-deb --build .debian tknikabackups_${VERSION}_all.deb
 echo Package created
 
-lintian tknikabackups_1.0_all.deb | tee lintian.log | egrep '^E'
+lintian tknikabackups_${VERSION}_all.deb | tee lintian.log | egrep '^E'

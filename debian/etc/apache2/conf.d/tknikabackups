@@ -1,0 +1,5 @@
+<Directory "/usr/share/tknikabackups/web/">
+   AllowOverride All
+   Allow from All
+</Directory>
+Alias /tknikabackups /usr/share/tknikabackups/web
