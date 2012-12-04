@@ -4,16 +4,6 @@ set -e
 # Source debconf library.
 . /usr/share/debconf/confmodule
 
-db_reset tknikabackups/dbhost
-db_reset tknikabackups/dbname
-db_reset tknikabackups/dbusername
-db_reset tknikabackups/dbuserpassword
-
-db_input high tknikabackups/dbhost
-db_input high tknikabackups/dbname
-db_input high tknikabackups/dbusername
-db_input high tknikabackups/dbuserpassword
-
 MOUNTDIR=`df -P /var/log | tail -n 1 |sed 's/.* //'`
 echo /var/log mounted in $MOUNTDIR
 ACL_ENABLED=`cat /proc/mounts |grep " $MOUNTDIR "|tr , \\\n | grep acl` || true

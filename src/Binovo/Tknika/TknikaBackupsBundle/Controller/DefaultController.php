@@ -23,6 +23,8 @@ use Symfony\Component\Security\Core\SecurityContext;
 class DefaultController extends Controller
 {
 
+    const PUBLIC_KEY_FILE = '/var/lib/tknikabackups/.ssh/id_rsa.pub';
+
     protected function info($msg, $translatorParams = array(), $context = array())
     {
         $logger = $this->get('BnvWebLogger');
@@ -62,6 +64,20 @@ class DefaultController extends Controller
     public function aboutAction(Request $request)
     {
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:about.html.twig');
+    }
+
+    /**
+     * @Route("/config/publickey", name="downloadPublicKey")
+     * @Template()
+     */
+    public function downloadPublicKeyAction(Request $request)
+    {
+        if (!file_exists(self::PUBLIC_KEY_FILE)) {
+            throw $this->createNotFoundException($this->trans('Unable to find public key:'));
+        }
+        $headers = array('Content-Type'        => 'text/plain',
+                         'Content-Disposition' => sprintf('attachment; filename="Publickey.pub"'));
+        return new Response(file_get_contents(self::PUBLIC_KEY_FILE), 200, $headers);
     }
 
     public function trans($msg, $params = array(), $domain = 'BinovoTknikaBackups')
@@ -713,7 +729,8 @@ EOF;
         } else {
 
             return $this->render('BinovoTknikaTknikaBackupsBundle:Default:params.html.twig',
-                                 array('form'    => $form->createView()));
+                                 array('form'            => $form->createView(),
+                                       'showKeyDownload' => file_exists(self::PUBLIC_KEY_FILE)));
         }
     }
 
