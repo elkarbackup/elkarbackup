@@ -8,6 +8,7 @@ use Binovo\Tknika\TknikaBackupsBundle\Entity\Job;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -280,6 +281,17 @@ class TickCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $allOk = true;
+        $allOk = $this->executeMessages($input, $output) && $allOk;
+
+        return $allOk;
+        $allOk = $this->executeBackups($input, $output) && $allOk;
+
+        return $allOk;
+    }
+
+    protected function executeBackups(InputInterface $input, OutputInterface $output)
+    {
         $logHandler = $this->getContainer()->get('BnvLoggerHandler');
         $logHandler->startRecordingMessages();
         $time = $this->parseTime($input->getArgument('time'));
@@ -401,4 +413,38 @@ EOF;
             }
         }
     }
+
+    protected function executeMessages(InputInterface $input, OutputInterface $output)
+    {
+        $container = $this->getContainer();
+        $manager = $container->get('doctrine')->getManager();
+        $repository = $manager->getRepository('BinovoTknikaTknikaBackupsBundle:Message');
+        $allMessages = $repository->createQueryBuilder('m')
+            ->where("m.to = 'TickCommand'")
+            ->orderBy('m.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+        foreach ($allMessages as $message) {
+            $this->info('About to run command: ' . $message->getMessage());
+            $commandAndParams = json_decode($message->getMessage(), true);
+            if (is_array($commandAndParams) && isset($commandAndParams['command'])) {
+                try {
+                    $command = $this->getApplication()->find($commandAndParams['command']);
+                    $input = new ArrayInput($commandAndParams);
+                    $status = $command->run($input, $output);
+                    if (0 == $status) {
+                        $this->info('Command success: ' . $message->getMessage());
+                    } else {
+                        $this->err('Command failure: ' . $message->getMessage());
+                    }
+                } catch (Exception $e) {
+                    $this->err('Exception %exceptionmsg% running command %command%: ', array('%exceptionmsg%' => $e->getMessage(), '%command%' => $message->getMessage()));
+                }
+            } else {
+                $this->err('Malformed command: ' . $message->getMessage());
+            }
+            $manager->remove($message);
+        }
+        $manager->flush();
+   }
 }
