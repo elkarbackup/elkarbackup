@@ -4,6 +4,7 @@ namespace Binovo\Tknika\TknikaBackupsBundle\Entity;
 
 use Binovo\Tknika\TknikaBackupsBundle\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
+use \RuntimeException;
 
 /**
  * @ORM\Entity

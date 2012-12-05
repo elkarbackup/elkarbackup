@@ -3,6 +3,7 @@
 namespace Binovo\Tknika\TknikaBackupsBundle\Controller;
 
 use \Exception;
+use \RuntimeException;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Client;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Job;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Policy;
@@ -92,13 +93,20 @@ class DefaultController extends Controller
      */
     public function deleteClientAction(Request $request, $id)
     {
+        $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoTknikaTknikaBackupsBundle:Client');
         $manager = $db->getManager();
         $client = $repository->find($id);
-        $manager->remove($client);
-        $manager->flush();
-        $this->info('Client "%clientid%" deleted', array('%clientid%' => $id), array('link' => $this->generateClientRoute($id)));
+        try {
+            $manager->remove($client);
+            $manager->flush();
+            $this->info('Client "%clientid%" deleted', array('%clientid%' => $id), array('link' => $this->generateClientRoute($id)));
+        } catch (Exception $e) {
+            $this->get('session')->getFlashBag()->add('clients',
+                                                      $t->trans('Unable to delete client: %extrainfo%',
+                                                                array('%extrainfo%' => $e->getMessage()), 'BinovoTknikaBackups'));
+        }
 
         return $this->redirect($this->generateUrl('showClients'));
     }
@@ -184,22 +192,31 @@ class DefaultController extends Controller
                     unset($jobsToDelete[$job->getid()]);
                 }
             }
-            foreach ($jobsToDelete as $job) {
-                $client->getJobs()->removeElement($job);
-                $em->remove($job);
-                $this->info('Delete client %clientid%, job "%jobid%"',
-                            array('%clientid%' => $client->getId(),
-                                  '%jobid%' => $job->getId()),
-                            array('link' => $this->generateJobRoute($job->getId(), $client->getId())));
-            }
-            $em->persist($client);
-            $em->flush();
-            $this->info('Save client %clientid%',
+            try {
+                foreach ($jobsToDelete as $job) {
+                    $client->getJobs()->removeElement($job);
+                    $em->remove($job);
+                    $this->info('Delete client %clientid%, job "%jobid%"',
+                                array('%clientid%' => $client->getId(),
+                                      '%jobid%' => $job->getId()),
+                                array('link' => $this->generateJobRoute($job->getId(), $client->getId())));
+                }
+                $em->persist($client);
+                $em->flush();
+                $this->info('Save client %clientid%',
                         array('%clientid%' => $client->getId()),
-                        array('link' => $this->generateClientRoute($client->getId()))
-                );
+                            array('link' => $this->generateClientRoute($client->getId()))
+                    );
 
-            return $this->redirect($this->generateUrl('showClients'));
+                return $this->redirect($this->generateUrl('showClients'));
+            } catch (Exception $e) {
+                $this->get('session')->getFlashBag()->add('client',
+                                                          $t->trans('Unable to save your changes: %extrainfo%',
+                                                                    array('%extrainfo%' => $e->getMessage()),
+                                                                    'BinovoTknikaBackups'));
+
+                return $this->redirect($this->generateUrl('editClient', array('id' => $client->getId())));
+            }
         } else {
 
             return $this->render('BinovoTknikaTknikaBackupsBundle:Default:client.html.twig',
@@ -215,13 +232,20 @@ class DefaultController extends Controller
      */
     public function deleteJobAction(Request $request, $idClient, $idJob)
     {
+        $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoTknikaTknikaBackupsBundle:Job');
         $manager = $db->getManager();
         $job = $repository->find($id);
-        $manager->remove($job);
-        $manager->flush();
-        $this->info('Delete client %clientid%, job "%jobid%"', array('%clientid%' => $idClient, '%jobid%' => $idJob), array('link' => $this->generateJobRoute($idJob, $idClient)));
+        try {
+            $manager->remove($job);
+            $manager->flush();
+            $this->info('Delete client %clientid%, job "%jobid%"', array('%clientid%' => $idClient, '%jobid%' => $idJob), array('link' => $this->generateJobRoute($idJob, $idClient)));
+        } catch (Exception $e) {
+            $this->get('session')->getFlashBag()->add('client',
+                                                      $t->trans('Unable to delete job: %extrainfo%',
+                                                                array('%extrainfo%' => $e->getMessage()), 'BinovoTknikaBackups'));
+        }
 
         return $this->redirect($this->generateUrl('editClient', array('id' => $idClient)));
     }
@@ -332,13 +356,22 @@ class DefaultController extends Controller
             if ($job->getOwner() == null) {
                 $job->setOwner($this->get('security.context')->getToken()->getUser());
             }
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($job);
-            $em->flush();
-            $this->info('Save client %clientid%, job %jobid%',
-                        array('%clientid%' => $job->getClient()->getId(),
-                              '%jobid%'    => $job->getId()),
-                        array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId())));
+            try {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($job);
+                $em->flush();
+                $this->info('Save client %clientid%, job %jobid%',
+                            array('%clientid%' => $job->getClient()->getId(),
+                                  '%jobid%'    => $job->getId()),
+                            array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId())));
+            } catch (Exception $e) {
+                $this->get('session')->getFlashBag()->add('job',
+                                                          $t->trans('Unable to save your changes: %extrainfo%',
+                                                                    array('%extrainfo%' => $e->getMessage()),
+                                                                    'BinovoTknikaBackups'));
+
+                return $this->redirect($this->generateJobRoute($job->getId(), $job->getClient()->getId()));
+            }
 
             return $this->redirect($this->generateUrl('editClient', array('id' => $idClient)));
         } else {

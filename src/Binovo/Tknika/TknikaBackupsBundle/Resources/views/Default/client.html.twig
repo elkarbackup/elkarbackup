@@ -5,6 +5,11 @@
 
 <form class="form-horizontal" action="{{ path('saveClient', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
     <legend>{% trans %}Edit client{% endtrans %}</legend>
+{% for flashMessage in app.session.flashbag.get('client') %}
+    <div class="controls help-block">
+        {{ flashMessage }}
+    </div>
+{% endfor %}
 {% form_theme form 'BinovoTknikaTknikaBackupsBundle:Default:fields.html.twig' %}
     <div>
     {{ form_row(form.name) }}

@@ -14,6 +14,11 @@
 <form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_enctype(form) }}>
     <legend>{% trans %}Edit Job{% endtrans %}</legend>
 {% form_theme form 'BinovoTknikaTknikaBackupsBundle:Default:fields.html.twig' %}
+{% for flashMessage in app.session.flashbag.get('job') %}
+    <div class="controls help-block">
+        {{ flashMessage }}
+    </div>
+{% endfor %}
     <div>
     <div class="controls">
         <a href="{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}">{% trans %}Backups{% endtrans %}</a>
