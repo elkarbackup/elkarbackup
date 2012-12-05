@@ -87,7 +87,7 @@ class Client
      */
     public function getSnapshotRoot()
     {
-        return sprintf('%s/%04d', Globals::getBackupDir(), $this->getId());
+        return Globals::getSnapshotRoot($this->getClient()->getId());
     }
 
     /**

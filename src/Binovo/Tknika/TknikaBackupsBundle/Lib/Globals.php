@@ -27,7 +27,19 @@ class Globals
         return self::$backupDir;
     }
 
-    public static  function delTree($dir) {
+    public static function getSnapshotRoot($idClient, $idJob = null)
+    {
+        if (!isset($idJob)) {
+
+            return sprintf('%s/%04d', Globals::getBackupDir(), $idClient);
+        } else {
+
+            return sprintf('%s/%04d/%04d', Globals::getBackupDir(), $idClient, $idJob);
+        }
+    }
+
+    public static function delTree($dir)
+    {
         $allOk = true;
         if (!file_exists($dir)) {
             return true;

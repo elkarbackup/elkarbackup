@@ -118,7 +118,7 @@ class Job
      */
     public function getSnapshotRoot()
     {
-        return sprintf('%s/%04d/%04d', Globals::getBackupDir(), $this->getClient()->getId(), $this->getId());
+        return Globals::getSnapshotRoot($this->getClient()->getId(), $this->getId());
     }
 
     /**
