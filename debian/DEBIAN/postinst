@@ -73,9 +73,6 @@ then
     setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/cache/tknikabackups
     setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/log/tknikabackups
     setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/log/tknikabackups
-    # the same in the spool directory
-    setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/spool/tknikabackups
-    setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/spool/tknikabackups
 fi
 chown -R $username.$username /var/cache/tknikabackups /var/log/tknikabackups /var/spool/tknikabackups /etc/tknikabackups/parameters.yml
 
