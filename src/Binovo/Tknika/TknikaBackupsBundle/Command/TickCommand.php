@@ -282,7 +282,13 @@ class TickCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $allOk = true;
-        $allOk = $this->executeMessages($input, $output) && $allOk;
+        try { // we don't want to miss a backup because a command fails, so catch any exception
+            $this->executeMessages($input, $output);
+        } catch (Exception $e) {
+            $this->err('Exception running queued commands: %exceptionmsg%', array('%exceptionmsg%' => $e->getMessage()));
+            $this->getContainer()->get('doctrine')->getManager()->flush();
+            $allOk = false;
+        }
         $allOk = $this->executeBackups($input, $output)  && $allOk;
 
         return $allOk;
@@ -419,32 +425,46 @@ EOF;
         $container = $this->getContainer();
         $manager = $container->get('doctrine')->getManager();
         $repository = $manager->getRepository('BinovoTknikaTknikaBackupsBundle:Message');
-        $allMessages = $repository->createQueryBuilder('m')
-            ->where("m.to = 'TickCommand'")
-            ->orderBy('m.id', 'ASC')
-            ->getQuery()
-            ->getResult();
-        foreach ($allMessages as $message) {
-            $this->info('About to run command: ' . $message->getMessage());
-            $commandAndParams = json_decode($message->getMessage(), true);
+        while (true) {
+            /*
+             * read messages one by one and remove them from the queue
+             * as soon as read so that if any command takes too long
+             * and the next invocation of the tick command starts
+             * running it won't see the commands that are already in
+             * process.
+             */
+            $message = $repository->createQueryBuilder('m')
+                ->where("m.to = 'TickCommand'")
+                ->orderBy('m.id', 'ASC')
+                ->getQuery()
+                ->setMaxResults(1)
+                ->getResult();
+            if (count($message) == 0) {
+                break;
+            }
+            $message = $message[0];
+            $commandText = $message->getMessage();
+            $manager->remove($message);
+            $this->info('About to run command: ' . $commandText);
+            $manager->flush();
+            $commandAndParams = json_decode($commandText, true);
             if (is_array($commandAndParams) && isset($commandAndParams['command'])) {
                 try {
                     $command = $this->getApplication()->find($commandAndParams['command']);
                     $input = new ArrayInput($commandAndParams);
                     $status = $command->run($input, $output);
                     if (0 == $status) {
-                        $this->info('Command success: ' . $message->getMessage());
+                        $this->info('Command success: ' . $commandText);
                     } else {
-                        $this->err('Command failure: ' . $message->getMessage());
+                        $this->err('Command failure: ' . $commandText);
                     }
                 } catch (Exception $e) {
-                    $this->err('Exception %exceptionmsg% running command %command%: ', array('%exceptionmsg%' => $e->getMessage(), '%command%' => $message->getMessage()));
+                    $this->err('Exception %exceptionmsg% running command %command%: ', array('%exceptionmsg%' => $e->getMessage(), '%command%' => $commandText));
                 }
             } else {
-                $this->err('Malformed command: ' . $message->getMessage());
+                $this->err('Malformed command: ' . $commandText);
             }
-            $manager->remove($message);
             $manager->flush();
         }
-   }
+    }
 }
