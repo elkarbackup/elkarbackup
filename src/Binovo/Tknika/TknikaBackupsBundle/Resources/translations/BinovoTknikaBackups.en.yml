@@ -36,6 +36,7 @@
 'Delete client %clientid%, job %jobid%': 'Delete client %clientid%, job %jobid%'
 'Delete': 'Delete'
 'Description': 'Description'
+'Disk usage': 'Disk usage'
 'Documentation will be available soon': 'Documentation will be available soon'
 'Download': 'Download'
 'Download as .tgz': 'Download as .tgz'

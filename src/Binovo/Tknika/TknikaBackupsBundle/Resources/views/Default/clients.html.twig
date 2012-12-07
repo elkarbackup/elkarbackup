@@ -15,6 +15,7 @@
         {# sorting of properties based on query components #}
         <th>{% trans %}Id{% endtrans %}</th>
         <th>{% trans %}Name{% endtrans %}</th>
+        <th>{% trans %}Disk usage{% endtrans %}</th>
         <th>{% trans %}Last log entry{% endtrans %}</th>
         <th>{% trans %}Status{% endtrans %}</th>
         <th>{% trans %}Actions{% endtrans %}</th>
@@ -25,6 +26,7 @@
     <tr onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'">
         <td><a href="{{ path('editClient', {id: client.id}) }}">{{ client.id }}</a></td>
         <td>{{ client.name }}</td>
+        <td style="text-align:right;">{{ (client.diskUsage / (1024*1024)) | number_format(0)}} MB</td>
         <td>{{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ (client.logEntry.levelName)|default('') }} {{ client.logEntry.message|default('')|slice(0, 50) }}{% if client.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
         <td>{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
         <td>
