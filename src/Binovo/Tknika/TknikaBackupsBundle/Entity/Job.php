@@ -178,7 +178,7 @@ class Job
      */
     public function prepareRemoveUpload()
     {
-        $this->filesToRemove = array($this->getScriptPath('pre'), $this->getScriptPath('post'), $this->getSnapshotRoot());
+        $this->filesToRemove = array($this->getScriptPath('pre'), $this->getScriptPath('post'));
     }
 
     /**

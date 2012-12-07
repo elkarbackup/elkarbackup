@@ -11,6 +11,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Monolog\Logger;
 
+/**
+ * This handler writes the log to the Database using the LogRecord
+ * entity. It is important to call flush after any of the log
+ * generating calls, otherwise the log entries will NOT be saved.
+ */
 class LoggerHandler extends AbstractProcessingHandler implements ContainerAwareInterface
 {
     private $container;
@@ -40,7 +45,6 @@ class LoggerHandler extends AbstractProcessingHandler implements ContainerAwareI
                                    isset($record['extra']['user_id'])   ? $record['extra']['user_id']   : null,
                                    isset($record['extra']['user_name']) ? $record['extra']['user_name'] : null);
         $em->persist($logRecord);
-        $em->flush();
         if ($this->isRecordingMessages) {
             $this->messages[] = $logRecord;
         }

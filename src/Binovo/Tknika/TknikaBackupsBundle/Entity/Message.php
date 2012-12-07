@@ -19,12 +19,12 @@ class Message
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", name="origin", length=32)
      */
     private $from;
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", name="destination", length=32)
      */
     private $to;
 
@@ -38,15 +38,18 @@ class Message
      */
     protected $dateTime;
 
-    public function __construct()
+    public function __construct($from = null, $to = null, $message = null)
     {
-        $dateTime = new DateTime();
+        $this->dateTime = new DateTime();
+        $this->from     = $from;
+        $this->message  = $message;
+        $this->to       = $to;
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -68,7 +71,7 @@ class Message
     /**
      * Get from
      *
-     * @return string 
+     * @return string
      */
     public function getFrom()
     {
@@ -90,7 +93,7 @@ class Message
     /**
      * Get to
      *
-     * @return string 
+     * @return string
      */
     public function getTo()
     {
@@ -112,7 +115,7 @@ class Message
     /**
      * Get message
      *
-     * @return text 
+     * @return text
      */
     public function getMessage()
     {
@@ -134,7 +137,7 @@ class Message
     /**
      * Get dateTime
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getDateTime()
     {

@@ -283,9 +283,7 @@ class TickCommand extends ContainerAwareCommand
     {
         $allOk = true;
         $allOk = $this->executeMessages($input, $output) && $allOk;
-
-        return $allOk;
-        $allOk = $this->executeBackups($input, $output) && $allOk;
+        $allOk = $this->executeBackups($input, $output)  && $allOk;
 
         return $allOk;
     }
@@ -400,6 +398,7 @@ EOF;
                 // this should never happen
                 die();
             }
+            $manager->flush();
         }
         if ($lastClient) {
             $idClient   = $lastClient->getId();
@@ -411,6 +410,7 @@ EOF;
             } else {
                 $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
             }
+            $manager->flush();
         }
     }
 
@@ -444,7 +444,7 @@ EOF;
                 $this->err('Malformed command: ' . $message->getMessage());
             }
             $manager->remove($message);
+            $manager->flush();
         }
-        $manager->flush();
    }
 }

@@ -6,6 +6,7 @@ use \Exception;
 use \RuntimeException;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Client;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Job;
+use Binovo\Tknika\TknikaBackupsBundle\Entity\Message;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Policy;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\User;
 use Binovo\Tknika\TknikaBackupsBundle\Form\Type\ClientType;
@@ -100,8 +101,12 @@ class DefaultController extends Controller
         $client = $repository->find($id);
         try {
             $manager->remove($client);
-            $manager->flush();
+            $msg = new Message('DefaultController', 'TickCommand',
+                               json_encode(array('command' => "tknikabackups:delete_job_backups",
+                                                 'client'  => (int)$id)));
+            $manager->persist($msg);
             $this->info('Client "%clientid%" deleted', array('%clientid%' => $id), array('link' => $this->generateClientRoute($id)));
+            $manager->flush();
         } catch (Exception $e) {
             $this->get('session')->getFlashBag()->add('clients',
                                                       $t->trans('Unable to delete client: %extrainfo%',
@@ -129,6 +134,7 @@ class DefaultController extends Controller
             $session->remove(SecurityContext::AUTHENTICATION_ERROR);
         }
         $this->info('Log in attempt with user: %username%', array('%username%' => $session->get(SecurityContext::LAST_USERNAME)));
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:login.html.twig', array(
                                  'last_username' => $session->get(SecurityContext::LAST_USERNAME),
@@ -159,6 +165,7 @@ class DefaultController extends Controller
         $this->info('View client %clientid%',
                     array('%clientid%' => $id),
                     array('link' => $this->generateClientRoute($id)));
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:client.html.twig',
                              array('form' => $form->createView()));
@@ -193,23 +200,29 @@ class DefaultController extends Controller
                 }
             }
             try {
-                foreach ($jobsToDelete as $job) {
+                foreach ($jobsToDelete as $idJob => $job) {
                     $client->getJobs()->removeElement($job);
                     $em->remove($job);
-                    $this->info('Delete client %clientid%, job "%jobid%"',
+                    $msg = new Message('DefaultController', 'TickCommand',
+                                       json_encode(array('command' => "tknikabackups:delete_job_backups",
+                                                         'client'  => (int)$id,
+                                                         'job'     => $idJob)));
+                    $em->persist($msg);
+                    $this->info('Delete client %clientid%, job %jobid%',
                                 array('%clientid%' => $client->getId(),
                                       '%jobid%' => $job->getId()),
                                 array('link' => $this->generateJobRoute($job->getId(), $client->getId())));
                 }
                 $em->persist($client);
-                $em->flush();
                 $this->info('Save client %clientid%',
                         array('%clientid%' => $client->getId()),
                             array('link' => $this->generateClientRoute($client->getId()))
                     );
+                $em->flush();
 
                 return $this->redirect($this->generateUrl('showClients'));
             } catch (Exception $e) {
+                throw $e;
                 $this->get('session')->getFlashBag()->add('client',
                                                           $t->trans('Unable to save your changes: %extrainfo%',
                                                                     array('%extrainfo%' => $e->getMessage()),
@@ -239,8 +252,8 @@ class DefaultController extends Controller
         $job = $repository->find($id);
         try {
             $manager->remove($job);
-            $manager->flush();
             $this->info('Delete client %clientid%, job "%jobid%"', array('%clientid%' => $idClient, '%jobid%' => $idJob), array('link' => $this->generateJobRoute($idJob, $idClient)));
+            $manager->flush();
         } catch (Exception $e) {
             $this->get('session')->getFlashBag()->add('client',
                                                       $t->trans('Unable to delete job: %extrainfo%',
@@ -274,6 +287,7 @@ class DefaultController extends Controller
         $this->info('View client %clientid%, job %jobid%',
                     array('%clientid%' => $idClient, '%jobid%' => $idJob),
                     array('link' => $this->generateJobRoute($idJob, $idClient)));
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:job.html.twig',
                              array('form' => $form->createView()));
@@ -310,6 +324,7 @@ class DefaultController extends Controller
         $this->info('Show job config %clientid%, job %jobid%',
                     array('%clientid%' => $idClient, '%jobid%' => $idJob),
                     array('link' => $this->generateJobRoute($idJob, $idClient)));
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:rsnapshotconfig.txt.twig',
                              array('cmdPreExec'   => $job->getPreScript()  ? $job->getScriptPath('pre') : '',
@@ -359,11 +374,11 @@ class DefaultController extends Controller
             try {
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($job);
-                $em->flush();
                 $this->info('Save client %clientid%, job %jobid%',
                             array('%clientid%' => $job->getClient()->getId(),
                                   '%jobid%'    => $job->getId()),
                             array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId())));
+                $em->flush();
             } catch (Exception $e) {
                 $this->get('session')->getFlashBag()->add('job',
                                                           $t->trans('Unable to save your changes: %extrainfo%',
@@ -419,6 +434,7 @@ class DefaultController extends Controller
                                                                      'idClient' => $idClient,
                                                                      'idJob'    => $idJob,
                                                                      'path'     => $path))));
+                $this->getDoctrine()->getManager()->flush();
 
                 return new StreamedResponse($f, 200, $headers);
             } else {
@@ -440,6 +456,7 @@ class DefaultController extends Controller
                                                                      'idClient' => $idClient,
                                                                      'idJob'    => $idJob,
                                                                      'path'     => $path))));
+                $this->getDoctrine()->getManager()->flush();
 
                 return $this->render('BinovoTknikaTknikaBackupsBundle:Default:directory.html.twig',
                                      array('content'  => $content,
@@ -462,6 +479,7 @@ class DefaultController extends Controller
                                                                  'idClient' => $idClient,
                                                                  'idJob'    => $idJob,
                                                                  'path'     => $path))));
+            $this->getDoctrine()->getManager()->flush();
 
             return new Response(file_get_contents($realPath), 200, $headers);
         }
@@ -503,7 +521,7 @@ class DefaultController extends Controller
         $this->info('View policy %policyname%',
                     array('%policyname%' => $policy->getName()),
                     array('link' => $this->generatePolicyRoute($policy->getId())));
-
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:policy.html.twig',
                              array('form' => $form->createView()));
@@ -521,10 +539,10 @@ class DefaultController extends Controller
         $manager = $db->getManager();
         $policy = $repository->find($id);
         $manager->remove($policy);
-        $manager->flush();
         $this->info('Delete policy %policyname%',
                     array('%policyname%' => $policy->getName()),
                     array('link' => $this->generatePolicyRoute($id)));
+        $manager->flush();
 
         return $this->redirect($this->generateUrl('showPolicies'));
     }
@@ -549,10 +567,10 @@ class DefaultController extends Controller
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($policy);
-            $em->flush();
             $this->info('Save policy %policyname%',
                         array('%policyname%' => $policy->getName()),
                         array('link' => $this->generatePolicyRoute($id)));
+            $em->flush();
 
             return $this->redirect($this->generateUrl('showPolicies'));
         } else {
@@ -585,6 +603,7 @@ class DefaultController extends Controller
         $this->info('View clients',
                     array(),
                     array('link' => $this->generateUrl('showClients')));
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:clients.html.twig',
                              array('pagination' => $pagination));
@@ -654,6 +673,7 @@ EOF;
         $this->info('View logs',
                     array(),
                     array('link' => $this->generateUrl('showLogs')));
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:logs.html.twig',
                              array('pagination' => $pagination,
@@ -693,6 +713,7 @@ EOF;
         $this->info('View policies',
                     array(),
                     array('link' => $this->generateUrl('showPolicies')));
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:policies.html.twig',
                              array('pagination' => $pagination));
@@ -727,6 +748,7 @@ EOF;
         foreach ($params as $paramName => $formField) {
             $formBuilder->add($paramName, $formField['type'], array_diff_key($formField, array('type' => true)));
         }
+        $result = null;
         $form = $formBuilder->getForm();
         if ($request->isMethod('POST')) {
             $form->bind($request);
@@ -757,14 +779,15 @@ EOF;
                                                                     array(),
                                                                     'BinovoTknikaBackups'));
             }
-
-            return $this->redirect($this->generateUrl('manageParameters'));
+            $result = $this->redirect($this->generateUrl('manageParameters'));
         } else {
-
-            return $this->render('BinovoTknikaTknikaBackupsBundle:Default:params.html.twig',
-                                 array('form'            => $form->createView(),
-                                       'showKeyDownload' => file_exists(self::PUBLIC_KEY_FILE)));
+            $result = $this->render('BinovoTknikaTknikaBackupsBundle:Default:params.html.twig',
+                                    array('form'            => $form->createView(),
+                                          'showKeyDownload' => file_exists(self::PUBLIC_KEY_FILE)));
         }
+        $this->getDoctrine()->getManager()->flush();
+
+        return $result;
     }
 
     /**
@@ -779,6 +802,16 @@ EOF;
         }
         $updated = preg_replace("/$name:.*/", "$name: $value", $paramsFile);
         $ok = file_put_contents($paramsFilename, $updated);
+        if ($ok) {
+            $this->info('Set Parameter %paramname%',
+                        array('%paramname%' => $name),
+                        array('link' => $this->generateUrl('showPolicies')));
+        } else {
+            $this->info('Set Parameter %paramname%',
+                        array('%paramname%' => $name),
+                        array('link' => $this->generateUrl('showPolicies')));
+        }
+
         return $ok;
     }
 
@@ -821,13 +854,13 @@ EOF;
                 $user->setPassword($encoder->encodePassword($data['newPassword'], $user->getSalt()));
                 $manager = $this->getDoctrine()->getManager();
                 $manager->persist($user);
-                $manager->flush();
                 $this->get('session')->getFlashBag()->add('changePassword',
                                                           $t->trans("Password changed", array(), 'BinovoTknikaBackups'));
                 $this->info('Change password for user %username%.',
                             array('%username%' => $user->getUsername()),
                             array('link' => $this->generateUserRoute($user->getId())));
             }
+            $manager->flush();
 
             return $this->redirect($this->generateUrl('changePassword'));
         } else {
@@ -850,10 +883,10 @@ EOF;
             $manager = $db->getManager();
             $user = $repository->find($id);
             $manager->remove($user);
-            $manager->flush();
             $this->info('Delete user %username%.',
                         array('%username%' => $user->getUsername()),
                         array('link' => $this->generateUserRoute($id)));
+            $manager->flush();
         }
 
         return $this->redirect($this->generateUrl('showUsers'));
@@ -878,6 +911,7 @@ EOF;
         $this->info('View user %username%.',
                     array('%username%' => $user->getUsername()),
                     array('link' => $this->generateUserRoute($id)));
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:user.html.twig',
                              array('form' => $form->createView()));
@@ -909,10 +943,10 @@ EOF;
             }
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
-            $em->flush();
             $this->info('Save user %username%.',
                         array('%username%' => $user->getUsername()),
                         array('link' => $this->generateUserRoute($id)));
+            $em->flush();
 
             return $this->redirect($this->generateUrl('showUsers'));
         } else {
@@ -953,6 +987,7 @@ EOF;
         $this->info('View users',
                     array(),
                     array('link' => $this->generateUrl('showUsers')));
+        $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:users.html.twig',
                              array('pagination' => $pagination));
