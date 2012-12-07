@@ -59,6 +59,11 @@ class Client
     protected $url;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    protected $diskUsage = 0;
+
+    /**
      * Helper variable to remember the script time for PostRemove actions
      */
     protected $filesToRemove;
@@ -427,5 +432,27 @@ class Client
     public function getLogEntry()
     {
         return $this->logEntry;
+    }
+
+    /**
+     * Set diskUsage
+     *
+     * @param integer $diskUsage
+     * @return Client
+     */
+    public function setDiskUsage($diskUsage)
+    {
+        $this->diskUsage = $diskUsage;
+        return $this;
+    }
+
+    /**
+     * Get diskUsage
+     *
+     * @return integer
+     */
+    public function getDiskUsage()
+    {
+        return $this->diskUsage;
     }
 }

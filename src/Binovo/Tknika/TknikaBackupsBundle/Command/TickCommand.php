@@ -355,6 +355,8 @@ EOF;
                         $this->err('Client "%clientid%", Job "%jobid%" error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     }
                     $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
+                    $du = (int)shell_exec(sprintf("du -bs '%s' | sed 's/\t.*//'", $job->getSnapshotRoot()));
+                    $job->setDiskUsage($du);
                     ++$i;
                 } else {
                     $state = self::NEW_CLIENT;
@@ -371,6 +373,8 @@ EOF;
                     } else {
                         $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
                     }
+                    $du = (int)shell_exec(sprintf("du -bs '%s' | sed 's/\t.*//'", $lastClient->getSnapshotRoot()));
+                    $lastClient->setDiskUsage($du);
                 }
                 $client = $job->getClient();
                 $idClient   = $client->getId();
@@ -416,6 +420,8 @@ EOF;
             } else {
                 $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
             }
+            $du = (int)shell_exec(sprintf("du -bs '%s' | sed 's/\t.*//'", $lastClient->getSnapshotRoot()));
+            $lastClient->setDiskUsage($du);
             $manager->flush();
         }
     }
