@@ -79,6 +79,7 @@ class DefaultController extends Controller
         }
         $headers = array('Content-Type'        => 'text/plain',
                          'Content-Disposition' => sprintf('attachment; filename="Publickey.pub"'));
+
         return new Response(file_get_contents(self::PUBLIC_KEY_FILE), 200, $headers);
     }
 
@@ -717,6 +718,22 @@ EOF;
 
         return $this->render('BinovoTknikaTknikaBackupsBundle:Default:policies.html.twig',
                              array('pagination' => $pagination));
+    }
+
+    /**
+     * @Route("/config/repositorybackupscript", name="getRepositoryBackupScript")
+     * @Template()
+     */
+    public function getRepositoryBackupScriptAction(Request $request)
+    {
+        $response = $this->render('BinovoTknikaTknikaBackupsBundle:Default:copyrepository.sh.twig',
+                                  array('server'      => $request->getHttpHost(),
+                                        'backupsroot' => $this->container->getParameter('backup_dir'),
+                                        'backupsuser' => 'tknikabackups'));
+        $response->headers->set('Content-Type'       , 'text/plain');
+        $response->headers->set('Content-Disposition', 'attachment; filename="copyrepository.sh"');
+
+        return $response;
     }
 
     /**

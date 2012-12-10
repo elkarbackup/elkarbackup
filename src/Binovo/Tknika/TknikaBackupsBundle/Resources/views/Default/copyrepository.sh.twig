@@ -1,0 +1,11 @@
+#!/bin/bash
+
+SERVER={{ server }}
+REPOSITORY={{ backupsroot }}
+SERVER_USER={{ backupsuser }}
+
+ssh "$SERVER_USER@$SERVER" "cd '$REPOSITORY'; find . -maxdepth 2 -mindepth 2" | sed s/^..// | while read jobId
+do
+    mkdir -p $jobId 2>/dev/null
+    rsync -aH --delete "$SERVER_USER@$SERVER":$REPOSITORY/$jobId/ $jobId
+done
