@@ -18,7 +18,7 @@ if [ "$1" = "remove" ]; then
         deluser --system $username
     fi
     . /usr/share/debconf/confmodule
-    a2dissite tknikabackups
+    a2dissite tknikabackups || true
     if [ -f /etc/init.d/apache2 ]
     then
         invoke-rc.d apache2 reload

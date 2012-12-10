@@ -2,6 +2,7 @@
 
 namespace Binovo\Tknika\TknikaBackupsBundle\Command;
 
+use \DateInterval;
 use \DateTime;
 use \Exception;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Job;
@@ -281,7 +282,8 @@ class TickCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $allOk = true;
+        $allOk = $this->executeBackups($input, $output);
+        $allOk = $this->removeOldLogs() && $allOk;
         try { // we don't want to miss a backup because a command fails, so catch any exception
             $this->executeMessages($input, $output);
         } catch (Exception $e) {
@@ -289,7 +291,6 @@ class TickCommand extends ContainerAwareCommand
             $this->getContainer()->get('doctrine')->getManager()->flush();
             $allOk = false;
         }
-        $allOk = $this->executeBackups($input, $output)  && $allOk;
 
         return $allOk;
     }
@@ -472,5 +473,20 @@ EOF;
             }
             $manager->flush();
         }
+    }
+
+    protected function removeOldLogs()
+    {
+        $container = $this->getContainer();
+        $manager = $container->get('doctrine')->getManager();
+        $maxAge  = $container->getParameter('max_log_age');
+        if (!empty($maxAge)) {
+            $interval = new DateInterval($maxAge);
+            $interval->invert = true;
+            $q = $manager->createQuery('DELETE FROM BinovoTknikaTknikaBackupsBundle:LogRecord l WHERE l.dateTime < :minDate');
+            $q->setParameter('minDate', date_add(new DateTime(), $interval));
+            $numDeleted = $q->execute();
+        }
+        return true;
     }
 }

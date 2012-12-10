@@ -25,7 +25,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 class DefaultController extends Controller
 {
 
-    const PUBLIC_KEY_FILE = '/var/lib/tknikabackups/.ssh/id_rsa.pub';
+    const PUBLIC_KEY_FILE  = '/var/lib/tknikabackups/.ssh/id_rsa.pub';
 
     protected function info($msg, $translatorParams = array(), $context = array())
     {
@@ -726,17 +726,34 @@ EOF;
     public function manageParametersAction(Request $request)
     {
         $t = $this->get('translator');
-        $params = array('database_host'     => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('MySQL host'     , array(), 'BinovoTknikaBackups')),
-                        'database_port'     => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('MySQL port'     , array(), 'BinovoTknikaBackups')),
-                        'database_name'     => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('MySQL DB name'  , array(), 'BinovoTknikaBackups')),
-                        'database_user'     => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('MySQL user'     , array(), 'BinovoTknikaBackups')),
-                        'database_password' => array('type' => 'password', 'required' => false, 'label' => $t->trans('MySQL password' , array(), 'BinovoTknikaBackups')),
-                        'mailer_transport'  => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Mailer transpor', array(), 'BinovoTknikaBackups')),
-                        'mailer_host'       => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Mailer host'    , array(), 'BinovoTknikaBackups')),
-                        'mailer_user'       => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Mailer user'    , array(), 'BinovoTknikaBackups')),
-                        'mailer_password'   => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Mailer password', array(), 'BinovoTknikaBackups')),
-                        'upload_dir'        => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Upload dir'     , array(), 'BinovoTknikaBackups')),
-                        'backup_dir'        => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Backups dir'    , array(), 'BinovoTknikaBackups')),
+        $params = array('database_host'     => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('MySQL host'            , array(), 'BinovoTknikaBackups')),
+                        'database_port'     => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('MySQL port'            , array(), 'BinovoTknikaBackups')),
+                        'database_name'     => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('MySQL DB name'         , array(), 'BinovoTknikaBackups')),
+                        'database_user'     => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('MySQL user'            , array(), 'BinovoTknikaBackups')),
+                        'database_password' => array('type' => 'password', 'required' => false, 'label' => $t->trans('MySQL password'        , array(), 'BinovoTknikaBackups')),
+                        'mailer_transport'  => array('type' => 'choice'  , 'required' => false, 'choices' => array('gmail'    => 'gmail',
+                                                                                                                   'mail'     => 'mail',
+                                                                                                                   'sendmail' => 'sendmail',
+                                                                                                                   'smtp'     => 'smtp'),
+                                                                                                'label' => $t->trans('Mailer transpor'       , array(), 'BinovoTknikaBackups')),
+                        'mailer_host'       => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Mailer host'           , array(), 'BinovoTknikaBackups')),
+                        'mailer_user'       => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Mailer user'           , array(), 'BinovoTknikaBackups')),
+                        'mailer_password'   => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Mailer password'       , array(), 'BinovoTknikaBackups')),
+                        'upload_dir'        => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Upload dir'            , array(), 'BinovoTknikaBackups')),
+                        'max_log_age'       => array('type' => 'choice'  , 'required' => false, 'choices' => array('P1D' => $t->trans('One day'    , array(), 'BinovoTknikaBackups'),
+                                                                                                                   'P1W' => $t->trans('One week'   , array(), 'BinovoTknikaBackups'),
+                                                                                                                   'P2W' => $t->trans('Two weeks'  , array(), 'BinovoTknikaBackups'),
+                                                                                                                   'P3W' => $t->trans('Three weeks', array(), 'BinovoTknikaBackups'),
+                                                                                                                   'P1M' => $t->trans('A month'    , array(), 'BinovoTknikaBackups'),
+                                                                                                                   'P6M' => $t->trans('Six months' , array(), 'BinovoTknikaBackups'),
+                                                                                                                   'P1Y' => $t->trans('A year'     , array(), 'BinovoTknikaBackups'),
+                                                                                                                   'P2Y' => $t->trans('Two years'  , array(), 'BinovoTknikaBackups'),
+                                                                                                                   'P3Y' => $t->trans('Three years', array(), 'BinovoTknikaBackups'),
+                                                                                                                   'P4Y' => $t->trans('Four years' , array(), 'BinovoTknikaBackups'),
+                                                                                                                   'P5Y' => $t->trans('Five years' , array(), 'BinovoTknikaBackups'),
+                                                                                                                   ''    => $t->trans('Never')     , array(), 'BinovoTknikaBackups'),
+                                                                                                'label' => $t->trans('Remove logs older than', array(), 'BinovoTknikaBackups')),
+                        'backup_dir'        => array('type' => 'text'    , 'required' => false, 'label' => $t->trans('Backups dir'           , array(), 'BinovoTknikaBackups')),
             );
         $defaultData = array();
         foreach ($params as $paramName => $formField) {
@@ -786,6 +803,12 @@ EOF;
                                           'showKeyDownload' => file_exists(self::PUBLIC_KEY_FILE)));
         }
         $this->getDoctrine()->getManager()->flush();
+        // clear cache so that changes take effect
+        $realCacheDir = $this->container->getParameter('kernel.cache_dir');
+        $oldCacheDir  = $realCacheDir.'_old';
+        $this->container->get('cache_clearer')->clear($realCacheDir);
+        rename($realCacheDir, $oldCacheDir);
+        $this->container->get('filesystem')->remove($oldCacheDir);
 
         return $result;
     }
