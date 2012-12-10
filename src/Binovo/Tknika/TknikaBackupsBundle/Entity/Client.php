@@ -54,11 +54,6 @@ class Client
     protected $preScriptFile;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    protected $url;
-
-    /**
      * @ORM\Column(type="integer")
      */
     protected $diskUsage = 0;
@@ -330,29 +325,6 @@ class Client
     public function getPostScriptFile()
     {
         return $this->postScriptFile;
-    }
-
-    /**
-     * Set url
-     *
-     * @param string $url
-     * @return Client
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-
-        return $this;
-    }
-
-    /**
-     * Get url
-     *
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->url;
     }
 
     /**

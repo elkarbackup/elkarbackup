@@ -18,7 +18,6 @@
         <div class="controls"><input type="text" disabled="disabled" value="{{ (form.vars.value.diskUsage / (1024*1024)) | number_format(0)  }} MB" /></div>
     </div>
     {{ form_row(form.description) }}
-    {{ form_row(form.url) }}
     {{ form_row(form.isActive) }}
     <div class="controls"><div class="input-append"><input class="input-large" id="Client_preScriptCurrent" type="text" disabled="true" value="{{form.vars.value.preScript}}" /><a id="Client_preScriptDelete" class="btn">{% trans %}Delete{% endtrans %}</a></div></div>
     {{ form_row(form.preScriptFile) }}
