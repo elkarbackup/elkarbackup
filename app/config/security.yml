@@ -33,8 +33,9 @@ security:
                 target: /
 
     access_control:
-        - { path: ^/login,         roles: IS_AUTHENTICATED_ANONYMOUSLY}
-        - { path: ^/user,          roles: ROLE_ADMIN}
-        - { path: ^/users,         roles: ROLE_ADMIN}
-        - { path: ^/config/params, roles: ROLE_ADMIN}
-        - { path: ^/,              roles: ROLE_USER}
+        - { path: ^/login                        , roles: IS_AUTHENTICATED_ANONYMOUSLY}
+        - { path: ^/user                         , roles: ROLE_ADMIN}
+        - { path: ^/users                        , roles: ROLE_ADMIN}
+        - { path: ^/config/params                , roles: ROLE_ADMIN}
+        - { path: ^/config/repositorybackupscript, roles: ROLE_ADMIN}
+        - { path: ^/                             , roles: ROLE_USER}

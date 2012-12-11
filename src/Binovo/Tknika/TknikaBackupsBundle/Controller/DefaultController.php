@@ -727,9 +727,13 @@ EOF;
     public function getRepositoryBackupScriptAction(Request $request)
     {
         $response = $this->render('BinovoTknikaTknikaBackupsBundle:Default:copyrepository.sh.twig',
-                                  array('server'      => $request->getHttpHost(),
-                                        'backupsroot' => $this->container->getParameter('backup_dir'),
-                                        'backupsuser' => 'tknikabackups'));
+                                  array('backupsroot'   => $this->container->getParameter('backup_dir'),
+                                        'backupsuser'   => 'tknikabackups',
+                                        'mysqldb'       => $this->container->getParameter('database_name'),
+                                        'mysqlhost'     => $this->container->getParameter('database_host'),
+                                        'mysqlpassword' => $this->container->getParameter('database_password'),
+                                        'mysqluser'     => $this->container->getParameter('database_user'),
+                                        'server'        => $request->getHttpHost()));
         $response->headers->set('Content-Type'       , 'text/plain');
         $response->headers->set('Content-Disposition', 'attachment; filename="copyrepository.sh"');
 

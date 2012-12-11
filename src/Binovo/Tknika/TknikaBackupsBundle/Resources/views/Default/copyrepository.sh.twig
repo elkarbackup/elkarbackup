@@ -1,7 +1,11 @@
 #!/bin/bash
 
-SERVER={{ server }}
+MYSQL_DB={{ mysqldb }}
+MYSQL_HOST={{ mysqlhost }}
+MYSQL_PASSWORD={{ mysqlpassword }}
+MYSQL_USER={{ mysqluser }}
 REPOSITORY={{ backupsroot }}
+SERVER={{ server }}
 SERVER_USER={{ backupsuser }}
 
 ssh "$SERVER_USER@$SERVER" "cd '$REPOSITORY'; find . -maxdepth 2 -mindepth 2" | sed s/^..// | while read jobId
@@ -9,3 +13,4 @@ do
     mkdir -p $jobId 2>/dev/null
     rsync -aH --delete "$SERVER_USER@$SERVER":$REPOSITORY/$jobId/ $jobId
 done
+ssh "$SERVER_USER@$SERVER" "mysqldump -u$MYSQL_USER -p$MYSQL_PASSWORD -h$MYSQL_HOST $MYSQL_DB" > tknikabackups.sql

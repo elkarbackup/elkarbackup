@@ -59,13 +59,13 @@ if test "x$username" != xwww-data -a "x$username" != x
 then
     if test x`grep $username /etc/passwd` = x
     then
-        adduser --system --home /var/lib/tknikabackups --group $username
+        adduser --system --home /var/lib/tknikabackups --shell /bin/bash --group $username
     fi
     if [ ! -f /var/lib/tknikabackups/.ssh/id_rsa ]
     then
         mkdir /var/lib/tknikabackups/.ssh || true
         ssh-keygen -t rsa -N '' -C 'Automatically generated key for tknikabackups.' -f /var/lib/tknikabackups/.ssh/id_rsa
-        chown -R $username.$username /var/lib/tknikabackups/.ssh
+        chown -R $username.$username /var/lib/tknikabackups
     fi
     # set rwx permissions for www-data and the backup user in the cache and log directories
     # as described in http://symfony.com/doc/current/book/installation.html#configuration-and-setup
@@ -75,7 +75,7 @@ then
     setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/log/tknikabackups
 fi
 chown -R $username.$username /var/cache/tknikabackups /var/log/tknikabackups /var/spool/tknikabackups /etc/tknikabackups/parameters.yml
-chown -R www-data.www-data /var/lib/tknikabackups
+chown -R www-data.www-data /var/lib/tknikabackups/sessions
 
 a2ensite tknikabackups
 a2enmod  rewrite

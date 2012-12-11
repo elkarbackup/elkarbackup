@@ -35,13 +35,13 @@ sed -i '1c#!/bin/bash' .debian/usr/share/tknikabackups/vendor/swiftmailer/swiftm
 # ensure the packaged versions uses only the release environment
 rm .debian/usr/share/tknikabackups/web/app_dev.php
 sed -i 's/app_dev/app/' .debian/usr/share/tknikabackups/web/.htaccess
-# setup cache and log directoies in var
+# setup cache, session and log directoies in var
 mkdir -p .debian/var/cache/tknikabackups
 mkdir -p .debian/var/log/tknikabackups
-mkdir -p .debian/var/lib/tknikabackups
-ln -s /var/cache/tknikabackups .debian/usr/share/tknikabackups/app/cache
-ln -s /var/log/tknikabackups   .debian/usr/share/tknikabackups/app/logs
-ln -s /var/lib/tknikabackups   .debian/usr/share/tknikabackups/app/sessions
+mkdir -p .debian/var/lib/tknikabackups/sessions
+ln -s /var/cache/tknikabackups        .debian/usr/share/tknikabackups/app/cache
+ln -s /var/log/tknikabackups          .debian/usr/share/tknikabackups/app/logs
+ln -s /var/lib/tknikabackups/sessions .debian/usr/share/tknikabackups/app/sessions
 # setup configuraiton in /etc
 mv .debian/usr/share/tknikabackups/app/config .debian/etc/tknikabackups
 ln -s  /etc/tknikabackups .debian/usr/share/tknikabackups/app/config
