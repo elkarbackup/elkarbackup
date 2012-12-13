@@ -31,14 +31,7 @@
     {{ form_row(form.description, {attr: {class: 'input-xxlarge'}}) }}
     {{ form_row(form.url, {attr: {class: 'input-xxlarge'}}) }}
     {{ form_row(form.isActive) }}
-    <div class="control-group">
-        <label class="control-label">
-            {% trans %}Owner{% endtrans %}
-        </label>
-        <div class="controls">
-            <a href="{{path('editUser', {id:form.vars.value.owner.id})}}">{{ form.vars.value.owner.username }}</a>
-        </div>
-    </div>
+    {{ form_row(form.owner, {read_only: not is_granted('ROLE_ADMIN')}) }}
     {{ form_row(form.notificationsTo) }}
     {{ form_row(form.notificationsEmail, {attr: {class: 'input-xxlarge'}}) }}
     {{ form_row(form.minNotificationLevel) }}

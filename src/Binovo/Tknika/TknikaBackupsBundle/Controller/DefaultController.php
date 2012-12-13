@@ -364,11 +364,14 @@ class DefaultController extends Controller
                 ->getRepository('BinovoTknikaTknikaBackupsBundle:Job');
             $job = $repository->find($idJob);
         }
+        $storedOwner = $job->getOwner();
         $form = $this->createForm(new JobType(), $job, array('translator' => $t));
         $form->bind($request);
-
         if ($form->isValid()) {
             $job = $form->getData();
+            if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) { // only allow chown to admin
+                $job->setOwner($storedOwner);
+            }
             if ($job->getOwner() == null) {
                 $job->setOwner($this->get('security.context')->getToken()->getUser());
             }
