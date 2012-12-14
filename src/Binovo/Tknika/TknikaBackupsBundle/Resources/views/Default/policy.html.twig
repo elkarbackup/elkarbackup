@@ -58,9 +58,9 @@
             {% trans %}Daily{% endtrans %}
         </label>
         <div class="controls" id="daily">
-            <input data-dojo-type="dijit/form/NumberSpinner"
+            <input data-dojo-type="dijit/form/TextBox"
                    value="0"
-                   data-dojo-props="id: 'dailyCount', readOnly: true, intermediateChanges: true, smallDelta: 1, constraints: {min:0,max:24,places:0}, style: 'width: 100px'" />
+                   data-dojo-props="id: 'dailyCount', readOnly: true, style: 'width: 100px'" />
             <input id="dailyHour" data-dojo-type="dijit/form/TimeTextBox" data-dojo-props="constraints:{timePattern: 'HH:mm', clickableIncrement: 'T00:15:00',visibleIncrement: 'T00:15:00', visibleRange: 'T01:00:00'}, value: '09:00'" />
         </div>
         <div class="controls">
