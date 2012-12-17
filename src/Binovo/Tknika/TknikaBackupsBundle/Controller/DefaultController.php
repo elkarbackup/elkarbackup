@@ -295,6 +295,26 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/client/{idClient}/job/{idJob}/run", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="runJob")
+     * @Method("POST")
+     * @Template()
+     */
+    public function runJobAction(Request $request, $idClient, $idJob)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $msg = new Message('DefaultController', 'TickCommand',
+                           json_encode(array('command' => 'tknikabackups:run_job',
+                                             'client'  => $idClient,
+                                             'job'     => $idJob)));
+        $em->persist($msg);
+        $em->flush();
+        $response = new Response("Job execution requested successfully");
+        $response->headers->set('Content-Type', 'text/plain');
+
+        return $response;
+    }
+
+    /**
      * @Route("/client/{idClient}/job/{idJob}/config", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="showJobConfig")
      * @Method("GET")
      * @Template()
@@ -692,6 +712,7 @@ EOF;
                                                      'name'    => 'filter[like][l.link]'),
                                    'source' => array('options' => array(''                  => $t->trans('All', array(), 'BinovoTknikaBackups'),
                                                                         'DefaultController' => 'DefaultController',
+                                                                        'RunJobCommand'     => 'RunJobCommand',
                                                                         'TickCommand'       => 'TickCommand'),
                                                      'value'   => isset($formValues['filter[eq][l.source]']) ? $formValues['filter[eq][l.source]'] : null,
                                                      'name'    => 'filter[eq][l.source]')));

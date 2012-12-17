@@ -12,7 +12,7 @@
 {% block body %}
 
 <form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_enctype(form) }}>
-    <legend>{% trans %}Edit Job{% endtrans %}</legend>
+    <legend id="legend">{% trans %}Edit Job{% endtrans %}</legend>
 {% form_theme form 'BinovoTknikaTknikaBackupsBundle:Default:fields.html.twig' %}
 {% for flashMessage in app.session.flashbag.get('job') %}
     <div class="controls help-block">
@@ -82,12 +82,33 @@
                          dojo.byId('Job_postScriptCurrent').value = '{% trans %}No script{% endtrans %}';
                          this.disabled = true;
                      });
+        dojo.connect(dojo.byId('runNow'),
+                     'onclick',
+                     function() {
+                         var args = {
+                             form: dojo.byId('runNowForm'),
+                             handleAs: 'text',
+                             load: function(data) {
+                                 dojo.place('<div class="controls help-block">' + data + '</div>', dojo.byId('legend'), 'after');
+                                 dojo.attr(dojo.byId('runNow'), 'disabled', true)
+                             },
+                             error: function(data) {
+                                 dojo.place('<div class="controls help-block">' + data + '</div>', dojo.byId('legend'), 'after');
+                             }
+                         };
+                         console.log(args);
+                         dojo.xhrPost(args);
+                     });
     });
     </script>
     {{ form_row(form.postScript) }}
     {{ form_rest(form) }}
     </div>
-    <input class="btn" type="submit" value="{% trans %}Save{% endtrans %}"/>
+    <input class="btn" type="button" value="{% trans %}Run now{% endtrans %}" id="runNow"/>
+    <input class="btn" type="submit" value="{% trans %}Save{% endtrans %}" />
+</form>
+
+<form id="runNowForm" action="{{ path('runJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="POST" {{ form_enctype(form) }}>
 </form>
 
 {% endblock %}
