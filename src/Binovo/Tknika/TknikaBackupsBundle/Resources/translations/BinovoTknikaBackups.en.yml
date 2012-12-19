@@ -111,6 +111,7 @@
 'Password': 'Password'
 'Password:': 'Password:'
 'Passwords do not match': 'Passwords do not match'
+'Path': 'Path'
 'Path not found:': 'Path not found: '
 'Policies': 'Policies'
 'Policy %policyid% has no active retains': 'Policy %policyid% has no active retains'
@@ -188,6 +189,13 @@ policy_help: |
 client_help: |
  <h4>Name</h4>
  This is the identifier for the client. It will show up in lists and combo boxes. The name must be unique among all clients, the application will complain if you try to use a name which is already in use.
+ <h4>Url</h4>
+ This is connection string for the client. The application will use this value together with the job's path as the full url for the job. Typical values for this field are:
+ <ul>
+   <li>It can be empty. This is useful when the data we want to backup is mapped in the local file system.</li>
+   <li><i>user@domain.name</i> will connect via ssh to the <i>domain.name</i> machine using <i>user</i> as user for the connection.</li>
+   <li><i>user@domain.name:</i> Notice the colon. Same as above but instead of using ssh connections it will connect to the remote rsync server.</li>
+ </ul>
  <h4>Disk usage</h4>
  The currently used disk space by this client.
  <h4>Description</h4>
@@ -202,6 +210,8 @@ client_job_help: |
 job_help: |
  <h4>Name</h4>
  This is the identifier for the job. It will show up in lists and combo boxes. The name must be unique among all jobs, the application will complain if you try to use a name which is already in use.
+ <h4>Path</h4>
+ The path or the name of the rsync resource in the client.
  <h4>Disk usage</h4>
  The currently used disk space by this job.
  <h4>Description</h4>

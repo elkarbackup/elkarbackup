@@ -23,7 +23,7 @@ class JobType extends AbstractType
                 ->add('owner'             , 'entity'  , array('label'    => $t->trans('Owner', array(), 'BinovoTknikaBackups'),
                                                               'property' => 'username',
                                                               'class'    => 'BinovoTknikaTknikaBackupsBundle:User'))
-                ->add('url'               , 'text'    , array('label' => $t->trans('Url', array(), 'BinovoTknikaBackups'),
+                ->add('path'              , 'text'    , array('label' => $t->trans('Path', array(), 'BinovoTknikaBackups'),
                                                               'attr'  => array('class'    => 'span10')))
                 ->add('notificationsTo'   , 'choice'  , array('label'    => $t->trans('Send notices to', array(), 'BinovoTknikaBackups'),
                                                               'required' => false,

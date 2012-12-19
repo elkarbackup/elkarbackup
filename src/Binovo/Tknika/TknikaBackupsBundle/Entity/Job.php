@@ -95,7 +95,7 @@ class Job
     /**
      * @ORM\Column(type="string", length=255)
      */
-    protected $url;
+    protected $path;
 
     /**
      * @ORM\Column(type="integer")
@@ -364,16 +364,26 @@ class Job
     }
 
     /**
-     * Set url
+     * Set path
      *
-     * @param string $url
+     * @param string $path
      * @return Job
      */
-    public function setUrl($url)
+    public function setPath($path)
     {
-        $this->url = $url;
+        $this->path = $path;
 
         return $this;
+    }
+
+    /**
+     * Get path
+     *
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
     }
 
     /**
@@ -383,7 +393,14 @@ class Job
      */
     public function getUrl()
     {
-        return $this->url;
+        $clientUrl = $this->client->getUrl();
+        if (empty($clientUrl)) {
+
+            return $this->path;
+        } else {
+
+            return sprintf("%s:%s", $this->client->getUrl(), $this->path);
+        }
     }
 
     /**

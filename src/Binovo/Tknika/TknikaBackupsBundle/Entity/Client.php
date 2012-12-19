@@ -47,6 +47,11 @@ class Client
     protected $postScriptFile;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    protected $url;
+
+    /**
      * @ORM\Column(type="text", nullable=true)
      */
     protected $preScript;
@@ -325,6 +330,29 @@ class Client
     public function getPostScriptFile()
     {
         return $this->postScriptFile;
+    }
+
+    /**
+     * Set url
+     *
+     * @param string $url
+     * @return Job
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * Get url
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
     }
 
     /**

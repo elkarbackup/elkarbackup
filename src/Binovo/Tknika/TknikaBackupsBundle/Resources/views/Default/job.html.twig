@@ -26,12 +26,12 @@
                     <a href="{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}">{% trans %}Backups{% endtrans %}</a>
                 </div>
                 {{ form_row(form.name) }}
+                {{ form_row(form.path) }}
                 <div class="control-group">
                     <label class="control-label">{% trans %}Disk usage{% endtrans %}</label>
                     <div class="controls"><input type="text" disabled="disabled" value="{{ (form.vars.value.diskUsage / (1024*1024)) | number_format(0)  }} MB" /></div>
                 </div>
                 {{ form_row(form.description) }}
-                {{ form_row(form.url) }}
                 {{ form_row(form.isActive) }}
                 {{ form_row(form.owner, {read_only: not is_granted('ROLE_ADMIN')}) }}
                 {{ form_row(form.notificationsTo) }}
