@@ -623,6 +623,9 @@ class DefaultController extends Controller
             );
         foreach ($pagination as $i => $client) {
             $client->setLogEntry($this->getLastLogForLink('%/client/' . $client->getId()));
+            foreach ($client->getJobs() as $job) {
+                $job->setLogEntry($this->getLastLogForLink('%/client/' . $client->getId() . '/job/' . $job->getId()));
+            }
         }
         $this->info('View clients',
                     array(),

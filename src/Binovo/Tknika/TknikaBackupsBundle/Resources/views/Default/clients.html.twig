@@ -38,6 +38,23 @@
             </form>
         </td>
     </tr>
+        {% for job in client.jobs %}
+    <tr>
+        <td><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
+        <td>{{ job.name }}</td>
+        <td style="text-align:right;">{{ (job.diskUsage / (1024*1024)) | number_format(0)}} MB</td>
+        <td>{{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ (job.logEntry.levelName)|default('') }} {{ job.logEntry.message|default('')|slice(0, 50) }}{% if job.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
+        <td>{% if job.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
+        <td>
+            <form action="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}" style="display:inline">
+                <input class="btn" type="submit" value="{% trans %}Edit{% endtrans %}" />
+            </form>
+            <form action="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" method="POST" style="display:inline">
+                <input class="btn" type="submit" value="{% trans %}Delete{% endtrans %}" />
+            </form>
+        </td>
+    </tr>
+        {% endfor %}
     {% endfor %}
 </table>
 
