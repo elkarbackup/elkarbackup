@@ -140,12 +140,12 @@ abstract class BackupRunningCommand extends ContainerAwareCommand
         $url      = $job->getUrl();
         $retains  = $job->getPolicy()->getRetains();
         $includes = array();
-        $include = $job->getPolicy()->getInclude();
+        $include = $job->getInclude();
         if ($include) {
             $includes = explode("\n", $include);
         }
         $excludes = array();
-        $exclude = $job->getPolicy()->getExclude();
+        $exclude = $job->getExclude();
         if ($exclude) {
             $excludes = explode("\n", $exclude);
         }
@@ -196,6 +196,7 @@ abstract class BackupRunningCommand extends ContainerAwareCommand
             } else {
                 $command = sprintf('"%s" -c "%s" %s 2>&1', $rsnapshot, $confFileName, $retain);
             }
+            echo "$command\n";
             $commandOutput = array();
             $status        = 0;
             $this->info('Running %command%', array('%command%' => $command), $context);

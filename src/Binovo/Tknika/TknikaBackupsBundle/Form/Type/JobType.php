@@ -20,6 +20,12 @@ class JobType extends AbstractType
                                                               'required' => false,
                                                               'class'    => 'BinovoTknikaTknikaBackupsBundle:Policy',
                                                               'property' => 'name'))
+                ->add('exclude'           , 'textarea', array('label' => $t->trans('Exclude', array(), 'BinovoTknikaBackups'),
+                                                              'required' => false,
+                                                              'attr' => array('class'    => 'span10')))
+                ->add('include'           , 'textarea', array('label' => $t->trans('Include', array(), 'BinovoTknikaBackups'),
+                                                              'required' => false,
+                                                              'attr' => array('class'    => 'span10')))
                 ->add('owner'             , 'entity'  , array('label'    => $t->trans('Owner', array(), 'BinovoTknikaBackups'),
                                                               'property' => 'username',
                                                               'class'    => 'BinovoTknikaTknikaBackupsBundle:User'))

@@ -330,12 +330,12 @@ class DefaultController extends Controller
         $policy = $job->getPolicy();
         $retains = $policy->getRetains();
         $includes = array();
-        $include = $policy->getInclude();
+        $include = $job->getInclude();
         if ($include) {
             $includes = explode("\n", $include);
         }
         $excludes = array();
-        $exclude = $policy->getExclude();
+        $exclude = $job->getExclude();
         if ($exclude) {
             $excludes = explode("\n", $exclude);
         }

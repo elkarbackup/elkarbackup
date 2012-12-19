@@ -172,8 +172,15 @@ policy_help: |
  This is the identifier for the policy. It will show up in lists and combo boxes. The name must be unique among all policies, the application will complain if you try to use a name which is already in use.
  <h4>Description</h4>
  Free text to describe the policy. Put here whatever you might find useful.
- <h4>Exclude</h4>
- Each line of this field corresponds to an exclude pattern. The backup process ignores any files which match any of the lines of this field.
+ <h4>Exclude and include</h4>
+ The application interprets each line of the exclude field as an exclude pattern and each line of the include field as an include pattern. By using these fields intelligently you can easily pick and choose which files to include in the snapshot and which files to ignore. The two field interact in the following way for each file and directory in the snapshot:
+ <ol>
+  <li>If the file or directory matches a line in the include field, then the application includes this file. </li>
+  <li>If the file or directory matches a line in the exclude field, then the application ignores this file and it will NOT be backup up. </li>
+  <li>If the file or directory matches nothing the file is included in the backup.</li>
+ </ol>
+ As you can see the application backs up all files by default, excluding only those which match an exclude pattern and do NOT match any include pattern.
+ Notice that each job has each own include and exclude definitions. The ones defined in the job take precedence over the ones defined in the policy.
  <h4>Sync first</h4>
  When sync_first is enabled, all sync behaviour happens during an additional sync step. Even hourly calls only rotate the directories, without even connecting to the client. This ensures that the snapshots are consistent with the cost of an additional snapshot used only for syncing.
  <h4>Hourly</h4>
@@ -228,6 +235,15 @@ job_help: |
  Scripts to run before and after any job belonging to this jobs. Think of opening VPN connections, setting up shared folders, etc.
  <h4>Policy</h4>
  Select the policy for this job. The policy defines when to take snapshots and how many to store, among other things. If you leave this field empty the application will take no snapshot whatsoever for this job.
+ <h4>Exclude and include</h4>
+ The application interprets each line of the exclude field as an exclude pattern and each line of the include field as an include pattern. By using these fields intelligently you can easily pick and choose which files to include in the snapshot and which files to ignore. The two field interact in the following way for each file and directory in the snapshot:
+ <ol>
+  <li>If the file or directory matches a line in the include field, then the application includes this file. </li>
+  <li>If the file or directory matches a line in the exclude field, then the application ignores this file and it will NOT be backup up. </li>
+  <li>If the file or directory matches nothing the file is included in the backup.</li>
+ </ol>
+ As you can see the application backs up all files by default, excluding only those which match an exclude pattern and do NOT match any include pattern.
+ If and only if the include field is empty the application uses the include directives defined in the selected policy. The same can be said for the exclude field.
 user_help: |
  <h4>Name</h4>
  This is the identifier for the user. It will show up in lists and combo boxes. The name must be unique among all users, the application will complain if you try to use a name which is already in use.

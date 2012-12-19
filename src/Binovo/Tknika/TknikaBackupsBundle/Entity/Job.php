@@ -74,6 +74,18 @@ class Job
     protected $owner;
 
     /**
+     * Include expressions
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $include;
+
+    /**
+     * Exclude expressions
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $exclude;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Policy")
      */
     protected $policy;
@@ -424,6 +436,70 @@ class Job
     public function getClient()
     {
         return $this->client;
+    }
+
+    /**
+     * Set include
+     *
+     * @param string $include
+     * @return Policy
+     */
+    public function setInclude($include)
+    {
+        $this->include = $include;
+
+        return $this;
+    }
+
+    /**
+     * Get include
+     *
+     * If the include list of the job is empty fetches the exclude list of the policy.
+     *
+     * @return string
+     */
+    public function getInclude()
+    {
+        $include = '';
+        if (!empty($this->include)) {
+            $include = $this->include;
+        } else if ($this->policy) {
+            $include = $this->policy->getInclude();
+        }
+
+        return $include;
+    }
+
+    /**
+     * Set exclude
+     *
+     * @param string $exclude
+     * @return Policy
+     */
+    public function setExclude($exclude)
+    {
+        $this->exclude = $exclude;
+
+        return $this;
+    }
+
+    /**
+     * Get exclude.
+     *
+     * If the exclude list of the job is empty fetches the exclude list of the policy.
+     *
+     * @return string
+     */
+    public function getExclude()
+    {
+        $exclude = '';
+        if (!empty($this->exclude)) {
+            $exclude = $this->exclude;
+        } else if ($this->policy) {
+            $exclude = $this->policy->getExclude();
+        }
+
+        return $exclude;
     }
 
     /**
