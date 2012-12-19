@@ -5,11 +5,16 @@
 
 <form class="form-horizontal" action="{{ path('saveUser', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
     <legend>{% trans %}Edit User{% endtrans %}</legend>
-{% form_theme form 'BinovoTknikaTknikaBackupsBundle:Default:fields.html.twig' %}
-    <div>
-        {{ form_widget(form) }}
+    <div class="row-fluid">
+        <div class="span6">
+            {% form_theme form 'BinovoTknikaTknikaBackupsBundle:Default:fields.html.twig' %}
+            {{ form_widget(form) }}
+            <input class="btn" type="submit" value="{% trans %}Save{% endtrans %}"/>
+        </div>
+        <div class="span6">
+            {% trans %}user_help{% endtrans %}
+        </div>
     </div>
-    <input class="btn" type="submit" value="{% trans %}Save{% endtrans %}"/>
 </form>
 
 {% endblock %}

@@ -13,99 +13,106 @@
 
 <form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_enctype(form) }}>
     <legend id="legend">{% trans %}Edit Job{% endtrans %}</legend>
+    <div class="row-fluid">
+        <div class="span6">
 {% form_theme form 'BinovoTknikaTknikaBackupsBundle:Default:fields.html.twig' %}
 {% for flashMessage in app.session.flashbag.get('job') %}
-    <div class="controls help-block">
-        {{ flashMessage }}
-    </div>
+            <div class="controls help-block">
+                {{ flashMessage }}
+            </div>
 {% endfor %}
-    <div>
-    <div class="controls">
-        <a href="{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}">{% trans %}Backups{% endtrans %}</a>
-    </div>
-    {{ form_row(form.name) }}
-    <div class="control-group">
-        <label class="control-label">{% trans %}Disk usage{% endtrans %}</label>
-        <div class="controls"><input type="text" disabled="disabled" value="{{ (form.vars.value.diskUsage / (1024*1024)) | number_format(0)  }} MB" /></div>
-    </div>
-    {{ form_row(form.description, {attr: {class: 'input-xxlarge'}}) }}
-    {{ form_row(form.url, {attr: {class: 'input-xxlarge'}}) }}
-    {{ form_row(form.isActive) }}
-    {{ form_row(form.owner, {read_only: not is_granted('ROLE_ADMIN')}) }}
-    {{ form_row(form.notificationsTo) }}
-    {{ form_row(form.notificationsEmail, {attr: {class: 'input-xxlarge'}}) }}
-    {{ form_row(form.minNotificationLevel) }}
-    <div class="controls"><div class="input-append"><input class="input-large" id="Job_preScriptCurrent" type="text" disabled="true" value="{{form.vars.value.preScript}}" /><a id="Job_preScriptDelete" class="btn">{% trans %}Delete{% endtrans %}</a></div></div>
-    {{ form_row(form.preScriptFile) }}
-    <script type="text/javascript">
-    dojo.addOnLoad(function() {
-        dojo.connect(dojo.byId('Job_preScriptFile'),
-                     'onchange',
-                     function() {
-                         dojo.byId('Job_preScriptCurrent').value = dojo.byId('Job_preScriptFile').value;
-                         dojo.byId('Job_preScript').value = dojo.byId('Job_preScriptFile').value;
-                         if ('' !== dojo.byId('Job_preScriptFile').value) {
-                             dojo.byId('Job_preScriptDelete').disabled = false;
+            <div>
+                <div class="controls">
+                    <a href="{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}">{% trans %}Backups{% endtrans %}</a>
+                </div>
+                {{ form_row(form.name) }}
+                <div class="control-group">
+                    <label class="control-label">{% trans %}Disk usage{% endtrans %}</label>
+                    <div class="controls"><input type="text" disabled="disabled" value="{{ (form.vars.value.diskUsage / (1024*1024)) | number_format(0)  }} MB" /></div>
+                </div>
+                {{ form_row(form.description) }}
+                {{ form_row(form.url) }}
+                {{ form_row(form.isActive) }}
+                {{ form_row(form.owner, {read_only: not is_granted('ROLE_ADMIN')}) }}
+                {{ form_row(form.notificationsTo) }}
+                {{ form_row(form.notificationsEmail, {attr: {class: 'input-xxlarge'}}) }}
+                {{ form_row(form.minNotificationLevel) }}
+                <div class="controls"><div class="input-append"><input class="input-large" id="Job_preScriptCurrent" type="text" disabled="true" value="{{form.vars.value.preScript}}" /><a id="Job_preScriptDelete" class="btn">{% trans %}Delete{% endtrans %}</a></div></div>
+                {{ form_row(form.preScriptFile) }}
+                <script type="text/javascript">
+dojo.addOnLoad(function() {
+    dojo.connect(dojo.byId('Job_preScriptFile'),
+                 'onchange',
+                 function() {
+                     dojo.byId('Job_preScriptCurrent').value = dojo.byId('Job_preScriptFile').value;
+                     dojo.byId('Job_preScript').value = dojo.byId('Job_preScriptFile').value;
+                     if ('' !== dojo.byId('Job_preScriptFile').value) {
+                         dojo.byId('Job_preScriptDelete').disabled = false;
+                     }
+                 });
+    dojo.connect(dojo.byId('Job_preScriptDelete'),
+                 'onclick',
+                 function() {
+                     dojo.byId('Job_preScript').value = '';
+                     dojo.byId('Job_preScriptFile').value = '';
+                     dojo.byId('visual_Job_preScriptFile').value = '';
+                     dojo.byId('Job_preScriptCurrent').value = '{% trans %}No script{% endtrans %}';
+                     this.disabled = true;
+                 });
+});
+                </script>
+                {{ form_row(form.preScript) }}
+                <div class="controls"><div class="input-append"><input class="input-large" id="Job_postScriptCurrent" type="text" disabled="true" value="{{form.vars.value.postScript}}" /><a id="Job_postScriptDelete" class="btn">{% trans %}Delete{% endtrans %}</a></div></div>
+                {{ form_row(form.postScriptFile) }}
+                <script type="text/javascript">
+dojo.addOnLoad(function() {
+    dojo.connect(dojo.byId('Job_postScriptFile'),
+                 'onchange',
+                 function() {
+                     dojo.byId('Job_postScriptCurrent').value = dojo.byId('Job_postScriptFile').value;
+                     dojo.byId('Job_postScript').value = dojo.byId('Job_postScriptFile').value;
+                     if ('' !== dojo.byId('Job_postScriptFile').value) {
+                         dojo.byId('Job_postScriptDelete').disabled = false;
+                     }
+                 });
+    dojo.connect(dojo.byId('Job_postScriptDelete'),
+                 'onclick',
+                 function() {
+                     dojo.byId('Job_postScript').value = '';
+                     dojo.byId('Job_postScriptFile').value = '';
+                     dojo.byId('visual_Job_postScriptFile').value = '';
+                     dojo.byId('Job_postScriptCurrent').value = '{% trans %}No script{% endtrans %}';
+                     this.disabled = true;
+                 });
+    dojo.connect(dojo.byId('runNow'),
+                 'onclick',
+                 function() {
+                     var args = {
+                         form: dojo.byId('runNowForm'),
+                         handleAs: 'text',
+                         load: function(data) {
+                             dojo.place('<div class="controls help-block">' + data + '</div>', dojo.byId('legend'), 'after');
+                             dojo.attr(dojo.byId('runNow'), 'disabled', true)
+                         },
+                         error: function(data) {
+                             dojo.place('<div class="controls help-block">' + data + '</div>', dojo.byId('legend'), 'after');
                          }
-                     });
-        dojo.connect(dojo.byId('Job_preScriptDelete'),
-                     'onclick',
-                     function() {
-                         dojo.byId('Job_preScript').value = '';
-                         dojo.byId('Job_preScriptFile').value = '';
-                         dojo.byId('visual_Job_preScriptFile').value = '';
-                         dojo.byId('Job_preScriptCurrent').value = '{% trans %}No script{% endtrans %}';
-                         this.disabled = true;
-                     });
-    });
-    </script>
-    {{ form_row(form.preScript) }}
-    <div class="controls"><div class="input-append"><input class="input-large" id="Job_postScriptCurrent" type="text" disabled="true" value="{{form.vars.value.postScript}}" /><a id="Job_postScriptDelete" class="btn">{% trans %}Delete{% endtrans %}</a></div></div>
-    {{ form_row(form.postScriptFile) }}
-    <script type="text/javascript">
-    dojo.addOnLoad(function() {
-        dojo.connect(dojo.byId('Job_postScriptFile'),
-                     'onchange',
-                     function() {
-                         dojo.byId('Job_postScriptCurrent').value = dojo.byId('Job_postScriptFile').value;
-                         dojo.byId('Job_postScript').value = dojo.byId('Job_postScriptFile').value;
-                         if ('' !== dojo.byId('Job_postScriptFile').value) {
-                             dojo.byId('Job_postScriptDelete').disabled = false;
-                         }
-                     });
-        dojo.connect(dojo.byId('Job_postScriptDelete'),
-                     'onclick',
-                     function() {
-                         dojo.byId('Job_postScript').value = '';
-                         dojo.byId('Job_postScriptFile').value = '';
-                         dojo.byId('visual_Job_postScriptFile').value = '';
-                         dojo.byId('Job_postScriptCurrent').value = '{% trans %}No script{% endtrans %}';
-                         this.disabled = true;
-                     });
-        dojo.connect(dojo.byId('runNow'),
-                     'onclick',
-                     function() {
-                         var args = {
-                             form: dojo.byId('runNowForm'),
-                             handleAs: 'text',
-                             load: function(data) {
-                                 dojo.place('<div class="controls help-block">' + data + '</div>', dojo.byId('legend'), 'after');
-                                 dojo.attr(dojo.byId('runNow'), 'disabled', true)
-                             },
-                             error: function(data) {
-                                 dojo.place('<div class="controls help-block">' + data + '</div>', dojo.byId('legend'), 'after');
-                             }
-                         };
-                         console.log(args);
-                         dojo.xhrPost(args);
-                     });
-    });
-    </script>
-    {{ form_row(form.postScript) }}
-    {{ form_rest(form) }}
+                     };
+                     console.log(args);
+                     dojo.xhrPost(args);
+                 });
+});
+                </script>
+                {{ form_row(form.postScript) }}
+                {{ form_rest(form) }}
+            </div>
+            <input class="btn" type="button" value="{% trans %}Run now{% endtrans %}" id="runNow"/>
+            <input class="btn" type="submit" value="{% trans %}Save{% endtrans %}" />
+        </div>
+        <div class="span6">
+            {% trans %}job_help{% endtrans %}
+        </div>
     </div>
-    <input class="btn" type="button" value="{% trans %}Run now{% endtrans %}" id="runNow"/>
-    <input class="btn" type="submit" value="{% trans %}Save{% endtrans %}" />
 </form>
 
 <form id="runNowForm" action="{{ path('runJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="POST" {{ form_enctype(form) }}>

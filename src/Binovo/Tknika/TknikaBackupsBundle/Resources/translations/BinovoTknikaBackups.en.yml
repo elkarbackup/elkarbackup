@@ -166,3 +166,75 @@
 'Wrong old password': 'Wrong old password'
 'Yearly': 'Yearly'
 'Yes': 'Yes'
+policy_help: |
+ <h4>Name</h4>
+ This is the identifier for the policy. It will show up in lists and combo boxes. The name must be unique among all policies, the application will complain if you try to use a name which is already in use.
+ <h4>Description</h4>
+ Free text to describe the policy. Put here whatever you might find useful.
+ <h4>Exclude</h4>
+ Each line of this field corresponds to an exclude pattern. The backup process ignores any files which match any of the lines of this field.
+ <h4>Sync first</h4>
+ When sync_first is enabled, all sync behaviour happens during an additional sync step. Even hourly calls only rotate the directories, without even connecting to the client. This ensures that the snapshots are consistent with the cost of an additional snapshot used only for syncing.
+ <h4>Hourly</h4>
+ Snapshots made during the day.
+ <h4>Daily</h4>
+ Snapshots once a every selected day at the given time.
+ <h4>Weekly</h4>
+ Snapshots once a week.
+ <h4>Monthly</h4>
+ Snapshots once a month.
+ <h4>Monthly</h4>
+ Snapshots once a year.
+client_help: |
+ <h4>Name</h4>
+ This is the identifier for the client. It will show up in lists and combo boxes. The name must be unique among all clients, the application will complain if you try to use a name which is already in use.
+ <h4>Disk usage</h4>
+ The currently used disk space by this client.
+ <h4>Description</h4>
+ Free text to describe the client. Put here whatever you might find useful.
+ <h4>Is active</h4>
+ If this check box is not marked, then no snapshots will be taken.
+ <h4>Pre and post scripts</h4>
+ Scripts to run before and after any job belonging to this clients. Think of opening VPN connections, setting up shared folders, etc.
+client_job_help: |
+ <h4>Jobs</h4>
+ You can edit the most important parameters of a job belonging to this client right here. Don't forget to save your changes after doing the modifications.
+job_help: |
+ <h4>Name</h4>
+ This is the identifier for the job. It will show up in lists and combo boxes. The name must be unique among all jobs, the application will complain if you try to use a name which is already in use.
+ <h4>Disk usage</h4>
+ The currently used disk space by this job.
+ <h4>Description</h4>
+ Free text to describe the job. Put here whatever you might find useful.
+ <h4>Is active</h4>
+ If this check box is not marked, then no snapshots will be taken.
+ <h4>Owner</h4>
+ By default the user who created the job is the owner and the application will notify him of any problems (see send notices to and notify only). Only admin users can change the owner.
+ <h4>Send notices to</h4>
+ You can ask the application to notify one or several of the following people (by email) of any events. The application decides which events to notify based on the notify only settings. If you choose to notify an arbitrary email you will have to fill in that password.
+ <h4>Notify only</h4>
+ In order to keep the message flow to a minimum you can have the application notify you only of events over a given priority threshold.
+ <h4>Pre and post scripts</h4>
+ Scripts to run before and after any job belonging to this jobs. Think of opening VPN connections, setting up shared folders, etc.
+ <h4>Policy</h4>
+ Select the policy for this job. The policy defines when to take snapshots and how many to store, among other things. If you leave this field empty the application will take no snapshot whatsoever for this job.
+user_help: |
+ <h4>Name</h4>
+ This is the identifier for the user. It will show up in lists and combo boxes. The name must be unique among all users, the application will complain if you try to use a name which is already in use.
+ <h4>Password</h4>
+ You can't read the password in this field, you can only use it to change it. If you put anything but the empty string in this field and save the password will be updated.
+ <h4>Email</h4>
+ The email is very important. All the notifications for the user will be sent to the email specified here.
+ <h4>Is active</h4>
+ If this check box is not marked the user will not be able to log in.
+params_help: |
+ <h4>MySQL configuration</h4>
+ This parameters configure the connection to the DB. Be careful, if mess up with them the application will stop working.
+ <h4>Mailer configuration</h4>
+ This parameters configure the how the application sends emails. Be careful, if mess up with them the application will not be able to send notifications. <a href="http://symfony.com/doc/current/cookbook/email/email.html">The documentation from the Symfony project</a> might be helpful.
+ <h4>Upload dir</h4>
+ The application stores all the pre and post scripts in this directory. It has to be writable for the user running the web server.
+ <h4>Backups dir</h4>
+ The application stores all the snapshots in this in this directory. It has to be writable for the tknikabackups user.
+ <h4>Remove logs older than</h4>
+ The application will periodically prune the log registry so that it doesn't get too big. Any record older than the value specified here will be removed.

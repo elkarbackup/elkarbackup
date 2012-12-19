@@ -10,10 +10,13 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $t = $options['translator'];
-        $builder->add('username'    , 'text'    , array('label' => $t->trans('Name'     , array(), 'BinovoTknikaBackups')))
+        $builder->add('username'    , 'text'    , array('label' => $t->trans('Name'     , array(), 'BinovoTknikaBackups'),
+                                                        'attr'  => array('class'    => 'span10')))
                 ->add('newPassword' , 'password', array('label' => $t->trans('Password' , array(), 'BinovoTknikaBackups'),
-                                                        'required' => false))
-                ->add('email'       , 'email'   , array('label' => $t->trans('Email'    , array(), 'BinovoTknikaBackups')))
+                                                        'required' => false,
+                                                        'attr'  => array('class'    => 'span10')))
+                ->add('email'       , 'email'   , array('label' => $t->trans('Email'    , array(), 'BinovoTknikaBackups'),
+                                                        'attr'  => array('class'    => 'span10')))
                 ->add('isActive'    , 'checkbox', array('label' => $t->trans('Is active', array(), 'BinovoTknikaBackups'),
                                                         'required' => false));
     }

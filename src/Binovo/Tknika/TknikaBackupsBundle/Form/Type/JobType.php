@@ -11,9 +11,11 @@ class JobType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $t = $options['translator'];
-        $builder->add('name'              , 'text'    , array('label' => $t->trans('Name', array(), 'BinovoTknikaBackups')))
+        $builder->add('name'              , 'text'    , array('label' => $t->trans('Name', array(), 'BinovoTknikaBackups'),
+                                                              'attr'  => array('class'    => 'span10')))
                 ->add('description'       , 'textarea', array('label' => $t->trans('Description', array(), 'BinovoTknikaBackups'),
-                                                              'required' => false))
+                                                              'required' => false,
+                                                              'attr'  => array('class'    => 'span10')))
                 ->add('policy'            , 'entity'  , array('label' => $t->trans('Policy', array(), 'BinovoTknikaBackups'),
                                                               'required' => false,
                                                               'class'    => 'BinovoTknikaTknikaBackupsBundle:Policy',
@@ -21,7 +23,8 @@ class JobType extends AbstractType
                 ->add('owner'             , 'entity'  , array('label'    => $t->trans('Owner', array(), 'BinovoTknikaBackups'),
                                                               'property' => 'username',
                                                               'class'    => 'BinovoTknikaTknikaBackupsBundle:User'))
-                ->add('url'               , 'text'    , array('label' => $t->trans('Url', array(), 'BinovoTknikaBackups')))
+                ->add('url'               , 'text'    , array('label' => $t->trans('Url', array(), 'BinovoTknikaBackups'),
+                                                              'attr'  => array('class'    => 'span10')))
                 ->add('notificationsTo'   , 'choice'  , array('label'    => $t->trans('Send notices to', array(), 'BinovoTknikaBackups'),
                                                               'required' => false,
                                                               'choices'  => array(Job::NOTIFY_TO_ADMIN => $t->trans('Admin', array(), 'BinovoTknikaBackups'),

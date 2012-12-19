@@ -10,9 +10,11 @@ class PolicyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $t = $options['translator'];
-        $builder->add('name'              , 'text'    , array('label' => $t->trans('Name'       , array(), 'BinovoTknikaBackups')))
+        $builder->add('name'              , 'text'    , array('label' => $t->trans('Name'       , array(), 'BinovoTknikaBackups'),
+                                                              'attr' => array('class'    => 'span10')))
                 ->add('description'       , 'textarea', array('label' => $t->trans('Description', array(), 'BinovoTknikaBackups'),
-                                                          'required' => false))
+                                                              'required' => false,
+                                                              'attr' => array('class'    => 'span10')))
                 ->add('hourlyHours'       , 'hidden'  , array('required' => false))
                 ->add('hourlyDaysOfMonth' , 'hidden'  , array('required' => false))
                 ->add('hourlyDaysOfWeek'  , 'hidden'  , array('required' => false))
@@ -39,9 +41,11 @@ class PolicyType extends AbstractType
                 ->add('yearlyMonths'      , 'hidden'  , array('required' => false))
                 ->add('yearlyCount'       , 'hidden'  , array('required' => false))
                 ->add('include'           , 'textarea', array('label' => $t->trans('Include', array(), 'BinovoTknikaBackups'),
-                                                              'required' => false))
+                                                              'required' => false,
+                                                              'attr' => array('class'    => 'span10')))
                 ->add('exclude'           , 'textarea', array('label' => $t->trans('Exclude', array(), 'BinovoTknikaBackups'),
-                                                              'required' => false))
+                                                              'required' => false,
+                                                              'attr' => array('class'    => 'span10')))
                 ->add('syncFirst'         , 'checkbox', array('label' => $t->trans('Sync first', array(), 'BinovoTknikaBackups'),
                                                               'required' => false))
             ;
