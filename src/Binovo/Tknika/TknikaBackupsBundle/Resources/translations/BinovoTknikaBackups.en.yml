@@ -155,6 +155,7 @@
 'Upload post script': 'Upload post script'
 'Upload pre script': 'Upload pre script'
 'Url': 'Url'
+'Use local permissions': 'Use local permissions'
 'User %username% logged in.': 'User %username% logged in.'
 'User': 'User'
 'Username': 'Username'
@@ -235,6 +236,8 @@ job_help: |
  Scripts to run before and after any job belonging to this jobs. Think of opening VPN connections, setting up shared folders, etc.
  <h4>Policy</h4>
  Select the policy for this job. The policy defines when to take snapshots and how many to store, among other things. If you leave this field empty the application will take no snapshot whatsoever for this job.
+ <h4>Use local permissions</h4>
+ The application makes an effort to keep permissions exactly as in the source files. This might cause some problems in Windows, so if you happen to have permission issues with windows jobs try setting this on.
  <h4>Exclude and include</h4>
  The application interprets each line of the exclude field as an exclude pattern and each line of the include field as an include pattern. By using these fields intelligently you can easily pick and choose which files to include in the snapshot and which files to ignore. The two field interact in the following way for each file and directory in the snapshot:
  <ol>

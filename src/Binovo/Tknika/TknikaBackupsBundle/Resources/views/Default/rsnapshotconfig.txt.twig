@@ -133,7 +133,9 @@ lockfile	{{tmp}}/rsnapshot.{{idClient}}_{{idJob}}.pid
 #
 #rsync_short_args	-a
 #rsync_long_args	--delete --numeric-ids --relative --delete-excluded
-#rsync_long_args	--delete --numeric-ids --relative --delete-excluded --chmod=Fug=rwX,Dug=rwx,o=
+{% if useLocalPermissions %}
+rsync_long_args	--delete --numeric-ids --relative --delete-excluded --chmod=Fug=rwX,Dug=rwx,o=
+{% endif %}
 
 # ssh has no args passed by default, but you can specify some here.
 #

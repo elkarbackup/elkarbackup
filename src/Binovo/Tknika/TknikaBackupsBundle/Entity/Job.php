@@ -115,6 +115,11 @@ class Job
     protected $diskUsage = 0;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $useLocalPermissions = false;
+
+    /**
      * Helper variable to remember the script time for PostRemove actions
      */
     protected $filesToRemove;
@@ -684,5 +689,27 @@ class Job
     public function getDiskUsage()
     {
         return $this->diskUsage;
+    }
+
+    /**
+     * Set useLocalPermissions
+     *
+     * @param boolean $useLocalPermissions
+     * @return Job
+     */
+    public function setUseLocalPermissions($useLocalPermissions)
+    {
+        $this->useLocalPermissions = $useLocalPermissions;
+        return $this;
+    }
+
+    /**
+     * Get useLocalPermissions
+     *
+     * @return boolean
+     */
+    public function getUseLocalPermissions()
+    {
+        return $this->useLocalPermissions;
     }
 }

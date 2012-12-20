@@ -153,18 +153,19 @@ abstract class BackupRunningCommand extends ContainerAwareCommand
         $context = array('link' => $this->generateJobRoute($idJob, $idClient));
 
         $content = $engine->render('BinovoTknikaTknikaBackupsBundle:Default:rsnapshotconfig.txt.twig',
-                                   array('cmdPreExec'   => $job->getPreScript()  ? $job->getScriptPath('pre') : '',
-                                         'cmdPostExec'  => $job->getPostScript() ? $job->getScriptPath('post'): '',
-                                         'excludes'     => $excludes,
-                                         'idClient'     => sprintf('%04d', $idClient),
-                                         'idJob'        => sprintf('%04d', $idJob),
-                                         'includes'     => $includes,
-                                         'backupDir'    => $backupDir,
-                                         'retains'      => $retains,
-                                         'tmp'          => $tmpDir,
-                                         'snapshotRoot' => $job->getSnapshotRoot(),
-                                         'syncFirst'    => $syncFirst,
-                                         'url'          => $url));
+                                   array('cmdPreExec'          => $job->getPreScript()  ? $job->getScriptPath('pre') : '',
+                                         'cmdPostExec'         => $job->getPostScript() ? $job->getScriptPath('post'): '',
+                                         'excludes'            => $excludes,
+                                         'idClient'            => sprintf('%04d', $idClient),
+                                         'idJob'               => sprintf('%04d', $idJob),
+                                         'includes'            => $includes,
+                                         'backupDir'           => $backupDir,
+                                         'retains'             => $retains,
+                                         'tmp'                 => $tmpDir,
+                                         'snapshotRoot'        => $job->getSnapshotRoot(),
+                                         'syncFirst'           => $syncFirst,
+                                         'url'                 => $url,
+                                         'useLocalPermissions' => $job->getUseLocalPermissions()));
         $confFileName = sprintf("%s/rsnapshot.%s_%s.cfg", $tmpDir, $idClient, $idJob);
         $fd = fopen($confFileName, 'w');
         if (false === $fd) {
@@ -196,7 +197,6 @@ abstract class BackupRunningCommand extends ContainerAwareCommand
             } else {
                 $command = sprintf('"%s" -c "%s" %s 2>&1', $rsnapshot, $confFileName, $retain);
             }
-            echo "$command\n";
             $commandOutput = array();
             $status        = 0;
             $this->info('Running %command%', array('%command%' => $command), $context);

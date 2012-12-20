@@ -39,7 +39,7 @@
         </td>
     </tr>
         {% for job in client.jobs %}
-    <tr>
+    <tr onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'">
         <td><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
         <td>{{ job.name }}</td>
         <td style="text-align:right;">{{ (job.diskUsage / (1024*1024)) | number_format(0)}} MB</td>
