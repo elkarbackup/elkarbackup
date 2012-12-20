@@ -15,6 +15,7 @@ parameters:
     database_path: null
     upload_dir: /srv/web/tknikabackups-devel/uploaded
     backup_dir: /srv/web/tknikabackups-devel/backups
+    public_key: /home/www-data/.ssh/id_rsa.pub
     max_log_age: P1Y
     tmp_dir: /srv/web/tknikabackups-devel/tmp
     rsnapshot: /usr/bin/rsnapshot

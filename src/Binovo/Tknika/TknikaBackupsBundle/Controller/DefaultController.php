@@ -25,8 +25,6 @@ use Symfony\Component\Security\Core\SecurityContext;
 class DefaultController extends Controller
 {
 
-    const PUBLIC_KEY_FILE  = '/var/lib/tknikabackups/.ssh/id_rsa.pub';
-
     protected function info($msg, $translatorParams = array(), $context = array())
     {
         $logger = $this->get('BnvWebLogger');
@@ -69,18 +67,41 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/config/publickey", name="downloadPublicKey")
+     * @Route("/config/publickey/get", name="downloadPublicKey")
      * @Template()
      */
     public function downloadPublicKeyAction(Request $request)
     {
-        if (!file_exists(self::PUBLIC_KEY_FILE)) {
+        if (!file_exists($this->container->getParameter('public_key'))) {
             throw $this->createNotFoundException($this->trans('Unable to find public key:'));
         }
         $headers = array('Content-Type'        => 'text/plain',
                          'Content-Disposition' => sprintf('attachment; filename="Publickey.pub"'));
 
-        return new Response(file_get_contents(self::PUBLIC_KEY_FILE), 200, $headers);
+        return new Response(file_get_contents($this->container->getParameter('public_key')), 200, $headers);
+    }
+
+    /**
+     * @Route("/config/publickey/generate", name="generatePublicKey")
+     * @Method("POST")
+     * @Template()
+     */
+    public function generatePublicKeyAction(Request $request)
+    {
+        $t = $this->get('translator');
+        $db = $this->getDoctrine();
+        $manager = $db->getManager();
+        $msg = new Message('DefaultController', 'TickCommand',
+                           json_encode(array('command' => "tknikabackups:generate_keypair")));
+        $manager->persist($msg);
+        $this->info('Public key generation requested');
+        $manager->flush();
+        $this->get('session')->getFlashBag()->add('manageParameters',
+                                                  $t->trans('Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise',
+                                                            array(),
+                                                            'BinovoTknikaBackups'));
+
+        return $this->redirect($this->generateUrl('manageParameters'));
     }
 
     public function trans($msg, $params = array(), $domain = 'BinovoTknikaBackups')
@@ -668,7 +689,7 @@ EOF;
         $repository = $this->getDoctrine()
             ->getRepository('BinovoTknikaTknikaBackupsBundle:LogRecord');
         $queryBuilder = $repository->createQueryBuilder('l')
-            ->addOrderBy('l.dateTime', 'DESC');
+            ->addOrderBy('l.id', 'DESC');
         $queryParamCounter = 1;
         if ($request->get('filter')) {
             $queryBuilder->where("1 = 1");
@@ -714,10 +735,11 @@ EOF;
                                                      'name'    => 'filter[gte][l.level]'),
                                    'object' => array('value'   => isset($formValues['filter[like][l.link]']) ? $formValues['filter[like][l.link]'] : null,
                                                      'name'    => 'filter[like][l.link]'),
-                                   'source' => array('options' => array(''                  => $t->trans('All', array(), 'BinovoTknikaBackups'),
-                                                                        'DefaultController' => 'DefaultController',
-                                                                        'RunJobCommand'     => 'RunJobCommand',
-                                                                        'TickCommand'       => 'TickCommand'),
+                                   'source' => array('options' => array(''                       => $t->trans('All', array(), 'BinovoTknikaBackups'),
+                                                                        'DefaultController'      => 'DefaultController',
+                                                                        'GenerateKeyPairCommand' => 'GenerateKeyPairCommand',
+                                                                        'RunJobCommand'          => 'RunJobCommand',
+                                                                        'TickCommand'            => 'TickCommand'),
                                                      'value'   => isset($formValues['filter[eq][l.source]']) ? $formValues['filter[eq][l.source]'] : null,
                                                      'name'    => 'filter[eq][l.source]')));
     }
@@ -848,7 +870,7 @@ EOF;
         } else {
             $result = $this->render('BinovoTknikaTknikaBackupsBundle:Default:params.html.twig',
                                     array('form'            => $form->createView(),
-                                          'showKeyDownload' => file_exists(self::PUBLIC_KEY_FILE)));
+                                          'showKeyDownload' => file_exists($this->container->getParameter('public_key'))));
         }
         $this->getDoctrine()->getManager()->flush();
         // clear cache so that changes take effect

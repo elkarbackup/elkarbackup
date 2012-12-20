@@ -65,6 +65,7 @@ then
     then
         mkdir /var/lib/tknikabackups/.ssh || true
         ssh-keygen -t rsa -N '' -C 'Automatically generated key for tknikabackups.' -f /var/lib/tknikabackups/.ssh/id_rsa
+        sed -i "s#public_key:.*#public_key: /var/lib/tknikabackups/.ssh/id_rsa.pub#" /etc/tknikabackups/parameters.yml
         chown -R $username.$username /var/lib/tknikabackups
     fi
     # set rwx permissions for www-data and the backup user in the cache and log directories

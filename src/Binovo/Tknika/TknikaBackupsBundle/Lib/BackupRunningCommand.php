@@ -19,25 +19,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  * to call backups jobs. It provides helper functions to run the jobs,
  * send notifications, write information to the log, etc.
  */
-abstract class BackupRunningCommand extends ContainerAwareCommand
+abstract class BackupRunningCommand extends LoggingCommand
 {
     const NEW_CLIENT  = 1;
     const SKIP_CLIENT = 2;
     const RUN_JOB     = 3;
-
-    abstract protected function getNameForLogs();
-
-    protected function generateClientRoute($id)
-    {
-        return $this->getContainer()->get('router')->generate('editClient', array('id' => $id));
-    }
-
-    protected function generateJobRoute($idJob, $idClient)
-    {
-        return $this->getContainer()->get('router')->generate('editJob',
-                                                              array('idClient' => $idClient,
-                                                                    'idJob'    => $idJob));
-    }
 
     protected function parseTime($time)
     {
@@ -100,30 +86,6 @@ abstract class BackupRunningCommand extends ContainerAwareCommand
                 $this->err('Command was unable to send the notification message: %exception%', array('%exception%' => $e->getMessage()));
             }
         }
-    }
-
-    protected function err($msg, $translatorParams = array(), $context = array())
-    {
-        $logger = $this->getContainer()->get('BnvWebLogger');
-        $translator = $this->getContainer()->get('translator');
-        $context = array_merge(array('source' => $this->getNameForLogs()), $context);
-        $logger->err($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), $context);
-    }
-
-    protected function info($msg, $translatorParams = array(), $context = array())
-    {
-        $logger = $this->getContainer()->get('BnvWebLogger');
-        $translator = $this->getContainer()->get('translator');
-        $context = array_merge(array('source' => $this->getNameForLogs()), $context);
-        $logger->info($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), $context);
-    }
-
-    protected function warn($msg, $translatorParams = array(), $context = array())
-    {
-        $logger = $this->getContainer()->get('BnvWebLogger');
-        $translator = $this->getContainer()->get('translator');
-        $context = array_merge(array('source' => $this->getNameForLogs()), $context);
-        $logger->warn($translator->trans($msg, $translatorParams, 'BinovoTknikaBackups'), $context);
     }
 
     protected function runJob(Job $job, $runnableRetains)
@@ -197,6 +159,7 @@ abstract class BackupRunningCommand extends ContainerAwareCommand
             } else {
                 $command = sprintf('"%s" -c "%s" %s 2>&1', $rsnapshot, $confFileName, $retain);
             }
+echo $command;
             $commandOutput = array();
             $status        = 0;
             $this->info('Running %command%', array('%command%' => $command), $context);
