@@ -159,7 +159,6 @@ abstract class BackupRunningCommand extends LoggingCommand
             } else {
                 $command = sprintf('"%s" -c "%s" %s 2>&1', $rsnapshot, $confFileName, $retain);
             }
-echo $command;
             $commandOutput = array();
             $status        = 0;
             $this->info('Running %command%', array('%command%' => $command), $context);
@@ -280,7 +279,10 @@ echo $command;
                     } else {
                         $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
                     }
-                    $du = (int)shell_exec(sprintf("du -bs '%s' | sed 's/\t.*//'", $lastClient->getSnapshotRoot()));
+                    $du = 0;
+                    foreach ($lastClient->getJobs() as $duJob) {
+                        $du += $duJob->getDiskUsage();
+                    }
                     $lastClient->setDiskUsage($du);
                 }
                 $client = $job->getClient();
@@ -327,7 +329,10 @@ echo $command;
             } else {
                 $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
             }
-            $du = (int)shell_exec(sprintf("du -bs '%s' | sed 's/\t.*//'", $lastClient->getSnapshotRoot()));
+            $du = 0;
+            foreach ($lastClient->getJobs() as $duJob) {
+                $du += $duJob->getDiskUsage();
+            }
             $lastClient->setDiskUsage($du);
             $manager->flush();
         }
