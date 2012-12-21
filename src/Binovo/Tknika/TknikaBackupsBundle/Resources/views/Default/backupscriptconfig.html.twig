@@ -36,7 +36,7 @@
                 {{ form_widget(publicKey.comment) }} {{ form_widget(publicKey.publicKey) }} <input data-command="delete-key" class="btn" type="button" value="{% trans %}Delete{% endtrans %}"/>
             </div>
 {% endfor %}
-            <div id="no-keys-defined" class="controls"{% if form.publicKeys %} style="display:none"{% endif %}>
+            <div id="no-keys-defined" class="controls"{% if form.publicKeys|length > 0 %} style="display:none"{% endif %}>
                 {% trans %}No keys defined{% endtrans %}
             </div>
             <div id="add-key" class="controls">

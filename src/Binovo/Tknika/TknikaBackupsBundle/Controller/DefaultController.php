@@ -802,6 +802,7 @@ EOF;
                 $keys[] = array('publicKey' => $matches[1], 'comment' => $matches[2]);
             }
         }
+
         return $keys;
     }
 
