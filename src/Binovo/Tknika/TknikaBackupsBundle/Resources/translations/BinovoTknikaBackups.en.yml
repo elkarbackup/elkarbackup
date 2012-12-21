@@ -249,7 +249,7 @@ job_help: |
  <h4>Policy</h4>
  Select the policy for this job. The policy defines when to take snapshots and how many to store, among other things. If you leave this field empty the application will take no snapshot whatsoever for this job.
  <h4>Use local permissions</h4>
- The application makes an effort to keep permissions exactly as in the source files. This might cause some problems in Windows, so if you happen to have permission issues with windows jobs try setting this on.
+ Rsnapshot makes an effort to keep permissions exactly as in the source files. This might cause some problems in Windows, so if you happen to have permission issues with windows jobs try setting this on. It might also make the backup up files unreadable for the web server.
  <h4>Exclude and include</h4>
  The application interprets each line of the exclude field as an exclude pattern and each line of the include field as an include pattern. By using these fields intelligently you can easily pick and choose which files to include in the snapshot and which files to ignore. The two field interact in the following way for each file and directory in the snapshot:
  <ol>

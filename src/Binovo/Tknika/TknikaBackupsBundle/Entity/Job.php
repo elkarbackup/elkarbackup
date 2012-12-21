@@ -117,7 +117,7 @@ class Job
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $useLocalPermissions = false;
+    protected $useLocalPermissions = true;
 
     /**
      * Helper variable to remember the script time for PostRemove actions
