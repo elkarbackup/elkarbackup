@@ -9,6 +9,7 @@ use Binovo\Tknika\TknikaBackupsBundle\Entity\Job;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Message;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\Policy;
 use Binovo\Tknika\TknikaBackupsBundle\Entity\User;
+use Binovo\Tknika\TknikaBackupsBundle\Form\Type\AuthorizedKeyType;
 use Binovo\Tknika\TknikaBackupsBundle\Form\Type\ClientType;
 use Binovo\Tknika\TknikaBackupsBundle\Form\Type\JobType;
 use Binovo\Tknika\TknikaBackupsBundle\Form\Type\PolicyType;
@@ -735,11 +736,12 @@ EOF;
                                                      'name'    => 'filter[gte][l.level]'),
                                    'object' => array('value'   => isset($formValues['filter[like][l.link]']) ? $formValues['filter[like][l.link]'] : null,
                                                      'name'    => 'filter[like][l.link]'),
-                                   'source' => array('options' => array(''                       => $t->trans('All', array(), 'BinovoTknikaBackups'),
-                                                                        'DefaultController'      => 'DefaultController',
-                                                                        'GenerateKeyPairCommand' => 'GenerateKeyPairCommand',
-                                                                        'RunJobCommand'          => 'RunJobCommand',
-                                                                        'TickCommand'            => 'TickCommand'),
+                                   'source' => array('options' => array(''                            => $t->trans('All', array(), 'BinovoTknikaBackups'),
+                                                                        'DefaultController'           => 'DefaultController',
+                                                                        'GenerateKeyPairCommand'      => 'GenerateKeyPairCommand',
+                                                                        'RunJobCommand'               => 'RunJobCommand',
+                                                                        'TickCommand'                 => 'TickCommand',
+                                                                        'UpdateAuthorizedKeysCommand' => 'UpdateAuthorizedKeysCommand'),
                                                      'value'   => isset($formValues['filter[eq][l.source]']) ? $formValues['filter[eq][l.source]'] : null,
                                                      'name'    => 'filter[eq][l.source]')));
     }
@@ -771,7 +773,7 @@ EOF;
     }
 
     /**
-     * @Route("/config/repositorybackupscript", name="getRepositoryBackupScript")
+     * @Route("/config/repositorybackupscript/download", name="getRepositoryBackupScript")
      * @Template()
      */
     public function getRepositoryBackupScriptAction(Request $request)
@@ -790,6 +792,63 @@ EOF;
         return $response;
     }
 
+    public function readKeyFileAsCommentAndRest($filename)
+    {
+        $keys = array();
+        foreach (explode("\n", file_get_contents($filename)) as $keyLine) {
+            $matches = array();
+            // the format of eacn non empty non comment line is "options keytype base64-encoded key comment" where key is one of ecdsa-sha2-nistp256, ecdsa-sha2-nistp384, ecdsa-sha2-nistp521, ssh-dss, ssh-rsa
+            if (preg_match('/(.*(?:ecdsa-sha2-nistp256|ecdsa-sha2-nistp384|ecdsa-sha2-nistp521|ssh-dss|ssh-rsa) *[^ ]*) *(.*)/', $keyLine, $matches)) {
+                $keys[] = array('publicKey' => $matches[1], 'comment' => $matches[2]);
+            }
+        }
+        return $keys;
+    }
+
+    /**
+     * @Route("/config/repositorybackupscript/manage", name="configureRepositoryBackupScript")
+     * @Template()
+     */
+    public function configureRepositoryBackupScriptAction(Request $request)
+    {
+        $t = $this->get('translator');
+        $authorizedKeysFile = dirname($this->container->getParameter('public_key')) . '/authorized_keys';
+        $keys = $this->readKeyFileAsCommentAndRest($authorizedKeysFile);
+        $formBuilder = $this->createFormBuilder(array('publicKeys' => $keys));
+        $formBuilder->add('publicKeys', 'collection',
+                          array('type'         => new AuthorizedKeyType($t),
+                                'allow_add'    => true,
+                                'allow_delete' => true,
+                                'options'      => array('required' => false,
+                                                        'attr'     => array('class' => 'span10'))));
+        $form = $formBuilder->getForm();
+        if ($request->isMethod('POST')) {
+            $form->bind($request);
+            $data = $form->getData();
+            $serializedKeys = '';
+            foreach ($data['publicKeys'] as $key) {
+                $serializedKeys .= sprintf("%s %s\n", $key['publicKey'], $key['comment']);
+            }
+            $manager = $this->getDoctrine()->getManager();
+            $msg = new Message('DefaultController', 'TickCommand',
+                               json_encode(array('command' => "tknikabackups:update_authorized_keys",
+                                                 'content'  => $serializedKeys)));
+            $manager->persist($msg);
+            $this->info('Updating key file %keys%',
+                        array('%keys%' => $serializedKeys));
+            $manager->flush();
+            $this->get('session')->getFlashBag()->add('backupScriptConfig',
+                                                      $t->trans('Key file updated. The update should be effective in less than 2 minutes.',
+                                                                array(),
+                                                                'BinovoTknikaBackups'));
+            $result = $this->redirect($this->generateUrl('configureRepositoryBackupScript'));
+        } else {
+            $result = $this->render('BinovoTknikaTknikaBackupsBundle:Default:backupscriptconfig.html.twig',
+                                    array('form'            => $form->createView()));
+        }
+
+        return $result;
+    }
     /**
      * @Route("/config/params", name="manageParameters")
      * @Template()

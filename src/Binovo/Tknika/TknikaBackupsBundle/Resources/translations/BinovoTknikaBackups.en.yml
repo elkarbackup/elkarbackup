@@ -6,11 +6,15 @@
 'Active': 'Active'
 'Add job': 'Add job'
 'Add': 'Add'
+'Add key': 'Add key'
 'Admin': 'Admin'
 'All messages': 'All messages'
 'All': 'All'
+'Authorized keys': 'Authorized keys'
+'Authorized_keys file (%filename%) updated.': 'Authorized_keys file (%filename%) updated.'
 'Back to client': 'Back to client'
 'Back to job': 'Back to job'
+'Backup script': 'Backup script'
 'Backup server login': 'Backup server login'
 'Backups dir': 'Backups dir'
 'Backups': 'Backups'
@@ -31,6 +35,7 @@
 'Command %command% failed. Diagnostic information follows: %output%': 'Command %command% failed. Diagnostic information follows: %output%'
 'Command %command% succeeded with output: %output%': 'Command %command% succeeded with output: %output%'
 'Command was unable to send the notification message: %exception%': 'Command was unable to send the notification message: %exception%'
+'Comment': 'Comment'
 'Config': 'Config'
 'Confirm new password': 'Confirm new password'
 'Daily': 'Daily'
@@ -54,6 +59,7 @@
 'Error opening config file %filename%. Aborting backup.': 'Error opening config file %filename%. Aborting backup.'
 'Error saving parameter "%param%"': 'Error saving parameter "%param%"'
 'Error unlinking config file %filename%.': 'Error unlinking config file %filename%.'
+'Error updating authorized_keys file (%filename%)': 'Error updating authorized_keys file (%filename%)'
 'Error writing to config file %filename%. Aborting backup.': 'Error writing to config file %filename%. Aborting backup.'
 'Errors and up': 'Errors and up'
 'Exclude': 'Exclude'
@@ -70,6 +76,8 @@
 'Job %jobid% has no policy': 'Job %jobid% has no policy'
 'Job execution requested successfully': 'Job execution requested successfully'
 'Jobs': 'Jobs'
+'Key': 'Key'
+'Key file updated. The update should be effective in less than 2 minutes.': 'Key file updated. The update should be effective in less than 2 minutes.'
 'Last log entry': 'Last log entry'
 'Level': 'Level'
 'Link': 'Link'
@@ -95,6 +103,7 @@
 'Never': 'Never'
 'New password': 'New password'
 'New': 'New'
+'No keys defined': 'No keys defined'
 'No script': 'No script'
 'No such job.': 'No such job.'
 'None': 'None'
@@ -152,6 +161,7 @@
 'Unable to find Job entity:': 'Unable to find Job entity: '
 'Unable to find public key:': 'Unable to find public key:'
 'Unable to save your changes: %extrainfo%': 'Unable to save your changes: %extrainfo%'
+'Updating key file %keys%': 'Updating key file %keys%'
 'Upload dir': 'Upload dir'
 'Upload post script': 'Upload post script'
 'Upload pre script': 'Upload pre script'
@@ -269,3 +279,6 @@ params_help: |
  The application stores all the snapshots in this in this directory. It has to be writable for the tknikabackups user.
  <h4>Remove logs older than</h4>
  The application will periodically prune the log registry so that it doesn't get too big. Any record older than the value specified here will be removed.
+backupscriptconfig_help: |
+ <h4>Authorized keys</h4>
+ Adding your ssh public key to the applications authorized keys is required to make backups of the repository.
