@@ -125,7 +125,7 @@ class Builder extends ContainerAware
                             'children' => array(array('label'    => $t->trans('Manage parameters', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'manageParameters'),
                                                 array('label'    => $t->trans('Repository backups script', array(), 'BinovoTknikaBackups'),
-                                                      'route'    => 'getRepositoryBackupScript'))),
+                                                      'route'    => 'configureRepositoryBackupScript'))),
                       array('label'    => $t->trans('Logs', array(), 'BinovoTknikaBackups'),
                             'children' => array(array('label'    => $t->trans('Show Logs', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'showLogs'))),
