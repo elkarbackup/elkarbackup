@@ -21,9 +21,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class BackupRunningCommand extends LoggingCommand
 {
-    const NEW_CLIENT  = 1;
-    const SKIP_CLIENT = 2;
-    const RUN_JOB     = 3;
+    const NEW_CLIENT     = 1;
+    const SKIP_CLIENT    = 2;
+    const RUN_JOB        = 3;
+    const QUOTA_EXCEEDED = 4;
 
     protected function parseTime($time)
     {
@@ -243,6 +244,8 @@ abstract class BackupRunningCommand extends LoggingCommand
     {
         $logHandler = $this->getContainer()->get('BnvLoggerHandler');
         $manager = $this->getContainer()->get('doctrine')->getManager();
+        $storageLoadLevel = 0;
+        $warningLoadLevel = (float)$this->getContainer()->getParameter('warning_load_level');
         $i = 0;
         $lastClient = null;
         $state = self::NEW_CLIENT;
@@ -253,8 +256,15 @@ abstract class BackupRunningCommand extends LoggingCommand
             case self::RUN_JOB:
                 $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
                 if ($job->getClient() == $lastClient) {
-                    $retains = $policyIdToRetains[$job->getPolicy()->getId()]; // :TODO: controlar que está definido
+                    $retains = $policyIdToRetains[$job->getPolicy()->getId()];
                     $logHandler->clearMessages();
+                    if ($storageLoadLevel > $warningLoadLevel) {
+                        $this->warn('Client "%clientid%" at %loadLevel% of quota (%quota%MB).',
+                                    array('%clientid%'  => $idClient,
+                                          '%loadLevel%' => $storageLoadLevel,
+                                          '%quota%'     => $client->getQuota() / 1024),
+                                    $context);
+                    }
                     if ($this->runJob($job, $retains)) {
                         $this->info('Client "%clientid%", Job "%jobid%" ok.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     } else {
@@ -291,15 +301,41 @@ abstract class BackupRunningCommand extends LoggingCommand
                 $scriptName = $client->getPreScript();
                 $context = array('link' => $this->generateClientRoute($idClient));
                 $logHandler->clearMessages();
-                if ($this->runScript('pre', $idClient, $scriptName, $scriptFile)) {
-                    $this->info('Client "%clientid%" pre script ok.', array('%clientid%' => $idClient), $context);
-                    $state = self::RUN_JOB;
+                $storageLoadLevel = $client->getDiskUsage() / $client->getQuota();
+                if ($storageLoadLevel > 1) {
+                    $this->err('Client "%clientid%" quota exceeded (quota: %quota%MB, disk usage: %du%MB).',
+                               array('%clientid%' => $idClient,
+                                     '%quota%'    => $client->getQuota() / 1024,
+                                     '%du%'       => $client->getDiskUsage() / 1024),
+                               $context);
+                    $state = self::QUOTA_EXCEEDED;
                 } else {
-                    $this->err('Client "%clientid%" pre script failed. Aborting backup.', array('%clientid%' => $idClient), $context);
-                    $state = self::SKIP_CLIENT;
+                    if ($this->runScript('pre', $idClient, $scriptName, $scriptFile)) {
+                        $this->info('Client "%clientid%" pre script ok.', array('%clientid%' => $idClient), $context);
+                        $state = self::RUN_JOB;
+                    } else {
+                        $this->err('Client "%clientid%" pre script failed. Aborting backup.', array('%clientid%' => $idClient), $context);
+                        $state = self::SKIP_CLIENT;
+                    }
                 }
                 $clientMessages = $logHandler->getMessages();
                 $lastClient = $client;
+                break;
+            case self::QUOTA_EXCEEDED:
+                if ($lastClient != $job->getClient()) {
+                    $state = self::NEW_CLIENT;
+                } else {
+                    // report the client quota exceeded error to the people who might be interested on the fact that the job was not run.
+                    $logHandler->clearMessages();
+                    $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
+                    $this->err('Client "%clientid%" quota exceeded (quota: %quota%MB, disk usage: %du%MB).',
+                               array('%clientid%' => $idClient,
+                                     '%quota%'    => $client->getQuota() / 1024,
+                                     '%du%'       => $client->getDiskUsage() / 1024),
+                               $context);
+                    $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
+                    ++$i;
+                }
                 break;
             case self::SKIP_CLIENT:
                 if ($lastClient != $job->getClient()) {

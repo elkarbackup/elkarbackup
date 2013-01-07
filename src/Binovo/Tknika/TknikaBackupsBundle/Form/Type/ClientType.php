@@ -17,6 +17,8 @@ class ClientType extends AbstractType
                                                             'attr'  => array('class'    => 'span10')))
                 ->add('url'           , 'text'      , array('label' => $t->trans('Url', array(), 'BinovoTknikaBackups'),
                                                             'attr'  => array('class'    => 'span10')))
+                ->add('quota'         , 'integer'   , array('label' => $t->trans('Quota', array(), 'BinovoTknikaBackups'),
+                                                            'attr'  => array('class'    => 'span10')))
                 ->add('preScript'     , 'hidden'    , array('label' => $t->trans('Pre script', array(), 'BinovoTknikaBackups')))
                 ->add('preScriptFile' , 'file'      , array('label'    => $t->trans('Upload pre script', array(), 'BinovoTknikaBackups'),
                                                             'required' => false,

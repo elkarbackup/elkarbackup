@@ -23,12 +23,14 @@
 'Client "%clientid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%': 'Client "%clientid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%'
 'Client "%clientid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%': 'Client "%clientid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%'
 'Client "%clientid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.': 'Client "%clientid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.'
+'Client "%clientid%" at %loadLevel% of quota (%quota%MB).': 'Client "%clientid%" at %loadLevel% of quota (%quota%MB).'
 'Client "%clientid%" post script error.': 'Client "%clientid%" post script error.'
 'Client "%clientid%" post script error.': 'Client "%clientid%" post script error.'
 'Client "%clientid%" post script ok.': 'Client "%clientid%" post script ok.'
 'Client "%clientid%" post script ok.': 'Client "%clientid%" post script ok.'
 'Client "%clientid%" pre script failed. Aborting backup.': 'Client "%clientid%" pre script failed. Aborting backup.'
 'Client "%clientid%" pre script ok.': 'Client "%clientid%" pre script ok.'
+'Client "%clientid%" quota exceeded (quota: %quota%MB, disk usage: %du%MB).': 'Client "%clientid%" quota exceeded (quota: %quota%MB, disk usage: %du%MB).'
 'Client "%clientid%", Job "%jobid%" error.': 'Client "%clientid%", Job "%jobid%" error.'
 'Client "%clientid%", Job "%jobid%" ok.': 'Client "%clientid%", Job "%jobid%" ok.'
 'Clients': 'Clients'
@@ -129,6 +131,8 @@
 'Pre script': 'Pre script'
 'Public key': 'Public key'
 'Public key generation requested': 'Public key generation requested'
+'Quota': 'Quota'
+'Quota warning level': 'Quota warning level'
 'Repository backups script': 'Repository backups script'
 'Run now': 'Run now'
 'Running %command%': 'Running %command%'
@@ -216,6 +220,8 @@ client_help: |
    <li><i>user@domain.name</i> will connect via ssh to the <i>domain.name</i> machine using <i>user</i> as user for the connection.</li>
    <li><i>user@domain.name:</i> Notice the colon. Same as above but instead of using ssh connections it will connect to the remote rsync server.</li>
  </ul>
+ <h4>Quota</h4>
+ The amount of disk space in KB this client is allowed to use. -1 means "no limit". When the configured threshold is reached (80% by default) the application broadcasts a warning to the notification recipients specified in each job. The application discards backup jobs with an error if the disk usage is higher than the quota.
  <h4>Disk usage</h4>
  The currently used disk space by this client.
  <h4>Description</h4>
@@ -279,6 +285,8 @@ params_help: |
  The application stores all the snapshots in this in this directory. It has to be writable for the tknikabackups user.
  <h4>Remove logs older than</h4>
  The application will periodically prune the log registry so that it doesn't get too big. Any record older than the value specified here will be removed.
+ <h4>Quota warning level</h4>
+ When the disk space used by a client exceeds this percentage with respect to the quota send a warning message.
 backupscriptconfig_help: |
  <h4>Authorized keys</h4>
  Adding your ssh public key to the applications authorized keys is required to make backups of the repository.

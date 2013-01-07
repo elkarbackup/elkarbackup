@@ -15,6 +15,7 @@
 {% form_theme form 'BinovoTknikaTknikaBackupsBundle:Default:fields.html.twig' %}
             {{ form_row(form.name) }}
             {{ form_row(form.url) }}
+            {{ form_row(form.quota) }}
             <div class="control-group">
                 <label class="control-label">{% trans %}Disk usage{% endtrans %}</label>
                 <div class="controls"><input type="text" class="span10" disabled="disabled" value="{{ (form.vars.value.diskUsage / 1024) | number_format(0)  }} MB" /></div>

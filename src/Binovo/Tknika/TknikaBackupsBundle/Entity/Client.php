@@ -12,6 +12,8 @@ use \RuntimeException;
  */
 class Client
 {
+    const QUOTA_UNLIMITED = -1;
+
     /**
      * @ORM\Column(type="text", nullable=true)
      */
@@ -64,6 +66,13 @@ class Client
      * @ORM\Column(type="integer")
      */
     protected $diskUsage = 0;
+
+    /**
+     * Quota in KB. -1 means no limit, which is the default.
+     *
+     * @ORM\Column(type="integer")
+     */
+    protected $quota = self::QUOTA_UNLIMITED;
 
     /**
      * Helper variable to remember the script time for PostRemove actions
@@ -456,5 +465,27 @@ class Client
     public function getDiskUsage()
     {
         return $this->diskUsage;
+    }
+
+    /**
+     * Set quota
+     *
+     * @param integer $quota
+     * @return Client
+     */
+    public function setQuota($quota)
+    {
+        $this->quota = $quota;
+        return $this;
+    }
+
+    /**
+     * Get quota
+     *
+     * @return integer 
+     */
+    public function getQuota()
+    {
+        return $this->quota;
     }
 }
