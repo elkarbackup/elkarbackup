@@ -110,6 +110,8 @@ class Job
     protected $path;
 
     /**
+     * Disk usage in KB.
+     *
      * @ORM\Column(type="integer")
      */
     protected $diskUsage = 0;

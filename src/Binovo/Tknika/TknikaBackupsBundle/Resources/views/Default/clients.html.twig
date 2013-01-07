@@ -26,7 +26,7 @@
     <tr onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'">
         <td><a href="{{ path('editClient', {id: client.id}) }}">{{ client.id }}</a></td>
         <td>{{ client.name }}</td>
-        <td style="text-align:right;">{{ (client.diskUsage / (1024*1024)) | number_format(0)}} MB</td>
+        <td style="text-align:right;">{{ (client.diskUsage / 1024) | number_format(0)}} MB</td>
         <td>{{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ (client.logEntry.levelName)|default('') }} {{ client.logEntry.message|default('')|slice(0, 50) }}{% if client.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
         <td>{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
         <td>
@@ -42,7 +42,7 @@
     <tr onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'">
         <td><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
         <td>{{ job.name }}</td>
-        <td style="text-align:right;">{{ (job.diskUsage / (1024*1024)) | number_format(0)}} MB</td>
+        <td style="text-align:right;">{{ (job.diskUsage / 1024) | number_format(0)}} MB</td>
         <td>{{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ (job.logEntry.levelName)|default('') }} {{ job.logEntry.message|default('')|slice(0, 50) }}{% if job.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
         <td>{% if job.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
         <td>

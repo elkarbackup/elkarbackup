@@ -261,7 +261,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                         $this->err('Client "%clientid%", Job "%jobid%" error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     }
                     $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
-                    $du = (int)shell_exec(sprintf("du -bs '%s' | sed 's/\t.*//'", $job->getSnapshotRoot()));
+                    $du = (int)shell_exec(sprintf("du -ks '%s' | sed 's/\t.*//'", $job->getSnapshotRoot()));
                     $job->setDiskUsage($du);
                     ++$i;
                 } else {

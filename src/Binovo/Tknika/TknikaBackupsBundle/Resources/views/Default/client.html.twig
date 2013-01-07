@@ -17,7 +17,7 @@
             {{ form_row(form.url) }}
             <div class="control-group">
                 <label class="control-label">{% trans %}Disk usage{% endtrans %}</label>
-                <div class="controls"><input type="text" class="span10" disabled="disabled" value="{{ (form.vars.value.diskUsage / (1024*1024)) | number_format(0)  }} MB" /></div>
+                <div class="controls"><input type="text" class="span10" disabled="disabled" value="{{ (form.vars.value.diskUsage / 1024) | number_format(0)  }} MB" /></div>
             </div>
             {{ form_row(form.description) }}
             {{ form_row(form.isActive) }}
@@ -97,7 +97,7 @@ dojo.addOnLoad(function() {
                     {{ form_widget(job.description, {'attr': {'class': 'span10'}}) }}
                 </div>
                 <div class="controls">
-                    <a href="{{path('showJobBackup', {idClient: job.vars.value.client.id, idJob: job.vars.value.id, action: 'view'}) }}">{% trans %}Backups{% endtrans %} ({{ (job.vars.value.diskUsage / (1024*1024)) | number_format(0)  }} MB)</a><br />
+                    <a href="{{path('showJobBackup', {idClient: job.vars.value.client.id, idJob: job.vars.value.id, action: 'view'}) }}">{% trans %}Backups{% endtrans %} ({{ (job.vars.value.diskUsage / 1024) | number_format(0)  }} MB)</a><br />
                     {{job.vars.value.logEntry.dateTime.format('Y-m-d H:i:s')|default('')}} {{job.vars.value.logEntry.levelName|default('')}} {{ job.vars.value.logEntry.message|default('')|slice(0, 50) }}{% if job.vars.value.logEntry.message|default('')|length > 50 %}[...]{% endif %}
 
                 </div>

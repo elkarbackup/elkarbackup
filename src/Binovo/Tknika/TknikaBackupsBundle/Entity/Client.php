@@ -59,6 +59,8 @@ class Client
     protected $preScriptFile;
 
     /**
+     * Disk usage in KB.
+     *
      * @ORM\Column(type="integer")
      */
     protected $diskUsage = 0;
