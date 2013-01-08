@@ -4,7 +4,7 @@ jms_security_extra:
 
 security:
     encoders:
-        Binovo\Tknika\TknikaBackupsBundle\Entity\User: sha512
+        Binovo\Tknika\BackupsBundle\Entity\User: sha512
 
     role_hierarchy:
         ROLE_ADMIN:       ROLE_USER
@@ -12,7 +12,7 @@ security:
 
     providers:
         administrators:
-            entity: { class: BinovoTknikaTknikaBackupsBundle:User, property: username }
+            entity: { class: BinovoTknikaBackupsBundle:User, property: username }
 
     firewalls:
         dev:

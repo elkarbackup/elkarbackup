@@ -1,0 +1,152 @@
+<?php
+
+namespace Binovo\Tknika\BackupsBundle\Command;
+
+use \DateInterval;
+use \DateTime;
+use \Exception;
+use Binovo\Tknika\BackupsBundle\Entity\Job;
+use Binovo\Tknika\BackupsBundle\Lib\BackupRunningCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class TickCommand extends BackupRunningCommand
+{
+    protected function configure()
+    {
+        parent::configure();
+        $this->setName('tknikabackups:tick')
+             ->setDescription('Look for backup jobs to execute')
+             ->addArgument('time'  , InputArgument::OPTIONAL, 'As by date("Y-m-d H:i")');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $allOk = $this->executeBackups($input, $output);
+        $allOk = $this->removeOldLogs() && $allOk;
+        try { // we don't want to miss a backup because a command fails, so catch any exception
+            $this->executeMessages($input, $output);
+        } catch (Exception $e) {
+            $this->err('Exception running queued commands: %exceptionmsg%', array('%exceptionmsg%' => $e->getMessage()));
+            $this->getContainer()->get('doctrine')->getManager()->flush();
+            $allOk = false;
+        }
+
+        return $allOk;
+    }
+
+    protected function getNameForLogs()
+    {
+        return 'TickCommand';
+    }
+
+    protected function executeBackups(InputInterface $input, OutputInterface $output)
+    {
+        $logHandler = $this->getContainer()->get('BnvLoggerHandler');
+        $logHandler->startRecordingMessages();
+        $time = $this->parseTime($input->getArgument('time'));
+        if (!$time) {
+            $this->err('Invalid time specified.');
+
+            return false;
+        }
+        $container = $this->getContainer();
+        $repository = $container->get('doctrine')->getRepository('BinovoTknikaBackupsBundle:Policy');
+        $query = $repository->createQueryBuilder('policy')->getQuery();
+        $policies = array();
+        foreach ($repository->createQueryBuilder('policy')->getQuery()->getResult() as $policy) {
+            $retainsToRun = $policy->getRunnableRetains($time);
+            if (count($retainsToRun) > 0) {
+                $policies[$policy->getId()] = $retainsToRun;
+            }
+        }
+        if (count($policies) == 0) {
+            $this->info('Nothing to run.');
+
+            return true;
+        }
+        $policyQuery = array();
+        $manager = $container->get('doctrine')->getManager();
+        $runnablePolicies = implode(', ', array_keys($policies));
+        $dql =<<<EOF
+SELECT j, c, p
+FROM  BinovoTknikaBackupsBundle:Job j
+JOIN  j.client                            c
+JOIN  j.policy                            p
+WHERE j.isActive = 1 AND c.isActive = 1 AND j.policy IN ($runnablePolicies)
+ORDER BY c.id
+EOF;
+
+        $jobs = $manager->createQuery($dql)->getResult();
+        $this->runAllJobs($jobs, $policies);
+
+        return true;
+    }
+
+    protected function executeMessages(InputInterface $input, OutputInterface $output)
+    {
+        $container = $this->getContainer();
+        $manager = $container->get('doctrine')->getManager();
+        $repository = $manager->getRepository('BinovoTknikaBackupsBundle:Message');
+        while (true) {
+            /*
+             * read messages one by one and remove them from the queue
+             * as soon as read so that if any command takes too long
+             * and the next invocation of the tick command starts
+             * running it won't see the commands that are already in
+             * process.
+             */
+            $message = $repository->createQueryBuilder('m')
+                ->where("m.to = 'TickCommand'")
+                ->orderBy('m.id', 'ASC')
+                ->getQuery()
+                ->setMaxResults(1)
+                ->getResult();
+            if (count($message) == 0) {
+                break;
+            }
+            $message = $message[0];
+            $commandText = $message->getMessage();
+            $manager->remove($message);
+            $this->info('About to run command: ' . $commandText);
+            $manager->flush();
+            $commandAndParams = json_decode($commandText, true);
+            if (is_array($commandAndParams) && isset($commandAndParams['command'])) {
+                try {
+                    $command = $this->getApplication()->find($commandAndParams['command']);
+                    $input = new ArrayInput($commandAndParams);
+                    $status = $command->run($input, $output);
+                    if (0 == $status) {
+                        $this->info('Command success: ' . $commandText);
+                    } else {
+                        $this->err('Command failure: ' . $commandText);
+                    }
+                } catch (Exception $e) {
+                    $this->err('Exception %exceptionmsg% running command %command%: ', array('%exceptionmsg%' => $e->getMessage(), '%command%' => $commandText));
+                }
+            } else {
+                $this->err('Malformed command: ' . $commandText);
+            }
+            $manager->flush();
+        }
+    }
+
+    protected function removeOldLogs()
+    {
+        $container = $this->getContainer();
+        $manager = $container->get('doctrine')->getManager();
+        $maxAge  = $container->getParameter('max_log_age');
+        if (!empty($maxAge)) {
+            $interval = new DateInterval($maxAge);
+            $interval->invert = true;
+            $q = $manager->createQuery('DELETE FROM BinovoTknikaBackupsBundle:LogRecord l WHERE l.dateTime < :minDate');
+            $q->setParameter('minDate', date_add(new DateTime(), $interval));
+            $numDeleted = $q->execute();
+        }
+        return true;
+    }
+}

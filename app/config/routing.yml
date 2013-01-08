@@ -1,5 +1,5 @@
 binovo_tknika_tknika_backups:
-    resource: "@BinovoTknikaTknikaBackupsBundle/Controller/"
+    resource: "@BinovoTknikaBackupsBundle/Controller/"
     type:     annotation
     prefix:   /
 login_check:

@@ -1,0 +1,33 @@
+{% extends 'BinovoTknikaBackupsBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoTknikaBackups' %}
+
+{% block menu %}
+{% endblock %}
+
+{% block body %}
+
+{% for aLocale in supportedLocales %}
+<a href="{{path('setLocale', {locale: aLocale[0]})}}">{{ aLocale[1] }}</a>
+{% endfor %}
+
+<form action="{{ path('login_check') }}" method="post" class="form-horizontal">
+    <legend>{% trans %}Backup server login{% endtrans %}</legend>
+    {% if error %}
+    <div class="controls">{{ error.message }}</div>
+    {% endif %}
+    <div class="controls">
+        <label for="username">{% trans %}Username:{% endtrans %}</label>
+        <input type="text" id="username" name="_username" value="{{ last_username }}" />
+    </div>
+
+    <div class="controls">
+        <label for="password">{% trans %}Password:{% endtrans %}</label>
+        <input type="password" id="password" name="_password" />
+    </div>
+
+    <div class="controls">
+        <input class="btn" type="submit" value="{% trans %}login{% endtrans %}" />
+    </div>
+</form>
+
+{% endblock %}

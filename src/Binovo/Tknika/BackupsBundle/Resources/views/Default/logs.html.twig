@@ -1,0 +1,41 @@
+{% extends 'BinovoTknikaBackupsBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoTknikaBackups' %}
+
+{% block body %}
+
+<h3>{% trans %}Logs{% endtrans %}</h3>
+
+<form action="{{ path('showLogs') }}">
+<table class="table table-condensed table-bordered table-striped">
+    <tr>
+        {# sorting of properties based on query components #}
+        <th>{% trans %}Time{% endtrans %}</th>
+        <th style="width: 160px;">{% trans %}Level{% endtrans %}<br />
+            {{ filterSelect(levels, {style: "width: 150px;"}) }}</th>
+        <th>{% trans %}Source{% endtrans %}<br />
+            {{ filterSelect(source, {style: "width: 150px;"}) }}</th>
+        <th>{% trans %}User{% endtrans %}</th>
+        <th>{% trans %}Message{% endtrans %}</th>
+        <th>{% trans %}Object{% endtrans %}<br />
+            {{ filterText(object, {style: "width: 150px;"}) }}</th>
+    </tr>
+
+    {# table body #}
+    {% for logRecord in pagination %}
+    <tr>
+        <td style="white-space: nowrap;">{{ logRecord.dateTime.format('Y-m-d H:i:s') }}</td>
+        <td>{{ logRecord.levelName }}</td>
+        <td>{{ logRecord.source }}</td>
+        <td>{{ logRecord.userName }}</td>
+        <td>{{ logRecord.message }}</td>
+        <td style="white-space: nowrap;">{% if logRecord.link %}<a href="{{ logRecord.link }}">{{ logRecord.link }}</a>{% endif %}</td>
+    </tr>
+    {% endfor %}
+</table>
+</form>
+<div class="navigation">
+    {{ pagination.render()|raw }}
+</div>
+
+
+{% endblock %}

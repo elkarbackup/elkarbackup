@@ -78,7 +78,7 @@ services:
             - [pushHandler,   [@StreamHandler]]
             - [pushHandler,   [@BnvLoggerHandler]]
     BnvLoggerHandler:
-        class: Binovo\Tknika\TknikaBackupsBundle\Logger\LoggerHandler
+        class: Binovo\Tknika\BackupsBundle\Logger\LoggerHandler
         calls:
             - [setContainer,  [@service_container] ]
     StreamHandler:
@@ -88,14 +88,14 @@ services:
         calls:
             - [setFormatter, [@BnvWebLoggerFormatter]]
     BnvWebUserLoggerProcessor:
-        class: Binovo\Tknika\TknikaBackupsBundle\Logger\WebUserLoggerProcessor
+        class: Binovo\Tknika\BackupsBundle\Logger\WebUserLoggerProcessor
         calls:
             - [setContainer, [@service_container] ]
     BnvWebLoggerFormatter:
         class: Monolog\Formatter\LineFormatter
         arguments: ["[%%datetime%%] %%channel%%.%%level_name%%: %%message%% %%context%% %%extra.user_name%% %%extra.user_email%%\n"]
     LoginListener:
-        class: Binovo\Tknika\TknikaBackupsBundle\Listener\LoginListener
+        class: Binovo\Tknika\BackupsBundle\Listener\LoginListener
         arguments: [@service_container]
         tags:
             - { name: kernel.event_listener, event: security.interactive_login }
@@ -104,10 +104,10 @@ services:
         tags:
             - { name: 'twig.extension' }
     BnvTwigExtension:
-        class: Binovo\Tknika\TknikaBackupsBundle\Twig\Extension
+        class: Binovo\Tknika\BackupsBundle\Twig\Extension
         tags:
             - { name: 'twig.extension' }
     kernel.listener.LocaleFromSessionListener:
-        class: Binovo\Tknika\TknikaBackupsBundle\Listener\LocaleFromSessionListener
+        class: Binovo\Tknika\BackupsBundle\Listener\LocaleFromSessionListener
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
