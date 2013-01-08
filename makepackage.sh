@@ -27,7 +27,7 @@ fi
 find .debian -type d -name ".svn" | xargs rm -rf
 find .debian -type f -name "*.deb"| xargs rm -rf
 find .debian/usr/share/tknikabackups/web/js/dojo-release-1.8.1 -name "*.uncompressed.js"|xargs rm -f
-find .debian -name ".git*" -o -name "*~"| xargs rm -rf
+find .debian -name ".git*" -o -name "*~" -o -name "*#*"| xargs rm -rf
 rm -rf .debian/usr/share/tknikabackups/app/{cache,logs,sessions} .debian/usr/share/tknikabackups/backups .debian/usr/share/tknikabackups/debian
 # fix some files so that lintian doesn't complain (so much)
 find .debian -name "*.png" -o -name "*.gif" -o -name "*.php" -o -name "README" -o -name "*.md" -o -name "*.dist" -o -name "*.ini" -o -name "*.yml" -o -name "*.rst" -o -name "*.xml" -o -name "*.js"| xargs chmod a-x

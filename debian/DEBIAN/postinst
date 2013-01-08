@@ -45,6 +45,13 @@ then
 else
     echo DB seems to be ready
 fi
+echo Adding missing parameters as required
+if test "x`grep warning_load_level /etc/tknikabackups/parameters.yml`" = x
+then
+    echo "    Add warning_load_level"
+    echo                               >> /etc/tknikabackups/parameters.yml
+    echo "    warning_load_level: 0.8" >> /etc/tknikabackups/parameters.yml
+fi
 echo Update DB
 php /usr/share/tknikabackups/app/console doctrine:migrations:migrate --no-interaction || true
 echo Create root user
