@@ -35,7 +35,7 @@
                 {{ form_row(form.isActive) }}
                 {{ form_row(form.owner, {read_only: not is_granted('ROLE_ADMIN')}) }}
                 {{ form_row(form.notificationsTo) }}
-                {{ form_row(form.notificationsEmail, {attr: {class: 'input-xxlarge'}}) }}
+                {{ form_row(form.notificationsEmail, {attr: {class: 'span10'}}) }}
                 {{ form_row(form.minNotificationLevel) }}
                 <div class="controls"><div class="input-append"><input class="input-large" id="Job_preScriptCurrent" type="text" disabled="true" value="{{form.vars.value.preScript}}" /><a id="Job_preScriptDelete" class="btn">{% trans %}Delete{% endtrans %}</a></div></div>
                 {{ form_row(form.preScriptFile) }}
