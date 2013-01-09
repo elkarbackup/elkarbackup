@@ -57,7 +57,9 @@ php /usr/share/tknikabackups/app/console doctrine:migrations:migrate --no-intera
 echo Create root user
 php /usr/share/tknikabackups/app/console tknikabackups:create_admin || true
 echo Clean cache
-php /usr/share/tknikabackups/app/console --env=prod cache:clear || true
+php /usr/share/tknikabackups/app/console cache:clear || true
+echo Invalidate sessions
+rm -rf /var/lib/tknikabackups/sessions/*
 
 db_get tknikabackups/backupsusername
 username="$RET"

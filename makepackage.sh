@@ -61,6 +61,8 @@ sed -i 's#mailer_transport:.*#mailer_transport: smtp#'                 .debian/e
 sed -i 's#mailer_user:.*#mailer_user: #'                               .debian/etc/tknikabackups/parameters.yml
 sed -i 's#mailer_password:.*#mailer_password: #'                       .debian/etc/tknikabackups/parameters.yml
 sed -i 's#mailer_host:.*#mailer_host: localhost#'                      .debian/etc/tknikabackups/parameters.yml
+# use prod environment in console by default
+sed -i "s#'dev'#'prod'#"                                               .debian/usr/share/tknikabackups/app/console
 VERSION=$(cat debian/DEBIAN/control | grep 'Version' | sed -e 's/Version: //' -e 's/ *//')
 mkdir -p .debian/var/spool/tknikabackups/backups
 mkdir -p .debian/var/spool/tknikabackups/uploads
