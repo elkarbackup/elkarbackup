@@ -23,7 +23,7 @@
 {% endfor %}
             <div>
                 <div class="controls">
-                    <a href="{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}">{% trans %}Backups{% endtrans %}</a>
+                    <a href="{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}">{% trans %}Backups{% endtrans %}</a> <a href="{{path('editClient', {id: form.vars.value.client.id}) }}">{% trans %}Client{% endtrans %}</a>
                 </div>
                 {{ form_row(form.name) }}
                 {{ form_row(form.path) }}

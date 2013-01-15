@@ -243,9 +243,8 @@ class DefaultController extends Controller
                     );
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('showClients'));
+                return $this->redirect($this->generateUrl('editClient', array('id' => $client->getId())));
             } catch (Exception $e) {
-                throw $e;
                 $this->get('session')->getFlashBag()->add('client',
                                                           $t->trans('Unable to save your changes: %extrainfo%',
                                                                     array('%extrainfo%' => $e->getMessage()),
@@ -431,11 +430,9 @@ class DefaultController extends Controller
                                                           $t->trans('Unable to save your changes: %extrainfo%',
                                                                     array('%extrainfo%' => $e->getMessage()),
                                                                     'BinovoTknikaBackups'));
-
-                return $this->redirect($this->generateJobRoute($job->getId(), $job->getClient()->getId()));
             }
 
-            return $this->redirect($this->generateUrl('editClient', array('id' => $idClient)));
+            return $this->redirect($this->generateJobRoute($job->getId(), $job->getClient()->getId()));
         } else {
 
             return $this->render('BinovoTknikaBackupsBundle:Default:job.html.twig',
@@ -619,7 +616,7 @@ class DefaultController extends Controller
                         array('link' => $this->generatePolicyRoute($id)));
             $em->flush();
 
-            return $this->redirect($this->generateUrl('showPolicies'));
+            return $this->redirect($this->generatePolicyRoute($policy->getId()));
         } else {
 
             return $this->render('BinovoTknikaBackupsBundle:Default:policy.html.twig',
@@ -1102,7 +1099,7 @@ EOF;
                         array('link' => $this->generateUserRoute($id)));
             $em->flush();
 
-            return $this->redirect($this->generateUrl('showUsers'));
+            return $this->redirect($this->generateUserRoute($user->getId()));
         } else {
 
             return $this->render('BinovoTknikaBackupsBundle:Default:user.html.twig',
