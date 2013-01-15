@@ -99,10 +99,7 @@ class Builder extends ContainerAware
     public function mainMenu(FactoryInterface $factory, array $options)
     {
         $t = $this->container->get('translator');
-        $menu = array(array('label'    => $t->trans('Home', array(), 'BinovoTknikaBackups'),
-                            'children' => array(array('label'    => $t->trans('Show home page', array(), 'BinovoTknikaBackups'),
-                                                      'route'    => 'home'))),
-                      array('label'    => $t->trans('Clients', array(), 'BinovoTknikaBackups'),
+        $menu = array(array('label'    => $t->trans('Clients', array(), 'BinovoTknikaBackups'),
                             'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'showClients'),
                                                 array('label'    => $t->trans('Add', array(), 'BinovoTknikaBackups'),
@@ -129,10 +126,6 @@ class Builder extends ContainerAware
                       array('label'    => $t->trans('Logs', array(), 'BinovoTknikaBackups'),
                             'children' => array(array('label'    => $t->trans('Show Logs', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'showLogs'))),
-                      array('label'    => $t->trans('Help', array(), 'BinovoTknikaBackups'),
-                            'children' => array(array('label'    => $t->trans('About', array(), 'BinovoTknikaBackups'),
-                                                      'route'    => 'about'))),
-
             );
 
         return $this->generateMenuBar($factory, $menu);
