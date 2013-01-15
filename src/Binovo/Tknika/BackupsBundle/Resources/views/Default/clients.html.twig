@@ -26,7 +26,7 @@
     <tr onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'">
         <td><a href="{{ path('editClient', {id: client.id}) }}">{{ client.id }}</a></td>
         <td>{{ client.name }}</td>
-        <td style="text-align:right;">{{ (client.diskUsage / 1024) | number_format(0)}} MB</td>
+        <td style="text-align:right{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{{ (client.diskUsage / 1024) | number_format(0)}} MB{% if client.quota > 0 %} ({{ (client.diskUsage / client.quota * 100) | number_format(0)}}%){% endif %}</td>
         <td>{{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ (client.logEntry.levelName)|default('') }} {{ client.logEntry.message|default('')|slice(0, 50) }}{% if client.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
         <td>{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
         <td>

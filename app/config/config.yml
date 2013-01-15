@@ -22,6 +22,8 @@ framework:
 twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
+    globals:
+        warning_load_level: %warning_load_level%
 
 # Assetic Configuration
 assetic:
