@@ -57,6 +57,26 @@ class DefaultController extends Controller
                                   array('id' => $id));
     }
 
+    /*
+     * Checks if autofs is installed and the builtin -hosts map activated
+     */
+    protected function isAutoFsAvailable()
+    {
+        $result = false;
+        $file = fopen('/etc/auto.master', 'r');
+        if (!$file) {
+            return false;
+        }
+        while ($line = fgets($file)) {
+            if (preg_match('/^\s*\/net\s*-hosts/', $line)) {
+                $result = true;
+                break;
+            }
+        }
+        fclose($file);
+        return $result;
+    }
+
     /**
      * Should be called after making changes to any of the parameters to make the changes effective.
      */
@@ -878,7 +898,8 @@ EOF;
         $formBuilder = $this->createFormBuilder($data);
         $formBuilder->add('host'      , 'text'  , array('required' => false,
                                                         'label'    => $t->trans('Host', array(), 'BinovoTknikaBackups'),
-                                                        'attr'     => array('class' => 'span10')));
+                                                        'attr'     => array('class'    => 'span10'),
+                                                        'disabled' => !$this->isAutoFsAvailable()));
         $formBuilder->add('directory' , 'text'  , array('required' => false,
                                                         'label'    => $t->trans('Directory', array(), 'BinovoTknikaBackups'),
                                                         'attr'     => array('class' => 'span10')));

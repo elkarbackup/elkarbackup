@@ -296,8 +296,8 @@ backupscriptconfig_help: |
  <h4>Authorized keys</h4>
  Adding your ssh public key to the applications authorized keys is required to make backups of the repository.
 managebackups_help: |
- This application depends on autofs to mount the remote filesystems.
  <h4>Host</h4>
  The host name or IP address of the NFS server. Leave empty for local file systems.
+ <p>This application depends on autofs to mount the remote file systems. If autofs is not configured as expected this field will not be editable.
  <h4>Directory</h4>
  The full path in the local file system or the name of the NFS export. In any case it must start with '/'.
