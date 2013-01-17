@@ -47,6 +47,7 @@
 'Delete client %clientid%, job %jobid%': 'Delete client %clientid%, job %jobid%'
 'Delete': 'Delete'
 'Description': 'Description'
+'Directory': 'Directory'
 'Disk usage': 'Disk usage'
 'Documentation will be available soon': 'Documentation will be available soon'
 'Download as .tgz': 'Download as .tgz'
@@ -71,6 +72,7 @@
 'Friday': 'Friday'
 'Help': 'Help'
 'Home': 'Home'
+'Host': 'Host'
 'Hourly': 'Hourly'
 'Id': 'Id'
 'Include': 'Include'
@@ -91,6 +93,7 @@
 'Mailer password': 'Mailer password'
 'Mailer transpor': 'Mailer transpor'
 'Mailer user': 'Mailer user'
+'Manage backups location': 'Manage backups location'
 'Manage parameters': 'Manage parameters'
 'Message': 'Message'
 'Missing job.': 'Missing job.'
@@ -292,3 +295,9 @@ params_help: |
 backupscriptconfig_help: |
  <h4>Authorized keys</h4>
  Adding your ssh public key to the applications authorized keys is required to make backups of the repository.
+managebackups_help: |
+ This application depends on autofs to mount the remote filesystems.
+ <h4>Host</h4>
+ The host name or IP address of the NFS server. Leave empty for local file systems.
+ <h4>Directory</h4>
+ The full path in the local file system or the name of the NFS export. In any case it must start with '/'.

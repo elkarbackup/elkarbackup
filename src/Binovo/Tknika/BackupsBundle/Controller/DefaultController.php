@@ -25,7 +25,6 @@ use Symfony\Component\Security\Core\SecurityContext;
 
 class DefaultController extends Controller
 {
-
     protected function info($msg, $translatorParams = array(), $context = array())
     {
         $logger = $this->get('BnvWebLogger');
@@ -56,6 +55,18 @@ class DefaultController extends Controller
     {
         return $this->generateUrl('editUser',
                                   array('id' => $id));
+    }
+
+    /**
+     * Should be called after making changes to any of the parameters to make the changes effective.
+     */
+    protected function clearCache()
+    {
+        $realCacheDir = $this->container->getParameter('kernel.cache_dir');
+        $oldCacheDir  = $realCacheDir.'_old';
+        $this->container->get('cache_clearer')->clear($realCacheDir);
+        rename($realCacheDir, $oldCacheDir);
+        $this->container->get('filesystem')->remove($oldCacheDir);
     }
 
     /**
@@ -847,6 +858,59 @@ EOF;
 
         return $result;
     }
+
+    /**
+     * @Route("/config/backupslocation", name="manageBackupsLocation")
+     * @Template()
+     */
+    public function manageBackupsLocationAction(Request $request)
+    {
+        $t = $this->get('translator');
+        $backupDir = $this->container->getParameter('backup_dir');
+        $hostAndDir = array();
+        if (preg_match('/^\/net\/([^\/]+)(\/.*)$/', $backupDir, $hostAndDir)) {
+            $data = array('host'      => $hostAndDir[1],
+                          'directory' => $hostAndDir[2]);
+        } else {
+            $data = array('host'      => '',
+                          'directory' => $backupDir);
+        }
+        $formBuilder = $this->createFormBuilder($data);
+        $formBuilder->add('host'      , 'text'  , array('required' => false,
+                                                        'label'    => $t->trans('Host', array(), 'BinovoTknikaBackups'),
+                                                        'attr'     => array('class' => 'span10')));
+        $formBuilder->add('directory' , 'text'  , array('required' => false,
+                                                        'label'    => $t->trans('Directory', array(), 'BinovoTknikaBackups'),
+                                                        'attr'     => array('class' => 'span10')));
+        $result = null;
+        $form = $formBuilder->getForm();
+        if ($request->isMethod('POST')) {
+            $form->bind($request);
+            $data = $form->getData();
+            if ('' != $data['host']) {
+                $backupDir = sprintf('/net/%s%s', $data['host'], $data['directory']);
+            } else {
+                $backupDir = $data['directory'];
+            }
+            $ok = true;
+            if ($this->container->getParameter('backup_dir') != $backupDir) {
+                if (!$this->setParameter('backup_dir', $backupDir)) {
+                    $this->get('session')->getFlashBag()->add('manageParameters',
+                                                              $t->trans('Parameters updated',
+                                                                        array(),
+                                                                        'BinovoTknikaBackups'));
+                }
+            }
+            $result = $this->redirect($this->generateUrl('manageBackupsLocation'));
+        } else {
+            $result = $this->render('BinovoTknikaBackupsBundle:Default:backupslocation.html.twig',
+                                    array('form' => $form->createView()));
+        }
+        $this->getDoctrine()->getManager()->flush();
+        $this->clearCache();
+
+        return $result;
+    }
     /**
      * @Route("/config/params", name="manageParameters")
      * @Template()
@@ -931,12 +995,7 @@ EOF;
                                           'showKeyDownload' => file_exists($this->container->getParameter('public_key'))));
         }
         $this->getDoctrine()->getManager()->flush();
-        // clear cache so that changes take effect
-        $realCacheDir = $this->container->getParameter('kernel.cache_dir');
-        $oldCacheDir  = $realCacheDir.'_old';
-        $this->container->get('cache_clearer')->clear($realCacheDir);
-        rename($realCacheDir, $oldCacheDir);
-        $this->container->get('filesystem')->remove($oldCacheDir);
+        $this->clearCache();
 
         return $result;
     }
