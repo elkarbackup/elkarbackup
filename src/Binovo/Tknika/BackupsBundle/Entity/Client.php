@@ -61,13 +61,6 @@ class Client
     protected $preScriptFile;
 
     /**
-     * Disk usage in KB.
-     *
-     * @ORM\Column(type="integer")
-     */
-    protected $diskUsage = 0;
-
-    /**
      * Quota in KB. -1 means no limit, which is the default.
      *
      * @ORM\Column(type="integer")
@@ -446,25 +439,17 @@ class Client
     }
 
     /**
-     * Set diskUsage
-     *
-     * @param integer $diskUsage
-     * @return Client
-     */
-    public function setDiskUsage($diskUsage)
-    {
-        $this->diskUsage = $diskUsage;
-        return $this;
-    }
-
-    /**
      * Get diskUsage
      *
      * @return integer
      */
     public function getDiskUsage()
     {
-        return $this->diskUsage;
+        $du = 0;
+        foreach ($this->jobs as $job) {
+            $du += $job->getDiskUsage();
+        }
+        return $du;
     }
 
     /**

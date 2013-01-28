@@ -294,11 +294,6 @@ abstract class BackupRunningCommand extends LoggingCommand
                     } else {
                         $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
                     }
-                    $du = 0;
-                    foreach ($lastClient->getJobs() as $duJob) {
-                        $du += $duJob->getDiskUsage();
-                    }
-                    $lastClient->setDiskUsage($du);
                 }
                 $client = $job->getClient();
                 $idClient   = $client->getId();
@@ -370,11 +365,6 @@ abstract class BackupRunningCommand extends LoggingCommand
             } else {
                 $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
             }
-            $du = 0;
-            foreach ($lastClient->getJobs() as $duJob) {
-                $du += $duJob->getDiskUsage();
-            }
-            $lastClient->setDiskUsage($du);
             $manager->flush();
         }
     }

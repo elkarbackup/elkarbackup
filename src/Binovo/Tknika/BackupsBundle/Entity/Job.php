@@ -24,8 +24,6 @@ class Job
     const NOTIFICATION_LEVEL_NONE    = 1000;
 
 
-    private $filenameForRemoval;
-
     /**
      * @ORM\ManyToOne(targetEntity="Client", inversedBy="jobs")
      */

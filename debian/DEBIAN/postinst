@@ -91,7 +91,7 @@ then
     setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/log/tknikabackups
 fi
 chown -R $username.$username /var/cache/tknikabackups /var/log/tknikabackups /var/spool/tknikabackups
-chown -R www-data.www-data /var/lib/tknikabackups/sessions /etc/tknikabackups/parameters.yml
+chown -R www-data.www-data /var/lib/tknikabackups/sessions /etc/tknikabackups/parameters.yml /var/spool/tknikabackups/uploads
 
 a2ensite tknikabackups
 a2enmod  rewrite

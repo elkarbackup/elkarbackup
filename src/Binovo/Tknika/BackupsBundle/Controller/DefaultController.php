@@ -305,6 +305,11 @@ class DefaultController extends Controller
         $job = $repository->find($idJob);
         try {
             $manager->remove($job);
+            $msg = new Message('DefaultController', 'TickCommand',
+                               json_encode(array('command' => "tknikabackups:delete_job_backups",
+                                                 'client'  => (int)$idClient,
+                                                 'job'     => (int)$idJob)));
+            $manager->persist($msg);
             $this->info('Delete client %clientid%, job "%jobid%"', array('%clientid%' => $idClient, '%jobid%' => $idJob), array('link' => $this->generateJobRoute($idJob, $idClient)));
             $manager->flush();
         } catch (Exception $e) {
