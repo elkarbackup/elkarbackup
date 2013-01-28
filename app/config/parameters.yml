@@ -20,3 +20,4 @@ parameters:
     tmp_dir: /srv/web/tknikabackups-devel/tmp
     rsnapshot: /usr/bin/rsnapshot
     warning_load_level: 0.8
+    pagination_lines_per_page: 20

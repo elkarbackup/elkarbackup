@@ -139,6 +139,7 @@
 'Public key generation requested': 'Public key generation requested'
 'Quota': 'Quota'
 'Quota warning level': 'Quota warning level'
+'Records per page': 'Records per page'
 'Repository backups script': 'Repository backups script'
 'Run now': 'Run now'
 'Running %command%': 'Running %command%'
@@ -294,6 +295,8 @@ params_help: |
  The application will periodically prune the log registry so that it doesn't get too big. Any record older than the value specified here will be removed.
  <h4>Quota warning level</h4>
  When the disk space used by a client exceeds this percentage with respect to the quota send a warning message.
+ <h4>Records per page</h4>
+ Number of lines to show in pagination.
 backupscriptconfig_help: |
  <h4>Authorized keys</h4>
  Adding your ssh public key to the applications authorized keys is required to make backups of the repository.

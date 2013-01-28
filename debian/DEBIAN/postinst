@@ -52,6 +52,12 @@ then
     echo                               >> /etc/tknikabackups/parameters.yml
     echo "    warning_load_level: 0.8" >> /etc/tknikabackups/parameters.yml
 fi
+if test "x`grep pagination_lines_per_page /etc/tknikabackups/parameters.yml`" = x
+then
+    echo "    Add pagination_lines_per_page"
+    echo                                     >> /etc/tknikabackups/parameters.yml
+    echo "    pagination_lines_per_page: 20" >> /etc/tknikabackups/parameters.yml
+fi
 echo Update DB
 php /usr/share/tknikabackups/app/console doctrine:migrations:migrate --no-interaction || true
 echo Create root user
