@@ -155,25 +155,28 @@ abstract class BackupRunningCommand extends LoggingCommand
             }
         }
         foreach ($runnableRetains as $retain) {
+            $commands = array();
             if ($job->getPolicy()->mustSync($retain)) {
-                $command = sprintf('"%s" -c "%s" sync 2>&1 && "%s" -c "%s" %s 2>&1', $rsnapshot, $confFileName, $rsnapshot, $confFileName, $retain);
-            } else {
-                $command = sprintf('"%s" -c "%s" %s 2>&1', $rsnapshot, $confFileName, $retain);
+                $commands[] = sprintf('"%s" -c "%s" sync 2>&1', $rsnapshot, $confFileName);
             }
-            $commandOutput = array();
-            $status        = 0;
-            $this->info('Running %command%', array('%command%' => $command), $context);
-            exec($command, $commandOutput, $status);
-            if (0 != $status) {
-                $this->err('Command %command% failed. Diagnostic information follows: %output%',
-                           array('%command%' => $command,
-                                 '%output%'  => "\n" . implode("\n", $commandOutput)),
-                           $context);
-            } else {
-                $this->info('Command %command% succeeded with output: %output%',
-                            array('%command%' => $command,
-                                  '%output%'  => implode("\n", $commandOutput)),
-                            $context);
+            $commands[] = sprintf('"%s" -c "%s" %s 2>&1', $rsnapshot, $confFileName, $retain);
+            foreach ($commands as $command) {
+                $commandOutput = array();
+                $status        = 0;
+                $this->info('Running %command%', array('%command%' => $command), $context);
+                exec($command, $commandOutput, $status);
+                if (0 != $status) {
+                    $this->err('Command %command% failed. Diagnostic information follows: %output%',
+                               array('%command%' => $command,
+                                     '%output%'  => "\n" . implode("\n", $commandOutput)),
+                               $context);
+                    break;
+                } else {
+                    $this->info('Command %command% succeeded with output: %output%',
+                                array('%command%' => $command,
+                                      '%output%'  => implode("\n", $commandOutput)),
+                                $context);
+                }
             }
         }
         $ok = unlink($confFileName);
@@ -271,8 +274,10 @@ abstract class BackupRunningCommand extends LoggingCommand
                         $this->err('Client "%clientid%", Job "%jobid%" error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     }
                     $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
+                    $this->info('Client "%clientid%", Job "%jobid%" du begin.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     $du = (int)shell_exec(sprintf("du -ks '%s' | sed 's/\t.*//'", $job->getSnapshotRoot()));
                     $job->setDiskUsage($du);
+                    $this->info('Client "%clientid%", Job "%jobid%" du end.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     ++$i;
                 } else {
                     $state = self::NEW_CLIENT;
