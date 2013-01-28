@@ -485,11 +485,12 @@ class DefaultController extends Controller
             throw $this->createNotFoundException($t->trans('Unable to find Job entity: ', array(), 'BinovoTknikaBackups') . $idClient . " " . $idJob);
         }
 
-        $realPath = realpath($job->getSnapshotRoot() . '/' . $path);
+        $snapshotRoot = realpath($job->getSnapshotRoot());
+        $realPath = realpath($snapshotRoot . '/' . $path);
         if (false == $realPath) {
             throw $this->createNotFoundException($t->trans('Path not found:', array(), 'BinovoTknikaBackups') . $path);
         }
-        if (0 !== strpos($realPath, $job->getSnapshotRoot())) {
+        if (0 !== strpos($realPath, $snapshotRoot)) {
             throw $this->createNotFoundException($t->trans('Path not found:', array(), 'BinovoTknikaBackups') . $path);
         }
         if (is_dir($realPath)) {
