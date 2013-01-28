@@ -521,7 +521,7 @@ class DefaultController extends Controller
                 foreach ($content as &$aFile) {
                     $date = new \DateTime();
                     $date->setTimestamp(filemtime($realPath . '/' . $aFile));
-                    $aFile = array($aFile, $date);
+                    $aFile = array($aFile, $date, is_dir($realPath . '/' . $aFile));
                 }
                 $this->info('View backup directory %clientid%, %jobid% %path%',
                             array('%clientid%' => $idClient,
