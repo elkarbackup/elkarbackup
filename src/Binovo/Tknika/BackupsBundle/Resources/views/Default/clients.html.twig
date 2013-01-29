@@ -29,7 +29,7 @@
         <td style="text-align:right{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{{ (client.diskUsage / 1024) | number_format(0)}} MB{% if client.quota > 0 %} ({{ (client.diskUsage / client.quota * 100) | number_format(0)}}%){% endif %}</td>
         <td>{{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ (client.logEntry.levelName)|default('') }} {{ client.logEntry.message|default('')|slice(0, 50) }}{% if client.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
         <td>{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
-        <td>
+        <td class="actions">
             <form action="{{ path('editClient', {id: client.id}) }}" style="display:inline">
                 <input class="btn" type="submit" value="{% trans %}Edit{% endtrans %}" />
             </form>
@@ -58,7 +58,7 @@
     {% endfor %}
 </table>
 
-<button class="btn" type="button" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">{% trans %}New{% endtrans %}</button>
+<button class="btn pull-right" type="button" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">{% trans %}New{% endtrans %}</button>
 
 <div class="navigation">
     {{ pagination.render()|raw }}

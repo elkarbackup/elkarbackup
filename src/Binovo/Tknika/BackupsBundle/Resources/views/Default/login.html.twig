@@ -12,7 +12,7 @@
 
 <form action="{{ path('login_check') }}" method="post" class="form-horizontal">
     <legend>{% trans %}Backup server login{% endtrans %}</legend>
-    <div class="row-fluid">
+    <div class="row">
         <div class="span6">
             <div class="control-group">
     {% if error %}
@@ -22,18 +22,18 @@
             <div class="control-group">
                 <label for="username" class="control-label">{% trans %}Username:{% endtrans %}</label>
                 <div class="controls">
-                    <input type="text" id="username" name="_username" value="{{ last_username }}" />
+                    <input class="span12" type="text" id="username" name="_username" value="{{ last_username }}" />
                 </div>
             </div>
             <div class="control-group">
                 <label for="password" class="control-label">{% trans %}Password:{% endtrans %}</label>
                 <div class="controls">
-                    <input type="password" id="password" name="_password" />
+                    <input class="span12" type="password" id="password" name="_password" />
                 </div>
             </div>
             <div class="control-group">
                 <div class="controls">
-                    <input class="btn" type="submit" value="{% trans %}Login{% endtrans %}" />
+                    <input class="btn pull-right" type="submit" value="{% trans %}Login{% endtrans %}" />
                 </div>
             </div>
         </div>

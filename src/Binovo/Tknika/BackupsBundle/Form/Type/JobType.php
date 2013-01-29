@@ -12,11 +12,12 @@ class JobType extends AbstractType
     {
         $t = $options['translator'];
         $builder->add('name'                , 'text'    , array('label' => $t->trans('Name', array(), 'BinovoTknikaBackups'),
-                                                                'attr'  => array('class'    => 'span10')))
+                                                                'attr'  => array('class'    => 'span12')))
                 ->add('description'         , 'textarea', array('label' => $t->trans('Description', array(), 'BinovoTknikaBackups'),
                                                                 'required' => false,
-                                                                'attr'  => array('class'    => 'span10')))
+                                                                'attr'  => array('class'    => 'span12')))
                 ->add('policy'              , 'entity'  , array('label' => $t->trans('Policy', array(), 'BinovoTknikaBackups'),
+                                                                'attr'     => array('class'    => 'span12'),
                                                                 'required' => false,
                                                                 'class'    => 'BinovoTknikaBackupsBundle:Policy',
                                                                 'property' => 'name'))
@@ -24,17 +25,19 @@ class JobType extends AbstractType
                                                                 'required' => false))
                 ->add('exclude'             , 'textarea', array('label' => $t->trans('Exclude', array(), 'BinovoTknikaBackups'),
                                                                 'required' => false,
-                                                                'attr' => array('class'    => 'span10')))
+                                                                'attr' => array('class'    => 'span12')))
                 ->add('include'             , 'textarea', array('label' => $t->trans('Include', array(), 'BinovoTknikaBackups'),
                                                                 'required' => false,
-                                                                'attr' => array('class'    => 'span10')))
+                                                                'attr' => array('class'    => 'span12')))
                 ->add('owner'               , 'entity'  , array('label'    => $t->trans('Owner', array(), 'BinovoTknikaBackups'),
                                                                 'property' => 'username',
+                                                                'attr'     => array('class'    => 'span12'),
                                                                 'class'    => 'BinovoTknikaBackupsBundle:User'))
                 ->add('path'                , 'text'    , array('label' => $t->trans('Path', array(), 'BinovoTknikaBackups'),
-                                                                'attr'  => array('class'    => 'span10')))
+                                                                'attr'  => array('class'    => 'span12')))
                 ->add('notificationsTo'     , 'choice'  , array('label'    => $t->trans('Send notices to', array(), 'BinovoTknikaBackups'),
                                                                 'required' => false,
+                                                                'attr'     => array('class'    => 'span12'),
                                                                 'choices'  => array(Job::NOTIFY_TO_ADMIN => $t->trans('Admin', array(), 'BinovoTknikaBackups'),
                                                                                     Job::NOTIFY_TO_OWNER => $t->trans('Owner', array(), 'BinovoTknikaBackups'),
                                                                                     Job::NOTIFY_TO_EMAIL => $t->trans('Email', array(), 'BinovoTknikaBackups')),
@@ -43,6 +46,7 @@ class JobType extends AbstractType
                 ->add('notificationsEmail'  , 'email'  , array('label'    => ' ',
                                                                'required' => false))
                 ->add('minNotificationLevel', 'choice'  , array('label'       => $t->trans('Notify only', array(), 'BinovoTknikaBackups'),
+                                                                'attr'        => array('class'    => 'span12'),
                                                                 'empty_value' => false,
                                                                 'required'    => false,
                                                                 'choices'      => array(Job::NOTIFICATION_LEVEL_ALL     => $t->trans('All messages'   , array(), 'BinovoTknikaBackups'),

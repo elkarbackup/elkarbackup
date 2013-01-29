@@ -29,13 +29,13 @@
                 {{ form_row(form.path) }}
                 <div class="control-group">
                     <label class="control-label">{% trans %}Disk usage{% endtrans %}</label>
-                    <div class="controls"><input type="text" disabled="disabled" value="{{ (form.vars.value.diskUsage / 1024) | number_format(0)  }} MB" /></div>
+                    <div class="controls"><input class="span12" type="text" disabled="disabled" value="{{ (form.vars.value.diskUsage / 1024) | number_format(0)  }} MB" /></div>
                 </div>
                 {{ form_row(form.description) }}
                 {{ form_row(form.isActive) }}
                 {{ form_row(form.owner, {read_only: not is_granted('ROLE_ADMIN')}) }}
                 {{ form_row(form.notificationsTo) }}
-                {{ form_row(form.notificationsEmail, {attr: {class: 'span10'}}) }}
+                {{ form_row(form.notificationsEmail, {attr: {class: 'span12'}}) }}
                 {{ form_row(form.minNotificationLevel) }}
                 <div class="controls"><div class="input-append"><input class="input-large" id="Job_preScriptCurrent" type="text" disabled="true" value="{{form.vars.value.preScript}}" /><a id="Job_preScriptDelete" class="btn">{% trans %}Delete{% endtrans %}</a></div></div>
                 {{ form_row(form.preScriptFile) }}
@@ -108,8 +108,8 @@ dojo.addOnLoad(function() {
             </div>
             <div class="control-group">
                 <div class="controls">
-                    <input class="btn" type="button" value="{% trans %}Run now{% endtrans %}" id="runNow"/>
-                    <input class="btn" type="submit" value="{% trans %}Save{% endtrans %}" />
+                    <input class="btn btn-pull-right" type="button" value="{% trans %}Run now{% endtrans %}" id="runNow"/>
+                    <input class="btn btn-pull-right" type="submit" value="{% trans %}Save{% endtrans %}" />
                 </div>
             </div>
         </div>

@@ -1,0 +1,16 @@
+.btn-pull-right {
+  float: right;
+  margin-left: 4px;
+}
+
+.max10 {
+  max-width:950px;
+}
+td.actions, th.actions {
+  width:1px;
+  white-space:nowrap;
+}
+td.ids, th.ids {
+  width:1px;
+  white-space:nowrap;
+}
