@@ -113,11 +113,17 @@ dojo.addOnLoad(function() {
                 {% trans %}There are no jobs{% endtrans %}
             </div>
         {% endfor %}
-            <div class="controls control-row">
-                <input class="btn" {% if not form.vars.value.id %}disabled="true" {% endif %}type="button" value="{% trans %}Add job{% endtrans %}" onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: form.vars.value.id}) }}'"/>
+            <div class="control-group">
+                <div class="controls control-row">
+                    <input class="btn" {% if not form.vars.value.id %}disabled="true" {% endif %}type="button" value="{% trans %}Add job{% endtrans %}" onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: form.vars.value.id}) }}'"/>
+                </div>
             </div>
             {{ form_widget(form._token) }}
-            <input class="btn" type="submit" value="{% trans %}Save{% endtrans %}"/>
+            <div class="control-group">
+                <div class="controls">
+                    <input class="btn" type="submit" value="{% trans %}Save{% endtrans %}"/>
+                </div>
+            </div>
         </div>
         <div class="span6">
             {% trans %}client_job_help{% endtrans %}

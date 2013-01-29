@@ -123,7 +123,7 @@ class Builder extends ContainerAware
                                                       'route'    => 'manageParameters'),
                                                 array('label'    => $t->trans('Manage backups location', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'manageBackupsLocation'),
-                                                array('label'    => $t->trans('Repository backups script', array(), 'BinovoTknikaBackups'),
+                                                array('label'    => $t->trans('Repository backup script', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'configureRepositoryBackupScript'))),
                       array('label'    => $t->trans('Logs', array(), 'BinovoTknikaBackups'),
                             'children' => array(array('label'    => $t->trans('Show Logs', array(), 'BinovoTknikaBackups'),

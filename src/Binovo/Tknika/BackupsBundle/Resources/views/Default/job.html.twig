@@ -106,8 +106,12 @@ dojo.addOnLoad(function() {
                 {{ form_row(form.postScript) }}
                 {{ form_rest(form) }}
             </div>
-            <input class="btn" type="button" value="{% trans %}Run now{% endtrans %}" id="runNow"/>
-            <input class="btn" type="submit" value="{% trans %}Save{% endtrans %}" />
+            <div class="control-group">
+                <div class="controls">
+                    <input class="btn" type="button" value="{% trans %}Run now{% endtrans %}" id="runNow"/>
+                    <input class="btn" type="submit" value="{% trans %}Save{% endtrans %}" />
+                </div>
+            </div>
         </div>
         <div class="span6">
             {% trans %}job_help{% endtrans %}
