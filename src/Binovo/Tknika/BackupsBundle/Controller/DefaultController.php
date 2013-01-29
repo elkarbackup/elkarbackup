@@ -819,7 +819,8 @@ EOF;
                                         'mysqlhost'     => $this->container->getParameter('database_host'),
                                         'mysqlpassword' => $this->container->getParameter('database_password'),
                                         'mysqluser'     => $this->container->getParameter('database_user'),
-                                        'server'        => $request->getHttpHost()));
+                                        'server'        => $request->getHttpHost(),
+                                        'uploads'       => $this->container->getParameter('upload_dir')));
         $response->headers->set('Content-Type'       , 'text/plain');
         $response->headers->set('Content-Disposition', 'attachment; filename="copyrepository.sh"');
 
