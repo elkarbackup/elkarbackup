@@ -1,7 +1,13 @@
-<VirtualHost tknikabackups:80>
+<VirtualHost tknika-backups:80>
 	ServerAdmin webmaster@localhost
 
-	DocumentRoot /usr/share/tknikabackups/web/
+	DocumentRoot /usr/share/tknikabackups/web
+
+    <directory /usr/share/tknikabackups/web>
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.*)$ app.php [QSA,L]
+    </directory>
 
 	ErrorLog ${APACHE_LOG_DIR}/tknikabackups.error.log
 
