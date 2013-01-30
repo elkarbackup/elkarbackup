@@ -219,7 +219,7 @@ abstract class BackupRunningCommand extends LoggingCommand
 
             return false;
         }
-        $command       = sprintf('env TYPE=%s CLIENTID=%s "%s" 2>&1', $type, $idClient, $scriptFile);
+        $command       = sprintf('sudo "%s" 2>&1', $scriptFile);
         $commandOutput = array();
         $status        = 0;
         exec($command, $commandOutput, $status);

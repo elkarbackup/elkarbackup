@@ -92,6 +92,8 @@ then
 fi
 chown -R $username.$username /var/cache/tknikabackups /var/log/tknikabackups /var/spool/tknikabackups
 chown -R www-data.www-data /var/lib/tknikabackups/sessions /etc/tknikabackups/parameters.yml /var/spool/tknikabackups/uploads
+sed -i "s#tknikabackupsuser#$username#g" /etc/sudoers.d/tknikabackups
+chmod 0440 /etc/sudoers.d/tknikabackups
 
 a2ensite tknikabackups
 a2enmod  rewrite
