@@ -1,0 +1,308 @@
+'A month': 'Hilabete bat'
+'A year': 'Urte bat'
+'About': 'Honi buruz'
+'Actions': 'Ekintzak'
+'active': 'aktibo'
+'Active': 'Aktibo'
+'Add job': 'Lan bat gehitu'
+'Add': 'Gehitu'
+'Add key': 'Gakoa gehitu'
+'Admin': 'Admin'
+'All messages': 'Mezu guztiak'
+'All': 'Guztia'
+'Authorized keys': 'Authorized keys'
+'Authorized_keys file (%filename%) updated.': 'Authorized_keys file (%filename%) updated.'
+'Back to client': 'Bezerora bueltatu'
+'Back to job': 'Lanera bueltatu'
+'Backup script': 'Backup script'
+'Backup server login': 'Backup server login'
+'Backups dir': 'Backup karpeta'
+'Backups': 'Backupak'
+'Change password': 'Pasahitza aldatu'
+'Change': 'Aldatu'
+'Client "%clientid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%': 'Client "%clientid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%'
+'Client "%clientid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%': 'Client "%clientid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%'
+'Client "%clientid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.': 'Client "%clientid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.'
+'Client "%clientid%" at %loadLevel% of quota (%quota%MB).': 'Client "%clientid%" at %loadLevel% of quota (%quota%MB).'
+'Client "%clientid%" post script error.': 'Client "%clientid%" post script error.'
+'Client "%clientid%" post script error.': 'Client "%clientid%" post script error.'
+'Client "%clientid%" post script ok.': 'Client "%clientid%" post script ok.'
+'Client "%clientid%" post script ok.': 'Client "%clientid%" post script ok.'
+'Client "%clientid%" pre script failed. Aborting backup.': 'Client "%clientid%" pre script failed. Aborting backup.'
+'Client "%clientid%" pre script ok.': 'Client "%clientid%" pre script ok.'
+'Client "%clientid%" quota exceeded (quota: %quota%MB, disk usage: %du%MB).': 'Client "%clientid%" quota exceeded (quota: %quota%MB, disk usage: %du%MB).'
+'Client "%clientid%", Job "%jobid%" du begin.': 'Client "%clientid%", Job "%jobid%" du begin.'
+'Client "%clientid%", Job "%jobid%" du end.': 'Client "%clientid%", Job "%jobid%" du end.'
+'Client "%clientid%", Job "%jobid%" error.': 'Client "%clientid%", Job "%jobid%" error.'
+'Client "%clientid%", Job "%jobid%" ok.': 'Client "%clientid%", Job "%jobid%" ok.'
+'Client': 'Bezeroa'
+'Clients': 'Bezeroak'
+'Command %command% failed. Diagnostic information follows: %output%': 'Command %command% failed. Diagnostic information follows: %output%'
+'Command %command% succeeded with output: %output%': 'Command %command% succeeded with output: %output%'
+'Command was unable to send the notification message: %exception%': 'Command was unable to send the notification message: %exception%'
+'Comment': 'Iruzkina'
+'Config': 'Konfigurazioa'
+'Confirm new password': 'Pasahitz berria baieztatu'
+'Daily': 'Egunero'
+'Day of month:': 'Hileko eguna:'
+'Day of year:': 'Urteko eguna:'
+'Delete client %clientid%, job %jobid%': 'Delete client %clientid%, job %jobid%'
+'Delete': 'Ezabatu'
+'Description': 'Azalpena'
+'Directory': 'Karpeta'
+'Disk usage': 'Diskoaren erabilera'
+'Documentation will be available soon': 'Laister izango duzu dokumentazioa'
+'Download as .tgz': '.tgz bezala deskargatu'
+'Download': 'Deskargatu'
+'Edit client': 'Bezeroa editatu'
+'Edit Job': 'Lana editatu'
+'Edit policy': 'Politika editatu'
+'Edit User': 'Erabiltzailea editatu'
+'Edit': 'Editatu'
+'Email': 'Posta helbidea'
+'Error closing config file %filename%.': 'Error closing config file %filename%.'
+'Error log for backup from job %joburl%': 'Error log for backup from job %joburl%'
+'Error opening config file %filename%. Aborting backup.': 'Error opening config file %filename%. Aborting backup.'
+'Error saving parameter "%param%"': 'Error saving parameter "%param%"'
+'Error unlinking config file %filename%.': 'Error unlinking config file %filename%.'
+'Error updating authorized_keys file (%filename%)': 'Error updating authorized_keys file (%filename%)'
+'Error writing to config file %filename%. Aborting backup.': 'Error writing to config file %filename%. Aborting backup.'
+'Errors and up': 'Errorreak eta gorago'
+'Exclude': 'Baztertu'
+'Five years': 'Bost urte'
+'Four years': 'Lau urte'
+'Friday': 'Ostirala'
+'Help': 'Laguntza'
+'Home': 'Hasiera'
+'Host': 'Host'
+'Hourly': 'Orduro'
+'Id': 'Id-a'
+'Include': 'Sartu'
+'Invalid time specified.': 'Invalid time specified.'
+'Is active': 'Aktibo dago'
+'Job %jobid% has no policy': '%jobid% lanak ez du politikarik'
+'Job execution requested successfully': 'Lanaren exekuzioa ondo joan da'
+'Jobs': 'Lanak'
+'Key': 'gakoa'
+'Key file updated. The update should be effective in less than 2 minutes.': 'Gako fitxategia aldatu da. Aldaketa bi minututan aplikatu eta aurrerantzean erabilgarri egongo da.'
+'Last log entry': 'Azken log sarrera'
+'Level': 'Maila'
+'Link': 'Esteka'
+'login': 'login'
+'Logout': 'Saioa amaitu'
+'Logs': 'Logak'
+'Mailer host': 'Mailer host'
+'Mailer password': 'Mailer password'
+'Mailer transpor': 'Mailer transpor'
+'Mailer user': 'Mailer user'
+'Manage backups location': 'Backup kokapena kudeatu'
+'Manage parameters': 'Parametroak kudeatu'
+'Message': 'Mezua'
+'Missing job.': 'Missing job.'
+'Modification date': 'Aldaketa data'
+'Monday': 'Astelehena'
+'Monthly': 'Hilero'
+'MySQL DB name': 'MySQL DB izena'
+'MySQL host': 'MySQL host'
+'MySQL password': 'MySQL pasahitza'
+'MySQL port': 'MySQL portua'
+'MySQL user': 'MySQL erabiltzailea'
+'Name': 'Izena'
+'Never': 'Inoiz ez'
+'New password': 'Pasahitz berria'
+'New': 'Berria'
+'No keys defined': 'No keys defined'
+'No script': 'No script'
+'No such job.': 'No such job.'
+'None': 'Batere ez'
+'Nothing to run.': 'Nothing to run.'
+'Notices and up': 'Notices and up'
+'Notify only': 'Bidaliko diren mezuak'
+'Object': 'Object'
+'Old password': 'Pasahitz zaharra'
+'One day': 'Egun bat'
+'One week': 'Aste bete'
+'Owner': 'Jabea'
+'Parameters updated': 'Parametroak aldatu dira'
+'Password changed': 'Pasahitza aldatu da'
+'Password': 'Pasahitza'
+'Password:': 'Pasahitza:'
+'Passwords do not match': 'Pasahitzak ez datoz bat'
+'Path': 'Path'
+'Path not found:': 'Path not found: '
+'Policies': 'Politikak'
+'Policy %policyid% has no active retains': 'Policy %policyid% has no active retains'
+'Policy': 'Politika'
+'Post script': 'Post script'
+'Pre script': 'Pre script'
+'Public key': 'Gako publikoa'
+'Public key generation requested': 'Public key generation requested'
+'Quota': 'Kuota'
+'Quota warning level': 'Quota warning level'
+'Records per page': 'Records per page'
+'Repository backups script': 'Repository backups script'
+'Run now': 'Exekutatu orain'
+'Running %command%': 'Running %command%'
+'Saturday': 'Saturday'
+'Save client %clientid%': 'Save client %clientid%'
+'Save': 'Gorde'
+'Saved': 'Gordeta'
+'Send notices to': 'Mezuak nori bidali'
+'Set Parameter %paramname%': 'Set Parameter %paramname%'
+'Show home page': 'Show home page'
+'Show Logs': 'Erakutsi Logak'
+'Show': 'Erakutsi'
+'Six months': 'Sei hilabete'
+'Source': 'Source'
+'Status': 'Egoera'
+'Sunday': 'Igandea'
+'Sync first': 'Lehenengo sinkronizatu'
+'The number of copies to make during the day': 'The number of copies to make during the day'
+'There are no jobs': 'Ez dago lanik'
+'Three weeks': 'Hiru astea'
+'Three years': 'Hiru urte'
+'Thursday': 'Thursday'
+'Time': 'Time'
+'TODO': 'EGITEKE'
+'Tuesday': 'Tuesday'
+'Two weeks': 'Bi aste'
+'Two years': 'Bi urte'
+'Unable to delete client: %extrainfo%': 'Unable to delete client: %extrainfo%'
+'Unable to delete job: %extrainfo%': 'Unable to delete job: %extrainfo%'
+'Unable to find Client entity': 'Unable to find Client entity:'
+'Unable to find Job entity:': 'Unable to find Job entity: '
+'Unable to find public key:': 'Unable to find public key:'
+'Unable to save your changes: %extrainfo%': 'Unable to save your changes: %extrainfo%'
+'Updating key file %keys%': 'Updating key file %keys%'
+'Upload dir': 'Upload karpeta'
+'Upload post script': 'Igo post-script bat'
+'Upload pre script': 'Igo pre-script bat'
+'Url': 'Url'
+'Use local permissions': 'Erabili baimen lokalak'
+'User %username% logged in.': 'User %username% logged in.'
+'User': 'Erabiltzailea'
+'Username': 'Erabiltzaile izena'
+'Username:': 'Erabiltzaile izena:'
+'Users': 'Erabiltzaileak'
+'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise': 'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise'
+'Warnings and up': 'Warnings and up'
+'Wednesday': 'Wednesday'
+'Weekly': 'Astero'
+'Welcome to the backup server configuration application.': 'Welcome to the backup server configuration application.'
+'Wrong old password': 'Wrong old password'
+'Yearly': 'Urtero'
+'Yes': 'Bai'
+policy_help: |
+ <h4>Name</h4>
+ This is the identifier for the policy. It will show up in lists and combo boxes. The name must be unique among all policies, the application will complain if you try to use a name which is already in use.
+ <h4>Azalpena</h4>
+ Free text to describe the policy. Put here whatever you might find useful.
+ <h4>Exclude and include</h4>
+ The application interprets each line of the exclude field as an exclude pattern and each line of the include field as an include pattern. By using these fields intelligently you can easily pick and choose which files to include in the snapshot and which files to ignore. The two field interact in the following way for each file and directory in the snapshot:
+ <ol>
+  <li>If the file or directory matches a line in the include field, then the application includes this file. </li>
+  <li>If the file or directory matches a line in the exclude field, then the application ignores this file and it will NOT be backup up. </li>
+  <li>If the file or directory matches nothing the file is included in the backup.</li>
+ </ol>
+ As you can see the application backs up all files by default, excluding only those which match an exclude pattern and do NOT match any include pattern.
+ Notice that each job has each own include and exclude definitions. The ones defined in the job take precedence over the ones defined in the policy.
+ <h4>Sync first</h4>
+ When sync_first is enabled, all sync behaviour happens during an additional sync step. Even hourly calls only rotate the directories, without even connecting to the client. This ensures that the snapshots are consistent with the cost of an additional snapshot used only for syncing.
+ <h4>Hourly</h4>
+ Egunean zehar egindako snapshots-ak.
+ <h4>Daily</h4>
+ Snapshots once a every selected day at the given time.
+ <h4>Weekly</h4>
+ Snapshot-ak astean behin.
+ <h4>Monthly</h4>
+ Snapshots-ak hilean behin.
+ <h4>Monthly</h4>
+ Snapshots-ak urtean behin.
+client_help: |
+ <h4>Izena</h4>
+ Bezeroaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan erakutsiko da. Bezero bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
+ <h4>Url</h4>
+ Bezeroarekin konektatu ahal izateko erabiliko da. Aplikazioak balio hau erabiliko du lanaren path edo bidearekin batera lanaren URLa osatzeko. Eremu honetan balio tipikoak hauek dira:
+ <ul>
+   <li>Hutsik egon daiteke. Baliogarria izan daiteke kopiatu nahi ditugun datuak fitxategi sistema lokalean daudenean.</li>
+   <li><i>erabiltzailea@domeinu.izena</i> ssh bidez <i>domain.name</i> makinarekin konektatuko da <i>user</i> erabiliaz erabiltzaile moduan.</li>
+   <li><i>erabiltzailea@domeinu.izena:</i> Adi bi puntuekin. Goian azaldu dugun berdina, baina ssh erabili beharrean urruneko rsync zerbitzarira konektatuko da.</li>
+ </ul>
+ <h4>Kuota</h4>
+ Bezeroaren datuek diskoan erabili dezaketen lekua KB-etan. -1 balioak "mugarik ez" esan nahi du. Konfiguratutako mugara heltzen denean (balio lehenetsia %80koa da), aplikazioak mezuak bidaliko ditu bezero horren lan bakoitzean mezuak jasotzeko konfiguratu diren helbideetara. Diskoaren erabilera ezarritako kuota gainditzen duenean ez dira programatutako kopiak egingo, eta errore bat sortuko da egoera azalduz.
+ <h4>Diskoaren erabilera</h4>
+ Une hauetan bezeroaren datuek diskoan okupatzen ari direna.
+ <h4>Azalpena</h4>
+ Bezeroa deskribatzeko testu librea. Zuretzat lagungarria izan daitekeen informazioa sartzeko.
+ <h4>Aktibo dago</h4>
+ Kontrol-laukia markatuta ez badago, snapshot-ak ez dira egingo.
+ <h4>Pre eta post scriptak</h4>
+ Bezero honen edozein lan abiatu aurretik eta bukatu ondoren exekutatuko diren script-ak. Adibidez VPN konexioak zabaldu, sareko karpetak aktibatu, eta abar.
+client_job_help: |
+ <h4>Lanak</h4>
+ Lan baten parametro garrantzitsuenak hemendik editatu ditzakezu. Aldaketak egin ondoren izan gogoan gorde egin behar dituzula.
+job_help: |
+ <h4>Izena</h4>
+ Lanaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan erakutsiko da. Lan bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
+ <h4>Path(bidea)</h4>
+ Bezerotik kopiatu nahi dugun karpetaren bidea (path) edo rsync baliabidearen izena.
+ <h4>Diskoaren erabilpena</h4>
+ Lan honetako datuak une hauetan diskoan okupatzen dutena.
+ <h4>Azalpena</h4>
+ Lana deskribatzeko testu librea. Zuretzat lagungarria izan daitekeen informazioa sartzeko.
+ <h4>Aktibo dago</h4>
+ Kontrol-laukia markatuta ez badago, snapshot-ak ez dira egingo. 
+ <h4>Jabea</h4>
+ Konfigurazio lehenetsi moduan, lana sortu duen erabiltzailea da lan horren jabea, eta aplikazioak berari bidaliko dizkio lan honi buruzko mezuak (ikusi "Mezuak nori bidali" eta "Bidaliko diren mezuak"). Lan baten Jabea zein den administratzaileak bakarrik alda dezake.
+ <h4>Mezuak nori bidali</h4>
+ Zuk erabakiko duzu aplikazioak zeintzuei bidaliko dizkien (posta elektronikoz) sortzen diren ebentuen abisuak. Aplikazioak "Bidaliko diren mezuak" eremuan dagoen balioa erabiliko du bidali beharreko informazioa zein den erabakitzeko. Abisuak beste edozein posta elektronikora ere bidaltzeko aukera dago. Egin beharreko gauza bakarra helbidea kutxatxoan idaztea da.
+ <h4>Bidaliko diren mezuak</h4>
+ Jasoko duzun mezu kopurua gutxitzeko, aukera ezazu zein motatako mezuak jaso nahi dituzun.
+ <h4>Pre eta post script-ak</h4>
+ Lan hau abiatu aurretik eta bukatu ondoren exekutatuko diren script-ak. Adibidez VPN konexioak zabaldu, sareko karpetak aktibatu, eta abar.
+ <h4>Politika</h4>
+ Aukeratu lan honek jarraituko duen politika. Politika bakoitzak hainbat gauza zehazten ditu, besteak beste Kopiak noiz egin behar diren eta zenbat kopia mantenduko diren. Eremu hau ez bada betetzen, ez dira kopiak egingo.
+ <h4>Erabili baimen lokalak</h4>
+ Rsnapshot beti saiatuko da fitxategien baimenak jatorrian dauden bezala mantentzen. Honek batzuetan arazoak sortu ditzake   makes an effort to keep permissions exactly as in the source files. This might cause some problems in Windows, so if you happen to have permission issues with windows jobs try setting this on. It might also make the backup up files unreadable for the web server.
+ <h4>Baztertu eta Sartu</h4>
+ The application interprets each line of the exclude field as an exclude pattern and each line of the include field as an include pattern. By using these fields intelligently you can easily pick and choose which files to include in the snapshot and which files to ignore. The two field interact in the following way for each file and directory in the snapshot:
+ <ol>
+  <li>If the file or directory matches a line in the include field, then the application includes this file. </li>
+  <li>If the file or directory matches a line in the exclude field, then the application ignores this file and it will NOT be backup up. </li>
+  <li>If the file or directory matches nothing the file is included in the backup.</li>
+ </ol>
+ As you can see the application backs up all files by default, excluding only those which match an exclude pattern and do NOT match any include pattern.
+ If and only if the include field is empty the application uses the include directives defined in the selected policy. The same can be said for the exclude field.
+user_help: |
+ <h4>Name</h4>
+ This is the identifier for the user. It will show up in lists and combo boxes. The name must be unique among all users, the application will complain if you try to use a name which is already in use.
+ <h4>Password</h4>
+ You can't read the password in this field, you can only use it to change it. If you put anything but the empty string in this field and save the password will be updated.
+ <h4>Posta Elektronikoa</h4>
+ The email is very important. All the notifications for the user will be sent to the email specified here.
+ <h4>Is active</h4>
+ If this check box is not marked the user will not be able to log in.
+params_help: |
+ <h4>MySQL konfigurazioa</h4>
+ This parameters configure the connection to the DB. Be careful, if mess up with them the application will stop working.
+ <h4>Mailer konfigurazioa</h4>
+ This parameters configure the how the application sends emails. Be careful, if mess up with them the application will not be able to send notifications. <a href="http://symfony.com/doc/current/cookbook/email/email.html">The documentation from the Symfony project</a> might be helpful.
+ <h4>Upload dir</h4>
+ The application stores all the pre and post scripts in this directory. It has to be writable for the user running the web server.
+ <h4>Backup-en karpeta</h4>
+ The application stores all the snapshots in this in this directory. It has to be writable for the tknikabackups user.
+ <h4>Remove logs older than</h4>
+ The application will periodically prune the log registry so that it doesn't get too big. Any record older than the value specified here will be removed.
+ <h4>Quota warning level</h4>
+ When the disk space used by a client exceeds this percentage with respect to the quota send a warning message.
+ <h4>Orrialdeko erregistro kopurua</h4>
+ Number of lines to show in pagination.
+backupscriptconfig_help: |
+ <h4>Authorized keys</h4>
+ Adding your ssh public key to the applications authorized keys is required to make backups of the repository.
+managebackups_help: |
+ <h4>Host</h4>
+ The host name or IP address of the NFS server. Leave empty for local file systems.
+ <p>This application depends on autofs to mount the remote file systems. If autofs is not configured as expected this field will not be editable.
+ <h4>Karpeta</h4>
+ The full path in the local file system or the name of the NFS export. In any case it must start with '/'.
