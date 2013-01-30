@@ -14,3 +14,6 @@ td.ids, th.ids {
   width:1px;
   white-space:nowrap;
 }
+tr.job-row  td {
+  background-color: #f9f9f9;
+}
