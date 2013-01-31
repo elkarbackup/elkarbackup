@@ -111,5 +111,9 @@ services:
             - { name: 'twig.extension' }
     kernel.listener.LocaleFromSessionListener:
         class: Binovo\Tknika\BackupsBundle\Listener\LocaleFromSessionListener
+        calls:
+            - [setContainer,  [@service_container] ]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+parameters:
+    supported_locales: [es, en, eu]

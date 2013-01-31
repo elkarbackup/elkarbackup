@@ -38,7 +38,7 @@
     <input type="file" style="display:none" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
     <div class="input-append">
         <input class="input-large" id="visual_{{id}}" type="text">
-        <a class="btn" onclick="dojo.byId('{{id}}').click();">Browse</a>
+        <a class="btn" onclick="dojo.byId('{{id}}').click();">{{ 'Browse'|trans({}, translation_domain) }}</a>
     </div>
 
     <script type="text/javascript">

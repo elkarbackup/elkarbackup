@@ -12,29 +12,44 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class LocaleFromSessionListener
 {
     private $defaultLocale;
+    private $container = null;
 
     public function __construct($defaultLocale = 'en')
     {
         $this->defaultLocale = $defaultLocale;
     }
 
+    public function setContainer($c)
+    {
+        $this->container = $c;
+    }
+
 	/**
-	 * Set the locale from the session
+	 * Set the locale from the session. If not set in the session use
+	 * the preferred locale according to the http headers.
 	 *
 	 * @param  Event $event
 	 */
 	public function onKernelRequest(GetResponseEvent $event)
 	{
         $request = $event->getRequest();
-        if (!$request->hasPreviousSession()) {
+        $sessionLocale = $request->getSession()->get('_locale');
+        if ($sessionLocale) {
+            $request->setLocale($sessionLocale);
+
             return;
         }
+        $supportedLocales = $this->container->getParameter('supported_locales');
+        foreach ($request->getLanguages() as $acceptedLocale) {
+            if (false !== array_search($acceptedLocale, $supportedLocales)) {
+                $request->setLocale($acceptedLocale);
+                $request->getSession()->set('_locale', $acceptedLocale);
 
-        if ($locale = $request->attributes->get('_locale')) {
-            $request->getSession()->set('_locale', $locale);
-        } else {
-            $request->setLocale($request->getSession()->get('_locale', $this->defaultLocale));
+                return;
+            }
         }
+        $request->setLocale($this->defaultLocale);
+        $request->getSession()->set('_locale', $this->defaultLocale);
 	}
 
     static public function getSubscribedEvents()

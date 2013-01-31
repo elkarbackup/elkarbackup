@@ -18,6 +18,7 @@
 'Backup server login': 'Backup server login'
 'Backups dir': 'Backups dir'
 'Backups': 'Backups'
+'Browse': 'Browse'
 'Change password': 'Change password'
 'Change': 'Change'
 'Client "%clientid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%': 'Client "%clientid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%'
@@ -77,6 +78,7 @@
 'Host': 'Host'
 'Hourly': 'Hourly'
 'Id': 'Id'
+'Inactive': 'Inactive'
 'Include': 'Include'
 'Invalid time specified.': 'Invalid time specified.'
 'Is active': 'Is active'
@@ -255,7 +257,7 @@ job_help: |
  <h4>Owner</h4>
  By default the user who created the job is the owner and the application will notify him of any problems (see send notices to and notify only). Only admin users can change the owner.
  <h4>Send notices to</h4>
- You can ask the application to notify one or several of the following people (by email) of any events. The application decides which events to notify based on the notify only settings. If you choose to notify an arbitrary email you will have to fill in that password.
+ You can ask the application to notify one or several of the following people (by email) of any events. The application decides which events to notify based on the notify only settings. If you choose to notify an arbitrary email you will have to fill in that email address.
  <h4>Notify only</h4>
  In order to keep the message flow to a minimum you can have the application notify you only of events over a given priority threshold.
  <h4>Pre and post scripts</h4>
