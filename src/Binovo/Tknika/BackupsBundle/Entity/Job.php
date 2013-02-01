@@ -115,6 +115,14 @@ class Job
     protected $diskUsage = 0;
 
     /**
+     * Priority. Lower numbered jobs run first. Set to 2**31-1 for newly
+     * created jobs so that they will run last.
+     *
+     * @ORM\Column(type="integer")
+     */
+    protected $priority = 2147483647;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     protected $useLocalPermissions = true;
@@ -678,6 +686,7 @@ class Job
     public function setDiskUsage($diskUsage)
     {
         $this->diskUsage = $diskUsage;
+
         return $this;
     }
 
@@ -689,6 +698,29 @@ class Job
     public function getDiskUsage()
     {
         return $this->diskUsage;
+    }
+
+    /**
+     * Set Priority
+     *
+     * @param integer $Priority
+     * @return Job
+     */
+    public function setPriority($Priority)
+    {
+        $this->priority = $Priority;
+
+        return $this;
+    }
+
+    /**
+     * Get Priority
+     *
+     * @return integer
+     */
+    public function getPriority()
+    {
+        return $this->priority;
     }
 
     /**

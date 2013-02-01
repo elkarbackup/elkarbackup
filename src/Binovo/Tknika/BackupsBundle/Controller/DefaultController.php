@@ -12,6 +12,7 @@ use Binovo\Tknika\BackupsBundle\Entity\User;
 use Binovo\Tknika\BackupsBundle\Form\Type\AuthorizedKeyType;
 use Binovo\Tknika\BackupsBundle\Form\Type\ClientType;
 use Binovo\Tknika\BackupsBundle\Form\Type\JobType;
+use Binovo\Tknika\BackupsBundle\Form\Type\JobForSortType;
 use Binovo\Tknika\BackupsBundle\Form\Type\PolicyType;
 use Binovo\Tknika\BackupsBundle\Form\Type\UserType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -659,6 +660,49 @@ class DefaultController extends Controller
             return $this->render('BinovoTknikaBackupsBundle:Default:policy.html.twig',
                                  array('form' => $form->createView()));
         }
+    }
+
+    /**
+     * @Route("/jobs/sort", name="sortJobs")
+     * @Template()
+     */
+    public function sortJobsAction(Request $request)
+    {
+        $t = $this->get('translator');
+        $repository = $this->getDoctrine()
+            ->getRepository('BinovoTknikaBackupsBundle:Job');
+        $jobs = $repository->createQueryBuilder('j')
+                            ->innerJoin('j.client', 'c')
+                            ->where('j.isActive <> 0 AND c.isActive <> 0')
+                            ->orderBy('j.priority', 'ASC')
+                            ->getQuery()->getResult();
+        $formBuilder = $this->createFormBuilder(array('jobs' => $jobs));
+        $formBuilder->add('jobs', 'collection',
+                          array('type' => new JobForSortType()));
+        $form = $formBuilder->getForm();
+        if ($request->isMethod('POST')) {
+            $i = 1;
+            foreach ($_POST['form']['jobs'] as $jobId) {
+                $jobId = $jobId['id'];
+                $job = $repository->findOneById($jobId);
+                $job->setPriority($i);
+                ++$i;
+            }
+            $this->info('Jobs reordered',
+                        array(),
+                        array('link' => $this->generateUrl('showClients')));
+            $this->getDoctrine()->getManager()->flush();
+            $this->get('session')->getFlashBag()->add('sortJobs',
+                                                      $t->trans('Jobs prioritized',
+                                                                array(),
+                                                                'BinovoTknikaBackups'));
+            $result = $this->redirect($this->generateUrl('sortJobs'));
+        } else {
+            $result = $this->render('BinovoTknikaBackupsBundle:Default:sortjobs.html.twig',
+                                    array('form' => $form->createView()));
+        }
+
+        return $result;
     }
 
     /**

@@ -78,7 +78,7 @@ FROM  BinovoTknikaBackupsBundle:Job j
 JOIN  j.client                            c
 JOIN  j.policy                            p
 WHERE j.isActive = 1 AND c.isActive = 1 AND j.policy IN ($runnablePolicies)
-ORDER BY c.id
+ORDER BY j.priority, c.id
 EOF;
 
         $jobs = $manager->createQuery($dql)->getResult();
