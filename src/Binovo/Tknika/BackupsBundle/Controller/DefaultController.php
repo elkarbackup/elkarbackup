@@ -180,6 +180,7 @@ class DefaultController extends Controller
     {
         $request = $this->getRequest();
         $session = $request->getSession();
+        $t = $this->get('translator');
 
         // get the login error if there is one
         if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
@@ -190,13 +191,16 @@ class DefaultController extends Controller
         }
         $this->info('Log in attempt with user: %username%', array('%username%' => $session->get(SecurityContext::LAST_USERNAME)));
         $this->getDoctrine()->getManager()->flush();
+        $locales = $this->container->getParameter('supported_locales');
+        $localesWithNames = array();
+        foreach ($locales as $locale) {
+            $localesWithNames[] = array($locale, $t->trans("language_$locale", array(), 'BinovoTknikaBackups'));
+        }
 
         return $this->render('BinovoTknikaBackupsBundle:Default:login.html.twig', array(
                                  'last_username' => $session->get(SecurityContext::LAST_USERNAME),
                                  'error'         => $error,
-                                 'supportedLocales' => array(array('es', 'Español'),
-                                                             array('en', 'English'),
-                                                             array('eu', 'Euskara'))));
+                                 'supportedLocales' => $localesWithNames));
     }
 
     /**

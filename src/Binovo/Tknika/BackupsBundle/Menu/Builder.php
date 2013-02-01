@@ -49,11 +49,18 @@ class Builder extends ContainerAware
                                         'attributes'      => array("data-dojo-type"  => "dijit/MenuItem",
                                                                    "data-dojo-props" => $this->generateOnClickHandler($itemDescription['route'], $itemDescription['routeParameters']))));
             } else {
-                $newParent = $parent->addChild($itemDescription['label'],
-                                               array('route'           => $itemDescription['route'],
-                                                     'routeParameters' => $itemDescription['routeParameters'],
-                                                     'attributes'      => array("data-dojo-type"  => "dijit/PopupMenuItem",
-                                                                                "data-dojo-props" => $this->generateOnClickHandler($itemDescription['route'], $itemDescription['routeParameters']))));
+                if (isset($itemDescription['route'])) {
+                    $newParent = $parent->addChild($itemDescription['label'],
+                                                   array('route'           => $itemDescription['route'],
+                                                         'routeParameters' => $itemDescription['routeParameters'],
+                                                         'attributes'      => array("data-dojo-type"  => "dijit/PopupMenuItem",
+                                                                                    "data-dojo-props" => $this->generateOnClickHandler($itemDescription['route'], $itemDescription['routeParameters'])),
+                                                         'childrenAttributes' => array('data-dojo-type' => 'dijit/DropDownMenu')));
+                } else {
+                    $newParent = $parent->addChild($itemDescription['label'],
+                                                   array('attributes'         => array("data-dojo-type"  => "dijit/PopupMenuItem"),
+                                                         'childrenAttributes' => array('data-dojo-type' => 'dijit/DropDownMenu')));
+                }
                 $this->generateMenu($newParent, $itemDescription['children']);
             }
         }
@@ -80,11 +87,21 @@ class Builder extends ContainerAware
     {
         $menuBar = $factory->createItem('root', array('childrenAttributes' => array("data-dojo-type" => "dijit/MenuBar")));
         foreach ($description as $itemDescription) {
-            $menuBarItem = $menuBar->addChild($itemDescription['label'],
-                                              array('attributes'         => array('data-dojo-type' => 'dijit/PopupMenuBarItem'),
-                                                    'childrenAttributes' => array('data-dojo-type' => 'dijit/DropDownMenu')));
             if (is_array($itemDescription['children'])) {
+                $menuBarItem = $menuBar->addChild($itemDescription['label'],
+                                                  array('attributes'         => array('data-dojo-type' => 'dijit/PopupMenuBarItem'),
+                                                        'childrenAttributes' => array('data-dojo-type' => 'dijit/DropDownMenu')));
                 $this->generateMenu($menuBarItem, $itemDescription['children']);
+            } else {
+                if (empty($itemDescription['routeParameters'])) {
+                    $itemDescription['routeParameters'] = array();
+                }
+                $menuBar->addChild($itemDescription['label'],
+                                   array('route' => $itemDescription['route'],
+                                         'routeParameters' => $itemDescription['routeParameters'],
+                                         'attributes'      => array("data-dojo-type"  => "dijit/MenuItem",
+                                                                    "data-dojo-props" => $this->generateOnClickHandler($itemDescription['route'], $itemDescription['routeParameters']))));
+
             }
         }
         return $menuBar;
@@ -114,9 +131,7 @@ class Builder extends ContainerAware
                                                       'route'    => 'editPolicy',
                                                       'routeParameters' => array('id' => 'new')))),
                       array('label'    => $t->trans('Users', array(), 'BinovoTknikaBackups'),
-                            'children' => array(array('label'    => $t->trans('Logout', array(), 'BinovoTknikaBackups'),
-                                                      'route'    => 'logout'),
-                                                array('label'    => $t->trans('Change password', array(), 'BinovoTknikaBackups'),
+                            'children' => array(array('label'    => $t->trans('Change password', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'changePassword'),
                                                 array('label'    => $t->trans('Show', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'showUsers'))),
@@ -130,8 +145,27 @@ class Builder extends ContainerAware
                       array('label'    => $t->trans('Logs', array(), 'BinovoTknikaBackups'),
                             'children' => array(array('label'    => $t->trans('Show Logs', array(), 'BinovoTknikaBackups'),
                                                       'route'    => 'showLogs'))),
+                      array('label'    => $t->trans('Session', array(), 'BinovoTknikaBackups'),
+                            'children' => array(array('label'    => $t->trans('Logout', array(), 'BinovoTknikaBackups'),
+                                                      'route'    => 'logout'),
+                                                array('label'    => 'Hizkuntza',
+                                                      'children' => $this->getLanguageMenuEntries()))),
+
             );
 
         return $this->generateMenuBar($factory, $menu);
+    }
+
+    private function getLanguageMenuEntries()
+    {
+        $t = $this->container->get('translator');
+        $locales = $this->container->getParameter('supported_locales');
+        $menus = array();
+        foreach ($locales as $locale) {
+            $menus[] = array('label'           => $t->trans("language_$locale", array(), 'BinovoTknikaBackups'),
+                             'route'           => 'setLocale',
+                             'routeParameters' => array('locale' => $locale));
+        }
+        return $menus;
     }
 }
