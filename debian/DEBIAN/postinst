@@ -92,7 +92,15 @@ then
 fi
 chown -R $username.$username /var/cache/tknikabackups /var/log/tknikabackups /var/spool/tknikabackups
 chown -R www-data.www-data /var/lib/tknikabackups/sessions /etc/tknikabackups/parameters.yml /var/spool/tknikabackups/uploads
-sed -i "s#tknikabackupsuser#$username#g" /etc/sudoers.d/tknikabackups
+
+db_get tknikabackups/uploadsdir
+uploadsdir="$RET"
+olduploadsdir=`cat /etc/tknikabackups/parameters.yml|grep upload_dir|sed 's/.*: *//'`
+mkdir -p "$uploadsdir" || true
+mv "$olduploadsdir"/* "$uploadsdir" || true
+chown -R www-data.www-data "$uploadsdir"
+sed -i "s#upload_dir:.*#upload_dir: $uploadsdir#" /etc/tknikabackups/parameters.yml
+sed -i -e "s#tknikabackupsuser#$username#g" -e "s#\s*Cmnd_Alias\s*TKNIKABACKUPS_SCRIPTS.*#Cmnd_Alias TKNIKABACKUPS_SCRIPTS=$uploadsdir/*#" /etc/sudoers.d/tknikabackups
 chmod 0440 /etc/sudoers.d/tknikabackups
 
 a2ensite tknikabackups

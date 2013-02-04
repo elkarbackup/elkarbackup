@@ -15,5 +15,6 @@ then
 fi
 echo User for rsnapshot: $RSNAPSHOTUSER
 db_set tknikabackups/backupsusername $RSNAPSHOTUSER
+db_input medium tknikabackups/uploadsdir || true
 
 db_go

@@ -36,3 +36,9 @@ Type: password
 Default: tknikabackups
 Description: DB user password:
  The application will connect to the database using this password.
+
+Template: tknikabackups/uploadsdir
+Type: string
+Default: /var/spool/tknikabackups/uploads
+Description: Directory to store the pre and post scripts.
+ The application will store all the scripts you upload in this directory.
