@@ -1,6 +1,13 @@
 {% extends 'BinovoTknikaBackupsBundle:Default:base.html.twig' %}
 {% trans_default_domain 'BinovoTknikaBackups' %}
 
+{% block scripts %}
+    {{ parent() }}
+    {% javascripts '@BinovoTknikaBackupsBundle/Resources/public/js/show-policies.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
 {% block body %}
 
 <div class="row-fluid">
@@ -17,14 +24,14 @@
 
     {# table body #}
     {% for policy in pagination %}
-    <tr onclick="document.location.href='{{ path('editPolicy', {id: policy.id}) }}'">
-        <td class="ids"><a href="{{ path('editPolicy', {id: policy.id}) }}">{{ policy.id }}</a></td>
-        <td>{{ policy.name }}</td>
+    <tr>
+        <td onclick="document.location.href='{{ path('editPolicy', {id: policy.id}) }}'" class="ids"><a href="{{ path('editPolicy', {id: policy.id}) }}">{{ policy.id }}</a></td>
+        <td onclick="document.location.href='{{ path('editPolicy', {id: policy.id}) }}'">{{ policy.name }}</td>
         <td class="actions">
             <form action="{{ path('editPolicy', {id: policy.id}) }}" style="display:inline">
                 <input class="btn" type="submit" value="{% trans %}Edit{% endtrans %}" />
             </form>
-            <form action="{{ path('deletePolicy', {id: policy.id}) }}" method="POST" style="display:inline">
+            <form data-bnv-message="{% trans with {'%name%': policy.name} %}Really delete policy %name%?{% endtrans %}" class="delete-policy" action="{{ path('deletePolicy', {id: policy.id}) }}" method="POST" style="display:inline">
                 <input class="btn" type="submit" value="{% trans %}Delete{% endtrans %}" />
             </form>
         </td>

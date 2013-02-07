@@ -577,7 +577,7 @@ class DefaultController extends Controller
      */
     public function homeAction(Request $request)
     {
-        return $this->render('BinovoTknikaBackupsBundle:Default:home.html.twig');
+        return $this->redirect($this->generateUrl('showClients'));
     }
 
     /**
