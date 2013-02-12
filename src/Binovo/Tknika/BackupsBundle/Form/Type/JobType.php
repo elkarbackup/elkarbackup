@@ -54,12 +54,25 @@ class JobType extends AbstractType
                                                                                         Job::NOTIFICATION_LEVEL_WARNING => $t->trans('Warnings and up', array(), 'BinovoTknikaBackups'),
                                                                                         Job::NOTIFICATION_LEVEL_ERROR   => $t->trans('Errors and up'  , array(), 'BinovoTknikaBackups'),
                                                                                         Job::NOTIFICATION_LEVEL_NONE    => $t->trans('None'           , array(), 'BinovoTknikaBackups'))))
-                ->add('preScript'           , 'hidden'  , array('label' => $t->trans('Pre script', array(), 'BinovoTknikaBackups')))
-                ->add('preScriptFile'       , 'file'    , array('label'    => $t->trans('Upload pre script', array(), 'BinovoTknikaBackups'),
-                                                                'required' => false))
-                ->add('postScript'          , 'hidden'  , array('label' => $t->trans('Post script', array(), 'BinovoTknikaBackups')))
-                ->add('postScriptFile'      , 'file'    , array('label'    => $t->trans('Upload post script', array(), 'BinovoTknikaBackups'),
-                                                                'required' => false))
+                ->add('preScript'           , 'entity'  , array('label' => $t->trans('Pre script', array(), 'BinovoTknikaBackups'),
+                                                                'attr'     => array('class'    => 'span12'),
+                                                                'required' => false,
+                                                                'class'    => 'BinovoTknikaBackupsBundle:Script',
+                                                                'query_builder' => function($er) {
+                                                                    return $er->createQueryBuilder('s')
+                                                                        ->where('s.isJobPre = 1');
+                                                                },
+                                                                'property' => 'name'))
+                ->add('postScript'          , 'entity'  , array('label' => $t->trans('Post script', array(), 'BinovoTknikaBackups'),
+                                                                'attr'     => array('class'    => 'span12'),
+                                                                'required' => false,
+                                                                'class'    => 'BinovoTknikaBackupsBundle:Script',
+                                                                'query_builder' => function($er) {
+                                                                    return $er->createQueryBuilder('s')
+                                                                        ->where('s.isJobPost = 1');
+                                                                },
+                                                                'class'    => 'BinovoTknikaBackupsBundle:Script',
+                                                                'property' => 'name'))
                 ->add('isActive'            , 'checkbox', array('label'    => $t->trans('Is active', array(), 'BinovoTknikaBackups'),
                                                                 'required' => false));
     }

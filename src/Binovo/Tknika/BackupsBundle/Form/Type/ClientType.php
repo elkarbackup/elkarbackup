@@ -19,14 +19,25 @@ class ClientType extends AbstractType
                                                             'attr'  => array('class'    => 'span12')))
                 ->add('quota'         , 'integer'   , array('label' => $t->trans('Quota', array(), 'BinovoTknikaBackups'),
                                                             'attr'  => array('class'    => 'span12')))
-                ->add('preScript'     , 'hidden'    , array('label' => $t->trans('Pre script', array(), 'BinovoTknikaBackups')))
-                ->add('preScriptFile' , 'file'      , array('label'    => $t->trans('Upload pre script', array(), 'BinovoTknikaBackups'),
+                ->add('preScript'     , 'entity'    , array('label' => $t->trans('Pre script', array(), 'BinovoTknikaBackups'),
+                                                            'attr'     => array('class'    => 'span12'),
                                                             'required' => false,
-                                                            'attr'  => array('class'    => 'span12')))
-                ->add('postScript'    , 'hidden'    , array('label' => $t->trans('Post script', array(), 'BinovoTknikaBackups')))
-                ->add('postScriptFile', 'file'      , array('label'    => $t->trans('Upload post script', array(), 'BinovoTknikaBackups'),
+                                                            'class'    => 'BinovoTknikaBackupsBundle:Script',
+                                                            'query_builder' => function($er) {
+                                                                return $er->createQueryBuilder('s')
+                                                                    ->where('s.isClientPre = 1');
+                                                            },
+                                                            'property' => 'name'))
+                ->add('postScript'    , 'entity'    , array('label' => $t->trans('Post script', array(), 'BinovoTknikaBackups'),
+                                                            'attr'     => array('class'    => 'span12'),
                                                             'required' => false,
-                                                            'attr'  => array('class'    => 'span12')))
+                                                            'class'    => 'BinovoTknikaBackupsBundle:Script',
+                                                            'query_builder' => function($er) {
+                                                                return $er->createQueryBuilder('s')
+                                                                    ->where('s.isClientPost = 1');
+                                                            },
+                                                            'class'    => 'BinovoTknikaBackupsBundle:Script',
+                                                            'property' => 'name'))
                 ->add('isActive'      , 'checkbox'  , array('label'    => $t->trans('Is active', array(), 'BinovoTknikaBackups'),
                                                             'required' => false))
                 ->add('jobs'          , 'collection', array('type'         => new JobShortType(),

@@ -89,18 +89,14 @@ class Job
     protected $policy;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Script")
      */
     protected $postScript;
-    protected $deletePostScriptFile = false;
-    protected $postScriptFile;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Script")
      */
     protected $preScript;
-    protected $deletePreScriptFile = false;
-    protected $preScriptFile;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -128,20 +124,10 @@ class Job
     protected $useLocalPermissions = true;
 
     /**
-     * Helper variable to remember the script time for PostRemove actions
-     */
-    protected $filesToRemove;
-
-    /**
      * Helper variable to store the LogEntry to show on screen,
      * typically the last log LogRecord related to this client.
      */
     protected $logEntry = null;
-
-    private function isNewFileOrMustDeleteExistingFile($currentName, $file)
-    {
-        return null === $currentName || null !== $file;
-    }
 
     /**
      * Returns the full path of the snapshot directory
@@ -149,95 +135,6 @@ class Job
     public function getSnapshotRoot()
     {
         return Globals::getSnapshotRoot($this->getClient()->getId(), $this->getId());
-    }
-
-    /**
-     * @ORM\PrePersist()
-     * @ORM\PreUpdate()
-     */
-    public function preUpload()
-    {
-        if ($this->isNewFileOrMustDeleteExistingFile($this->preScript, $this->preScriptFile)) {
-            $this->deletePreScriptFile = true;
-        }
-        if (null !== $this->preScriptFile) {
-            $this->setPreScript($this->preScriptFile->getClientOriginalName());
-        }
-        if ($this->isNewFileOrMustDeleteExistingFile($this->postScript, $this->postScriptFile)) {
-            $this->deletePostScriptFile = true;
-        }
-        if (null !== $this->postScriptFile) {
-            $this->setPostScript($this->postScriptFile->getClientOriginalName());
-        }
-    }
-
-    /**
-     * @ORM\PostPersist()
-     * @ORM\PostUpdate()
-     */
-    public function upload()
-    {
-        if ($this->deletePreScriptFile && file_exists($this->getScriptPath('pre'))) {
-            if (!unlink($this->getScriptPath('pre'))) {
-                throw new RuntimeException("Error removing file " . $this->getScriptPath('pre'));
-            }
-        }
-        if (null !== $this->preScriptFile) {
-            $this->preScriptFile->move($this->getScriptDirectory(), $this->getScriptName('pre'));
-            if (!chmod($this->getScriptPath('pre'), 0755)) {
-                throw new RuntimeException("Error setting file permission " . $this->getScriptPath('pre'));
-            }
-            unset($this->preScriptFile);
-        }
-        if ($this->deletePostScriptFile && file_exists($this->getScriptPath('post'))) {
-            if (!unlink($this->getScriptPath('post'))) {
-                throw new RuntimeException("Error removing file " . $this->getScriptPath('post'));
-            }
-        }
-        if (null !== $this->postScriptFile) {
-            $this->postScriptFile->move($this->getScriptDirectory(), $this->getScriptName('post'));
-            if (!chmod($this->getScriptPath('post'), 0755)) {
-                throw new RuntimeException("Error setting file permission " . $this->getScriptPath('post'));
-            }
-            unset($this->postScriptFile);
-        }
-    }
-
-    /**
-     * @ORM\PreRemove()
-     */
-    public function prepareRemoveUpload()
-    {
-        $this->filesToRemove = array($this->getScriptPath('pre'), $this->getScriptPath('post'));
-    }
-
-    /**
-     * @ORM\PostRemove()
-     */
-    public function removeUpload()
-    {
-        foreach ($this->filesToRemove as $file) {
-            if (file_exists($file)) {
-                if (!Globals::delTree($file)) {
-                    throw new RuntimeException("Error removing file " . $file);
-                }
-            }
-        }
-    }
-
-    public function getScriptPath($scriptType)
-    {
-        return sprintf('%s/%s', $this->getScriptDirectory(), $this->getScriptName($scriptType));
-    }
-
-    public function getScriptDirectory()
-    {
-        return Globals::getUploadDir();
-    }
-
-    public function getScriptName($scriptType)
-    {
-        return sprintf('%04d_%04d.%s', $this->getClient()->getId(), $this->getId(), $scriptType);
     }
 
     /**
@@ -340,52 +237,6 @@ class Job
     public function getPreScript()
     {
         return $this->preScript;
-    }
-
-    /**
-     * Set preScriptFile
-     *
-     * @param string $preScriptFile
-     * @return Job
-     */
-    public function setPreScriptFile($preScriptFile)
-    {
-        $this->preScriptFile = $preScriptFile;
-
-        return $this;
-    }
-
-    /**
-     * Get preScriptFile
-     *
-     * @return string
-     */
-    public function getPreScriptFile()
-    {
-        return $this->preScriptFile;
-    }
-
-    /**
-     * Set postScriptFile
-     *
-     * @param string $postScriptFile
-     * @return Job
-     */
-    public function setPostScriptFile($postScriptFile)
-    {
-        $this->postScriptFile = $postScriptFile;
-
-        return $this;
-    }
-
-    /**
-     * Get postScriptFile
-     *
-     * @return string
-     */
-    public function getPostScriptFile()
-    {
-        return $this->postScriptFile;
     }
 
     /**

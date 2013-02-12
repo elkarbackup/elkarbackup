@@ -22,55 +22,7 @@
             </div>
             {{ form_row(form.description) }}
             {{ form_row(form.isActive) }}
-            <div class="controls"><div class="input-append"><input class="input-large" id="Client_preScriptCurrent" type="text" disabled="true" value="{{form.vars.value.preScript}}" /><a id="Client_preScriptDelete" class="btn">{% trans %}Delete{% endtrans %}</a></div></div>
-            {{ form_row(form.preScriptFile) }}
-            <script type="text/javascript">
-dojo.addOnLoad(function() {
-    dojo.connect(dojo.byId('Client_preScriptFile'),
-                 'onchange',
-                 function() {
-                     dojo.byId('Client_preScriptCurrent').value = dojo.byId('Client_preScriptFile').value;
-                     dojo.byId('Client_preScript').value = dojo.byId('Client_preScriptFile').value;
-                     if ('' !== dojo.byId('Client_preScriptFile').value) {
-                         dojo.byId('Client_preScriptDelete').disabled = false;
-                     }
-                 });
-    dojo.connect(dojo.byId('Client_preScriptDelete'),
-                 'onclick',
-                 function() {
-                     dojo.byId('Client_preScript').value = '';
-                     dojo.byId('Client_preScriptFile').value = '';
-                     dojo.byId('visual_Client_preScriptFile').value = '';
-                     dojo.byId('Client_preScriptCurrent').value = '{% trans %}No script{% endtrans %}';
-                     this.disabled = true;
-                 });
-});
-            </script>
             {{ form_row(form.preScript) }}
-            <div class="controls"><div class="input-append"><input class="input-large" id="Client_postScriptCurrent" type="text" disabled="true" value="{{form.vars.value.postScript}}" /><a id="Client_postScriptDelete" class="btn">{% trans %}Delete{% endtrans %}</a></div></div>
-            {{ form_row(form.postScriptFile) }}
-            <script type="text/javascript">
-dojo.addOnLoad(function() {
-    dojo.connect(dojo.byId('Client_postScriptFile'),
-                 'onchange',
-                 function() {
-                     dojo.byId('Client_postScriptCurrent').value = dojo.byId('Client_postScriptFile').value;
-                     dojo.byId('Client_postScript').value = dojo.byId('Client_postScriptFile').value;
-                     if ('' !== dojo.byId('Client_postScriptFile').value) {
-                         dojo.byId('Client_postScriptDelete').disabled = false;
-                     }
-                 });
-    dojo.connect(dojo.byId('Client_postScriptDelete'),
-                 'onclick',
-                 function() {
-                     dojo.byId('Client_postScript').value = '';
-                     dojo.byId('Client_postScriptFile').value = '';
-                     dojo.byId('visual_Client_postScriptFile').value = '';
-                     dojo.byId('Client_postScriptCurrent').value = '{% trans %}No script{% endtrans %}';
-                     this.disabled = true;
-                 });
-});
-            </script>
             {{ form_row(form.postScript) }}
         </div>
         <div class="span6">

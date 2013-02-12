@@ -410,8 +410,8 @@ class DefaultController extends Controller
         $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoTknikaBackupsBundle:Default:rsnapshotconfig.txt.twig',
-                             array('cmdPreExec'          => $job->getPreScript()  ? $job->getScriptPath('pre') : '',
-                                   'cmdPostExec'         => $job->getPostScript() ? $job->getScriptPath('post'): '',
+                             array('cmdPreExec'          => $job->getPreScript()  ? $job->getPreScript()->getScriptPath('pre') : '',
+                                   'cmdPostExec'         => $job->getPostScript() ? $job->getPostScript()->getScriptPath('post'): '',
                                    'excludes'            => $excludes,
                                    'idClient'            => sprintf('%04d', $idClient),
                                    'idJob'               => sprintf('%04d', $idJob),
