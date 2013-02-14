@@ -2,9 +2,10 @@
 
 namespace Binovo\Tknika\BackupsBundle\Entity;
 
+use \RuntimeException;
 use Binovo\Tknika\BackupsBundle\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
-use \RuntimeException;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -30,6 +31,10 @@ class Script
     protected $name;
 
     protected $deleteScriptFile = false;
+
+    /**
+     * @Assert\File(maxSize="6000000")
+     */
     protected $scriptFile;
 
     /**
@@ -63,21 +68,17 @@ class Script
 
 
     /**
+     * True if can run after the job
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $lastUpdated;
+
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-    }
-
-    /**
-     * @ORM\PrePersist()
-     * @ORM\PreUpdate()
-     */
-    public function preUpload()
-    {
-        if ($this->scriptFile) {
-            $this->deleteScriptFile = true;
-        }
     }
 
     /**
@@ -86,17 +87,18 @@ class Script
      */
     public function upload()
     {
-        if ($this->deleteScriptFile && file_exists($this->getScriptPath())) {
-            if (!unlink($this->getScriptPath())) {
+        if ($this->scriptFile) {
+            if (file_exists($this->getScriptPath()) && !unlink($this->getScriptPath())) {
                 throw new RuntimeException("Error removing file " . $this->getScriptPath());
             }
-        }
-        if (null !== $this->scriptFile) {
             $this->scriptFile->move($this->getScriptDirectory(), $this->getScriptName());
             if (!chmod($this->getScriptPath(), 0755)) {
                 throw new RuntimeException("Error setting file permission " . $this->getScriptPath());
             }
-            unset($this->scriptFile);
+        } else {
+            if (!file_exists($this->getScriptPath())) {
+                throw new RuntimeException("Trying to create script entity without script file. Aborting.");
+            }
         }
     }
 
@@ -206,6 +208,11 @@ class Script
         return $this;
     }
 
+    public function getScriptFileExists()
+    {
+        return file_exists($this->getScriptPath());
+    }
+
     /**
      * Get scriptFile
      *
@@ -214,5 +221,116 @@ class Script
     public function getScriptFile()
     {
         return $this->scriptFile;
+    }
+
+    /**
+     * Set isClientPre
+     *
+     * @param boolean $isClientPre
+     * @return Script
+     */
+    public function setIsClientPre($isClientPre)
+    {
+        $this->isClientPre = $isClientPre;
+        return $this;
+    }
+
+    /**
+     * Get isClientPre
+     *
+     * @return boolean
+     */
+    public function getIsClientPre()
+    {
+        return $this->isClientPre;
+    }
+
+    /**
+     * Set isJobPre
+     *
+     * @param boolean $isJobPre
+     * @return Script
+     */
+    public function setIsJobPre($isJobPre)
+    {
+        $this->isJobPre = $isJobPre;
+        return $this;
+    }
+
+    /**
+     * Get isJobPre
+     *
+     * @return boolean
+     */
+    public function getIsJobPre()
+    {
+        return $this->isJobPre;
+    }
+
+    /**
+     * Set isClientPost
+     *
+     * @param boolean $isClientPost
+     * @return Script
+     */
+    public function setIsClientPost($isClientPost)
+    {
+        $this->isClientPost = $isClientPost;
+        return $this;
+    }
+
+    /**
+     * Get isClientPost
+     *
+     * @return boolean
+     */
+    public function getIsClientPost()
+    {
+        return $this->isClientPost;
+    }
+
+    /**
+     * Set isJobPost
+     *
+     * @param boolean $isJobPost
+     * @return Script
+     */
+    public function setIsJobPost($isJobPost)
+    {
+        $this->isJobPost = $isJobPost;
+        return $this;
+    }
+
+    /**
+     * Get isJobPost
+     *
+     * @return boolean
+     */
+    public function getIsJobPost()
+    {
+        return $this->isJobPost;
+    }
+
+    /**
+     * Set lastUpdated
+     *
+     * @param datetime
+     * @return Script
+     */
+    public function setLastUpdated($lastUpdated)
+    {
+        $this->lastUpdated = $lastUpdated;
+
+        return $this;
+    }
+
+    /**
+     * Get lastUpdated
+     *
+     * @return datetime
+     */
+    public function getLastUpdated()
+    {
+        return $this->lastUpdated;
     }
 }

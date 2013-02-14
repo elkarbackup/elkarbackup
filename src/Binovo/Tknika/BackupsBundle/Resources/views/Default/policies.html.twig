@@ -14,6 +14,11 @@
 <div class="max10" >
 <h3>{% trans %}Policies{% endtrans %}</h3>
 
+{% for flashMessage in app.session.flashbag.get('showPolicies') %}
+            <div class="controls help-block">
+                {{ flashMessage }}
+            </div>
+{% endfor %}
 <table class="table table-condensed table-bordered table-striped">
     <tr>
         {# sorting of properties based on query components #}

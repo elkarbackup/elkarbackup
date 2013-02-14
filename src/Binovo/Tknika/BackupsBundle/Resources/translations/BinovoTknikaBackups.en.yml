@@ -48,6 +48,7 @@
 'Day of month:': 'Day of month:'
 'Day of year:': 'Day of year:'
 'Delete client %clientid%, job %jobid%': 'Delete client %clientid%, job %jobid%'
+'Delete script %scriptname%': 'Delete script %scriptname%'
 'Delete': 'Delete'
 'Description': 'Description'
 'Directory': 'Directory'
@@ -58,7 +59,8 @@
 'Edit client': 'Edit client'
 'Edit Job': 'Edit Job'
 'Edit policy': 'Edit policy'
-'Edit User': 'Edit User'
+'Edit script': 'Edit script'
+'Edit User': 'Edit user'
 'Edit': 'Edit'
 'Email': 'Email'
 'Error closing config file %filename%.': 'Error closing config file %filename%.'
@@ -70,6 +72,7 @@
 'Error writing to config file %filename%. Aborting backup.': 'Error writing to config file %filename%. Aborting backup.'
 'Errors and up': 'Errors and up'
 'Exclude': 'Exclude'
+'File': 'File'
 'Five years': 'Five years'
 'Four years': 'Four years'
 'Friday': 'Friday'
@@ -149,7 +152,10 @@
 'Really delete client %name%? This will remove all related jobs and backups': 'Really delete client %name%? This will remove all related jobs and backups.'
 'Really delete job %name%? This will remove all related backups': 'Really delete job %name%? This will remove all related backups.'
 'Really delete policy %name%?': 'Really delete policy %name%?'
+'Really delete script %name%?': 'Really delete script %name%?'
 'Records per page': 'Records per page'
+'Removing the policy %name% failed. Check that it is not in use.': 'Removing the policy %name% failed. Check that it is not in use.'
+'Removing the script %name% failed. Check that it is not in use.': 'Removing the script %name% failed. Check that it is not in use.'
 'Repository backup script': 'Repository backup script'
 'Run now': 'Run now'
 'Running %command%': 'Running %command%'
@@ -157,6 +163,7 @@
 'Save client %clientid%': 'Save client %clientid%'
 'Save': 'Save'
 'Saved': 'Saved'
+'Scripts': 'Scripts'
 'Send notices to': 'Send notices to'
 'Set Parameter %paramname%': 'Set Parameter %paramname%'
 'Show home page': 'Show home page'
@@ -188,6 +195,7 @@
 'Upload dir': 'Upload dir'
 'Upload post script': 'Upload post script'
 'Upload pre script': 'Upload pre script'
+'Uploading a script is mandatory for script creation.': 'Uploading a script is mandatory for script creation.'
 'Url': 'Url'
 'Use local permissions': 'Use local permissions'
 'User %username% logged in.': 'User %username% logged in.'
@@ -317,3 +325,5 @@ managebackups_help: |
  <p>This application depends on autofs to mount the remote file systems. If autofs is not configured as expected this field will not be editable.
  <h4>Directory</h4>
  The full path in the local file system or the name of the NFS export. In any case it must start with '/'.
+script_help: |
+ help

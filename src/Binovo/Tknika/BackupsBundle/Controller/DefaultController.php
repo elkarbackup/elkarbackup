@@ -2,18 +2,22 @@
 
 namespace Binovo\Tknika\BackupsBundle\Controller;
 
+use \DateTime;
 use \Exception;
+use \PDOException;
 use \RuntimeException;
 use Binovo\Tknika\BackupsBundle\Entity\Client;
 use Binovo\Tknika\BackupsBundle\Entity\Job;
 use Binovo\Tknika\BackupsBundle\Entity\Message;
 use Binovo\Tknika\BackupsBundle\Entity\Policy;
+use Binovo\Tknika\BackupsBundle\Entity\Script;
 use Binovo\Tknika\BackupsBundle\Entity\User;
 use Binovo\Tknika\BackupsBundle\Form\Type\AuthorizedKeyType;
 use Binovo\Tknika\BackupsBundle\Form\Type\ClientType;
 use Binovo\Tknika\BackupsBundle\Form\Type\JobType;
 use Binovo\Tknika\BackupsBundle\Form\Type\JobForSortType;
 use Binovo\Tknika\BackupsBundle\Form\Type\PolicyType;
+use Binovo\Tknika\BackupsBundle\Form\Type\ScriptType;
 use Binovo\Tknika\BackupsBundle\Form\Type\UserType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -49,6 +53,12 @@ class DefaultController extends Controller
     protected function generatePolicyRoute($id)
     {
         return $this->generateUrl('editPolicy',
+                                  array('id' => $id));
+    }
+
+    protected function generateScriptRoute($id)
+    {
+        return $this->generateUrl('editScript',
                                   array('id' => $id));
     }
 
@@ -624,11 +634,16 @@ class DefaultController extends Controller
         $repository = $db->getRepository('BinovoTknikaBackupsBundle:Policy');
         $manager = $db->getManager();
         $policy = $repository->find($id);
-        $manager->remove($policy);
-        $this->info('Delete policy %policyname%',
-                    array('%policyname%' => $policy->getName()),
-                    array('link' => $this->generatePolicyRoute($id)));
-        $manager->flush();
+        try{
+            $manager->remove($policy);
+            $this->info('Delete policy %policyname%',
+                        array('%policyname%' => $policy->getName()),
+                        array('link' => $this->generatePolicyRoute($id)));
+            $manager->flush();
+        } catch (PDOException $e) {
+            $this->get('session')->getFlashBag()->add('showPolicies',
+                                                      $t->trans('Removing the policy %name% failed. Check that it is not in use.', array('%name' => $policy->getName()), 'BinovoTknikaBackups'));
+        }
 
         return $this->redirect($this->generateUrl('showPolicies'));
     }
@@ -738,6 +753,32 @@ class DefaultController extends Controller
         $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoTknikaBackupsBundle:Default:clients.html.twig',
+                             array('pagination' => $pagination));
+    }
+
+    /**
+     * @Route("/scripts", name="showScripts")
+     * @Template()
+     */
+    public function showScriptsAction(Request $request)
+    {
+        $repository = $this->getDoctrine()
+            ->getRepository('BinovoTknikaBackupsBundle:Script');
+        $query = $repository->createQueryBuilder('c')
+            ->getQuery();
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1)/*page number*/,
+            $request->get('lines', $this->container->getParameter('pagination_lines_per_page'))
+            );
+        $this->info('View scripts',
+                    array(),
+                    array('link' => $this->generateUrl('showScripts')));
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->render('BinovoTknikaBackupsBundle:Default:scripts.html.twig',
                              array('pagination' => $pagination));
     }
 
@@ -1155,6 +1196,102 @@ EOF;
             return $this->render('BinovoTknikaBackupsBundle:Default:password.html.twig',
                                  array('form'    => $form->createView()));
         }
+    }
+
+    /**
+     * @Route("/script/{id}/delete", name="deleteScript")
+     * @Method("POST")
+     * @Template()
+     */
+    public function deleteScriptAction(Request $request, $id)
+    {
+        $t = $this->get('translator');
+        $db = $this->getDoctrine();
+        $repository = $db->getRepository('BinovoTknikaBackupsBundle:Script');
+        $manager = $db->getManager();
+        $script = $repository->find($id);
+        try{
+            $manager->remove($script);
+            $this->info('Delete script %scriptname%',
+                        array('%scriptname%' => $script->getName()),
+                        array('link' => $this->generateScriptRoute($id)));
+            $manager->flush();
+        } catch (PDOException $e) {
+            $this->get('session')->getFlashBag()->add('showScripts',
+                                                      $t->trans('Removing the script %name% failed. Check that it is not in use.', array('%name%' => $script->getName()), 'BinovoTknikaBackups'));
+        }
+
+        return $this->redirect($this->generateUrl('showScripts'));
+    }
+
+    /**
+     * @Route("/script/{id}", name="editScript")
+     * @Method("GET")
+     * @Template()
+     */
+    public function editScriptAction(Request $request, $id)
+    {
+        $t = $this->get('translator');
+        if ('new' === $id) {
+            $script = new Script();
+        } else {
+            $repository = $this->getDoctrine()
+                ->getRepository('BinovoTknikaBackupsBundle:Script');
+            $script = $repository->find($id);
+        }
+        $form = $this->createForm(new ScriptType(), $script, array('scriptFileRequired' => !$script->getScriptFileExists(),
+                                                                   'translator' => $t));
+        $this->info('View script %scriptname%.',
+                    array('%scriptname%' => $script->getName()),
+                    array('link' => $this->generateScriptRoute($id)));
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->render('BinovoTknikaBackupsBundle:Default:script.html.twig',
+                             array('form' => $form->createView()));
+    }
+
+    /**
+     * @Route("/script/{id}", requirements={"id" = "\d+"}, defaults={"id" = "-1"}, name="saveScript")
+     * @Method("POST")
+     * @Template()
+     */
+    public function saveScriptAction(Request $request, $id)
+    {
+        $t = $this->get('translator');
+        if ("-1" === $id) {
+            $script = new Script();
+        } else {
+            $repository = $this->getDoctrine()
+                ->getRepository('BinovoTknikaBackupsBundle:Script');
+            $script = $repository->find($id);
+        }
+        $form = $this->createForm(new ScriptType(), $script, array('scriptFileRequired' => !$script->getScriptFileExists(),
+                                                                   'translator' => $t));
+        $form->bind($request);
+        $result = null;
+        if ($form->isValid()) {
+            if ("-1" == $id && null == $script->getScriptFile()) { // it is a new script but no file was uploaded
+                $this->get('session')->getFlashBag()->add('editScript',
+                                                          $t->trans('Uploading a script is mandatory for script creation.',
+                                                                    array(),
+                                                                    'BinovoTknikaBackups'));
+            } else {
+                $em = $this->getDoctrine()->getManager();
+                $script->setLastUpdated(new DateTime()); // we to this to force the PostPersist script to run.
+                $em->persist($script);
+                $this->info('Save script %scriptname%.',
+                            array('%scriptname%' => $script->getScriptname()),
+                            array('link' => $this->generateScriptRoute($id)));
+                $em->flush();
+                $result = $this->redirect($this->generateScriptRoute($script->getId()));
+            }
+        }
+        if (!$result) {
+            $result = $this->render('BinovoTknikaBackupsBundle:Default:script.html.twig',
+                                    array('form' => $form->createView()));
+        }
+
+        return $result;
     }
 
     /**
