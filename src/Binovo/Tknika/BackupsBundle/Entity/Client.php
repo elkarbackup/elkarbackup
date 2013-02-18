@@ -196,7 +196,11 @@ class Client
      */
     public function setUrl($url)
     {
-        $this->url = $url;
+        if (isset($url)) {
+            $this->url = $url;
+        } else {
+            $this->url = '';
+        }
 
         return $this;
     }
