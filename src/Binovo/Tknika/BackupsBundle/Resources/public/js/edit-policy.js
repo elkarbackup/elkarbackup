@@ -301,7 +301,7 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, ready){
         hourlyMonthsInput.value      = '';
         // monthly fields
         monthlyCountInput.value       = dijit.byId('monthlyCount').value;
-        monthlyDaysOfMonthInput.value = dijit.byId('dayOfMonth').value;
+        monthlyDaysOfMonthInput.value = isNaN(dijit.byId('dayOfMonth').value) ? '' : dijit.byId('dayOfMonth').value;
         monthlyDaysOfWeekInput.value  = '';
         monthlyHoursInput.value       = dateToHour(dijit.byId('monthlyHour').value);
         // weekly fields
@@ -320,10 +320,10 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, ready){
         // yearly fields
         yearlyHoursInput.value       = dateToHour(dijit.byId('yearlyHour').value);
         yearlyCountInput.value       = dijit.byId('yearlyCount').value;
-        yearlyDaysOfMonthInput.value = dijit.byId('dayOfYear').value.getDate();
+        yearlyDaysOfMonthInput.value = isNaN(dijit.byId('dayOfYear').value.getDate()) ? '' : dijit.byId('dayOfYear').value.getDate();
         yearlyDaysOfWeekInput.value  = '';
         yearlyHoursInput.value       = dateToHour(dijit.byId('yearlyHour').value);
-        yearlyMonthsInput.value      = dijit.byId('dayOfYear').value.getMonth() + 1;
+        yearlyMonthsInput.value      = isNaN(dijit.byId('dayOfYear').value.getMonth()) ? '' : (dijit.byId('dayOfYear').value.getMonth() + 1);
         return true;
     };
 
