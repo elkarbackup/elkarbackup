@@ -18,5 +18,23 @@ function(dojo, Toggler, ready){
     };
     ready(function() {
               initNotificationsEmail();
+              dojo.connect(dojo.byId('runNow'), 
+	 	                   'onclick', 
+	 	                   function() { 
+	 	                       var args = { 
+	 	                           form: dojo.byId('runNowForm'), 
+	 	                           handleAs: 'text', 
+	 	                           load: function(data) { 
+	 	                               dojo.place('<div class="controls help-block">' + data + '</div>', dojo.byId('legend'), 'after'); 
+	 	                               dojo.attr(dojo.byId('runNow'), 'disabled', true) ;
+	 	                           }, 
+	 	                           error: function(data) { 
+	 	                               dojo.place('<div class="controls help-block">' + data + '</div>', dojo.byId('legend'), 'after'); 
+	 	                           } 
+	 	                       }; 
+	 	                       console.log(args); 
+	 	                       dojo.xhrPost(args); 
+	 	                   }); 
           });
+
 });
