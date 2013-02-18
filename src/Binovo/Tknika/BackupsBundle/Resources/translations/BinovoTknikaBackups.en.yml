@@ -326,4 +326,28 @@ managebackups_help: |
  <h4>Directory</h4>
  The full path in the local file system or the name of the NFS export. In any case it must start with '/'.
 script_help: |
- help
+ <h4>About the scripts</h4>
+ The application invoques the script using the user for backups. The application sets the following enviroment variables before running any of the scripts:
+ <ul>
+  <li>TKNIKABACKUPS_LEVEL:  possible values are JOB or CLIENT</li>
+  <li>TKNIKABACKUPS_EVENT:  possible values are PRE or POST</li>
+  <li>TKNIKABACKUPS_URL:    the value is theh full URL of the job or client</li>
+  <li>TKNIKABACKUPS_URL:    the value is theh full URL of the job or client</li>
+  <li>TKNIKABACKUPS_ID:     the numeric job id or client id </li>
+  <li>TKNIKABACKUPS_PATH:   the full path of the snapshot root </li>
+  <li>TKNIKABACKUPS_STATUS: Always 0 in the current implementation</li>
+ </ul>
+ <h4>Name</h4>
+ This is the identifier for the script. It will show up in lists and combo boxes. The name must be unique among all scripts, the application will complain if you try to use a name which is already in use.
+ <h4>Description</h4>
+ Free text to describe the script. Put here whatever you might find useful.
+ <h4>File</h4>
+ Browse and select the script to upload.
+ <h4>Runs as before client script</h4>
+ Check this field if the script is designed to run when opening the client.
+ <h4>Runs as after client script</h4>
+ Check this field if the script is designed to run when closing the client.
+ <h4>Runs as before job script</h4>
+ Check this field if the script is designed to run when opening the job.
+ <h4>Runs as after job script</h4>
+ Check this field if the script is designed to run when closing the job.

@@ -44,6 +44,7 @@ class LoggerHandler extends AbstractProcessingHandler implements ContainerAwareI
                                    isset($record['context']['source'])  ? $record['context']['source']  : null,
                                    isset($record['extra']['user_id'])   ? $record['extra']['user_id']   : null,
                                    isset($record['extra']['user_name']) ? $record['extra']['user_name'] : null);
+echo $record['message'] . "\n";
         $em->persist($logRecord);
         if ($this->isRecordingMessages) {
             $this->messages[] = $logRecord;

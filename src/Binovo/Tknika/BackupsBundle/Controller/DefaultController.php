@@ -394,11 +394,15 @@ class DefaultController extends Controller
     public function showJobConfigAction(Request $request, $idClient, $idJob)
     {
         $t = $this->get('translator');
+        $backupDir  = $this->container->getParameter('backup_dir');
         $repository = $this->getDoctrine()->getRepository('BinovoTknikaBackupsBundle:Job');
         $job = $repository->find($idJob);
         if (null == $job || $job->getClient()->getId() != $idClient) {
             throw $this->createNotFoundException($t->trans('Unable to find Job entity: ', array(), 'BinovoTknikaBackups') . $idClient . " " . $idJob);
         }
+        $tmpDir = $this->container->getParameter('tmp_dir');
+        $url = $job->getUrl();
+        $idJob = $job->getId();
         $policy = $job->getPolicy();
         $retains = $policy->getRetains();
         $includes = array();
@@ -418,20 +422,38 @@ class DefaultController extends Controller
                     array('%clientid%' => $idClient, '%jobid%' => $idJob),
                     array('link' => $this->generateJobRoute($idJob, $idClient)));
         $this->getDoctrine()->getManager()->flush();
+        $preCommand  = '';
+        $postCommand = '';
+        if ($job->getPreScript() != null) {
+            $preCommand = sprintf('/usr/bin/env TKNIKABACKUPS_LEVEL="JOB" TKNIKABACKUPS_EVENT="PRE" TKNIKABACKUPS_URL="%s" TKNIKABACKUPS_ID="%s" TKNIKABACKUPS_PATH="%s" TKNIKABACKUPS_STATUS="%s" sudo "%s" 2>&1',
+                                  $url,
+                                  $idJob,
+                                  $job->getSnapshotRoot(),
+                                  0,
+                                  $job->getPreScript()->getScriptPath('pre'));
+        }
+        if ($job->getPostScript() != null) {
+            $postCommand = sprintf('/usr/bin/env TKNIKABACKUPS_LEVEL="JOB" TKNIKABACKUPS_EVENT="POST" TKNIKABACKUPS_URL="%s" TKNIKABACKUPS_ID="%s" TKNIKABACKUPS_PATH="%s" TKNIKABACKUPS_STATUS="%s" sudo "%s" 2>&1',
+                                  $url,
+                                  $idJob,
+                                  $job->getSnapshotRoot(),
+                                  0,
+                                  $job->getPostScript()->getScriptPath('post'));
+        }
 
         return $this->render('BinovoTknikaBackupsBundle:Default:rsnapshotconfig.txt.twig',
-                             array('cmdPreExec'          => $job->getPreScript()  ? $job->getPreScript()->getScriptPath('pre') : '',
-                                   'cmdPostExec'         => $job->getPostScript() ? $job->getPostScript()->getScriptPath('post'): '',
+                             array('cmdPreExec'          => $preCommand,
+                                   'cmdPostExec'         => $postCommand,
                                    'excludes'            => $excludes,
                                    'idClient'            => sprintf('%04d', $idClient),
                                    'idJob'               => sprintf('%04d', $idJob),
                                    'includes'            => $includes,
-                                   'backupDir'           => $this->container->getParameter('backup_dir'),
+                                   'backupDir'           => $backupDir,
                                    'retains'             => $retains,
-                                   'tmp'                 => '/tmp',
+                                   'tmp'                 => $tmpDir,
                                    'snapshotRoot'        => $job->getSnapshotRoot(),
                                    'syncFirst'           => $syncFirst,
-                                   'url'                 => $job->getUrl(),
+                                   'url'                 => $url,
                                    'useLocalPermissions' => $job->getUseLocalPermissions()),
                              $response);
     }

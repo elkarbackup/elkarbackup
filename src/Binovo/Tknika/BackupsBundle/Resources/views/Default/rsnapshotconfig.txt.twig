@@ -74,7 +74,7 @@ cmd_logger	/usr/bin/logger
 # before rsnapshot syncs files
 #
 {% if cmdPreExec %}
-cmd_preexec	{{cmdPreExec}}
+cmd_preexec	{{cmdPreExec|raw}}
 {% else %}
 #cmd_preexec	/path/to/preexec/script
 {% endif %}
@@ -83,7 +83,7 @@ cmd_preexec	{{cmdPreExec}}
 # after rsnapshot syncs files
 #
 {% if cmdPostExec %}
-cmd_postexec	{{cmdPostExec}}
+cmd_postexec	{{cmdPostExec|raw}}
 {% else %}
 #cmd_postexec	/path/to/postexec/script
 {% endif %}
