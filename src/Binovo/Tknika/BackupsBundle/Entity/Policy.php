@@ -57,6 +57,16 @@ class Policy
     }
 
     /**
+     * Returns true if $retain only rotates the backups and doesn't
+     * try to fetch data from the client.
+     */
+    public function isRotation($retain)
+    {
+        $retains = $this->getRetains();
+        return !(count($retains) && $retains[0][0] == $retain);
+    }
+
+    /**
      * Returns true if running the retain $retain requires a previous sync operation
      */
     public function mustSync($retain)

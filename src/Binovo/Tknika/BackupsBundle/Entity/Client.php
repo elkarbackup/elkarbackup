@@ -43,9 +43,10 @@ class Client
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="Script")
+     * @ORM\ManyToMany(targetEntity="Script", inversedBy="postClients")
+     * @ORM\JoinTable(name="ClientScriptPost")
      */
-    protected $postScript;
+    protected $postScripts;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -53,9 +54,10 @@ class Client
     protected $url;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Script")
+     * @ORM\ManyToMany(targetEntity="Script", inversedBy="preClients")
+     * @ORM\JoinTable(name="ClientScriptPre")
      */
-    protected $preScript;
+    protected $preScripts;
 
     /**
      * Quota in KB. -1 means no limit, which is the default.
@@ -140,52 +142,6 @@ class Client
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Set postScript
-     *
-     * @param string $script
-     * @return Client
-     */
-    public function setPostScript($script)
-    {
-        $this->postScript = $script;
-
-        return $this;
-    }
-
-    /**
-     * Get script
-     *
-     * @return string
-     */
-    public function getPostScript()
-    {
-        return $this->postScript;
-    }
-
-    /**
-     * Set preScript
-     *
-     * @param string $script
-     * @return Client
-     */
-    public function setPreScript($script)
-    {
-        $this->preScript = $script;
-
-        return $this;
-    }
-
-    /**
-     * Get script
-     *
-     * @return string
-     */
-    public function getPreScript()
-    {
-        return $this->preScript;
     }
 
     /**
@@ -328,5 +284,69 @@ class Client
     public function getQuota()
     {
         return $this->quota;
+    }
+
+    /**
+     * Add postScripts
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Script $postScripts
+     * @return Client
+     */
+    public function addPostScript(Script $postScripts)
+    {
+        $this->postScripts[] = $postScripts;
+        return $this;
+    }
+
+    /**
+     * Remove postScripts
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Script $postScripts
+     */
+    public function removePostScript(Script $postScripts)
+    {
+        $this->postScripts->removeElement($postScripts);
+    }
+
+    /**
+     * Get postScripts
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getPostScripts()
+    {
+        return $this->postScripts;
+    }
+
+    /**
+     * Add preScripts
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Script $preScripts
+     * @return Client
+     */
+    public function addPreScript(Script $preScripts)
+    {
+        $this->preScripts[] = $preScripts;
+        return $this;
+    }
+
+    /**
+     * Remove preScripts
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Script $preScripts
+     */
+    public function removePreScript(Script $preScripts)
+    {
+        $this->preScripts->removeElement($preScripts);
+    }
+
+    /**
+     * Get preScripts
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getPreScripts()
+    {
+        return $this->preScripts;
     }
 }

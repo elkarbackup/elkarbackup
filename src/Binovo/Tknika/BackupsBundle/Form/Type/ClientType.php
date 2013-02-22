@@ -20,18 +20,20 @@ class ClientType extends AbstractType
                                                             'required' => false))
                 ->add('quota'         , 'integer'   , array('label' => $t->trans('Quota', array(), 'BinovoTknikaBackups'),
                                                             'attr'  => array('class'    => 'span12')))
-                ->add('preScript'     , 'entity'    , array('label' => $t->trans('Pre script', array(), 'BinovoTknikaBackups'),
+                ->add('preScripts'    , 'entity'    , array('label' => $t->trans('Pre script', array(), 'BinovoTknikaBackups'),
                                                             'attr'     => array('class' => 'span12'),
                                                             'required' => false,
+                                                            'multiple' => true,
                                                             'class'    => 'BinovoTknikaBackupsBundle:Script',
                                                             'query_builder' => function($er) {
                                                                 return $er->createQueryBuilder('s')
                                                                     ->where('s.isClientPre = 1');
                                                             },
                                                             'property' => 'name'))
-                ->add('postScript'    , 'entity'    , array('label' => $t->trans('Post script', array(), 'BinovoTknikaBackups'),
+                ->add('postScripts'   , 'entity'    , array('label' => $t->trans('Post script', array(), 'BinovoTknikaBackups'),
                                                             'attr'     => array('class' => 'span12'),
                                                             'required' => false,
+                                                            'multiple' => true,
                                                             'class'    => 'BinovoTknikaBackupsBundle:Script',
                                                             'query_builder' => function($er) {
                                                                 return $er->createQueryBuilder('s')

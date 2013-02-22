@@ -89,14 +89,16 @@ class Job
     protected $policy;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Script")
+     * @ORM\ManyToMany(targetEntity="Script", inversedBy="postJobs")
+     * @ORM\JoinTable(name="JobScriptPost")
      */
-    protected $postScript;
+    protected $postScripts;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Script")
+     * @ORM\ManyToMany(targetEntity="Script", inversedBy="preJobs")
+     * @ORM\JoinTable(name="JobScriptPre")
      */
-    protected $preScript;
+    protected $preScripts;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -191,52 +193,6 @@ class Job
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Set postScript
-     *
-     * @param string $postScript
-     * @return Job
-     */
-    public function setPostScript($postScript)
-    {
-        $this->postScript = $postScript;
-
-        return $this;
-    }
-
-    /**
-     * Get postScript
-     *
-     * @return string
-     */
-    public function getPostScript()
-    {
-        return $this->postScript;
-    }
-
-    /**
-     * Set preScript
-     *
-     * @param string $preScript
-     * @return Job
-     */
-    public function setPreScript($preScript)
-    {
-        $this->preScript = $preScript;
-
-        return $this;
-    }
-
-    /**
-     * Get preScript
-     *
-     * @return string
-     */
-    public function getPreScript()
-    {
-        return $this->preScript;
     }
 
     /**
@@ -594,5 +550,74 @@ class Job
     public function getUseLocalPermissions()
     {
         return $this->useLocalPermissions;
+    }
+    public function __construct()
+    {
+        $this->postScript = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->preScripts = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add postScript
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Script $postScript
+     * @return Job
+     */
+    public function addPostScript(Script $postScript)
+    {
+        $this->postScript[] = $postScript;
+        return $this;
+    }
+
+    /**
+     * Remove postScript
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Script $postScript
+     */
+    public function removePostScript(Script $postScript)
+    {
+        $this->postScript->removeElement($postScript);
+    }
+
+    /**
+     * Add preScripts
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Script $preScripts
+     * @return Job
+     */
+    public function addPreScript(Script $preScripts)
+    {
+        $this->preScripts[] = $preScripts;
+        return $this;
+    }
+
+    /**
+     * Remove preScripts
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Script $preScripts
+     */
+    public function removePreScript(Script $preScripts)
+    {
+        $this->preScripts->removeElement($preScripts);
+    }
+
+    /**
+     * Get preScripts
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getPreScripts()
+    {
+        return $this->preScripts;
+    }
+
+    /**
+     * Get postScripts
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getPostScripts()
+    {
+        return $this->postScripts;
     }
 }

@@ -15,6 +15,30 @@
             {% form_theme form 'BinovoTknikaBackupsBundle:Default:fields.html.twig' %}
             {{ form_widget(form) }}
             <div class="control-group">
+                <label class="control-label" >
+
+                </label>
+                <div class="controls">
+{% if form.vars.value.isUsed %}
+                    {% trans %}Used by{% endtrans %}
+    {% for client in form.vars.value.postClients %}
+                    <br><a href="{{ path('editClient', {id: client.id}) }}">{% trans with {'%name%': client.name} %}Client %name% as post script{% endtrans %}</a>
+    {% endfor %}
+    {% for client in form.vars.value.preClients %}
+                    <br><a href="{{ path('editClient', {id: client.id}) }}">{% trans with {'%name%': client.name} %}Client %name% as pre script{% endtrans %}</a>
+    {% endfor %}
+    {% for job in form.vars.value.postJobs %}
+                    <br><a href="{{ path('editJob', {idClient: job.client.id, idJob: job.id}) }}">{% trans with {'%name%': job.name} %}Job %name% as post script{% endtrans %}</a>
+    {% endfor %}
+    {% for job in form.vars.value.preJobs %}
+                    <br><a href="{{ path('editJob', {idClient: job.client.id, idJob: job.id}) }}">{% trans with {'%name%': job.name} %}Job %name% as pre script{% endtrans %}</a>
+    {% endfor %}
+{% else %}
+    {% trans %}Currently not used{% endtrans %}
+{% endif %}
+                </div>
+            </div>
+            <div class="control-group">
                 <div class="controls">
                     <input class="btn btn-pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
                 </div>

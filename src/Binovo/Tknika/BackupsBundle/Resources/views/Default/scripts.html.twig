@@ -40,7 +40,7 @@
                 <input class="btn" type="submit" value="{% trans %}Edit{% endtrans %}" />
             </form>
             <form data-bnv-message="{% trans with {'%name%': script.scriptname} %}Really delete script %name%?{% endtrans %}" class="delete-script" action="{{ path('deleteScript', {id: script.id}) }}" method="POST" style="display:inline">
-                <input class="btn" type="submit" value="{% trans %}Delete{% endtrans %}" />
+                <input class="btn" type="submit" value="{% trans %}Delete{% endtrans %}"{% if script.isUsed %} disabled="disabled"{% endif %} />
             </form>
         </td>
     </tr>

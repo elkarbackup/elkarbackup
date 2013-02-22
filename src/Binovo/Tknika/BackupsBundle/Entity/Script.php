@@ -73,6 +73,25 @@ class Script
      */
     protected $lastUpdated;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Client", mappedBy="postScripts")
+     */
+    protected $postClients;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Job", mappedBy="postScripts")
+     */
+    protected $postJobs;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Client", mappedBy="preScripts")
+     */
+    protected $preClients;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Job", mappedBy="preScripts")
+     */
+    protected $preJobs;
 
     /**
      * Constructor
@@ -332,5 +351,138 @@ class Script
     public function getLastUpdated()
     {
         return $this->lastUpdated;
+    }
+
+    /**
+     * Add postClients
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Client $postClients
+     * @return Script
+     */
+    public function addPostClient(Client $postClients)
+    {
+        $this->postClients[] = $postClients;
+        return $this;
+    }
+
+    /**
+     * Remove postClients
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Client $postClients
+     */
+    public function removePostClient(Client $postClients)
+    {
+        $this->postClients->removeElement($postClients);
+    }
+
+    /**
+     * Get postClients
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getPostClients()
+    {
+        return $this->postClients;
+    }
+
+    /**
+     * Add postJobs
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Job $postJobs
+     * @return Script
+     */
+    public function addPostJob(Job $postJobs)
+    {
+        $this->postJobs[] = $postJobs;
+        return $this;
+    }
+
+    /**
+     * Remove postJobs
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Job $postJobs
+     */
+    public function removePostJob(Job $postJobs)
+    {
+        $this->postJobs->removeElement($postJobs);
+    }
+
+    /**
+     * Get postJobs
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getPostJobs()
+    {
+        return $this->postJobs;
+    }
+
+    /**
+     * Add preClients
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Client $preClients
+     * @return Script
+     */
+    public function addPreClient(Client $preClients)
+    {
+        $this->preClients[] = $preClients;
+        return $this;
+    }
+
+    /**
+     * Remove preClients
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Client $preClients
+     */
+    public function removePreClient(Client $preClients)
+    {
+        $this->preClients->removeElement($preClients);
+    }
+
+    /**
+     * Get preClients
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getPreClients()
+    {
+        return $this->preClients;
+    }
+
+    /**
+     * Add preJobs
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Job $preJobs
+     * @return Script
+     */
+    public function addPreJob(Job $preJobs)
+    {
+        $this->preJobs[] = $preJobs;
+        return $this;
+    }
+
+    /**
+     * Remove preJobs
+     *
+     * @param Binovo\Tknika\BackupsBundle\Entity\Job $preJobs
+     */
+    public function removePreJob(Job $preJobs)
+    {
+        $this->preJobs->removeElement($preJobs);
+    }
+
+    /**
+     * Get preJobs
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getPreJobs()
+    {
+        return $this->preJobs;
+    }
+
+    public function isUsed()
+    {
+        return $this->getPreJobs()->count() != 0 || $this->getPostJobs()->count() != 0 || $this->getPreClients()->count() != 0 || $this->getPostClients()->count() != 0;
     }
 }

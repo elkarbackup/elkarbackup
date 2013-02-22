@@ -115,27 +115,9 @@ abstract class BackupRunningCommand extends LoggingCommand
         $syncFirst = (int)$job->getPolicy()->getSyncFirst();
         $context = array('link' => $this->generateJobRoute($idJob, $idClient));
 
-        $preCommand  = '';
-        $postCommand = '';
-        if ($job->getPreScript() != null) {
-            $preCommand = sprintf('/usr/bin/env TKNIKABACKUPS_LEVEL="JOB" TKNIKABACKUPS_EVENT="PRE"   TKNIKABACKUPS_URL="%s" TKNIKABACKUPS_ID="%s" TKNIKABACKUPS_PATH="%s" TKNIKABACKUPS_STATUS="%s" sudo "%s" 2>&1',
-                                  $url,
-                                  $idJob,
-                                  $job->getSnapshotRoot(),
-                                  0,
-                                  $job->getPreScript()->getScriptPath('pre'));
-        }
-        if ($job->getPostScript() != null) {
-            $postCommand = sprintf('/usr/bin/env TKNIKABACKUPS_LEVEL="JOB" TKNIKABACKUPS_EVENT="POST" TKNIKABACKUPS_URL="%s" TKNIKABACKUPS_ID="%s" TKNIKABACKUPS_PATH="%s" TKNIKABACKUPS_STATUS="%s" sudo "%s" 2>&1',
-                                  $url,
-                                  $idJob,
-                                  $job->getSnapshotRoot(),
-                                  0,
-                                  $job->getPostScript()->getScriptPath('post'));
-        }
         $content = $engine->render('BinovoTknikaBackupsBundle:Default:rsnapshotconfig.txt.twig',
-                                   array('cmdPreExec'          => $preCommand,
-                                         'cmdPostExec'         => $postCommand,
+                                   array('cmdPreExec'          => '',
+                                         'cmdPostExec'         => '',
                                          'excludes'            => $excludes,
                                          'idClient'            => sprintf('%04d', $idClient),
                                          'idJob'               => sprintf('%04d', $idJob),
@@ -173,6 +155,19 @@ abstract class BackupRunningCommand extends LoggingCommand
             }
         }
         foreach ($runnableRetains as $retain) {
+            $status = 0;
+            // pre script execution if needed
+            $mustRunScripts = !$job->getPolicy()->isRotation($retain);
+            if ($mustRunScripts) {
+                foreach ($job->getPreScripts() as $script) {
+                    if ($this->runScript('pre', 0, $job->getClient(), $job, $script)) {
+                        $this->info('Job "%jobid%" pre script ok.', array('%jobid%' => $job->getId()), $context);
+                    } else {
+                        $this->err('Job "%jobid%" pre script error.', array('%jobid%' => $job->getId()), $context);
+                    }
+                }
+            }
+            // run rsnapshot. sync first if needed
             $commands = array();
             if ($job->getPolicy()->mustSync($retain)) {
                 $commands[] = sprintf('"%s" -c "%s" sync 2>&1', $rsnapshot, $confFileName);
@@ -194,6 +189,16 @@ abstract class BackupRunningCommand extends LoggingCommand
                                 array('%command%' => $command,
                                       '%output%'  => implode("\n", $commandOutput)),
                                 $context);
+                }
+            }
+            // post script execution if needed
+            if ($mustRunScripts) {
+                foreach ($job->getPostScripts() as $script) {
+                    if ($this->runScript('post', $status, $job->getClient(), $job, $script)) {
+                        $this->info('Job "%jobid%" post script ok.', array('%jobid%' => $job->getId()), $context);
+                    } else {
+                        $this->err('Job "%jobid%" post script error.', array('%jobid%' => $job->getId()), $context);
+                    }
                 }
             }
         }
@@ -256,7 +261,6 @@ abstract class BackupRunningCommand extends LoggingCommand
             return false;
         }
         $commandOutput = array();
-        $status        = 0;
         $command       = sprintf('env TKNIKABACKUPS_LEVEL="%s" TKNIKABACKUPS_EVENT="%s" TKNIKABACKUPS_URL="%s" TKNIKABACKUPS_ID="%s" TKNIKABACKUPS_PATH="%s" TKNIKABACKUPS_STATUS="%s" sudo "%s" 2>&1',
                                  $level,
                                  'pre' == $type ? 'PRE' : 'POST',
@@ -329,17 +333,20 @@ abstract class BackupRunningCommand extends LoggingCommand
             case self::NEW_CLIENT:
                 if ($lastClient) {
                     $idClient   = $lastClient->getId();
-                    $script     = $lastClient->getPostScript();
+                    $scripts    = $lastClient->getPostScripts();
                     $context = array('link' => $this->generateClientRoute($idClient));
-                    if ($this->runScript('post', 0, $lastClient, null, $script)) {
-                        $this->info('Client "%clientid%" post script ok.', array('%clientid%' => $idClient), $context);
-                    } else {
-                        $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
+                    foreach ($scripts as $script) {
+                        if ($this->runScript('post', 0, $lastClient, null, $script)) {
+                            $this->info('Client "%clientid%" post script ok.', array('%clientid%' => $idClient), $context);
+                        } else {
+                            $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
+                        }
                     }
                 }
+                echo "NEW_CLIENT last client scripts ready\n";
                 $client = $job->getClient();
                 $idClient = $client->getId();
-                $script   = $client->getPreScript();
+                $scripts  = $client->getPreScripts();
                 $context = array('link' => $this->generateClientRoute($idClient));
                 $logHandler->clearMessages();
                 $storageLoadLevel = $client->getDiskUsage() / $client->getQuota();
@@ -351,12 +358,15 @@ abstract class BackupRunningCommand extends LoggingCommand
                                $context);
                     $state = self::QUOTA_EXCEEDED;
                 } else {
-                    if ($this->runScript('pre', 0, $client, null, $script)) {
-                        $this->info('Client "%clientid%" pre script ok.', array('%clientid%' => $idClient), $context);
-                        $state = self::RUN_JOB;
-                    } else {
-                        $this->err('Client "%clientid%" pre script failed. Aborting backup.', array('%clientid%' => $idClient), $context);
-                        $state = self::SKIP_CLIENT;
+                    $state = self::RUN_JOB;
+                    foreach ($scripts as $script) {
+                        if ($this->runScript('pre', 0, $client, null, $script)) {
+                            $this->info('Client "%clientid%" pre script ok.', array('%clientid%' => $idClient), $context);
+                        } else {
+                            $this->err('Client "%clientid%" pre script failed. Aborting backup.', array('%clientid%' => $idClient), $context);
+                            $state = self::SKIP_CLIENT;
+                            break;
+                        }
                     }
                 }
                 $clientMessages = $logHandler->getMessages();
@@ -398,12 +408,14 @@ abstract class BackupRunningCommand extends LoggingCommand
         }
         if ($lastClient) {
             $idClient = $lastClient->getId();
-            $script   = $lastClient->getPostScript();
+            $scripts  = $lastClient->getPostScripts();
             $context  = array('link' => $this->generateClientRoute($idClient));
-            if ($this->runScript('post', 0, $lastClient, null, $script)) {
-                $this->info('Client "%clientid%" post script ok.', array('%clientid%' => $idClient), $context);
-            } else {
-                $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
+            foreach ($scripts as $script) {
+                if ($this->runScript('post', 0, $lastClient, null, $script)) {
+                    $this->info('Client "%clientid%" post script ok.', array('%clientid%' => $idClient), $context);
+                } else {
+                    $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
+                }
             }
             $manager->flush();
         }
