@@ -1,44 +1,44 @@
-Template: tknikabackups/backupsusername
+Template: elkarbackup/backupsusername
 Type: string
 Description: Username:
  This is the user that under which rsnapshot will run.
 
-Template: tknikabackups/dbadminname
+Template: elkarbackup/dbadminname
 Type: string
 Description: User name of Mysql admin:
  It will be used to create the initial database, user and password.
 
-Template: tknikabackups/dbadminpassword
+Template: elkarbackup/dbadminpassword
 Type: password
 Description: Password of Mysql admin:
  It will be used to create the initial database, user and password.
 
-Template: tknikabackups/dbhost
+Template: elkarbackup/dbhost
 Type: string
 Default: localhost
 Description: DB host:
  The application will connect to the database in this host.
 
-Template: tknikabackups/dbname
+Template: elkarbackup/dbname
 Type: string
-Default: tknikabackups
+Default: elkarbackup
 Description: DB name:
  The application will connect to this database.
 
-Template: tknikabackups/dbusername
+Template: elkarbackup/dbusername
 Type: string
-Default: tknikabackups
+Default: elkarbackup
 Description: DB user:
  The application will connect to the database using this user.
 
-Template: tknikabackups/dbuserpassword
+Template: elkarbackup/dbuserpassword
 Type: password
-Default: tknikabackups
+Default: elkarbackup
 Description: DB user password:
  The application will connect to the database using this password.
 
-Template: tknikabackups/uploadsdir
+Template: elkarbackup/uploadsdir
 Type: string
-Default: /var/spool/tknikabackups/uploads
+Default: /var/spool/elkarbackup/uploads
 Description: Directory to store the pre and post scripts.
  The application will store all the scripts you upload in this directory.

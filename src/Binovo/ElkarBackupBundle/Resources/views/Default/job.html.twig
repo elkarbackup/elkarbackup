@@ -1,0 +1,60 @@
+{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoElkarBackup' %}
+
+{% block scripts %}
+    {{ parent() }}
+    {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/edit-job.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+
+{% block body %}
+
+<form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_enctype(form) }}>
+    <legend id="legend">{% trans %}Edit Job{% endtrans %}</legend>
+    <div class="row-fluid">
+        <div class="span6">
+{% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
+{% for flashMessage in app.session.flashbag.get('job') %}
+            <div class="controls help-block">
+                {{ flashMessage }}
+            </div>
+{% endfor %}
+            <div>
+                <div class="controls">
+                    <a href="{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}">{% trans %}Backups{% endtrans %}</a> <a href="{{path('editClient', {id: form.vars.value.client.id}) }}">{% trans %}Client{% endtrans %}</a>
+                </div>
+                {{ form_row(form.name) }}
+                {{ form_row(form.path) }}
+                <div class="control-group">
+                    <label class="control-label">{% trans %}Disk usage{% endtrans %}</label>
+                    <div class="controls"><input class="span12" type="text" disabled="disabled" value="{{ (form.vars.value.diskUsage / 1024) | number_format(0)  }} MB" /></div>
+                </div>
+                {{ form_row(form.description) }}
+                {{ form_row(form.isActive) }}
+                {{ form_row(form.owner, {read_only: not is_granted('ROLE_ADMIN')}) }}
+                {{ form_row(form.notificationsTo) }}
+                {{ form_row(form.notificationsEmail, {attr: {class: 'span12'}}) }}
+                {{ form_row(form.minNotificationLevel) }}
+                {{ form_row(form.preScripts) }}
+                {{ form_row(form.postScripts) }}
+                {{ form_rest(form) }}
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <input class="btn btn-pull-right" type="button" value="{% trans %}Run now{% endtrans %}" id="runNow"/>
+                    <input class="btn btn-pull-right" type="submit" value="{% trans %}Save{% endtrans %}" />
+                </div>
+            </div>
+        </div>
+        <div class="span6">
+            {% trans %}job_help{% endtrans %}
+        </div>
+    </div>
+</form>
+
+<form id="runNowForm" action="{{ path('runJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="POST" {{ form_enctype(form) }}>
+</form>
+
+{% endblock %}

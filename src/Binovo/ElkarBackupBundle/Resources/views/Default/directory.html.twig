@@ -1,0 +1,39 @@
+{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoElkarBackup' %}
+
+{% block body %}
+
+<p>
+    <h3>
+    {{ job.client.name ~ '/' ~ job.name ~ '/' ~ path }}
+    </h3>
+    <a href="{{ path('editClient', {id: job.client.id}) }}"><b>{% trans %}Back to client{% endtrans %}</b></a><br />
+    <a href="{{ path('editJob',    {idClient: job.client.id, idJob: job.id}) }}"><b>{% trans %}Back to job{% endtrans %}</b></a>
+</p>
+
+<p>
+    <table class="table table-condensed table-bordered table-striped">
+        <tr>
+            <th colspan="3">{{ realPath }}</th>
+        </tr>
+        <tr>
+            <th>{% trans %}Name{% endtrans %}</th>
+            <th>{% trans %}Modification date{% endtrans %}</th>
+            <th>{% trans %}Actions{% endtrans %}</th>
+        </tr>
+    {% for file in content %}
+        <tr>
+            <td>
+                <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'view'}) }}">{{ file.0 }}</a>
+            </td>
+            <td>
+                {{ file.1.format('Y-m-d H:i:s') }}
+            </td>
+            <td>
+                {% if file.0 != ".." and file.0 != "." %} <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download'}) }}"> <b>{% if file.2 %}{% trans %}Download as .tgz{% endtrans %}{% else %}Download{% endif %}</b></a> {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</p>
+
+{% endblock %}

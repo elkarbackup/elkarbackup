@@ -1,0 +1,39 @@
+{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoElkarBackup' %}
+
+{#
+{% block scripts %}
+    {{ parent() }}
+    {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/backupslocation.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+#}
+
+{% block body %}
+
+</form>
+<form class="form-horizontal" action="{{ path('manageBackupsLocation') }}" method="post" {{ form_enctype(form) }}>
+    <legend>{% trans %}Manage backups location{% endtrans %}</legend>
+    <div class="row-fluid">
+        <div class="span6">
+            {% for flashMessage in app.session.flashbag.get('manageParameters') %}
+            <div class="controls help-block">
+                {{ flashMessage }}
+            </div>
+            {% endfor %}
+            {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
+            {{ form_widget(form) }}
+            <div class="control-group">
+                <div class="controls">
+                    <input class="btn pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
+                </div>
+            </div>
+        </div>
+        <div class="span6">
+            {% trans %}managebackups_help{% endtrans %}
+        </div>
+    </div>
+</form>
+
+{% endblock %}

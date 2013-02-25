@@ -1,0 +1,78 @@
+{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoElkarBackup' %}
+
+{% block scripts %}
+    {{ parent() }}
+    {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/show-clients.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block body %}
+
+<div class="row-fluid">
+<div class="max10" >
+<h3>{% trans %}Clients{% endtrans %}</h3>
+
+{% for flashMessage in app.session.flashbag.get('clients') %}
+    <div class="controls help-block">
+        {{ flashMessage }}
+    </div>
+{% endfor %}
+<table class="table table-condensed table-bordered">
+    <tr>
+        {# sorting of properties based on query components #}
+        <th>{% trans %}Id{% endtrans %}</th>
+        <th>{% trans %}Name{% endtrans %}</th>
+        <th>{% trans %}Disk usage{% endtrans %}</th>
+        <th>{% trans %}Last log entry{% endtrans %}</th>
+        <th>{% trans %}Status{% endtrans %}</th>
+        <th>{% trans %}Actions{% endtrans %}</th>
+    </tr>
+
+    {# table body #}
+    {% for client in pagination %}
+    <tr class="client-row">
+        <td onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'"><a href="{{ path('editClient', {id: client.id}) }}">{{ client.id }}</a></td>
+        <td onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'">{{ client.name }}</td>
+        <td onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'" style="text-align:right{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{{ (client.diskUsage / 1024) | number_format(0)}} MB{% if client.quota > 0 %} ({{ (client.diskUsage / client.quota * 100) | number_format(0)}}%){% endif %}</td>
+        <td onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'">{{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ (client.logEntry.levelName)|default('') }} {{ client.logEntry.message|default('')|slice(0, 50) }}{% if client.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
+        <td onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'">{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
+        <td class="actions">
+            <form action="{{ path('editClient', {id: client.id}) }}" style="display:inline">
+                <input class="btn" type="submit" value="{% trans %}Edit{% endtrans %}" />
+            </form>
+            <form data-bnv-message="{% trans with {'%name%': client.name } %}Really delete client %name%? This will remove all related jobs and backups.{% endtrans %}" class="delete-client" action="{{ path('deleteClient', {id: client.id}) }}" method="POST" style="display:inline">
+                <input class="btn" type="submit" value="{% trans %}Delete{% endtrans %}" />
+            </form>
+        </td>
+    </tr>
+        {% for job in client.jobs %}
+    <tr class="job-row">
+        <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'"><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
+        <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'">{{ client.name ~ "/" ~ job.name }}</td>
+        <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'" style="text-align:right;">{{ (job.diskUsage / 1024) | number_format(0)}} MB</td>
+        <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'">{{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ (job.logEntry.levelName)|default('') }} {{ job.logEntry.message|default('')|slice(0, 50) }}{% if job.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
+        <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'">{% if job.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
+        <td>
+            <form action="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}" style="display:inline">
+                <input class="btn" type="submit" value="{% trans %}Edit{% endtrans %}" />
+            </form>
+            <form data-bnv-message="{% trans with {'%name%': job.client.name ~ "/" ~ job.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" class="delete-job" action="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" method="POST" style="display:inline">
+                <input class="btn" type="submit" value="{% trans %}Delete{% endtrans %}" />
+            </form>
+        </td>
+    </tr>
+        {% endfor %}
+    {% endfor %}
+</table>
+
+<button class="btn pull-right" type="button" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">{% trans %}New{% endtrans %}</button>
+
+<div class="navigation">
+    {{ pagination.render()|raw }}
+</div>
+</div>
+</div>
+
+{% endblock %}

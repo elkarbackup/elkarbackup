@@ -4,7 +4,7 @@ namespace Application\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration,
     Doctrine\DBAL\Schema\Schema;
-use Binovo\Tknika\BackupsBundle\Lib\Globals;
+use Binovo\ElkarBackupBundle\Lib\Globals;
 
 /**
  * Auto-generated Migration: Please modify to your need!

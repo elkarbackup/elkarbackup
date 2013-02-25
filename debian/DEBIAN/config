@@ -11,10 +11,10 @@ echo ACL enabled: $ACL_ENABLED
 RSNAPSHOTUSER=www-data
 if [ x"$ACL_ENABLED" != x ]
 then
-    RSNAPSHOTUSER=tknikabackups
+    RSNAPSHOTUSER=elkarbackup
 fi
 echo User for rsnapshot: $RSNAPSHOTUSER
-db_set tknikabackups/backupsusername $RSNAPSHOTUSER
-db_input medium tknikabackups/uploadsdir || true
+db_set elkarbackup/backupsusername $RSNAPSHOTUSER
+db_input medium elkarbackup/uploadsdir || true
 
 db_go

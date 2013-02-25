@@ -1,0 +1,56 @@
+{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoElkarBackup' %}
+
+{% block scripts %}
+    {{ parent() }}
+    {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/show-users.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block body %}
+
+<div class="row-fluid">
+<div class="max10" >
+<h3>{% trans %}Users{% endtrans %}</h3>
+
+<table class="table table-condensed table-bordered table-striped">
+    <tr>
+        {# sorting of properties based on query components #}
+        <th>{% trans %}Id{% endtrans %}</th>
+        <th>{% trans %}Username{% endtrans %}</th>
+        <th>{% trans %}Email{% endtrans %}</th>
+        <th>{% trans %}Active{% endtrans %}</th>
+        <th>{% trans %}Actions{% endtrans %}</th>
+    </tr>
+
+    {# table body #}
+    {% for user in pagination %}
+    <tr>
+        <td onclick="document.location.href='{{ path('editUser', {id: user.id}) }}'" class="ids"><a href="{{ path('editUser', {id: user.id}) }}">{{ user.id }}</a></td>
+        <td onclick="document.location.href='{{ path('editUser', {id: user.id}) }}'">{{ user.username }}</td>
+        <td onclick="document.location.href='{{ path('editUser', {id: user.id}) }}'">{{ user.email }}</td>
+        <td onclick="document.location.href='{{ path('editUser', {id: user.id}) }}'">{% if user.isActive %}{% trans %}Yes{% endtrans%}{% else%}{% trans %}No{% endtrans%}{% endif %}</td>
+        <td class="actions">
+            <form action="{{ path('editUser', {id: user.id}) }}" style="display:inline">
+                <input class="btn" type="submit" value="{% trans %}Edit{% endtrans %}" />
+            </form>
+            <form data-bnv-message="{% trans with {'%name%': user.username} %}Really delete user %name%?{% endtrans %}" class="delete-user" action="{{ path('deleteUser', {id: user.id}) }}" method="POST" style="display:inline">
+                <input class="btn" {% if user.isSuperuser() %}disabled="true" {% endif %}type="submit" value="{% trans %}Delete{% endtrans %}" />
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<button class="btn pull-right" type="button" onclick="document.location.href='{{ path('editUser', {id: 'new'}) }}'">{% trans %}New{% endtrans %}</button>
+
+{# display navigation #}
+<div class="navigation">
+    {{ pagination.render()|raw }}
+</div>
+</div>
+</div>
+
+
+{% endblock %}

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# This file is included with tknikabackups as to ease the use of NFSv4
+# This file is included with elkarbackup as to ease the use of NFSv4
 # exports. Adding the following map should make any NFSv4 export for
 # which we have the required permissions available under
 # /nfs4/hostname/:

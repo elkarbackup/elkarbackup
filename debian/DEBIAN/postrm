@@ -11,14 +11,14 @@ if [ "$1" = "purge" -a -e /usr/share/debconf/confmodule ]; then
 fi
 
 if [ "$1" = "remove" ]; then
-    db_get tknikabackups/backupsusername
+    db_get elkarbackup/backupsusername
     username="$RET"
     if test "x$username" != xwww-data
     then
         deluser --system $username
     fi
     . /usr/share/debconf/confmodule
-    a2dissite tknikabackups || true
+    a2dissite elkarbackup || true
     if [ -f /etc/init.d/apache2 ]
     then
         invoke-rc.d apache2 reload

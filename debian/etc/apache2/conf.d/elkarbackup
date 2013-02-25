@@ -1,0 +1,5 @@
+<Directory "/usr/share/elkarbackup/web/">
+   AllowOverride All
+   Allow from All
+</Directory>
+Alias /elkarbackup /usr/share/elkarbackup/web

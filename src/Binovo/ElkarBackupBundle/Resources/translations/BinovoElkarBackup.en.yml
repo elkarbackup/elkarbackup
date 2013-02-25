@@ -1,0 +1,360 @@
+'A month': 'A month'
+'A year': 'A year'
+'About': 'About'
+'Actions': 'Actions'
+'active': 'active'
+'Active': 'Active'
+'Add job': 'Add job'
+'Add key': 'Add key'
+'Add': 'Add'
+'Admin': 'Admin'
+'All messages': 'All messages'
+'All': 'All'
+'Authorized keys': 'Authorized keys'
+'Authorized_keys file (%filename%) updated.': 'Authorized_keys file (%filename%) updated.'
+'Back to client': 'Back to client'
+'Back to job': 'Back to job'
+'Backup script': 'Backup script'
+'Backup server login': 'Backup server login'
+'Backups dir': 'Backups dir'
+'Backups': 'Backups'
+'Browse': 'Browse'
+'Change password': 'Change password'
+'Change': 'Change'
+'Client "%clientid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%': 'Client "%clientid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%'
+'Client "%clientid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%': 'Client "%clientid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%'
+'Client "%clientid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.': 'Client "%clientid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.'
+'Client "%clientid%" at %loadLevel% of quota (%quota%MB).': 'Client "%clientid%" at %loadLevel% of quota (%quota%MB).'
+'Client "%clientid%" post script error.': 'Client "%clientid%" post script error.'
+'Client "%clientid%" post script error.': 'Client "%clientid%" post script error.'
+'Client "%clientid%" post script ok.': 'Client "%clientid%" post script ok.'
+'Client "%clientid%" post script ok.': 'Client "%clientid%" post script ok.'
+'Client "%clientid%" pre script failed. Aborting backup.': 'Client "%clientid%" pre script failed. Aborting backup.'
+'Client "%clientid%" pre script ok.': 'Client "%clientid%" pre script ok.'
+'Client "%clientid%" quota exceeded (quota: %quota%MB, disk usage: %du%MB).': 'Client "%clientid%" quota exceeded (quota: %quota%MB, disk usage: %du%MB).'
+'Client "%clientid%", Job "%jobid%" du begin.': 'Client "%clientid%", Job "%jobid%" du begin.'
+'Client "%clientid%", Job "%jobid%" du end.': 'Client "%clientid%", Job "%jobid%" du end.'
+'Client "%clientid%", Job "%jobid%" error.': 'Client "%clientid%", Job "%jobid%" error.'
+'Client "%clientid%", Job "%jobid%" ok.': 'Client "%clientid%", Job "%jobid%" ok.'
+'Client %name% as post script': 'Client %name% as post script'
+'Client %name% as pre script': 'Client %name% as pre script'
+'Client': 'Client'
+'Clients': 'Clients'
+'Command %command% failed. Diagnostic information follows: %output%': 'Command %command% failed. Diagnostic information follows: %output%'
+'Command %command% succeeded with output: %output%': 'Command %command% succeeded with output: %output%'
+'Command was unable to send the notification message: %exception%': 'Command was unable to send the notification message: %exception%'
+'Comment': 'Comment'
+'Config': 'Config'
+'Confirm new password': 'Confirm new password'
+'Currently not used': 'Currently not used'
+'Daily': 'Daily'
+'Day of month:': 'Day of month:'
+'Day of year:': 'Day of year:'
+'Delete client %clientid%, job %jobid%': 'Delete client %clientid%, job %jobid%'
+'Delete script %scriptname%': 'Delete script %scriptname%'
+'Delete': 'Delete'
+'Description': 'Description'
+'Directory': 'Directory'
+'Disk usage': 'Disk usage'
+'Documentation will be available soon': 'Documentation will be available soon'
+'Download as .tgz': 'Download as .tgz'
+'Download': 'Download'
+'Edit client': 'Edit client'
+'Edit Job': 'Edit Job'
+'Edit policy': 'Edit policy'
+'Edit script': 'Edit script'
+'Edit User': 'Edit user'
+'Edit': 'Edit'
+'Email': 'Email'
+'Error closing config file %filename%.': 'Error closing config file %filename%.'
+'Error log for backup from job %joburl%': 'Error log for backup from job %joburl%'
+'Error opening config file %filename%. Aborting backup.': 'Error opening config file %filename%. Aborting backup.'
+'Error saving parameter "%param%"': 'Error saving parameter "%param%"'
+'Error unlinking config file %filename%.': 'Error unlinking config file %filename%.'
+'Error updating authorized_keys file (%filename%)': 'Error updating authorized_keys file (%filename%)'
+'Error writing to config file %filename%. Aborting backup.': 'Error writing to config file %filename%. Aborting backup.'
+'Errors and up': 'Errors and up'
+'Exclude': 'Exclude'
+'File': 'File'
+'Five years': 'Five years'
+'Four years': 'Four years'
+'Friday': 'Friday'
+'Help': 'Help'
+'Home': 'Home'
+'Host': 'Host'
+'Hourly': 'Hourly'
+'Id': 'Id'
+'Inactive': 'Inactive'
+'Include': 'Include'
+'Invalid time specified.': 'Invalid time specified.'
+'Is active': 'Is active'
+'Job %jobid% has no policy': 'Job %jobid% has no policy'
+'Job %name% as post script': 'Job %name% as post script'
+'Job %name% as pre script': 'Job %name% as pre script'
+'Job execution requested successfully': 'Job execution requested successfully'
+'Jobs prioritized': 'Jobs prioritized'
+'Jobs reordered': 'Jobs reordered'
+'Jobs': 'Jobs'
+'Key file updated. The update should be effective in less than 2 minutes.': 'Key file updated. The update should be effective in less than 2 minutes.'
+'Key': 'Key'
+'language_en': English
+'language_es': Español
+'language_eu': Euskara
+'Last log entry': 'Last log entry'
+'Level': 'Level'
+'Link': 'Link'
+'Login': 'Login'
+'Logout': 'Logout'
+'Logs': 'Logs'
+'Mailer host': 'Mailer host'
+'Mailer password': 'Mailer password'
+'Mailer transpor': 'Mailer transpor'
+'Mailer user': 'Mailer user'
+'Manage backups location': 'Manage backups location'
+'Manage parameters': 'Manage parameters'
+'Message': 'Message'
+'Missing job.': 'Missing job.'
+'Modification date': 'Modification date'
+'Monday': 'Monday'
+'Monthly': 'Monthly'
+'MySQL DB name': 'MySQL DB name'
+'MySQL host': 'MySQL host'
+'MySQL password': 'MySQL password'
+'MySQL port': 'MySQL port'
+'MySQL user': 'MySQL user'
+'Name': 'Name'
+'Never': 'Never'
+'New password': 'New password'
+'New': 'New'
+'No keys defined': 'No keys defined'
+'No script': 'No script'
+'No such job.': 'No such job.'
+'None': 'None'
+'Nothing to run.': 'Nothing to run.'
+'Notices and up': 'Notices and up'
+'Notify only': 'Notify only'
+'Object': 'Object'
+'Old password': 'Old password'
+'One day': 'One day'
+'One week': 'One week'
+'Owner': 'Owner'
+'Parameters updated': 'Parameters updated'
+'Password changed': 'Password changed'
+'Password': 'Password'
+'Password:': 'Password:'
+'Passwords do not match': 'Passwords do not match'
+'Path not found:': 'Path not found: '
+'Path': 'Path'
+'Policies': 'Policies'
+'Policy %policyid% has no active retains': 'Policy %policyid% has no active retains'
+'Policy': 'Policy'
+'Post script': 'Post script'
+'Pre script': 'Pre script'
+'Public key generation requested': 'Public key generation requested'
+'Public key': 'Public key'
+'Quota warning level': 'Quota warning level'
+'Quota': 'Quota'
+'Really delete client %name%? This will remove all related jobs and backups': 'Really delete client %name%? This will remove all related jobs and backups.'
+'Really delete job %name%? This will remove all related backups': 'Really delete job %name%? This will remove all related backups.'
+'Really delete policy %name%?': 'Really delete policy %name%?'
+'Really delete script %name%?': 'Really delete script %name%?'
+'Records per page': 'Records per page'
+'Removing the policy %name% failed. Check that it is not in use.': 'Removing the policy %name% failed. Check that it is not in use.'
+'Removing the script %name% failed. Check that it is not in use.': 'Removing the script %name% failed. Check that it is not in use.'
+'Repository backup script': 'Repository backup script'
+'Run now': 'Run now'
+'Running %command%': 'Running %command%'
+'Saturday': 'Saturday'
+'Save client %clientid%': 'Save client %clientid%'
+'Save': 'Save'
+'Saved': 'Saved'
+'Scripts': 'Scripts'
+'Send notices to': 'Send notices to'
+'Set Parameter %paramname%': 'Set Parameter %paramname%'
+'Show home page': 'Show home page'
+'Show Logs': 'Show Logs'
+'Show': 'Show'
+'Six months': 'Six months'
+'Sort jobs': 'Sort jobs'
+'Source': 'Source'
+'Status': 'Status'
+'Sunday': 'Sunday'
+'Sync first': 'Sync first'
+'The number of copies to make during the day': 'The number of copies to make during the day'
+'There are no jobs': 'There are no jobs'
+'Three weeks': 'Three weeks'
+'Three years': 'Three years'
+'Thursday': 'Thursday'
+'Time': 'Time'
+'TODO': 'TODO'
+'Tuesday': 'Tuesday'
+'Two weeks': 'Two weeks'
+'Two years': 'Two years'
+'Unable to delete client: %extrainfo%': 'Unable to delete client: %extrainfo%'
+'Unable to delete job: %extrainfo%': 'Unable to delete job: %extrainfo%'
+'Unable to find Client entity': 'Unable to find Client entity:'
+'Unable to find Job entity:': 'Unable to find Job entity: '
+'Unable to find public key:': 'Unable to find public key:'
+'Unable to save your changes: %extrainfo%': 'Unable to save your changes: %extrainfo%'
+'Updating key file %keys%': 'Updating key file %keys%'
+'Upload dir': 'Upload dir'
+'Upload post script': 'Upload post script'
+'Upload pre script': 'Upload pre script'
+'Uploading a script is mandatory for script creation.': 'Uploading a script is mandatory for script creation.'
+'Url': 'Url'
+'Use local permissions': 'Use local permissions'
+'Used by': 'Used by'
+'User %username% logged in.': 'User %username% logged in.'
+'User': 'User'
+'Username': 'Username'
+'Username:': 'Username:'
+'Users': 'Users'
+'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise': 'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise'
+'Warnings and up': 'Warnings and up'
+'Wednesday': 'Wednesday'
+'Weekly': 'Weekly'
+'Welcome to the backup server configuration application.': 'Welcome to the backup server configuration application.'
+'Wrong old password': 'Wrong old password'
+'Yearly': 'Yearly'
+'Yes': 'Yes'
+policy_help: |
+ <h4>Name</h4>
+ This is the identifier for the policy. It will show up in lists and combo boxes. The name must be unique among all policies, the application will complain if you try to use a name which is already in use.
+ <h4>Description</h4>
+ Free text to describe the policy. Put here whatever you might find useful.
+ <h4>Exclude and include</h4>
+ The application interprets each line of the exclude field as an exclude pattern and each line of the include field as an include pattern. By using these fields intelligently you can easily pick and choose which files to include in the snapshot and which files to ignore. The two field interact in the following way for each file and directory in the snapshot:
+ <ol>
+  <li>If the file or directory matches a line in the include field, then the application includes this file. </li>
+  <li>If the file or directory matches a line in the exclude field, then the application ignores this file and it will NOT be backup up. </li>
+  <li>If the file or directory matches nothing the file is included in the backup.</li>
+ </ol>
+ As you can see the application backs up all files by default, excluding only those which match an exclude pattern and do NOT match any include pattern.
+ Notice that each job has each own include and exclude definitions. The ones defined in the job take precedence over the ones defined in the policy.
+ <h4>Sync first</h4>
+ When sync_first is enabled, all sync behaviour happens during an additional sync step. Even hourly calls only rotate the directories, without even connecting to the client. This ensures that the snapshots are consistent with the cost of an additional snapshot used only for syncing.
+ <h4>Hourly</h4>
+ Snapshots made during the day.
+ <h4>Daily</h4>
+ Snapshots once a every selected day at the given time.
+ <h4>Weekly</h4>
+ Snapshots once a week.
+ <h4>Monthly</h4>
+ Snapshots once a month.
+ <h4>Monthly</h4>
+ Snapshots once a year.
+client_help: |
+ <h4>Name</h4>
+ This is the identifier for the client. It will show up in lists and combo boxes. The name must be unique among all clients, the application will complain if you try to use a name which is already in use.
+ <h4>Url</h4>
+ This is connection string for the client. The application will use this value together with the job's path as the full url for the job. Typical values for this field are:
+ <ul>
+   <li>It can be empty. This is useful when the data we want to backup is mapped in the local file system.</li>
+   <li><i>user@domain.name</i> will connect via ssh to the <i>domain.name</i> machine using <i>user</i> as user for the connection.</li>
+   <li><i>user@domain.name:</i> Notice the colon. Same as above but instead of using ssh connections it will connect to the remote rsync server.</li>
+ </ul>
+ <h4>Quota</h4>
+ The amount of disk space in KB this client is allowed to use. -1 means "no limit". When the configured threshold is reached (80% by default) the application broadcasts a warning to the notification recipients specified in each job. The application discards backup jobs with an error if the disk usage is higher than the quota.
+ <h4>Disk usage</h4>
+ The currently used disk space by this client.
+ <h4>Description</h4>
+ Free text to describe the client. Put here whatever you might find useful.
+ <h4>Is active</h4>
+ If this check box is not marked, then no snapshots will be taken.
+ <h4>Pre and post scripts</h4>
+ Scripts to run before and after any job belonging to this clients. Think of opening VPN connections, setting up shared folders, etc. If multiple pre or post scripts are selected the order of execution is unspecified.
+client_job_help: |
+ <h4>Jobs</h4>
+ You can edit the most important parameters of a job belonging to this client right here. Don't forget to save your changes after doing the modifications.
+job_help: |
+ <h4>Name</h4>
+ This is the identifier for the job. It will show up in lists and combo boxes. The name must be unique among all jobs, the application will complain if you try to use a name which is already in use.
+ <h4>Path</h4>
+ The path or the name of the rsync resource in the client.
+ <h4>Disk usage</h4>
+ The currently used disk space by this job.
+ <h4>Description</h4>
+ Free text to describe the job. Put here whatever you might find useful.
+ <h4>Is active</h4>
+ If this check box is not marked, then no snapshots will be taken.
+ <h4>Owner</h4>
+ By default the user who created the job is the owner and the application will notify him of any problems (see send notices to and notify only). Only admin users can change the owner.
+ <h4>Send notices to</h4>
+ You can ask the application to notify one or several of the following people (by email) of any events. The application decides which events to notify based on the notify only settings. If you choose to notify an arbitrary email you will have to fill in that email address.
+ <h4>Notify only</h4>
+ In order to keep the message flow to a minimum you can have the application notify you only of events over a given priority threshold.
+ <h4>Pre and post scripts</h4>
+ Scripts to run before and after any job belonging to this jobs. Think of opening VPN connections, setting up shared folders, etc. If multiple pre or post scripts are selected the order of execution is unspecified.
+ <h4>Policy</h4>
+ Select the policy for this job. The policy defines when to take snapshots and how many to store, among other things. If you leave this field empty the application will take no snapshot whatsoever for this job.
+ <h4>Use local permissions</h4>
+ Rsnapshot makes an effort to keep permissions exactly as in the source files. This might cause some problems in Windows, so if you happen to have permission issues with windows jobs try setting this on. It might also make the backup up files unreadable for the web server.
+ <h4>Exclude and include</h4>
+ The application interprets each line of the exclude field as an exclude pattern and each line of the include field as an include pattern. By using these fields intelligently you can easily pick and choose which files to include in the snapshot and which files to ignore. The two field interact in the following way for each file and directory in the snapshot:
+ <ol>
+  <li>If the file or directory matches a line in the include field, then the application includes this file. </li>
+  <li>If the file or directory matches a line in the exclude field, then the application ignores this file and it will NOT be backup up. </li>
+  <li>If the file or directory matches nothing the file is included in the backup.</li>
+ </ol>
+ As you can see the application backs up all files by default, excluding only those which match an exclude pattern and do NOT match any include pattern.
+ If and only if the include field is empty the application uses the include directives defined in the selected policy. The same can be said for the exclude field.
+user_help: |
+ <h4>Name</h4>
+ This is the identifier for the user. It will show up in lists and combo boxes. The name must be unique among all users, the application will complain if you try to use a name which is already in use.
+ <h4>Password</h4>
+ You can't read the password in this field, you can only use it to change it. If you put anything but the empty string in this field and save the password will be updated.
+ <h4>Email</h4>
+ The email is very important. All the notifications for the user will be sent to the email specified here.
+ <h4>Is active</h4>
+ If this check box is not marked the user will not be able to log in.
+params_help: |
+ <h4>MySQL configuration</h4>
+ This parameters configure the connection to the DB. Be careful, if mess up with them the application will stop working.
+ <h4>Mailer configuration</h4>
+ This parameters configure the how the application sends emails. Be careful, if mess up with them the application will not be able to send notifications. <a href="http://symfony.com/doc/current/cookbook/email/email.html">The documentation from the Symfony project</a> might be helpful.
+ <h4>Upload dir</h4>
+ The application stores all the pre and post scripts in this directory. It has to be writable for the user running the web server.
+ <h4>Backups dir</h4>
+ The application stores all the snapshots in this in this directory. It has to be writable for the elkarbackup user.
+ <h4>Remove logs older than</h4>
+ The application will periodically prune the log registry so that it doesn't get too big. Any record older than the value specified here will be removed.
+ <h4>Quota warning level</h4>
+ When the disk space used by a client exceeds this percentage with respect to the quota send a warning message.
+ <h4>Records per page</h4>
+ Number of lines to show in pagination.
+backupscriptconfig_help: |
+ <h4>Authorized keys</h4>
+ Adding your ssh public key to the applications authorized keys is required to make backups of the repository.
+managebackups_help: |
+ <h4>Host</h4>
+ The host name or IP address of the NFS server. Leave empty for local file systems.
+ <p>This application depends on autofs to mount the remote file systems. If autofs is not configured as expected this field will not be editable.
+ <h4>Directory</h4>
+ The full path in the local file system or the name of the NFS export. In any case it must start with '/'.
+script_help: |
+ <h4>About the scripts</h4>
+ The application invoques the script using the user for backups. The application sets the following enviroment variables before running any of the scripts:
+ <ul>
+  <li>ELKARBACKUP_LEVEL:  possible values are JOB or CLIENT</li>
+  <li>ELKARBACKUP_EVENT:  possible values are PRE or POST</li>
+  <li>ELKARBACKUP_URL:    the value is theh full URL of the job or client</li>
+  <li>ELKARBACKUP_URL:    the value is theh full URL of the job or client</li>
+  <li>ELKARBACKUP_ID:     the numeric job id or client id </li>
+  <li>ELKARBACKUP_PATH:   the full path of the snapshot root </li>
+  <li>ELKARBACKUP_STATUS: The output status of rsnapshot for post job scripts, always 0 otherwise</li>
+ </ul>
+ If any pre client script returns an exits status other than 0 the application aborts the process and prevents jobs of the client from running. On the other hand, the application ignores the exist status of the pre job scripts.
+ <h4>Name</h4>
+ This is the identifier for the script. It will show up in lists and combo boxes. The name must be unique among all scripts, the application will complain if you try to use a name which is already in use.
+ <h4>Description</h4>
+ Free text to describe the script. Put here whatever you might find useful.
+ <h4>File</h4>
+ Browse and select the script to upload.
+ <h4>Runs as before client script</h4>
+ Check this field if the script is designed to run when opening the client.
+ <h4>Runs as after client script</h4>
+ Check this field if the script is designed to run when closing the client.
+ <h4>Runs as before job script</h4>
+ Check this field if the script is designed to run when opening the job.
+ <h4>Runs as after job script</h4>
+ Check this field if the script is designed to run when closing the job.

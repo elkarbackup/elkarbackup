@@ -4,26 +4,26 @@ set -e
 # Source debconf library.
 . /usr/share/debconf/confmodule
 
-db_get tknikabackups/dbhost
+db_get elkarbackup/dbhost
 dbhost="$RET"
-db_get tknikabackups/dbname
+db_get elkarbackup/dbname
 dbname="$RET"
-db_get tknikabackups/dbusername
+db_get elkarbackup/dbusername
 dbusername="$RET"
-db_get tknikabackups/dbuserpassword
+db_get elkarbackup/dbuserpassword
 dbuserpassword="$RET"
 
 if ! mysql -u"$dbusername" -p"$dbuserpassword" -h"$dbhost" "$dbname" </dev/null
 then
-    db_input high tknikabackups/dbadminname
-    db_input high tknikabackups/dbadminpassword
+    db_input high elkarbackup/dbadminname
+    db_input high elkarbackup/dbadminpassword
     db_go
-    db_get tknikabackups/dbadminname
+    db_get elkarbackup/dbadminname
     dbadminusername="$RET"
-    db_reset tknikabackups/dbadminname
-    db_get tknikabackups/dbadminpassword
+    db_reset elkarbackup/dbadminname
+    db_get elkarbackup/dbadminpassword
     dbadminpassword="$RET"
-    db_reset tknikabackups/dbadminpassword
+    db_reset elkarbackup/dbadminpassword
     echo "Attempting to create DB $dbname and user $dbusername in $dbhost"
     echo 'Create database'
     echo "CREATE DATABASE IF NOT EXISTS $dbname DEFAULT CHARACTER SET utf8;" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost"
@@ -38,72 +38,72 @@ then
     echo "CREATE USER $user IDENTIFIED BY '$dbuserpassword';" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost" || true
     echo "GRANT ALL ON $dbname.* TO $user;" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost" || true
     echo 'Configure parameters'
-    sed -i "s#database_host:.*#database_host: $dbhost#"                 /etc/tknikabackups/parameters.yml
-    sed -i "s#database_name:.*#database_name: $dbname#"                 /etc/tknikabackups/parameters.yml
-    sed -i "s#database_user:.*#database_user: $dbusername#"             /etc/tknikabackups/parameters.yml
-    sed -i "s#database_password:.*#database_password: $dbuserpassword#" /etc/tknikabackups/parameters.yml
+    sed -i "s#database_host:.*#database_host: $dbhost#"                 /etc/elkarbackup/parameters.yml
+    sed -i "s#database_name:.*#database_name: $dbname#"                 /etc/elkarbackup/parameters.yml
+    sed -i "s#database_user:.*#database_user: $dbusername#"             /etc/elkarbackup/parameters.yml
+    sed -i "s#database_password:.*#database_password: $dbuserpassword#" /etc/elkarbackup/parameters.yml
 else
     echo DB seems to be ready
 fi
 echo Adding missing parameters as required
-if test "x`grep warning_load_level /etc/tknikabackups/parameters.yml`" = x
+if test "x`grep warning_load_level /etc/elkarbackup/parameters.yml`" = x
 then
     echo "    Add warning_load_level"
-    echo                               >> /etc/tknikabackups/parameters.yml
-    echo "    warning_load_level: 0.8" >> /etc/tknikabackups/parameters.yml
+    echo                               >> /etc/elkarbackup/parameters.yml
+    echo "    warning_load_level: 0.8" >> /etc/elkarbackup/parameters.yml
 fi
-if test "x`grep pagination_lines_per_page /etc/tknikabackups/parameters.yml`" = x
+if test "x`grep pagination_lines_per_page /etc/elkarbackup/parameters.yml`" = x
 then
     echo "    Add pagination_lines_per_page"
-    echo                                     >> /etc/tknikabackups/parameters.yml
-    echo "    pagination_lines_per_page: 20" >> /etc/tknikabackups/parameters.yml
+    echo                                     >> /etc/elkarbackup/parameters.yml
+    echo "    pagination_lines_per_page: 20" >> /etc/elkarbackup/parameters.yml
 fi
 echo Update DB
-php /usr/share/tknikabackups/app/console doctrine:migrations:migrate --no-interaction || true
+php /usr/share/elkarbackup/app/console doctrine:migrations:migrate --no-interaction || true
 echo Create root user
-php /usr/share/tknikabackups/app/console tknikabackups:create_admin || true
+php /usr/share/elkarbackup/app/console elkarbackup:create_admin || true
 echo Clean cache
-php /usr/share/tknikabackups/app/console cache:clear || true
+php /usr/share/elkarbackup/app/console cache:clear || true
 echo Invalidate sessions
-rm -rf /var/lib/tknikabackups/sessions/*
+rm -rf /var/lib/elkarbackup/sessions/*
 
-db_get tknikabackups/backupsusername
+db_get elkarbackup/backupsusername
 username="$RET"
-sed -i "s/www-data/$username/" /etc/cron.d/tknikabackups
+sed -i "s/www-data/$username/" /etc/cron.d/elkarbackup
 if test "x$username" != xwww-data -a "x$username" != x
 then
     if test x`grep $username /etc/passwd` = x
     then
-        adduser --system --home /var/lib/tknikabackups --shell /bin/bash --group $username
+        adduser --system --home /var/lib/elkarbackup --shell /bin/bash --group $username
     fi
-    if [ ! -f /var/lib/tknikabackups/.ssh/id_rsa ]
+    if [ ! -f /var/lib/elkarbackup/.ssh/id_rsa ]
     then
-        mkdir /var/lib/tknikabackups/.ssh || true
-        ssh-keygen -t rsa -N '' -C 'Automatically generated key for tknikabackups.' -f /var/lib/tknikabackups/.ssh/id_rsa
-        sed -i "s#public_key:.*#public_key: /var/lib/tknikabackups/.ssh/id_rsa.pub#" /etc/tknikabackups/parameters.yml
-        chown -R $username.$username /var/lib/tknikabackups
+        mkdir /var/lib/elkarbackup/.ssh || true
+        ssh-keygen -t rsa -N '' -C 'Automatically generated key for elkarbackup.' -f /var/lib/elkarbackup/.ssh/id_rsa
+        sed -i "s#public_key:.*#public_key: /var/lib/elkarbackup/.ssh/id_rsa.pub#" /etc/elkarbackup/parameters.yml
+        chown -R $username.$username /var/lib/elkarbackup
     fi
     # set rwx permissions for www-data and the backup user in the cache and log directories
     # as described in http://symfony.com/doc/current/book/installation.html#configuration-and-setup
-    setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/cache/tknikabackups
-    setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/cache/tknikabackups
-    setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/log/tknikabackups
-    setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/log/tknikabackups
+    setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/cache/elkarbackup
+    setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/cache/elkarbackup
+    setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/log/elkarbackup
+    setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/log/elkarbackup
 fi
-chown -R $username.$username /var/cache/tknikabackups /var/log/tknikabackups /var/spool/tknikabackups
-chown -R www-data.www-data /var/lib/tknikabackups/sessions /etc/tknikabackups/parameters.yml /var/spool/tknikabackups/uploads
+chown -R $username.$username /var/cache/elkarbackup /var/log/elkarbackup /var/spool/elkarbackup
+chown -R www-data.www-data /var/lib/elkarbackup/sessions /etc/elkarbackup/parameters.yml /var/spool/elkarbackup/uploads
 
-db_get tknikabackups/uploadsdir
+db_get elkarbackup/uploadsdir
 uploadsdir="$RET"
-olduploadsdir=`cat /etc/tknikabackups/parameters.yml|grep upload_dir|sed 's/.*: *//'`
+olduploadsdir=`cat /etc/elkarbackup/parameters.yml|grep upload_dir|sed 's/.*: *//'`
 mkdir -p "$uploadsdir" || true
 mv "$olduploadsdir"/* "$uploadsdir" || true
 chown -R www-data.www-data "$uploadsdir"
-sed -i "s#upload_dir:.*#upload_dir: $uploadsdir#" /etc/tknikabackups/parameters.yml
-sed -i -e "s#tknikabackupsuser#$username#g" -e "s#\s*Cmnd_Alias\s*TKNIKABACKUPS_SCRIPTS.*#Cmnd_Alias TKNIKABACKUPS_SCRIPTS=$uploadsdir/*#" /etc/sudoers.d/tknikabackups
-chmod 0440 /etc/sudoers.d/tknikabackups
+sed -i "s#upload_dir:.*#upload_dir: $uploadsdir#" /etc/elkarbackup/parameters.yml
+sed -i -e "s#elkarbackupuser#$username#g" -e "s#\s*Cmnd_Alias\s*ELKARBACKUP_SCRIPTS.*#Cmnd_Alias ELKARBACKUP_SCRIPTS=$uploadsdir/*#" /etc/sudoers.d/elkarbackup
+chmod 0440 /etc/sudoers.d/elkarbackup
 
-a2ensite tknikabackups
+a2ensite elkarbackup
 a2enmod  rewrite
 # reload apache
 if [ -f /etc/init.d/apache2 ]
