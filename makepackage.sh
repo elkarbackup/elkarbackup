@@ -36,7 +36,7 @@ sed -i '1c#!/bin/bash' .debian/usr/share/elkarbackup/vendor/swiftmailer/swiftmai
 # ensure the packaged versions uses only the release environment
 rm .debian/usr/share/elkarbackup/web/app_dev.php
 sed -i 's/app_dev/app/' .debian/usr/share/elkarbackup/web/.htaccess
-# setup cache, session and log directoies in var
+# setup cache, session and log directories in var
 mkdir -p .debian/var/cache/elkarbackup
 mkdir -p .debian/var/log/elkarbackup
 mkdir -p .debian/var/lib/elkarbackup/sessions

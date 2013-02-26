@@ -1,3 +1,3 @@
-Cmnd_Alias TKNIKABACKUPS_SCRIPTS=/usr/share/tknikabackups/uploaded/*
-Defaults!TKNIKABACKUPS_SCRIPTS env_keep += TKNIKABACKUPS_LEVEL, env_keep += TKNIKABACKUPS_EVENT, env_keep += TKNIKABACKUPS_URL, env_keep += TKNIKABACKUPS_ID, env_keep += TKNIKABACKUPS_PATH, env_keep += TKNIKABACKUPS_STATUS
-tknikabackupsuser ALL = NOPASSWD: TKNIKABACKUPS_SCRIPTS
+Cmnd_Alias ELKARBACKUP_SCRIPTS=/usr/share/tknikabackups/uploaded/*
+Defaults!ELKARBACKUP_SCRIPTS env_keep += ELKARBACKUP_LEVEL, env_keep += ELKARBACKUP_EVENT, env_keep += ELKARBACKUP_URL, env_keep += ELKARBACKUP_ID, env_keep += ELKARBACKUP_PATH, env_keep += ELKARBACKUP_STATUS
+tknikabackupsuser ALL = NOPASSWD: ELKARBACKUP_SCRIPTS
