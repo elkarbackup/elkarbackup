@@ -483,6 +483,11 @@ class Script
 
     public function isUsed()
     {
-        return $this->getPreJobs()->count() != 0 || $this->getPostJobs()->count() != 0 || $this->getPreClients()->count() != 0 || $this->getPostClients()->count() != 0;
+        $postClients = $this->getPostClients();
+        $postJobs    = $this->getPostJobs();
+        $preClients  = $this->getPreClients();
+        $preJobs     = $this->getPreJobs();
+
+        return !empty($postClients) || !empty($postJobs) || !empty($preClients) || !empty($preJobs);
     }
 }

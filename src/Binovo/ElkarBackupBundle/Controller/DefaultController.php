@@ -424,21 +424,21 @@ class DefaultController extends Controller
         $this->getDoctrine()->getManager()->flush();
         $preCommand  = '';
         $postCommand = '';
-        if ($job->getPreScript() != null) {
-            $preCommand = sprintf('/usr/bin/env ELKARBACKUP_LEVEL="JOB" ELKARBACKUP_EVENT="PRE" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" sudo "%s" 2>&1',
-                                  $url,
-                                  $idJob,
-                                  $job->getSnapshotRoot(),
-                                  0,
-                                  $job->getPreScript()->getScriptPath('pre'));
+        foreach ($job->getPreScripts() as $script) {
+            $preCommand = $preCommand . "\n" . sprintf('/usr/bin/env ELKARBACKUP_LEVEL="JOB" ELKARBACKUP_EVENT="PRE" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" sudo "%s" 2>&1',
+                                                       $url,
+                                                       $idJob,
+                                                       $job->getSnapshotRoot(),
+                                                       0,
+                                                       $script->getScriptPath());
         }
-        if ($job->getPostScript() != null) {
-            $postCommand = sprintf('/usr/bin/env ELKARBACKUP_LEVEL="JOB" ELKARBACKUP_EVENT="POST" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" sudo "%s" 2>&1',
-                                  $url,
-                                  $idJob,
-                                  $job->getSnapshotRoot(),
-                                  0,
-                                  $job->getPostScript()->getScriptPath('post'));
+        foreach ($job->getPostScripts() as $script) {
+            $postCommand = $postCommand . "\n" . sprintf('/usr/bin/env ELKARBACKUP_LEVEL="JOB" ELKARBACKUP_EVENT="POST" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" sudo "%s" 2>&1',
+                                                       $url,
+                                                       $idJob,
+                                                       $job->getSnapshotRoot(),
+                                                       0,
+                                                       $script->getScriptPath());
         }
 
         return $this->render('BinovoElkarBackupBundle:Default:rsnapshotconfig.txt.twig',
