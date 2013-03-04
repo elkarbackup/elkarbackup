@@ -13,6 +13,9 @@
             </div>
 {% endfor %}
             {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
+            <div class="controls">
+                <a href="{{path('downloadScript', {id: form.vars.value.id}) }}">{% trans %}Download{% endtrans %}</a>
+            </div>
             {{ form_widget(form) }}
             <div class="control-group">
                 <label class="control-label" >

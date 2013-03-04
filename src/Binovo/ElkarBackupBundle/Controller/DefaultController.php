@@ -14,8 +14,8 @@ use Binovo\ElkarBackupBundle\Entity\Script;
 use Binovo\ElkarBackupBundle\Entity\User;
 use Binovo\ElkarBackupBundle\Form\Type\AuthorizedKeyType;
 use Binovo\ElkarBackupBundle\Form\Type\ClientType;
-use Binovo\ElkarBackupBundle\Form\Type\JobType;
 use Binovo\ElkarBackupBundle\Form\Type\JobForSortType;
+use Binovo\ElkarBackupBundle\Form\Type\JobType;
 use Binovo\ElkarBackupBundle\Form\Type\PolicyType;
 use Binovo\ElkarBackupBundle\Form\Type\ScriptType;
 use Binovo\ElkarBackupBundle\Form\Type\UserType;
@@ -25,6 +25,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\SecurityContext;
 
@@ -1244,6 +1245,33 @@ EOF;
         }
 
         return $this->redirect($this->generateUrl('showScripts'));
+    }
+
+    /**
+     * @Route("/script/{id}/download", name="downloadScript")
+     * @Method("GET")
+     * @Template()
+     */
+    public function downloadScriptAction(Request $request, $id)
+    {
+        $t = $this->get('translator');
+        $db = $this->getDoctrine();
+        $repository = $db->getRepository('BinovoElkarBackupBundle:Script');
+        $manager = $db->getManager();
+        $script = $repository->findOneById($id);
+        if (null == $script) {
+            throw $this->createNotFoundException($t->trans('Script "%id%" not found', array('%id%' => $id), 'BinovoElkarBackup'));
+        }
+        $this->info('Download script %scriptname%',
+                    array('%scriptname%' => $script->getName()),
+                    array('link' => $this->generateScriptRoute($id)));
+        $manager->flush();
+        $response = new Response();
+        $response->setContent(file_get_contents($script->getScriptPath()));
+        $response->headers->set('Content-Type', 'application/octet-stream');
+        $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $script->getName()));
+
+        return $response;
     }
 
     /**
