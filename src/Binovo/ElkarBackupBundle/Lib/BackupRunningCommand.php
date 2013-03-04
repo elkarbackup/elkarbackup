@@ -343,7 +343,6 @@ abstract class BackupRunningCommand extends LoggingCommand
                         }
                     }
                 }
-                echo "NEW_CLIENT last client scripts ready\n";
                 $client = $job->getClient();
                 $idClient = $client->getId();
                 $scripts  = $client->getPreScripts();
