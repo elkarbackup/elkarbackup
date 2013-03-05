@@ -1,4 +1,17 @@
 @echo off
-nssm install Elkarbackup cscript /nologo c:\Elkarbackup\snapshot.vbs /command:RunServer /port:11321 /allow:192.168.122.1/0 /volume:c:\ /symlink:c:\ElkarBackup\snapshot
-net start Elkarbackup
-pause
+SET RSYNC_CONF=%ProgramFiles%\ICW\rsyncd.conf
+>> "%RSYNC_CONF%" echo.
+>> "%RSYNC_CONF%" echo.
+>> "%RSYNC_CONF%" echo.
+>> "%RSYNC_CONF%" echo # Phony modules to trigger snapshot creation and mounting
+>> "%RSYNC_CONF%" echo [MakeSnapshotCMountB]
+>> "%RSYNC_CONF%" echo path = /cygdrive/c/ElkarBackup/token
+>> "%RSYNC_CONF%" echo read only = true
+>> "%RSYNC_CONF%" echo transfer logging = yes
+>> "%RSYNC_CONF%" echo pre-xfer exec = /cygdrive/c/ElkarBackup/MakeSnapshotCMountB.cmd
+>> "%RSYNC_CONF%" echo.
+>> "%RSYNC_CONF%" echo [DeleteSnapshotCUmountB]
+>> "%RSYNC_CONF%" echo path = /cygdrive/c/ElkarBackup/token
+>> "%RSYNC_CONF%" echo read only = true
+>> "%RSYNC_CONF%" echo transfer logging = yes
+>> "%RSYNC_CONF%" echo pre-xfer exec = /cygdrive/c/ElkarBackup/DeleteSnapshotCUmountB.cmd

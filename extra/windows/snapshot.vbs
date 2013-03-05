@@ -6,12 +6,25 @@ On Error Goto 0
 Const EXIT_SUCCESS = 0
 Const EXIT_ERROR   = 1
 
+Function MountVss(driveLetter, target)
+    Dim shell
+    Set shell = WScript.CreateObject("WScript.Shell")
+    shell.Run "cmd /c C:\ElkarBackup\vss """ & Mid(driveLetter, 1, 1) & ":""", 0, True
+    MountVss = shell.Run("cmd /c C:\ElkarBackup\vss """ & Mid(driveLetter, 1, 1) & ":"" """ & target & """", 0, True)
+End Function
+
+
 Function ReadFile(filename)
+    On Error Resume Next
     Const ForReading = 1
     Dim objFSO, objFile, arrFileLines(), i
     ReadFile = Array()
     Set objFSO = CreateObject("Scripting.FileSystemObject")
     Set objFile = objFSO.OpenTextFile(filename, ForReading)
+    If Err.Number <> 0 Then
+        Err.Clear
+        Exit Function
+    End If
     i = 0
     Do Until objFile.AtEndOfStream
         Redim Preserve arrFileLines(i)
@@ -30,7 +43,7 @@ Function SnapshotCreate(volume)
     strComputer = "."
     Set objWmiService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
     Set objShadowStorage = objWmiService.Get("Win32_ShadowCopy")
-    errResult = objShadowStorage.Create(volume, CONTEXT, strShadowId)
+    errResult = objShadowStorage.Create(Mid(volume, 1, 1) & ":\", CONTEXT, strShadowId)
     If errResult = 0 Then
         SnapshotCreate = strShadowId
     End If
@@ -178,7 +191,7 @@ Function ToJson(node)
 End Function
 
 Function Usage
-    WSCript.Echo "Usage: cscript snapshot.vbs /command:CreateSnapshot /volume:<volume> [/symlink:<symlink> [/delete:yes]]"
+    WSCript.Echo "Usage: cscript snapshot.vbs /command:CreateSnapshot /volume:<volume> [/symlink:<symlink> [/delete:yes]] [/mount:<drive_letter>]"
     WSCript.Echo "Usage: cscript snapshot.vbs /command:DeleteSnapshot /snapshot:<snapshotid|filename>"
     WSCript.Echo "Usage: cscript snapshot.vbs /command:DeleteAllSnapshot"
     WSCript.Echo "Usage: cscript snapshot.vbs /command:ListSnapshots"
@@ -186,6 +199,7 @@ Function Usage
 End Function
 
 Function Main
+    On Error Resume Next
     Dim params, snapshotId, ids
     Set params = Wscript.Arguments.Named
     Select Case LCase(params("command"))
@@ -207,7 +221,7 @@ Function Main
                         Wscript.Quit EXIT_ERROR
                     End If
                     If 0 <> SymlinkDelete(params("symlink")) Then
-                        Wscript.Echo "Symlink deletion Error"
+                        Wscript.Echo "Symlink deletion error"
                         Wscript.Quit EXIT_ERROR
                     End If
                     If 0 <> SymlinkCreate(params("symlink"), SnapshotGetDeviceObject(snapshotId)) Then
@@ -216,14 +230,20 @@ Function Main
                     End If
                 End If
             End If
+            If params("mount") <> "" Then
+                If 0 <> MountVss(params("mount"), SnapshotGetDeviceObject(snapshotId)) Then
+                    Wscript.Echo "VSS mount Error"
+                    Wscript.Quit EXIT_ERROR
+                End If
+            End If
         Case "deletesnapshot"
             If params("snapshot") = "" Then
                 usage
                 Wscript.Quit EXIT_ERROR
             End If
-            ids = ReadFile(params("Snapshot"))
+            ids = ReadFile(params("snapshot"))
             If UBound(ids) = -1 Then
-                ids = Array(params("Snapshot"))
+                ids = Array(params("snapshot"))
             End If
             For Each snapshotId in ids
                 If 0 <> SnapshotDelete(snapshotId) Then
