@@ -3,6 +3,12 @@ Description
 
 This directory contains a Windows service which listens for snapshot requests in a TCP port (11321 by default) and makes snapshots on demand.
 
+VSS
+===
+
+http://www.maresware.com/
+
+
 NSSM - the Non-Sucking Service Manager
 ======================================
 
