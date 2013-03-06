@@ -488,6 +488,9 @@ class Script
         $preClients  = $this->getPreClients();
         $preJobs     = $this->getPreJobs();
 
-        return !empty($postClients) || !empty($postJobs) || !empty($preClients) || !empty($preJobs);
+        return !empty($postClients) && $postClients->count() != 0 ||
+               !empty($postJobs)    && $postJobs->count()    != 0 ||
+               !empty($preClients)  && $preClients->count()  != 0 ||
+               !empty($preJobs)     && $preJobs->count()     != 0;
     }
 }
