@@ -1,8 +1,7 @@
-NameVirtualHost *:80
 <VirtualHost elkarbackup:80>
-	ServerAdmin webmaster@localhost
+    ServerAdmin webmaster@localhost
 
-	DocumentRoot /usr/share/elkarbackup/web
+    DocumentRoot /usr/share/elkarbackup/web
 
     <directory /usr/share/elkarbackup/web>
         RewriteEngine On
@@ -11,11 +10,11 @@ NameVirtualHost *:80
         AllowOverride None
     </directory>
 
-	ErrorLog ${APACHE_LOG_DIR}/elkarbackup.error.log
+    ErrorLog ${APACHE_LOG_DIR}/elkarbackup.error.log
 
-	# Possible values include: debug, info, notice, warn, error, crit,
-	# alert, emerg.
-	LogLevel warn
+    # Possible values include: debug, info, notice, warn, error, crit,
+    # alert, emerg.
+    LogLevel warn
 
-	CustomLog ${APACHE_LOG_DIR}/elkarbackup.access.log combined
+    CustomLog ${APACHE_LOG_DIR}/elkarbackup.access.log combined
 </VirtualHost>

@@ -55,6 +55,7 @@ gzip -f --best .debian/usr/share/doc/elkarbackup/changelog.Debian
 find .debian -type d | xargs chmod 755
 # set initial values for parametres
 sed -i 's#tmp_dir:.*#tmp_dir: /tmp#'                                 .debian/etc/elkarbackup/parameters.yml
+sed -i 's#database_name: tknikabackups#database_name: elkarbackup#'  .debian/etc/elkarbackup/parameters.yml
 sed -i 's#backup_dir:.*#backup_dir: /var/spool/elkarbackup/backups#' .debian/etc/elkarbackup/parameters.yml
 sed -i 's#upload_dir:.*#upload_dir: /var/spool/elkarbackup/uploads#' .debian/etc/elkarbackup/parameters.yml
 sed -i 's#mailer_transport:.*#mailer_transport: smtp#'               .debian/etc/elkarbackup/parameters.yml
