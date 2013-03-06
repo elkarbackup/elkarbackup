@@ -374,6 +374,7 @@ class DefaultController extends Controller
      */
     public function runJobAction(Request $request, $idClient, $idJob)
     {
+        $t = $this->get('translator');
         $em = $this->getDoctrine()->getManager();
         $msg = new Message('DefaultController', 'TickCommand',
                            json_encode(array('command' => 'elkarbackup:run_job',
@@ -381,7 +382,7 @@ class DefaultController extends Controller
                                              'job'     => $idJob)));
         $em->persist($msg);
         $em->flush();
-        $response = new Response("Job execution requested successfully");
+        $response = new Response($t->trans('Job execution requested successfully', array(), 'BinovoElkarBackup'));
         $response->headers->set('Content-Type', 'text/plain');
 
         return $response;
