@@ -101,42 +101,6 @@ Function SnapshotList
     Next
 End Function
 
-Function SnapshotRunServer(port, allow, volume, symlink)
-    Dim oShell, nc, textLine, snapshotId
-    Set oShell = WScript.CreateObject("WScript.Shell")
-    Do While True
-        Wscript.Echo "listening"
-        Set nc = oShell.Exec("c:\Elkarbackup\ncat -l --max-conns 1 -p " & port & " --allow " & allow)
-        textLine = nc.StdOut.ReadLine
-        Wscript.Echo textLine
-        Select Case textLine
-            Case "SNAPSHOT"
-                snapshotId = SnapshotCreate(volume)
-                If snapshotId <> "" Then
-                    If 0 = SymlinkCreate(symlink, SnapshotGetDeviceObject(snapshotId)) Then
-                        nc.StdIn.WriteLine "OK: " & snapshotId
-                    Else
-                        If 0 <> SymlinkDelete(symlink) Then
-                            Wscript.Echo "Symlink deletion Error"
-                            nc.StdIn.WriteLine "error: Symlink deletion error"
-                        ElseIf 0 = SymlinkCreate(symlink, SnapshotGetDeviceObject(snapshotId)) Then
-                            nc.StdIn.WriteLine "OK: " & snapshotId
-                        Else
-                            Wscript.Echo "Symlink creation Error"
-                            nc.StdIn.WriteLine "error: Symlink creation error"
-                        End If
-                    End If
-                Else
-                    Wscript.Echo "Snapshot creation error."
-                    nc.StdIn.WriteLine "error: Snapshot creation error"
-                End If
-        End Select
-        nc.StdIn.Close
-        nc.StdOut.Close
-        nc.Terminate
-    Loop
-End Function
-
 Function SymlinkCreate(link, target)
     Dim shell
     Set shell = WScript.CreateObject("WScript.Shell")
@@ -149,53 +113,11 @@ Function SymlinkDelete(link)
     SymlinkDelete = shell.Run("cmd /c rmdir """ & link & """", 0, True)
 End Function
 
-Function ToJson(node)
-    Dim keys, values, i, item
-    ToJson = ""
-    If TypeName(node) = "Integer" Or TypeName(node) = "Double" Or TypeName(node) = "Long" Then
-        ToJson = ToJson & CLng(node)
-    ElseIf TypeName(node) = "Boolean" Then
-        If node Then
-            ToJson = ToJson & "true"
-        Else
-            ToJson = ToJson & "false"
-        End If
-    ElseIf TypeName(node) = "String" Then
-        ToJson = ToJson & """" & node & """"
-    ElseIf TypeName(node) = "Variant()" Then
-        ToJson = ToJson & "["
-        If UBound(node) >= 0 Then
-            i = LBound(node)
-            ToJson = ToJson & ToJson(node(i))
-            i = i + 1
-            While i <= UBound(node)
-                ToJson = ToJson & "," & ToJson(node(i))
-                i = i + 1
-            Wend
-        End If
-        ToJson = ToJson & "]"
-    ElseIf TypeName(node) = "Dictionary" Then
-        keys = node.Keys
-        values = node.Items
-        ToJson = ToJson & "{"
-        If 0 <> node.Count Then
-            ToJson = ToJson & ToJson(CStr(keys(0))) & ":" & ToJson(values(0))
-            For i = 1 To node.Count - 1
-                ToJson = ToJson & "," & ToJson(CStr(keys(i))) & ":" & ToJson(values(i))
-            Next
-        End If
-        ToJson = ToJson & "}"
-    Else
-        ToJson = ToJson & """" & TypeName(node) & """"
-    End If
-End Function
-
 Function Usage
     WSCript.Echo "Usage: cscript snapshot.vbs /command:CreateSnapshot /volume:<volume> [/symlink:<symlink> [/delete:yes]] [/mount:<drive_letter>]"
     WSCript.Echo "Usage: cscript snapshot.vbs /command:DeleteSnapshot /snapshot:<snapshotid|filename>"
     WSCript.Echo "Usage: cscript snapshot.vbs /command:DeleteAllSnapshot"
     WSCript.Echo "Usage: cscript snapshot.vbs /command:ListSnapshots"
-    WSCript.Echo "Usage: cscript snapshot.vbs /command:RunServer /port:<port> /allow:<ip_or_host,ip_or_host,...> /volume:<volume> /symlink:<symlink>"
 End Function
 
 Function Main
@@ -255,12 +177,6 @@ Function Main
             SnapshotDeleteAll
         Case "listsnapshots"
             SnapshotList
-        Case "runserver"
-            If params("allow") = "" Or params("port") = "" Or params("volume") = "" Or params("symlink") = "" Then
-                Usage
-                Wscript.Quit EXIT_ERROR
-            End If
-            SnapshotRunServer params("port"), params("allow"), params("volume"), params("symlink")
         Case Else
             usage
             Wscript.Quit EXIT_ERROR
