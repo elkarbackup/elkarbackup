@@ -15,3 +15,14 @@ SET RSYNC_CONF=%ProgramFiles%\ICW\rsyncd.conf
 >> "%RSYNC_CONF%" echo read only = true
 >> "%RSYNC_CONF%" echo transfer logging = yes
 >> "%RSYNC_CONF%" echo pre-xfer exec = /cygdrive/c/ElkarBackup/DeleteSnapshotCUmountB.cmd
+>> "%RSYNC_CONF%" echo.
+>> "%RSYNC_CONF%" echo ### WARNING: the following module WILL NOT WORK as expected
+>> "%RSYNC_CONF%" echo ### the reason is that rsync tries to chdir to SomeDirectory before running the pre-xfer script. Since the B: unit does not exit it fails
+>> "%RSYNC_CONF%" echo ### [ShadowWithSnapshot]
+>> "%RSYNC_CONF%" echo ### path = /cygdrive/b/SomeDirectory
+>> "%RSYNC_CONF%" echo ### read only = true
+>> "%RSYNC_CONF%" echo ### transfer logging = yes
+>> "%RSYNC_CONF%" echo ### pre-xfer  exec = /cygdrive/c/ElkarBackup/MakeSnapshotCMountB.cmd
+>> "%RSYNC_CONF%" echo ### post-xfer exec = /cygdrive/c/ElkarBackup/DeleteSnapshotCUmountB.cmd
+echo Triggers to take snapshots of C:\ and mount them as B:\ created. Check the "%RSYNC_CONF%" file.
+pause
