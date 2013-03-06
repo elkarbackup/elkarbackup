@@ -1,3 +1,16 @@
+'Session': 'Saioa'
+'Remove logs older than': 'Hau baino zaharragoak diren log-ak ezabatu'
+'Currently not used': 'Gaur egun erabili gabe'
+'Edit script': 'Script-a editatu'
+'File': 'Fitxategia'
+'Browse': 'Arakatu'
+'Runs as before client script': 'Exekutatu bezero baten Pre-script moduan'
+'Runs as before job script': 'Exekutatu lan baten Pre-script moduan'
+'Runs as after client script': 'Exekutatu bezero baten Post-script moduan'
+'Runs as after job script': 'Exekutatu lan baten Post-script moduan'
+'Used by': 'Hemen erabiltzen da'
+'Scripts': 'Script-ak'
+'Sort jobs': 'Lanak ordenatu'
 'A month': 'Hilabete bat'
 'A year': 'Urte bat'
 'About': 'Honi buruz'
@@ -15,7 +28,7 @@
 'Back to client': 'Bezerora bueltatu'
 'Back to job': 'Lanera bueltatu'
 'Backup script': 'Backup script'
-'Backup server login': 'Backup server login'
+'Backup server login': 'Backup Zerbitzaria. Saioa hasi'
 'Backups dir': 'Backup karpeta'
 'Backups': 'Backupak'
 'Change password': 'Pasahitza aldatu'
@@ -88,7 +101,7 @@
 'Last log entry': 'Azken log sarrera'
 'Level': 'Maila'
 'Link': 'Esteka'
-'login': 'login'
+'login': 'Saioa hasi'
 'Logout': 'Saioa amaitu'
 'Logs': 'Logak'
 'Mailer host': 'Mailer host'
@@ -138,12 +151,13 @@
 'Public key': 'Gako publikoa'
 'Public key generation requested': 'Public key generation requested'
 'Quota': 'Kuota'
-'Quota warning level': 'Quota warning level'
-'Records per page': 'Records per page'
-'Repository backups script': 'Repository backups script'
+'Quota warning level': 'Kuota abisuen maila'
+'Records per page': 'Orrialdeko erregistro kopurua'
+'Repository backups script': 'Biltegiaren kopia egiteko script-a'
+'Repository backup script': 'Biltegiaren kopia egiteko script-a'
 'Run now': 'Exekutatu orain'
 'Running %command%': 'Running %command%'
-'Saturday': 'Saturday'
+'Saturday': 'Larunbata'
 'Save client %clientid%': 'Save client %clientid%'
 'Save': 'Gorde'
 'Saved': 'Gordeta'
@@ -161,10 +175,10 @@
 'There are no jobs': 'Ez dago lanik'
 'Three weeks': 'Hiru astea'
 'Three years': 'Hiru urte'
-'Thursday': 'Thursday'
+'Thursday': 'Osteguna'
 'Time': 'Time'
 'TODO': 'EGITEKE'
-'Tuesday': 'Tuesday'
+'Tuesday': 'Asteartea'
 'Two weeks': 'Bi aste'
 'Two years': 'Bi urte'
 'Unable to delete client: %extrainfo%': 'Unable to delete client: %extrainfo%'
@@ -186,41 +200,40 @@
 'Users': 'Erabiltzaileak'
 'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise': 'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise'
 'Warnings and up': 'Warnings and up'
-'Wednesday': 'Wednesday'
+'Wednesday': 'Asteazkena'
 'Weekly': 'Astero'
 'Welcome to the backup server configuration application.': 'Welcome to the backup server configuration application.'
 'Wrong old password': 'Wrong old password'
 'Yearly': 'Urtero'
 'Yes': 'Bai'
 policy_help: |
- <h4>Name</h4>
- This is the identifier for the policy. It will show up in lists and combo boxes. The name must be unique among all policies, the application will complain if you try to use a name which is already in use.
+ <h4>Izena</h4>
+ Politikaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Politika bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
  <h4>Azalpena</h4>
- Free text to describe the policy. Put here whatever you might find useful.
- <h4>Exclude and include</h4>
- The application interprets each line of the exclude field as an exclude pattern and each line of the include field as an include pattern. By using these fields intelligently you can easily pick and choose which files to include in the snapshot and which files to ignore. The two field interact in the following way for each file and directory in the snapshot:
+ Politika deskribatzeko testu librea. Sartu hemen zuretzat lagungarria izan daitekeen informazioa.
+ <h4>Baztertu eta sartu</h4>
+ Aplikazioak Baztertu eremuaren lerro bakoitza eredu moduan erabiltzen du fitxategiak baztertzerakoan, eta era berdinean Sartu eremuaren lerro bakoitza fitxategiak kopian sartzeko eredu moduan hartzen du. Eremu hauek ondo erabiliz kopian sartu eta baztertu nahi dituzun fitxategiak hautatu ditzakezu. Kopian parte hartzen duen karpeta eta fitxategi bakoitzarkin honela egin du lan:
  <ol>
-  <li>If the file or directory matches a line in the include field, then the application includes this file. </li>
-  <li>If the file or directory matches a line in the exclude field, then the application ignores this file and it will NOT be backup up. </li>
-  <li>If the file or directory matches nothing the file is included in the backup.</li>
+  <li>Karpetak edo fitxategiak bat egiten badute Sartu eremuan dagoen lerro batekin, orduan kopiatzen da. </li>
+  <li>Karpetak edo fitxategiak bat egiten badute Baztertu eremuan dagoen lerro batekin, orduan sistemak EZ DU fitxategia kopiatuko. </li>
+  <li>Karpetak edo fitxategiak ez badu bate egiten Sartu/Baztertu eremuetan dauden lerroekin, orduan kopiatzen da.</li>
  </ol>
- As you can see the application backs up all files by default, excluding only those which match an exclude pattern and do NOT match any include pattern.
- Notice that each job has each own include and exclude definitions. The ones defined in the job take precedence over the ones defined in the policy.
- <h4>Sync first</h4>
- When sync_first is enabled, all sync behaviour happens during an additional sync step. Even hourly calls only rotate the directories, without even connecting to the client. This ensures that the snapshots are consistent with the cost of an additional snapshot used only for syncing.
- <h4>Hourly</h4>
- Egunean zehar egindako snapshots-ak.
- <h4>Daily</h4>
- Snapshots once a every selected day at the given time.
- <h4>Weekly</h4>
- Snapshot-ak astean behin.
- <h4>Monthly</h4>
- Snapshots-ak hilean behin.
- <h4>Monthly</h4>
- Snapshots-ak urtean behin.
+ Ikusten duzun moduan, aplikazioaren konfigurazio lehenetsiaren arabera fitxategi eta karpeta guztiak kopiatuko dira, Baztertu eremuarekin bat egiten dutenak baztertuz, beti ere ez badute bat egiten Sartu eremuko ereduekin. Kontutan izan lan bakoitzak bere Sartu eta Baztertu definizioak dituela. Beti izango dute lehentasuna lanetan definitutako arauak.
+ <h4>Lehenengo sinkronizatu</h4>
+ Lehenengo sinkronizatu aukeratuta dagoenean, sinkronizazio lanak egiteko beste urrats bat egiten da. When sync_first is enabled, all sync behaviour happens during an additional sync step. Even hourly calls only rotate the directories, without even connecting to the client. This ensures that the snapshots are consistent with the cost of an additional snapshot used only for syncing.
+ <h4>Orduro</h4>
+ Egunean zehar egindako kopiak.
+ <h4>Egunero</h4>
+ Egunean behin eta aukeratutako orduan egiten diren kopiak.
+ <h4>Astero</h4>
+ Astean behin egiten diren kopiak.
+ <h4>Hilero</h4>
+ Hilean behin egiten diren kopiak.
+ <h4>Urtero</h4>
+ Urtean behin egiten diren kopiak.
 client_help: |
  <h4>Izena</h4>
- Bezeroaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan erakutsiko da. Bezero bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
+ Bezeroaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Bezero bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
  <h4>Url</h4>
  Bezeroarekin konektatu ahal izateko erabiliko da. Aplikazioak balio hau erabiliko du lanaren path edo bidearekin batera lanaren URLa osatzeko. Eremu honetan balio tipikoak hauek dira:
  <ul>
@@ -233,7 +246,7 @@ client_help: |
  <h4>Diskoaren erabilera</h4>
  Une hauetan bezeroaren datuek diskoan okupatzen ari direna.
  <h4>Azalpena</h4>
- Bezeroa deskribatzeko testu librea. Zuretzat lagungarria izan daitekeen informazioa sartzeko.
+ Bezeroa deskribatzeko testu librea. Sartu hemen zuretzat lagungarria izan daitekeen informazioa.
  <h4>Aktibo dago</h4>
  Kontrol-laukia markatuta ez badago, snapshot-ak ez dira egingo.
  <h4>Pre eta post scriptak</h4>
@@ -243,13 +256,13 @@ client_job_help: |
  Lan baten parametro garrantzitsuenak hemendik editatu ditzakezu. Aldaketak egin ondoren izan gogoan gorde egin behar dituzula.
 job_help: |
  <h4>Izena</h4>
- Lanaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan erakutsiko da. Lan bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
+ Lanaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Lan bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
  <h4>Path(bidea)</h4>
  Bezerotik kopiatu nahi dugun karpetaren bidea (path) edo rsync baliabidearen izena.
  <h4>Diskoaren erabilpena</h4>
  Lan honetako datuak une hauetan diskoan okupatzen dutena.
  <h4>Azalpena</h4>
- Lana deskribatzeko testu librea. Zuretzat lagungarria izan daitekeen informazioa sartzeko.
+ Lana deskribatzeko testu librea. Sartu hemen zuretzat lagungarria izan daitekeen informazioa.
  <h4>Aktibo dago</h4>
  Kontrol-laukia markatuta ez badago, snapshot-ak ez dira egingo.
  <h4>Jabea</h4>
@@ -263,46 +276,70 @@ job_help: |
  <h4>Politika</h4>
  Aukeratu lan honek jarraituko duen politika. Politika bakoitzak hainbat gauza zehazten ditu, besteak beste Kopiak noiz egin behar diren eta zenbat kopia mantenduko diren. Eremu hau ez bada betetzen, ez dira kopiak egingo.
  <h4>Erabili baimen lokalak</h4>
- Rsnapshot beti saiatuko da fitxategien baimenak jatorrian dauden bezala mantentzen. Honek batzuetan arazoak sortu ditzake   makes an effort to keep permissions exactly as in the source files. This might cause some problems in Windows, so if you happen to have permission issues with windows jobs try setting this on. It might also make the backup up files unreadable for the web server.
- <h4>Baztertu eta Sartu</h4>
- The application interprets each line of the exclude field as an exclude pattern and each line of the include field as an include pattern. By using these fields intelligently you can easily pick and choose which files to include in the snapshot and which files to ignore. The two field interact in the following way for each file and directory in the snapshot:
+ Rsnapshot beti saiatuko da fitxategien baimenak jatorrian dauden bezala mantentzen. Honek Windows sistemetan eta Linux-en ACLak erabiltzerakoan batzuetan arazoak sortu ditzake. Hau gertatzen denean aukera hau aktibatu, eta horrela web zerbitzariak ez ditu arazorik izango fitxategiak irakurtzerakoan.
+ <h4>Baztertu eta sartu</h4>
+ Aplikazioak Baztertu eremuaren lerro bakoitza eredu moduan erabiltzen du fitxategiak baztertzerakoan, eta era berdinean Sartu eremuaren lerro bakoitza fitxategiak kopian sartzeko eredu moduan hartzen du. Eremu hauek ondo erabiliz kopian sartu eta baztertu nahi dituzun fitxategiak hautatu ditzakezu. Kopian parte hartzen duen karpeta eta fitxategi bakoitzarkin honela egin du lan:
  <ol>
-  <li>If the file or directory matches a line in the include field, then the application includes this file. </li>
-  <li>If the file or directory matches a line in the exclude field, then the application ignores this file and it will NOT be backup up. </li>
-  <li>If the file or directory matches nothing the file is included in the backup.</li>
+  <li>Karpetak edo fitxategiak bat egiten badute Sartu eremuan dagoen lerro batekin, orduan kopiatzen da. </li>
+  <li>Karpetak edo fitxategiak bat egiten badute Baztertu eremuan dagoen lerro batekin, orduan sistemak EZ DU fitxategia kopiatuko. </li>
+  <li>Karpetak edo fitxategiak ez badu bate egiten Sartu/Baztertu eremuetan dauden lerroekin, orduan kopiatzen da.</li>
  </ol>
- As you can see the application backs up all files by default, excluding only those which match an exclude pattern and do NOT match any include pattern.
- If and only if the include field is empty the application uses the include directives defined in the selected policy. The same can be said for the exclude field.
+ Ikusten duzun moduan, aplikazioaren konfigurazio lehenetsiaren arabera fitxategi eta karpeta guztiak kopiatuko dira, Baztertu eremuarekin bat egiten dutenak baztertuz, beti ere ez badute bat egiten Sartu eremuko ereduekin. Sartu eremua hutsik dagoenean eta orduan bakarrik, sistemak politika mailan definituriko Sartu eremuaren edukia erabiliko du. Berdina egingo du Baztertu eremuarekin.
 user_help: |
- <h4>Name</h4>
- This is the identifier for the user. It will show up in lists and combo boxes. The name must be unique among all users, the application will complain if you try to use a name which is already in use.
- <h4>Password</h4>
- You can't read the password in this field, you can only use it to change it. If you put anything but the empty string in this field and save the password will be updated.
+ <h4>Izena</h4>
+ Erabiltzaile identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Erabiltzaile bakoitzak izen ezberdina izan behar du,eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
+ <h4>Pasahitza</h4>
+ Eremu honetan ezin dezakezu pasahitza ikusi, bai ordea pasahitza aldatu. Eremu honetan zerbait sartzen baduzu, erabiltzailearen pasahitza aldatuko duzu.
  <h4>Posta Elektronikoa</h4>
- The email is very important. All the notifications for the user will be sent to the email specified here.
- <h4>Is active</h4>
- If this check box is not marked the user will not be able to log in.
+ Posta elektroniko helbidea oso garrantzitsua da. Erabiltzaileari bidaltzen zaizkion abisu guztiak posta helbide honetara bidaliko zaizko.
+ <h4>Aktibo dago</h4>
+ Markatuta ez badago, erabiltzailea ezingo da sisteman sartu.
 params_help: |
  <h4>MySQL konfigurazioa</h4>
- This parameters configure the connection to the DB. Be careful, if mess up with them the application will stop working.
+ Eremu hauetan DBko konexioa konfiguratzen da. Kontuz ibili, daturen bat gaizki sartu ezkero aplikazioak errorea eman eta geratuko da.
  <h4>Mailer konfigurazioa</h4>
- This parameters configure the how the application sends emails. Be careful, if mess up with them the application will not be able to send notifications. <a href="http://symfony.com/doc/current/cookbook/email/email.html">The documentation from the Symfony project</a> might be helpful.
- <h4>Upload dir</h4>
- The application stores all the pre and post scripts in this directory. It has to be writable for the user running the web server.
+ Eremu hauetan aplikazioak posta elektronikoak nola bidaliko dituen konfiguratzen da. Kontuz bili, daturen bat gaizki sartu ezkero ezingo dira mezuak bidali.  <a href="http://symfony.com/doc/current/cookbook/email/email.html">Symfony proiektuko dokumentazioa</a> agian lagungarria izan daiteke.
  <h4>Backup-en karpeta</h4>
- The application stores all the snapshots in this in this directory. It has to be writable for the elkarbackup user.
- <h4>Remove logs older than</h4>
- The application will periodically prune the log registry so that it doesn't get too big. Any record older than the value specified here will be removed.
- <h4>Quota warning level</h4>
- When the disk space used by a client exceeds this percentage with respect to the quota send a warning message.
+ Aplikazioak snapshot edo kopia guztiak karpeta honetan gordeko ditu. elkarbackup erabiltzaileak karpeta honetan idazteko baimenak izan beharko ditu.
+ <h4>Hau baino zaharragoak diren log-ak ezabatu</h4>
+ Log erregistroa handiegia ez suertatzeko aplikazioak aldiro garbiketa lana egingo du. Hemen jarritako balioa baino zaharragoak diren logak ezabatuko dira.
+ <h4>Kuota abisuen maila</h4>
+ Bezero bati asignatu zaion kuotaren %-eko hau gainditzen denean, abisu bat bidaliko da.
  <h4>Orrialdeko erregistro kopurua</h4>
- Number of lines to show in pagination.
+ Orrialde bakoitzean erakutsiko den lerro kopurua.
 backupscriptconfig_help: |
  <h4>Authorized keys</h4>
- Adding your ssh public key to the applications authorized keys is required to make backups of the repository.
+ Biltegiaren kopiak egin ahal izateko zure gako publikoa aplikazioaren "authorized keys"-era gehitu behar duzu.
 managebackups_help: |
  <h4>Host</h4>
- The host name or IP address of the NFS server. Leave empty for local file systems.
- <p>This application depends on autofs to mount the remote file systems. If autofs is not configured as expected this field will not be editable.
+ NFS zerbitzariaren host izena edo IP helbidea. Fitxategi sistema lokala erabiltzen denean, hutsik egon behar da.
+ <p>Aplikazio honek autofs-kin dependentzia du urruneko fitxategi sistemak muntatzeko. autofs behar den bezala konfiguratuta ez badago eremu hau ez da editagarria izango.
  <h4>Karpeta</h4>
- The full path in the local file system or the name of the NFS export. In any case it must start with '/'.
+ Fitxategi sistema lokaleko path osoa edo NFS export-aren izena. Beti '/'-ekin hasi behar da.
+script_help: |
+ <h4>Scritp-ei buruz</h4>
+ Aplikazioak script-ak exekutatzen ditu backup erabiltzailea erabiliz. Script-ak exekutatu aurretik, aplikazioak ingurune aldagai hauek ezartzen ditu:
+ <ul>
+  <li>ELKARBACKUP_LEVEL:  bere balioa JOB edo CLIENT izan daiteke</li>
+  <li>ELKARBACKUP_EVENT:  bere balioa PRE edo POST izan daiteke</li>
+  <li>ELKARBACKUP_URL:    bere balioa lana edo bezeroaren URL osoa da</li>
+  <li>ELKARBACKUP_ID:     lanaren id kodea edo bezeroaren id kodea (zenbakia) </li>
+  <li>ELKARBACKUP_PATH:   snapshot edo kopia erroaren path edo bide osoa </li>
+  <li>ELKARBACKUP_STATUS: Post-script baten irteera egoera, bestelakorik ezean beti 0 izango da</li>
+ </ul>
+ Bezero baten pre-script batek 0 ez den balioa bueltatzen badu, aplikazioak bertan behera utziko ditu bezero horren lanak. Lan mailan exekutatzen diren pre-scripten emaitzak ez ditu ezertarako kontutan hartzen.
+ <h4>Izena</h4>
+ Script-aren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Script bakoitzak izen ezberdina izan behar du,eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
+ <h4>Azalpena</h4>
+ Script-a deskribatzeko testu librea. Sartu hemen zuretzat lagungarria izan daitekeen informazioa.
+ <h4>Fitxategia</h4>
+ Arakatu eta aukeratu igo nahi duzun script-a.
+ <h4>Bezeroaren pre-script moduan exekutatu daiteke</h4>
+ Markatu ezazu beti ere script hau bezero baten exekuzioa hasi aurretik abian jartzeko diseinatuta dagoenean.
+ <h4>Bezeroaren post-script moduan exekutatu daiteke</h4>
+ Markatu ezazu beti ere script hau bezero baten exekuzioa bukatu ondoren abian jartzeko diseinatuta dagoenean.
+ <h4>Lanaren pre-script moduan exekutatu daiteke</h4>
+ Markatu ezazu beti ere script hau lan baten exekuzioa hasi aurretik abian jartzeko diseinatuta dagoenean.
+ <h4>Lanaren post-script moduan exekutatu daiteke</h4>
+ Markatu ezazu beti ere script hau lan baten exekuzioa bukatu ondoren abian jartzeko diseinatuta dagoenean.
+
