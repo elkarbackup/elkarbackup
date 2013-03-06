@@ -63,6 +63,7 @@ sed -i 's#mailer_password:.*#mailer_password: #'                     .debian/etc
 sed -i 's#mailer_host:.*#mailer_host: localhost#'                    .debian/etc/elkarbackup/parameters.yml
 # use prod environment in console by default
 sed -i "s#'dev'#'prod'#"                                             .debian/usr/share/elkarbackup/app/console
+chmod a+x .debian/usr/share/elkarbackup/app/console
 VERSION=$(cat debian/DEBIAN/control | grep 'Version' | sed -e 's/Version: //' -e 's/ *//')
 mkdir -p .debian/var/spool/elkarbackup/backups
 mkdir -p .debian/var/spool/elkarbackup/uploads

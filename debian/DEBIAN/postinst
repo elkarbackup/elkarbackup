@@ -64,6 +64,8 @@ echo Create root user
 php /usr/share/elkarbackup/app/console elkarbackup:create_admin || true
 echo Clean cache
 php /usr/share/elkarbackup/app/console cache:clear || true
+echo Dump assests
+php /usr/share/elkarbackup/app/console assetic:dump || true
 echo Invalidate sessions
 rm -rf /var/lib/elkarbackup/sessions/*
 
