@@ -39,9 +39,6 @@
         <td onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'">{{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ (client.logEntry.levelName)|default('') }} {{ client.logEntry.message|default('')|slice(0, 50) }}{% if client.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
         <td onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'">{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
         <td class="actions">
-            <form action="{{ path('editClient', {id: client.id}) }}" style="display:inline">
-                <input class="btn" type="submit" value="{% trans %}Edit{% endtrans %}" />
-            </form>
             <form data-bnv-message="{% trans with {'%name%': client.name } %}Really delete client %name%? This will remove all related jobs and backups.{% endtrans %}" class="delete-client" action="{{ path('deleteClient', {id: client.id}) }}" method="POST" style="display:inline">
                 <input class="btn" type="submit" value="{% trans %}Delete{% endtrans %}" />
             </form>
@@ -54,12 +51,12 @@
         <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'" style="text-align:right;">{{ (job.diskUsage / 1024) | number_format(0)}} MB</td>
         <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'">{{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ (job.logEntry.levelName)|default('') }} {{ job.logEntry.message|default('')|slice(0, 50) }}{% if job.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
         <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'">{% if job.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
-        <td>
-            <form action="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}" style="display:inline">
-                <input class="btn" type="submit" value="{% trans %}Edit{% endtrans %}" />
-            </form>
+        <td class="actions">
             <form data-bnv-message="{% trans with {'%name%': job.client.name ~ "/" ~ job.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" class="delete-job" action="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" method="POST" style="display:inline">
                 <input class="btn" type="submit" value="{% trans %}Delete{% endtrans %}" />
+            </form>
+            <form action="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}" style="display:inline">
+                <input class="btn" type="submit" value="{% trans %}Restore{% endtrans %}" />
             </form>
         </td>
     </tr>

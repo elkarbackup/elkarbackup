@@ -162,6 +162,7 @@
 'Removing the policy %name% failed. Check that it is not in use.': 'Removing the policy %name% failed. Check that it is not in use.'
 'Removing the script %name% failed. Check that it is not in use.': 'Removing the script %name% failed. Check that it is not in use.'
 'Repository backup script': 'Repository backup script'
+'Restore': 'Restore'
 'Run now': 'Run now'
 'Running %command%': 'Running %command%'
 'Saturday': 'Saturday'

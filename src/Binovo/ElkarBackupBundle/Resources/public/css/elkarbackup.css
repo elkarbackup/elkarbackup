@@ -16,4 +16,10 @@ td.ids, th.ids {
 }
 tr.client-row  td {
   background-color: LightBlue;
+  cursor: pointer;
+  cursor: class;
+}
+tr.job-row  td {
+  cursor: pointer;
+  cursor: class;
 }
