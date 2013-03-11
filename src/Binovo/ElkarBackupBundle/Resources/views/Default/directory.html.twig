@@ -24,7 +24,7 @@
     {% for file in content %}
         <tr>
             <td>
-                <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'view'}) }}">{{ file.0 }}</a>
+                <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'view'}) }}"><i class="{% if file.2 %}icon-folder-open{% else %}icon-file{% endif %}"></i> {{ file.0 }}</a>
             </td>
             <td>
                 {{ file.1.format('Y-m-d H:i:s') }}

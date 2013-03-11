@@ -4,7 +4,7 @@
     #<IfModule mod_vhost_alias.c>
     #    RewriteBase /
     #</IfModule>
-
+    RewriteBase /tknikabackups-devel
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ app_dev.php [QSA,L]
 </IfModule>
