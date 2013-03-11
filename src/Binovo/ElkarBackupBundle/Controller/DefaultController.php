@@ -380,6 +380,10 @@ class DefaultController extends Controller
                            json_encode(array('command' => 'elkarbackup:run_job',
                                              'client'  => $idClient,
                                              'job'     => $idJob)));
+
+        $context = array('link'   => $this->generateJobRoute($idJob, $idClient),
+                         'source' => 'StatusReport');
+        $this->info('QUEUED', array(), $context);
         $em->persist($msg);
         $em->flush();
         $response = new Response($t->trans('Job execution requested successfully', array(), 'BinovoElkarBackup'));
@@ -814,7 +818,7 @@ class DefaultController extends Controller
         $dql =<<<EOF
 SELECT l
 FROM  BinovoElkarBackupBundle:LogRecord l
-WHERE l.source = 'TickCommand' AND l.link LIKE :link
+WHERE l.source = 'StatusReport' AND l.link LIKE :link
 ORDER BY l.id DESC
 EOF;
         $query = $em->createQuery($dql)->setParameter('link', $link);
