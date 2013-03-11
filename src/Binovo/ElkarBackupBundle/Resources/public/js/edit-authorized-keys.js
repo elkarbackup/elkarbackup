@@ -1,15 +1,16 @@
 require(['dojo', 'dojo/dom-construct', 'dojo/fx', 'dojo/ready'],
 function(dojo, domConstruct, fx, ready) {
-    var iNewKey = 0, newNode, animation;
+    var iNewKey = 0, newNode, animation, node;
     function publicKeysClick(e) {
         switch (dojo.attr(e.target, 'data-command')) {
         case 'delete-key':
-            animation = [fx.wipeOut({node: e.target.parentNode})];
+            node = e.target.parentNode.parentNode;
+            animation = [fx.wipeOut({node: node})];
             if (1 == dojo.query('#public-keys input[data-command=delete-key]').length) { // deleting last key
                 animation.push(fx.wipeIn({node: 'no-keys-defined'}));
             }
             animation = fx.combine(animation);
-            dojo.connect(animation, 'onEnd', function(){domConstruct.destroy(e.target.parentNode);});
+            dojo.connect(animation, 'onEnd', function(){domConstruct.destroy(node);});
             animation.play();
             break;
         case 'add-key':

@@ -44,6 +44,7 @@
 'Command %command% succeeded with output: %output%': 'Command %command% succeeded with output: %output%'
 'Command was unable to send the notification message: %exception%': 'Command was unable to send the notification message: %exception%'
 'Comment': 'Comment'
+'Comment / Key': 'Comment / Key'
 'Config': 'Config'
 'Confirm new password': 'Confirm new password'
 'Currently not used': 'Currently not used'
