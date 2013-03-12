@@ -19,6 +19,7 @@ use Binovo\ElkarBackupBundle\Form\Type\JobType;
 use Binovo\ElkarBackupBundle\Form\Type\PolicyType;
 use Binovo\ElkarBackupBundle\Form\Type\ScriptType;
 use Binovo\ElkarBackupBundle\Form\Type\UserType;
+use Binovo\ElkarBackupBundle\Lib\Globals;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -382,7 +383,7 @@ class DefaultController extends Controller
                                              'job'     => $idJob)));
 
         $context = array('link'   => $this->generateJobRoute($idJob, $idClient),
-                         'source' => 'StatusReport');
+                         'source' => Globals::STATUS_REPORT);
         $this->info('QUEUED', array(), $context);
         $em->persist($msg);
         $em->flush();
@@ -818,10 +819,11 @@ class DefaultController extends Controller
         $dql =<<<EOF
 SELECT l
 FROM  BinovoElkarBackupBundle:LogRecord l
-WHERE l.source = 'StatusReport' AND l.link LIKE :link
+WHERE l.source = :source AND l.link LIKE :link
 ORDER BY l.id DESC
 EOF;
-        $query = $em->createQuery($dql)->setParameter('link', $link);
+        $query = $em->createQuery($dql)->setParameter('link'  , $link)
+                                       ->setParameter('source', Globals::STATUS_REPORT);
         $logs = $query->getResult();
         if (count($logs) > 0) {
             $lastLog = $logs[0];

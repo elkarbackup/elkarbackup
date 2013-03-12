@@ -5,11 +5,9 @@ namespace Binovo\ElkarBackupBundle\Logger;
 use Binovo\ElkarBackupBundle\Entity\Job;
 use Binovo\ElkarBackupBundle\Entity\LogRecord;
 use Monolog\Handler\AbstractProcessingHandler;
+use Monolog\Logger;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
-
-use Monolog\Logger;
 
 /**
  * This handler writes the log to the Database using the LogRecord

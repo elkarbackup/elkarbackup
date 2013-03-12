@@ -6,6 +6,7 @@ use \DateTime;
 use \Exception;
 use Binovo\ElkarBackupBundle\Entity\Job;
 use Binovo\ElkarBackupBundle\Entity\User;
+use Binovo\ElkarBackupBundle\Lib\Globals;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -300,10 +301,10 @@ abstract class BackupRunningCommand extends LoggingCommand
             if ($job->getClient() != $lastClient) {
                 $lastClient = $job->getClient();
                 $context = array('link' => $this->generateClientRoute($job->getClient()->getId()));
-                $this->info('QUEUED', array(), array_merge($context, array('source' => 'StatusReport')));
+                $this->info('QUEUED', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
             }
             $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
-            $this->info('QUEUED', array(), array_merge($context, array('source' => 'StatusReport')));
+            $this->info('QUEUED', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
         }
         $manager->flush();
         $storageLoadLevel = 0;
@@ -317,7 +318,7 @@ abstract class BackupRunningCommand extends LoggingCommand
             switch ($state) {
             case self::RUN_JOB:
                 $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
-                $this->info('RUNNING', array(), array_merge($context, array('source' => 'StatusReport')));
+                $this->info('RUNNING', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
                 if ($job->getClient() == $lastClient) {
                     $retains = $policyIdToRetains[$job->getPolicy()->getId()];
                     $logHandler->clearMessages();
@@ -330,10 +331,10 @@ abstract class BackupRunningCommand extends LoggingCommand
                     }
                     if ($this->runJob($job, $retains)) {
                         $this->info('Client "%clientid%", Job "%jobid%" ok.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
-                        $this->info('OK', array(), array_merge($context, array('source' => 'StatusReport')));
+                        $this->info('OK', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
                     } else {
                         $this->err('Client "%clientid%", Job "%jobid%" error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
-                        $this->err('FAIL', array(), array_merge($context, array('source' => 'StatusReport')));
+                        $this->err('FAIL', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
                     }
                     $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
                     $this->info('Client "%clientid%", Job "%jobid%" du begin.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
@@ -360,16 +361,16 @@ abstract class BackupRunningCommand extends LoggingCommand
                         }
                     }
                     if ($allScriptsOk) {
-                        $this->info('OK', array(), array_merge($context, array('source' => 'StatusReport')));
+                        $this->info('OK', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
                     } else {
-                        $this->err('FAIL', array(), array_merge($context, array('source' => 'StatusReport')));
+                        $this->err('FAIL', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
                     }
                 }
                 $client = $job->getClient();
                 $idClient = $client->getId();
                 $scripts  = $client->getPreScripts();
                 $context = array('link' => $this->generateClientRoute($idClient));
-                $this->info('RUNNING', array(), array_merge($context, array('source' => 'StatusReport')));
+                $this->info('RUNNING', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
                 $logHandler->clearMessages();
                 $storageLoadLevel = $client->getDiskUsage() / $client->getQuota();
                 if ($storageLoadLevel > 1) {
@@ -378,7 +379,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                                      '%quota%'    => $client->getQuota() / 1024,
                                      '%du%'       => $client->getDiskUsage() / 1024),
                                $context);
-                    $this->err('QUOTA EXCEEDED', array(), array_merge($context, array('source' => 'StatusReport')));
+                    $this->err('QUOTA EXCEEDED', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
                     $state = self::QUOTA_EXCEEDED;
                 } else {
                     $state = self::RUN_JOB;
@@ -407,7 +408,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                                      '%quota%'    => $client->getQuota() / 1024,
                                      '%du%'       => $client->getDiskUsage() / 1024),
                                $context);
-                    $this->err('QUOTA EXCEEDED', array(), array_merge($context, array('source' => 'StatusReport')));
+                    $this->err('QUOTA EXCEEDED', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
                     $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
                     ++$i;
                 }
@@ -420,7 +421,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                     $logHandler->clearMessages();
                     $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
                     $this->err('Client "%clientid%", Job "%jobid%" error. Client level error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
-                    $this->err('FAIL', array(), array_merge($context, array('source' => 'StatusReport')));
+                    $this->err('FAIL', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
                     $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
                     ++$i;
                 }
@@ -445,9 +446,9 @@ abstract class BackupRunningCommand extends LoggingCommand
                 }
             }
             if ($allScriptsOk) {
-                $this->info('OK', array(), array_merge($context, array('source' => 'StatusReport')));
+                $this->info('OK', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
             } else {
-                $this->err('FAIL', array(), array_merge($context, array('source' => 'StatusReport')));
+                $this->err('FAIL', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
             }
             $manager->flush();
         }

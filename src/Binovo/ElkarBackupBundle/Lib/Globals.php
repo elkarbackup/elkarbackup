@@ -4,6 +4,8 @@ namespace Binovo\ElkarBackupBundle\Lib;
 
 class Globals
 {
+    const STATUS_REPORT = 'StatusReport';
+
     protected static $uploadDir;
     protected static $backupDir;
 
