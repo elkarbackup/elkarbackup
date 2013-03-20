@@ -1,7 +1,6 @@
-require(['dojo', 'dojo/dom-construct', 'dijit/form/TimeTextBox', 'dojo/store/Memory', 'dojo/string', 'dojo/ready'],
-function(dojo, domConstruct, TimeTextBox, Memory, string, ready){
-    var dateToHour, englishWeekDayToIdx, getHourlyHours, hourlyHoursDiv, hourlyHourWidgets, hourlyCountWidget, hourToDate, idxToEnglishWeekDay, initDailyDays, initDailyHour, initHourlyDays, initHourlyHours, initMonthlyCount, initMonthlyDayOfMoth, initMonthlyHour, initSaveButton, initWeeklyCount, initWeeklyDayOfWeek, initWeeklyHour, initYearlyCount, initYearlyDay, initYearlyHour, newTimeWidget, onChangeHourlyCount, onChangeHourlyDay, onChangeHourlyHour, onSubmitClick, updateDailyCount;
-    hourlyHourWidgets = [];
+require(['dojo', 'dojo/dom-construct', 'dijit/form/TimeTextBox', 'dojo/store/Memory', 'dojo/string', 'dijit/layout/TabContainer', 'dijit/layout/ContentPane', 'dojo/ready'],
+function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentPane, ready){
+    var dateToHour, englishWeekDayToIdx, getHourlyHours, hourlyCountWidget, hourToDate, idxToEnglishWeekDay, initDailyDays, initDailyCount, initDailyHour, initHourlyDays, initHourlyHours, initMonthlyCount, initMonthlyDayOfMonth, initMonthlyHour, initSaveButton, initWeeklyCount, initWeeklyDayOfWeek, initWeeklyHour, initYearlyCount, initYearlyDay, initYearlyHour, newTimeWidget, onSubmitClick;
     dateToHour = function (d) {
         return string.pad(d.getHours(), 2, '0') + ":" + string.pad(d.getMinutes(), 2, '0');
     };
@@ -39,26 +38,23 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, ready){
         }
         return '';
     };
-    updateDailyCount = function() {
-        dijit.byId('dailyCount').set('value', dojo.query('input[id^=daily][type=checkbox]').filter(function(item){return item.checked;}).length);
+    initDailyCount = function() {
+        var value;
+        value = Number(dojo.byId('Policy_dailyCount').value);
+        dijit.byId('dailyCount').set('value', !!value  ? value : 0);
     };
     initDailyHour = function() {
         var value, widget, store;
         widget = dijit.byId('dailyHour');
-        if (widget.get('value')) {
-            value = widget.get('value');
-        } else if (dojo.byId('Policy_dailyHours').value) {
+        if (dojo.byId('Policy_dailyHours').value) {
             value = hourToDate(dojo.byId('Policy_dailyHours').value);
         } else {
             value = '';
         }
-        dojo.connect(widget, 'onChange',
-                     function(){
-                         dijit.byId('weeklyHour').set('value', this.value);
-                     });
         widget.set('value', value);
     };
     initDailyDays = function() {
+        dojo.query('input[id^=daily][type=checkbox]').forEach(function(input){input.checked = false;});
         dojo.forEach(dojo.byId('Policy_dailyDaysOfWeek').value.split('|'), 
                      function(dayIdx) {
                          dayIdx = Number(dayIdx);
@@ -66,15 +62,10 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, ready){
                              dojo.byId('daily-' + idxToEnglishWeekDay(dayIdx)).checked = true;
                          }
                      });
-        dojo.query('input[id^=daily][type=checkbox]') .connect('onchange', updateDailyCount);
-        dojo.query('input[id^=hourly][type=checkbox]').connect('onchange', updateDailyCount);
-        updateDailyCount();
     };
     initHourlyDays = function() {
-        var dailyHoursInput, dailyCountInput;
+        var dailyHoursInput;
         dailyHoursInput = dojo.byId('Policy_dailyHours');
-        dailyCountInput = dojo.byId('Policy_dailyCount');
-        dojo.query('#hourlyDays input').connect('onchange', onChangeHourlyDay);
         dojo.forEach(dojo.byId('Policy_hourlyDaysOfWeek').value.split('|'), 
                      function(dayIdx) {
                          dayIdx = Number(dayIdx);
@@ -85,17 +76,14 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, ready){
     };
     initHourlyHours = function() {
         var hourlyCountInput;
-        hourlyHoursDiv   = dojo.byId('hourlyHours'),
         hourlyCountInput = dojo.byId('Policy_hourlyCount');
         dojo.forEach(getHourlyHours(),
                      function(time, i){
                          var timeWidget;
                          timeWidget = newTimeWidget(time);
-                         domConstruct.place(timeWidget.domNode, hourlyHoursDiv, 'last');
-                         hourlyHourWidgets.push(timeWidget);
                      });
         hourlyCountWidget = dijit.byId('hourlyCount');
-        dojo.connect(hourlyCountWidget, 'onChange', onChangeHourlyCount);
+        dojo.connect(dojo.byId('hourlyHoursAdd'), 'onclick', function(){newTimeWidget();});
         hourlyCountWidget.set('value', Number(hourlyCountInput.value));
     };
     initMonthlyCount = function() {
@@ -106,7 +94,7 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, ready){
         }
         dijit.byId('monthlyCount').set('value', value);        
     };
-    initMonthlyDayOfMoth = function() {
+    initMonthlyDayOfMonth = function() {
         var value;
         value = Number(dojo.byId('Policy_monthlyDaysOfMonth').value);
         if (value >= 1 && value <= 31) {
@@ -114,19 +102,13 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, ready){
         }
     };
     initMonthlyHour = function() {
-        var value, widget, store;
+        var value, widget;
         widget = dijit.byId('monthlyHour');
-        if (widget.get('value')) {
-            value = widget.get('value');
-        } else if (dojo.byId('Policy_monthlyHours').value) {
+        if (dojo.byId('Policy_monthlyHours').value) {
             value = hourToDate(dojo.byId('Policy_monthlyHours').value);
         } else {
             value = null;
         }
-        dojo.connect(widget, 'onChange',
-                     function(){
-                         dijit.byId('yearlyHour').set('value', this.value);
-                     });
         widget.set('value', value);
     };
     initSaveButton = function() {
@@ -160,10 +142,6 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, ready){
             value = null;
         }
         widget.set('value', value);
-        dojo.connect(widget, 'onChange',
-                     function(){
-                         dijit.byId('monthlyHour').set('value', this.value);
-                     });
     };
     initYearlyCount = function() {
         var value;
@@ -193,35 +171,25 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, ready){
         widget.set('value', value);
     };
     /**
-     * Create a TimeTexBox with its value set to hour. Hour is a string of time "HH:mm", default "09:00"
+     * Create and place a TimeTexBox with its value set to hour. Hour is a string of time "HH:mm", default "09:00"
      */
     newTimeWidget = function(hour) {
-        return new TimeTextBox({value: hourToDate(hour),
-                                onChange: onChangeHourlyHour,
-                                constraints: {
-                                    timePattern: 'HH:mm',
-                                    clickableIncrement: 'T00:15:00',
-                                    visibleIncrement: 'T00:15:00',
-                                    visibleRange: 'T01:00:00'
-                                }});
-    };
-    onChangeHourlyDay = function(value) {
-        // set/unset the daily day when the corresponding houly day changes
-        dojo.setAttr(dojo.byId('daily-' + this.id.split('-')[1]), 'checked', this.checked);
-    };
-    onChangeHourlyCount = function(value) {
-        var i, aTime, hours, timeWidget;
-        hours = [];
-        for (i = hourlyHourWidgets.length - 1; i > value - 1; --i) {
-            hourlyHourWidgets.pop().destroy();
-        }
-        for (i = hourlyHourWidgets.length - 1; i < value - 1; ++i) {
-            timeWidget = newTimeWidget();
-            domConstruct.place(timeWidget.domNode, hourlyHoursDiv, 'last');
-            hourlyHourWidgets.push(timeWidget);
-        }
-    };
-    onChangeHourlyHour = function(value) {
+        var timeWidget, p, removeButton;
+        timeWidget = TimeTextBox({value: hourToDate(hour),
+                                  constraints: {
+                                      timePattern: 'HH:mm',
+                                      clickableIncrement: 'T00:15:00',
+                                      visibleIncrement: 'T00:15:00',
+                                      visibleRange: 'T01:00:00'
+                                  }});
+        p = domConstruct.place("<p></p>", "hourlyHoursAdd", "before");
+        domConstruct.place(timeWidget.domNode, p, 'last');
+        removeButton = domConstruct.place('<i class="icon-remove" style="margin-left:1em"></i>', p, 'last');
+        dojo.connect(removeButton, "onclick",(function(p){
+                                                  return function() {
+                                                      domConstruct.destroy(p);
+                                                  };})(p));
+        return timeWidget;
     };
     onSubmitClick = function(evt) {
         var hourlyHoursInput, hourlyDaysOfMonthInput, hourlyDaysOfWeekInput, hourlyMonthsInput, hourlyCountInput,
@@ -229,7 +197,6 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, ready){
         weeklyHoursInput, weeklyDaysOfMonthInput, weeklyDaysOfWeekInput, weeklyMonthsInput, weeklyCountInput,
         monthlyHoursInput, monthlyDaysOfMonthInput, monthlyDaysOfWeekInput, monthlyMonthsInput, monthlyCountInput,
         yearlyHoursInput, yearlyDaysOfMonthInput, yearlyDaysOfWeekInput, yearlyMonthsInput, yearlyCountInput;
-        // dojo.stopEvent(evt);
         dailyCountInput         = dojo.byId('Policy_dailyCount');
         dailyDaysOfMonthInput   = dojo.byId('Policy_dailyDaysOfMonth');
         dailyDaysOfWeekInput    = dojo.byId('Policy_dailyDaysOfWeek');
@@ -257,7 +224,7 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, ready){
         yearlyMonthsInput       = dojo.byId('Policy_yearlyMonths');
 
         // daily fields
-        dailyCountInput.value       = dojo.query('input[id^=daily][type=checkbox]').filter(function(item){return item.checked;}).length;
+        dailyCountInput.value       = dijit.byId('dailyCount').value;
         dailyDaysOfMonthInput.value = '';
         dailyDaysOfWeekInput.value  = dojo.query('input[id^=daily][type=checkbox]')
             .filter(
@@ -294,9 +261,9 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, ready){
                     return dayToIndex[weekday];
                 }
             ).join('|');
-        hourlyHoursInput.value       = dojo.map(hourlyHourWidgets,
+        hourlyHoursInput.value       = dojo.query('#hourlyHours input[type=hidden]').map(
             function(item){
-                return dateToHour(item.value);
+                return item.value.replace(/.(.....).../, '$1');
             }).join('|');
         hourlyMonthsInput.value      = '';
         // monthly fields
@@ -330,13 +297,14 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, ready){
     ready(function() {
               initHourlyHours();
               initHourlyDays();
+              initDailyCount();
               initDailyHour();
               initDailyDays();
               initWeeklyCount();
               initWeeklyDayOfWeek();
               initWeeklyHour();
               initMonthlyCount();
-              initMonthlyDayOfMoth();
+              initMonthlyDayOfMonth();
               initMonthlyHour();
               initYearlyCount();
               initYearlyDay();
