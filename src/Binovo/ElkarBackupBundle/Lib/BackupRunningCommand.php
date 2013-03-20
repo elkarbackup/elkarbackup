@@ -319,6 +319,7 @@ abstract class BackupRunningCommand extends LoggingCommand
             case self::RUN_JOB:
                 $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
                 $this->info('RUNNING', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
+                $manager->flush();
                 if ($job->getClient() == $lastClient) {
                     $retains = $policyIdToRetains[$job->getPolicy()->getId()];
                     $logHandler->clearMessages();
@@ -422,6 +423,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                     $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
                     $this->err('Client "%clientid%", Job "%jobid%" error. Client level error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     $this->err('FAIL', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
+                    $manager->flush();
                     $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
                     ++$i;
                 }
