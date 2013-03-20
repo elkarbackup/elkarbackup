@@ -9,7 +9,7 @@
 #
 
 mkdir .debian
-cp -al debian/* .debian
+cp -a debian/* .debian
 if [ ! -d .debian/usr/share/elkarbackup ]
 then
     if [ "$FROM_SVN" != "" ]
@@ -24,7 +24,7 @@ then
         php app/console cache:clear --env=prod --no-debug
         php app/console cache:clear --env=dev  --no-debug
         mkdir -p .debian/usr/share/elkarbackup
-        cp -al * .debian/usr/share/elkarbackup
+        cp -a * .debian/usr/share/elkarbackup
     fi
 fi
 # remove uneeded files from copy to package
