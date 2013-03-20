@@ -893,6 +893,7 @@ EOF;
                                                                         'DefaultController'           => 'DefaultController',
                                                                         'GenerateKeyPairCommand'      => 'GenerateKeyPairCommand',
                                                                         'RunJobCommand'               => 'RunJobCommand',
+                                                                        Globals::STATUS_REPORT        => 'StatusReport',
                                                                         'TickCommand'                 => 'TickCommand',
                                                                         'UpdateAuthorizedKeysCommand' => 'UpdateAuthorizedKeysCommand'),
                                                      'value'   => isset($formValues['filter[eq][l.source]']) ? $formValues['filter[eq][l.source]'] : null,
