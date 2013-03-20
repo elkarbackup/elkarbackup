@@ -11,10 +11,10 @@
         {% stylesheets '@BinovoElkarBackupBundle/Resources/public/css/bootstrap.min.css' '@BinovoElkarBackupBundle/Resources/public/css/elkarbackup.css' %}
         <link rel="stylesheet" href="{{ asset_url }}" media="screen" />
         {% endstylesheets %}
-        <link rel="stylesheet" href="{{ asset('js/dojo-release-1.8.1/dijit/themes/claro/claro.css') }}" media="screen" />
+        <link rel="stylesheet" href="{{ asset('js/dojo-release/dijit/themes/claro/claro.css') }}" media="screen" />
 
         {% block scripts %}
-        <script type="text/javascript" src="{{ asset('js/dojo-release-1.8.1/dojo/dojo.js') }}" data-dojo-config="async: true"></script>
+        <script type="text/javascript" src="{{ asset('js/dojo-release/dojo/dojo.js') }}" data-dojo-config="async: true"></script>
             {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/base.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
             {% endjavascripts %}
