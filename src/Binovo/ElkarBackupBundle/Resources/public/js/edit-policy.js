@@ -1,3 +1,7 @@
+/**
+ * @copyright 2012,2013 Binovo it Human Project, S.L.
+ * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ */
 require(['dojo', 'dojo/dom-construct', 'dijit/form/TimeTextBox', 'dojo/store/Memory', 'dojo/string', 'dijit/layout/TabContainer', 'dijit/layout/ContentPane', 'dojo/ready'],
 function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentPane, ready){
     var dateToHour, englishWeekDayToIdx, getHourlyHours, hourlyCountWidget, hourToDate, idxToEnglishWeekDay, initDailyDays, initDailyCount, initDailyHour, initHourlyDays, initHourlyHours, initMonthlyCount, initMonthlyDayOfMonth, initMonthlyHour, initSaveButton, initWeeklyCount, initWeeklyDayOfWeek, initWeeklyHour, initYearlyCount, initYearlyDay, initYearlyHour, newTimeWidget, onSubmitClick;

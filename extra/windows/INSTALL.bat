@@ -25,4 +25,5 @@ SET RSYNC_CONF=%ProgramFiles%\ICW\rsyncd.conf
 >> "%RSYNC_CONF%" echo ### pre-xfer  exec = /cygdrive/c/ElkarBackup/MakeSnapshotCMountB.cmd
 >> "%RSYNC_CONF%" echo ### post-xfer exec = /cygdrive/c/ElkarBackup/DeleteSnapshotCUmountB.cmd
 echo Triggers to take snapshots of C:\ and mount them as B:\ created. Check the "%RSYNC_CONF%" file.
+echo You will have to download vss.exe from http://www.dmares.com/pub/nt_32/vss.exe for this to work.
 pause

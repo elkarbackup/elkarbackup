@@ -18,6 +18,10 @@ abstract class LoggingCommand extends ContainerAwareCommand
     }
 
     protected function generateJobRoute($idJob, $idClient)
+/**
+ * @copyright 2012,2013 Binovo it Human Project, S.L.
+ * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ */
     {
         return $this->getContainer()->get('router')->generate('editJob',
                                                               array('idClient' => $idClient,

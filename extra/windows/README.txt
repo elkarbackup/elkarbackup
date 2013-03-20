@@ -9,6 +9,8 @@ VSS
 
 http://www.maresware.com/
 
+Download from: http://www.dmares.com/pub/nt_32/vss.exe
+
 Install
 =======
 

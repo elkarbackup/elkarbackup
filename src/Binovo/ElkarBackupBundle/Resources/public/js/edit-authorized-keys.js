@@ -1,3 +1,7 @@
+/**
+ * @copyright 2012,2013 Binovo it Human Project, S.L.
+ * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ */
 require(['dojo', 'dojo/dom-construct', 'dojo/fx', 'dojo/ready'],
 function(dojo, domConstruct, fx, ready) {
     var iNewKey = 0, newNode, animation, node;
