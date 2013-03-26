@@ -34,6 +34,9 @@ font-size: 14px;
                 <div class="control-group">
                     <div data-dojo-type="dijit/layout/TabContainer" style="height: 100%;" data-dojo-props="doLayout:false" class="controls">
                         <div id="duringTheDay-panel" data-dojo-type="dijit/layout/ContentPane" title="{% trans %}During the day{% endtrans %}">
+                            <label class="checkbox">
+                                <input type="checkbox" class="activation-controller" id="duringTheDay-activation" /> {% trans %}Make backups during the day{% endtrans %}
+                            </label>
                             <fieldset  id="hourlyHours">
                                 <legend class="panel-legend">{% trans %}Time of day{% endtrans %}</legend>
                                 <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId:'hourlyCount'">
@@ -75,6 +78,9 @@ font-size: 14px;
                         </div>
 
                         <div id="daily-panel" data-dojo-type="dijit/layout/ContentPane" title="{% trans %}Daily{% endtrans %}">
+                            <label class="checkbox">
+                                <input type="checkbox" class="activation-controller" /> {% trans %}Make daily backups{% endtrans %}
+                            </label>
                             <fieldset>
                                 <legend class="panel-legend">{% trans %}Time of day{% endtrans %}</legend>
                                 <input id="dailyHour" data-dojo-type="dijit/form/TimeTextBox" data-dojo-props="constraints:{timePattern: 'HH:mm', clickableIncrement: 'T00:15:00',visibleIncrement: 'T00:15:00', visibleRange: 'T01:00:00'}, value: '09:00'" />
@@ -113,6 +119,9 @@ font-size: 14px;
                         </div>
 
                         <div id="weekly-panel" data-dojo-type="dijit/layout/ContentPane" title="{% trans %}Weekly{% endtrans %}">
+                            <label class="checkbox">
+                                <input type="checkbox" class="activation-controller" /> {% trans %}Make weekly backups{% endtrans %}
+                            </label>
                             <fieldset>
                                 <legend class="panel-legend">{% trans %}Time of day{% endtrans %}</legend>
                                 <input id="weeklyHour"
@@ -153,6 +162,9 @@ font-size: 14px;
                         </div>
 
                         <div id="monthly-panel" data-dojo-type="dijit/layout/ContentPane" title="{% trans %}Monthly{% endtrans %}">
+                            <label class="checkbox">
+                                <input type="checkbox" class="activation-controller" /> {% trans %}Make monthly backups{% endtrans %}
+                            </label>
                             <fieldset>
                                 <legend class="panel-legend">{% trans %}Time of day{% endtrans %}</legend>
                                 <input id="monthlyHour"
@@ -175,6 +187,9 @@ font-size: 14px;
                         </div>
 
                         <div id="yearly-panel" data-dojo-type="dijit/layout/ContentPane" title="{% trans %}Yearly{% endtrans %}">
+                            <label class="checkbox">
+                                <input type="checkbox" class="activation-controller" /> {% trans %}Make yearly backups{% endtrans %}
+                            </label>
                             <fieldset>
                                 <legend class="panel-legend">{% trans %}Time of day{% endtrans %}</legend>
                                 <input id="yearlyHour"

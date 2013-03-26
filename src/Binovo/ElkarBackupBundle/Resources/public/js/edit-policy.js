@@ -2,9 +2,9 @@
  * @copyright 2012,2013 Binovo it Human Project, S.L.
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
-require(['dojo', 'dojo/dom-construct', 'dijit/form/TimeTextBox', 'dojo/store/Memory', 'dojo/string', 'dijit/layout/TabContainer', 'dijit/layout/ContentPane', 'dojo/ready'],
-function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentPane, ready){
-    var dateToHour, englishWeekDayToIdx, getHourlyHours, hourlyCountWidget, hourToDate, idxToEnglishWeekDay, initDailyDays, initDailyCount, initDailyHour, initHourlyDays, initHourlyHours, initMonthlyCount, initMonthlyDayOfMonth, initMonthlyHour, initSaveButton, initWeeklyCount, initWeeklyDayOfWeek, initWeeklyHour, initYearlyCount, initYearlyDay, initYearlyHour, newTimeWidget, onSubmitClick;
+require(['dojo', 'dojo/dom-construct', 'dijit/form/TimeTextBox', 'dojo/store/Memory', 'dojo/string', 'dijit/layout/TabContainer', 'dijit/layout/ContentPane', 'dijit/registry', 'dojo/ready'],
+function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentPane, registry, ready){
+    var dateToHour, englishWeekDayToIdx, getHourlyHours, hourToDate, idxToEnglishWeekDay, initActivationCheckboxes, initDailyDays, initDailyCount, initDailyHour, initHourlyDays, initHourlyHours, initMonthlyCount, initMonthlyDayOfMonth, initMonthlyHour, initSaveButton, initWeeklyCount, initWeeklyDayOfWeek, initWeeklyHour, initYearlyCount, initYearlyDay, initYearlyHour, newTimeWidget, onSubmitClick;
     dateToHour = function (d) {
         return string.pad(d.getHours(), 2, '0') + ":" + string.pad(d.getMinutes(), 2, '0');
     };
@@ -42,6 +42,37 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
         }
         return '';
     };
+    initActivationCheckboxes = function() {
+        function setStateWidgets(checkbox) {
+            var panel       = checkbox.parentNode.parentNode,
+                panelWidget = registry.getEnclosingWidget(panel);
+            dojo.query('input', panel).forEach(
+                function(element) {
+                    var widget = registry.getEnclosingWidget(element);
+                    if (widget != panelWidget) {
+                        widget.set('disabled', !checkbox.checked);
+                    } else {
+                        dojo.setAttr(element, 'disabled', !checkbox.checked);
+                    }
+                });
+            if (!checkbox.checked) {
+                registry.byNode(dojo.query('[id*=Count]', panel)[0]).set('value', 0);                
+            }
+            dojo.setAttr(checkbox, 'disabled', false);            
+        }
+        dojo.query('.activation-controller')
+            .on('change',
+                function(e) {
+                    setStateWidgets(this);
+                });
+        dojo.query('.activation-controller')
+            .forEach(function(checkbox) {
+                         var panel = checkbox.parentNode.parentNode;
+                         dojo.setAttr(checkbox, 'checked', 0 != registry.getEnclosingWidget(dojo.query('[id*=Count]', panel)[0]).get('value'));
+                         setStateWidgets(checkbox);
+                     });
+    };
+
     initDailyCount = function() {
         var value;
         value = Number(dojo.byId('Policy_dailyCount').value);
@@ -79,7 +110,7 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
                      });
     };
     initHourlyHours = function() {
-        var hourlyCountInput;
+        var hourlyCountInput, hourlyCountWidget;
         hourlyCountInput = dojo.byId('Policy_hourlyCount');
         dojo.forEach(getHourlyHours(),
                      function(time, i){
@@ -87,7 +118,12 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
                          timeWidget = newTimeWidget(time);
                      });
         hourlyCountWidget = dijit.byId('hourlyCount');
-        dojo.connect(dojo.byId('hourlyHoursAdd'), 'onclick', function(){newTimeWidget();});
+        dojo.connect(dojo.byId('hourlyHoursAdd'),
+                     'onclick',
+                     function() {
+                         if (dojo.getAttr(dojo.byId('duringTheDay-activation'), 'checked')) {
+                             newTimeWidget();
+                         }});
         hourlyCountWidget.set('value', Number(hourlyCountInput.value));
     };
     initMonthlyCount = function() {
@@ -191,7 +227,9 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
         removeButton = domConstruct.place('<i class="icon-remove" style="margin-left:1em"></i>', p, 'last');
         dojo.connect(removeButton, "onclick",(function(p){
                                                   return function() {
-                                                      domConstruct.destroy(p);
+                                                      if (dojo.getAttr(dojo.byId('duringTheDay-activation'), 'checked')) {
+                                                          domConstruct.destroy(p);                                                          
+                                                      }
                                                   };})(p));
         return timeWidget;
     };
@@ -314,5 +352,6 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
               initYearlyDay();
               initYearlyHour();
               initSaveButton();
+              initActivationCheckboxes();
           });
 });
