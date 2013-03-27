@@ -12,4 +12,9 @@ then
     curl http://download.dojotoolkit.org/release-1.8.1/dojo-release-1.8.1.tar.gz | (cd web/js; tar zx)
 fi
 
+sudo setfacl  -R -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/cache
+sudo setfacl -dR -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/cache
+sudo setfacl  -R -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/logs
+sudo setfacl -dR -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/logs
+
 composer install

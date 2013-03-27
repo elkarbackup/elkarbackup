@@ -9,23 +9,20 @@
 #
 
 mkdir .debian
-cp -al debian/* .debian
+cp -a debian/* .debian
 if [ ! -d .debian/usr/share/elkarbackup ]
 then
-    if [ "$FROM_SVN" != "" ]
+    if [ "$FROM_SCRATCH" != "" ]
     then
-        mkdir -p .debian/usr/share/
-        svn export https://intranet.binovo.es/svn/tknika-backups/trunk .debian/usr/share/elkarbackup
-        pushd .debian/usr/share/elkarbackup
-        composer install
-        popd
-    else
-        php app/console assetic:dump
-        php app/console cache:clear --env=prod --no-debug
-        php app/console cache:clear --env=dev  --no-debug
+        export PATH=$PATH:$PWD
         mkdir -p .debian/usr/share/elkarbackup
-        cp -al * .debian/usr/share/elkarbackup
+        composer install
     fi
+    php app/console assetic:dump --env=prod
+    php app/console cache:clear --env=prod --no-debug
+    php app/console cache:clear --env=dev  --no-debug
+    mkdir -p .debian/usr/share/elkarbackup
+    cp -a * .debian/usr/share/elkarbackup
 fi
 # remove uneeded files from copy to package
 find .debian -type d -name ".svn" | xargs rm -rf
@@ -52,7 +49,7 @@ mv .debian/usr/share/elkarbackup/app/config .debian/etc/elkarbackup
 ln -s  /etc/elkarbackup .debian/usr/share/elkarbackup/app/config
 # put copyright notices and changelog in its place
 mkdir -p .debian/usr/share/doc/elkarbackup
-cp -al changelog changelog.Debian copyright .debian/usr/share/doc/elkarbackup
+cp -a changelog changelog.Debian copyright .debian/usr/share/doc/elkarbackup
 gzip -f --best .debian/usr/share/doc/elkarbackup/changelog
 gzip -f --best .debian/usr/share/doc/elkarbackup/changelog.Debian
 # ensure directory permissions are right
@@ -72,6 +69,10 @@ chmod a+x .debian/usr/share/elkarbackup/app/console
 VERSION=$(cat debian/DEBIAN/control | grep 'Version' | sed -e 's/Version: //' -e 's/ *//')
 mkdir -p .debian/var/spool/elkarbackup/backups
 mkdir -p .debian/var/spool/elkarbackup/uploads
+# clean up /usr/share/elkarbackup
+pushd .debian/usr/share/elkarbackup
+ls | egrep -v 'app|extra|src|vendor|web'|xargs rm -rf
+popd
 
 #
 # build an verify
