@@ -330,8 +330,6 @@ params_help: |
  This parameters configure the how the application sends emails. Be careful, if mess up with them the application will not be able to send notifications. <a href="http://symfony.com/doc/current/cookbook/email/email.html">The documentation from the Symfony project</a> might be helpful.
  <h4>Upload dir</h4>
  The application stores all the pre and post scripts in this directory. It has to be writable for the user running the web server.
- <h4>Backups dir</h4>
- The application stores all the snapshots in this in this directory. It has to be writable for the elkarbackup user.
  <h4>Remove logs older than</h4>
  The application will periodically prune the log registry so that it doesn't get too big. Any record older than the value specified here will be removed.
  <h4>Quota warning level</h4>

@@ -1083,7 +1083,6 @@ EOF;
                         'mailer_host'               => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Mailer host'           , array(), 'BinovoElkarBackup')),
                         'mailer_user'               => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Mailer user'           , array(), 'BinovoElkarBackup')),
                         'mailer_password'           => array('type' => 'password', 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Mailer password'       , array(), 'BinovoElkarBackup')),
-                        'backup_dir'                => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Backups dir'           , array(), 'BinovoElkarBackup')),
                         'max_log_age'               => array('type' => 'choice'  , 'required' => false, 'attr' => array('class' => 'span12'), 'choices' => array('P1D' => $t->trans('One day'    , array(), 'BinovoElkarBackup'),
                                                                                                                                                                  'P1W' => $t->trans('One week'   , array(), 'BinovoElkarBackup'),
                                                                                                                                                                  'P2W' => $t->trans('Two weeks'  , array(), 'BinovoElkarBackup'),
@@ -1159,7 +1158,7 @@ EOF;
      */
     public function setParameter($name, $value)
     {
-        $paramsFilename = dirname(__FILE__) . '/../../../../../app/config/parameters.yml';
+        $paramsFilename = dirname(__FILE__) . '/../../../../app/config/parameters.yml';
         $paramsFile = file_get_contents($paramsFilename);
         if (false == $paramsFile) {
             return false;
