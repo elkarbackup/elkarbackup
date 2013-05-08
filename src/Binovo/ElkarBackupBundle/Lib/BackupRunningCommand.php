@@ -78,7 +78,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                 }
             }
             $message = \Swift_Message::newInstance()
-                ->setSubject($translator->trans('Error log for backup from job %joburl%', array('%joburl%' => $job->getUrl()), 'BinovoElkarBackup'))
+                ->setSubject($translator->trans('Log for backup from job %joburl%', array('%joburl%' => $job->getUrl()), 'BinovoElkarBackup'))
                 ->setFrom($adminEmail)
                 ->setTo($recipients)
                 ->setBody($engine->render('BinovoElkarBackupBundle:Default:logreport.html.twig',
