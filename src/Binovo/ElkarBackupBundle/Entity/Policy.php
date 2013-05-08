@@ -6,6 +6,7 @@
 
 namespace Binovo\ElkarBackupBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use \DateTime;
 
 /**
@@ -68,6 +69,14 @@ class Policy
     {
         $retains = $this->getRetains();
         return !(count($retains) && $retains[0][0] == $retain);
+    }
+
+    /**
+     * @Assert\True(message = "You forgot to specify hours during the day")
+     */
+    public function isHourlyHoursValid()
+    {
+        return empty($this->hourlyCount) || !empty($this->hourlyHours);
     }
 
     /**

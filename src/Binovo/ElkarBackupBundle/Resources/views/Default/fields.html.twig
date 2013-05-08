@@ -70,3 +70,19 @@
     </div>
 {% endspaceless %}
 {% endblock choice_widget_expanded %}
+
+{% block form_errors %}
+{% spaceless %}
+    {% if errors|length > 0 %}
+    <div class="controls help-block">
+        {% for error in errors %}
+            <div>{{
+                error.messagePluralization is null
+                    ? error.messageTemplate|trans(error.messageParameters, 'validators')
+                    : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators')
+            }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endspaceless %}
+{% endblock form_errors %}
