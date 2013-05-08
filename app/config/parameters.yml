@@ -21,3 +21,4 @@ parameters:
     rsnapshot: /usr/bin/rsnapshot
     warning_load_level: 0.8
     pagination_lines_per_page: 20
+    url_prefix:

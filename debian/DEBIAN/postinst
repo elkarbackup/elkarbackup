@@ -58,6 +58,12 @@ then
     echo                                     >> /etc/elkarbackup/parameters.yml
     echo "    pagination_lines_per_page: 20" >> /etc/elkarbackup/parameters.yml
 fi
+if test "x`grep url_prefix /etc/elkarbackup/parameters.yml`" = x
+then
+    echo "    Add url_prefix"
+    echo                                     >> /etc/elkarbackup/parameters.yml
+    echo "    url_prefix:" >> /etc/elkarbackup/parameters.yml
+fi
 echo Update DB
 php /usr/share/elkarbackup/app/console doctrine:migrations:migrate --no-interaction || true
 echo Create root user

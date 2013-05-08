@@ -1,4 +1,8 @@
 <?php
+/**
+ * @copyright 2012,2013 Binovo it Human Project, S.L.
+ * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ */
 
 namespace Binovo\ElkarBackupBundle\Lib;
 
@@ -14,18 +18,19 @@ abstract class LoggingCommand extends ContainerAwareCommand
 
     protected function generateClientRoute($id)
     {
-        return $this->getContainer()->get('router')->generate('editClient', array('id' => $id));
+        return $this->getUrlPrefix() . $this->getContainer()->get('router')->generate('editClient', array('id' => $id));
     }
 
     protected function generateJobRoute($idJob, $idClient)
-/**
- * @copyright 2012,2013 Binovo it Human Project, S.L.
- * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
- */
     {
-        return $this->getContainer()->get('router')->generate('editJob',
-                                                              array('idClient' => $idClient,
-                                                                    'idJob'    => $idJob));
+        return $this->getUrlPrefix() . $this->getContainer()->get('router')->generate('editJob',
+                                                                                      array('idClient' => $idClient,
+                                                                                            'idJob'    => $idJob));
+    }
+
+    protected function getUrlPrefix()
+    {
+        return $this->getContainer()->getParameter('url_prefix');
     }
 
     /**
