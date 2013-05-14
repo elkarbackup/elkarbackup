@@ -74,7 +74,7 @@
 {% block form_errors %}
 {% spaceless %}
     {% if errors|length > 0 %}
-    <div class="controls help-block">
+    <div class="controls help-block red">
         {% for error in errors %}
             <div>{{
                 error.messagePluralization is null

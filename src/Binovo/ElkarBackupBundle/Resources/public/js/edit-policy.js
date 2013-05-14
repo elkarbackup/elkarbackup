@@ -2,8 +2,8 @@
  * @copyright 2012,2013 Binovo it Human Project, S.L.
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
-require(['dojo', 'dojo/dom-construct', 'dijit/form/TimeTextBox', 'dojo/store/Memory', 'dojo/string', 'dijit/layout/TabContainer', 'dijit/layout/ContentPane', 'dijit/registry', 'dojo/ready'],
-function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentPane, registry, ready){
+require(['dojo', 'dojo/dom-construct', 'dijit/form/TimeTextBox', 'dojo/store/Memory', 'dojo/string', 'dijit/layout/TabContainer', 'dijit/layout/ContentPane', 'dijit/registry', 'dojo/dom-class', 'dojo/window', 'dojo/ready'],
+function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentPane, registry, domClass, win, ready){
     var dateToHour, englishWeekDayToIdx, getHourlyHours, hourToDate, idxToEnglishWeekDay, initActivationCheckboxes, initDailyDays, initDailyCount, initDailyHour, initHourlyDays, initHourlyHours, initMonthlyCount, initMonthlyDayOfMonth, initMonthlyHour, initSaveButton, initWeeklyCount, initWeeklyDayOfWeek, initWeeklyHour, initYearlyCount, initYearlyDay, initYearlyHour, newTimeWidget, onSubmitClick;
     dateToHour = function (d) {
         return string.pad(d.getHours(), 2, '0') + ":" + string.pad(d.getMinutes(), 2, '0');
@@ -233,6 +233,46 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
                                                   };})(p));
         return timeWidget;
     };
+    function isFormValid() {
+        var i,
+            valid       = true,
+            activations = ['duringTheDay-activation', 'daily-activation', 'weekly-activation', 'monthly-activation', 'yearly-activation'],
+            counts      = ['hourlyCount'            , 'dailyCount'      , 'weeklyCount'      , 'monthlyCount'      , 'yearlyCount'],
+            rotationMsg = 'rotationMsg',
+            messages    = ['hourlyCountMsg'         , 'dailyCountMsg'   , 'weeklyCountMsg'   , 'monthlyCountMsg'   , 'yearlyCountMsg', rotationMsg],
+            countWidget, activeInput;
+        dojo.forEach(messages, function(msgId) {
+                         domClass.add(msgId, 'hide');
+                     });
+        // do not allow activating a block but setting its count to 0
+        for (i = 0; i < Math.min(counts.length, activations.length); ++i) {
+            countWidget = dijit.byId(counts[i]);
+            activeInput = dojo.byId(activations[i]);
+            if (0 == countWidget.value && activeInput.checked) {
+                valid = false;
+                domClass.remove(messages[i], 'hide');
+                win.scrollIntoView(messages[i]);
+            }
+        }
+        // do not allow the first active block to have count = 1 and then request rotations
+        if (valid) {
+            for (i = 0; i < activations.length; ++i) {
+                if (dojo.byId(activations[i]).checked && 1 == dijit.byId(counts[i]).value) {
+                    break;
+                }
+            }
+            for (++i; i < activations.length; ++i) {
+                if (dojo.byId(activations[i]).checked) {
+                    valid = false;
+                    domClass.remove(rotationMsg, 'hide');
+                    win.scrollIntoView(rotationMsg);
+                    break;
+                }
+            }
+        }
+
+        return valid;
+    }
     onSubmitClick = function(evt) {
         var hourlyHoursInput, hourlyDaysOfMonthInput, hourlyDaysOfWeekInput, hourlyMonthsInput, hourlyCountInput,
         dailyHoursInput, dailyDaysOfMonthInput, dailyDaysOfWeekInput, dailyMonthsInput, dailyCountInput,
@@ -264,6 +304,12 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
         yearlyDaysOfWeekInput   = dojo.byId('Policy_yearlyDaysOfWeek');
         yearlyHoursInput        = dojo.byId('Policy_yearlyHours');
         yearlyMonthsInput       = dojo.byId('Policy_yearlyMonths');
+
+        // validation
+        if (!isFormValid()) {
+            evt.preventDefault();
+            return false;
+        }
 
         // daily fields
         dailyCountInput.value       = dijit.byId('dailyCount').value;
@@ -333,6 +379,7 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
         yearlyDaysOfWeekInput.value  = '';
         yearlyHoursInput.value       = dateToHour(dijit.byId('yearlyHour').value);
         yearlyMonthsInput.value      = isNaN(dijit.byId('dayOfYear').value.getMonth()) ? '' : (dijit.byId('dayOfYear').value.getMonth() + 1);
+
         return true;
     };
 

@@ -27,3 +27,6 @@ tr.job-row  td {
   cursor: pointer;
   cursor: class;
 }
+.red {
+  background-color: red;
+}
