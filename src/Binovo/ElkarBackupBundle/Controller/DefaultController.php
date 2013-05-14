@@ -28,6 +28,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -1045,6 +1046,7 @@ EOF;
                 $backupDir = $data['directory'];
             }
             $ok = true;
+            $result = $this->redirect($this->generateUrl('manageBackupsLocation'));
             if ($this->container->getParameter('backup_dir') != $backupDir) {
                 if (!$this->setParameter('backup_dir', $backupDir)) {
                     $this->get('session')->getFlashBag()->add('manageParameters',
@@ -1052,8 +1054,14 @@ EOF;
                                                                         array(),
                                                                         'BinovoElkarBackup'));
                 }
+                if (!is_dir($backupDir)) {
+                    $form->addError(new FormError($t->trans('Warning: the directory does not exist',
+                                                            array(),
+                                                            'BinovoElkarBackup')));
+                    $result = $this->render('BinovoElkarBackupBundle:Default:backupslocation.html.twig',
+                                            array('form' => $form->createView()));
+                }
             }
-            $result = $this->redirect($this->generateUrl('manageBackupsLocation'));
         } else {
             $result = $this->render('BinovoElkarBackupBundle:Default:backupslocation.html.twig',
                                     array('form' => $form->createView()));

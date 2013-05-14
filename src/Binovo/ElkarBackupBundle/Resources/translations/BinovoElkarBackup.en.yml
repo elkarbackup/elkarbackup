@@ -229,6 +229,7 @@
 'Username:': 'Username:'
 'Users': 'Users'
 'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise': 'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise'
+'Warning: the directory does not exist': 'Warning: the directory does not exist'
 'Warnings and up': 'Warnings and up'
 'Wednesday': 'Wednesday'
 'Weekly backups activated, weekly count can not be 0': 'Weekly backups activated, weekly count can not be 0'
