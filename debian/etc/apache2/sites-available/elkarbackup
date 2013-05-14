@@ -1,5 +1,6 @@
-<VirtualHost elkarbackup:80>
+<VirtualHost *:80>
     ServerAdmin webmaster@localhost
+    ServerName elkarbackup
 
     DocumentRoot /usr/share/elkarbackup/web
 

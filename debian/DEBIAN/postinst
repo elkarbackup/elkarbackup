@@ -4,14 +4,23 @@ set -e
 # Source debconf library.
 . /usr/share/debconf/confmodule
 
-db_get elkarbackup/dbhost
-dbhost="$RET"
-db_get elkarbackup/dbname
-dbname="$RET"
-db_get elkarbackup/dbusername
-dbusername="$RET"
-db_get elkarbackup/dbuserpassword
-dbuserpassword="$RET"
+dbhost=`sed -n 's/^[ \t]*database_host: *\([^ #\t]*\)/\1/p' /etc/elkarbackup/parameters.yml`
+dbname=`sed -n 's/^[ \t]*database_name: *\([^ #\t]*\)/\1/p' /etc/elkarbackup/parameters.yml`
+dbusername=`sed -n 's/^[ \t]*database_user: *\([^ #\t]*\)/\1/p' /etc/elkarbackup/parameters.yml`
+dbuserpassword=`sed -n 's/^[ \t]*database_password: *\([^ #\t]*\)/\1/p' /etc/elkarbackup/parameters.yml`
+
+if mysql -u"$dbusername" -p"$dbuserpassword" -h"$dbhost" "$dbname" </dev/null
+    echo "Using /etc/elkarbackup/parameters.yml configuration ok"
+then
+    db_get elkarbackup/dbhost
+    dbhost="$RET"
+    db_get elkarbackup/dbname
+    dbname="$RET"
+    db_get elkarbackup/dbusername
+    dbusername="$RET"
+    db_get elkarbackup/dbuserpassword
+    dbuserpassword="$RET"
+fi
 
 if ! mysql -u"$dbusername" -p"$dbuserpassword" -h"$dbhost" "$dbname" </dev/null
 then
