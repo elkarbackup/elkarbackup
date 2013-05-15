@@ -36,7 +36,7 @@ find .debian/usr/share/elkarbackup/web/js/dojo-release-1.8.1 -type f|xargs chmod
 sed -i '1c#!/bin/bash' .debian/usr/share/elkarbackup/vendor/swiftmailer/swiftmailer/test-suite/lib/simpletest/packages/build_tarball.sh
 # ensure the packaged versions uses only the release environment
 rm .debian/usr/share/elkarbackup/web/app_dev.php
-sed -i 's/app_dev/app/' .debian/usr/share/elkarbackup/web/.htaccess
+rm .debian/usr/share/elkarbackup/web/.htaccess
 # setup cache, session and log directories in var
 mkdir -p .debian/var/cache/elkarbackup
 mkdir -p .debian/var/log/elkarbackup
