@@ -29,24 +29,26 @@ font-size: 14px;
             <div class="span6">
                 {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
                 <div>
-                    <div class="controls help-block red">
-                        <div id="hourlyCountMsg" class="hide">
-                            {% trans %}Hourly backups activated, hourly count can not be 0{% endtrans %}
-                        </div>
-                        <div id="dailyCountMsg" class="hide">
-                            {% trans %}Daily backups activated, daily count can not be 0{% endtrans %}
-                        </div>
-                        <div id="weeklyCountMsg" class="hide">
-                            {% trans %}Weekly backups activated, weekly count can not be 0{% endtrans %}
-                        </div>
-                        <div id="monthlyCountMsg" class="hide">
-                            {% trans %}Monthly backups activated, monthly count can not be 0{% endtrans %}
-                        </div>
-                        <div id="yearlyCountMsg" class="hide">
+                    <div class="control-group">
+                        <div class="controls help-block red">
+                            <div id="hourlyCountMsg" class="hide">
+                                {% trans %}Hourly backups activated, hourly count can not be 0{% endtrans %}
+                            </div>
+                            <div id="dailyCountMsg" class="hide">
+                                {% trans %}Daily backups activated, daily count can not be 0{% endtrans %}
+                            </div>
+                            <div id="weeklyCountMsg" class="hide">
+                                {% trans %}Weekly backups activated, weekly count can not be 0{% endtrans %}
+                            </div>
+                            <div id="monthlyCountMsg" class="hide">
+                                {% trans %}Monthly backups activated, monthly count can not be 0{% endtrans %}
+                            </div>
+                            <div id="yearlyCountMsg" class="hide">
                             {% trans %}Yearly backups activated, yearly count can not be 0{% endtrans %}
-                        </div>
-                        <div id="rotationMsg" class="hide">
-                            {% trans %}Can not have the retention count of the first backup level set to 1, and have a second backup level{% endtrans %}
+                            </div>
+                            <div id="rotationMsg" class="hide">
+                                {% trans %}Can not have the retention count of the first backup level set to 1, and have a second backup level{% endtrans %}
+                            </div>
                         </div>
                     </div>
                     {{ form_widget(form) }}

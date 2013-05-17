@@ -5,6 +5,13 @@
 {% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
 {% trans_default_domain 'BinovoElkarBackup' %}
 
+{% block scripts %}
+    {{ parent() }}
+    {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/edit-client.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
 {% block body %}
 
 <form class="form-horizontal" action="{{ path('saveClient', {id: form.vars.value.id}) }}" method="POST" {{ form_enctype(form) }}>
@@ -59,7 +66,7 @@
 
                 </div>
                 <div class="controls control-row">
-                    <input class="btn" type="button" value="{% trans %}Delete{% endtrans %}" onclick="dojo.query('#job-{{job.vars.value.id}}').remove();"/>
+                    <input class="btn delete-job" data-bnv-job-id="#job-{{job.vars.value.id}}" data-bnv-message="{% trans with {'%name%': job.vars.value.client.name ~ "/" ~ job.vars.value.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" type="button" value="{% trans %}Delete{% endtrans %}" />
                     <input class="btn" type="button" value="{% trans %}Edit{% endtrans %}" onclick="document.location.href='{{ path('editJob', {idJob: job.vars.value.id, idClient: form.vars.value.id}) }}'"/>
                 </div>
                 <br/>

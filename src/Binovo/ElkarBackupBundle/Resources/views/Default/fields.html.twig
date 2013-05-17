@@ -74,6 +74,7 @@
 {% block form_errors %}
 {% spaceless %}
     {% if errors|length > 0 %}
+<div class="control-group">
     <div class="controls help-block red">
         {% for error in errors %}
             <div>{{
@@ -83,6 +84,7 @@
             }}</div>
         {% endfor %}
     </div>
+</div>
     {% endif %}
 {% endspaceless %}
 {% endblock form_errors %}
