@@ -828,7 +828,8 @@ WHERE l.source = :source AND l.link LIKE :link
 ORDER BY l.id DESC
 EOF;
         $query = $em->createQuery($dql)->setParameter('link'  , $link)
-                                       ->setParameter('source', Globals::STATUS_REPORT);
+                                       ->setParameter('source', Globals::STATUS_REPORT)
+                                       ->setMaxResults(1);
         $logs = $query->getResult();
         if (count($logs) > 0) {
             $lastLog = $logs[0];
