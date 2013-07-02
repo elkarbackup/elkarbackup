@@ -85,34 +85,29 @@ php /usr/share/elkarbackup/app/console assetic:dump || true
 echo Invalidate sessions
 rm -rf /var/lib/elkarbackup/sessions/*
 
-db_get elkarbackup/backupsusername
-username="$RET"
+username="elkarbackup"
 sed -i "s/www-data/$username/" /etc/cron.d/elkarbackup
-if test "x$username" != xwww-data -a "x$username" != x
+if test x`grep $username /etc/passwd` = x
 then
-    if test x`grep $username /etc/passwd` = x
-    then
-        adduser --system --home /var/lib/elkarbackup --shell /bin/bash --group $username
-    fi
-    if [ ! -f /var/lib/elkarbackup/.ssh/id_rsa ]
-    then
-        mkdir /var/lib/elkarbackup/.ssh || true
-        ssh-keygen -t rsa -N '' -C 'Automatically generated key for elkarbackup.' -f /var/lib/elkarbackup/.ssh/id_rsa
-        sed -i "s#public_key:.*#public_key: /var/lib/elkarbackup/.ssh/id_rsa.pub#" /etc/elkarbackup/parameters.yml
-        chown -R $username.$username /var/lib/elkarbackup
-    fi
-    # set rwx permissions for www-data and the backup user in the cache and log directories
-    # as described in http://symfony.com/doc/current/book/installation.html#configuration-and-setup
-    setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/cache/elkarbackup
-    setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/cache/elkarbackup
-    setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/log/elkarbackup
-    setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/log/elkarbackup
+    adduser --system --home /var/lib/elkarbackup --shell /bin/bash --group $username
 fi
+if [ ! -f /var/lib/elkarbackup/.ssh/id_rsa ]
+then
+    mkdir /var/lib/elkarbackup/.ssh || true
+    ssh-keygen -t rsa -N '' -C 'Automatically generated key for elkarbackup.' -f /var/lib/elkarbackup/.ssh/id_rsa
+    sed -i "s#public_key:.*#public_key: /var/lib/elkarbackup/.ssh/id_rsa.pub#" /etc/elkarbackup/parameters.yml
+    chown -R $username.$username /var/lib/elkarbackup
+fi
+# set rwx permissions for www-data and the backup user in the cache and log directories
+# as described in http://symfony.com/doc/current/book/installation.html#configuration-and-setup
+setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/cache/elkarbackup
+setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/cache/elkarbackup
+setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/log/elkarbackup
+setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/log/elkarbackup
 chown -R $username.$username /var/cache/elkarbackup /var/log/elkarbackup /var/spool/elkarbackup
 chown -R www-data.www-data /var/lib/elkarbackup/sessions /etc/elkarbackup/parameters.yml /var/spool/elkarbackup/uploads
 
-db_get elkarbackup/uploadsdir
-uploadsdir="$RET"
+uploadsdir="/var/spool/elkarbackup/uploads"
 olduploadsdir=`cat /etc/elkarbackup/parameters.yml|grep upload_dir|sed 's/.*: *//'`
 mkdir -p "$uploadsdir" || true
 mv "$olduploadsdir"/* "$uploadsdir" || true

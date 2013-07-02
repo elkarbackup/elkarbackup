@@ -1,8 +1,3 @@
-Template: elkarbackup/backupsusername
-Type: string
-Description: Username:
- This is the user that under which rsnapshot will run.
-
 Template: elkarbackup/dbadminname
 Type: string
 Description: User name of Mysql admin:
@@ -36,9 +31,3 @@ Type: password
 Default: elkarbackup
 Description: DB user password:
  The application will connect to the database using this password.
-
-Template: elkarbackup/uploadsdir
-Type: string
-Default: /var/spool/elkarbackup/uploads
-Description: Directory to store the pre and post scripts.
- The application will store all the scripts you upload in this directory.
