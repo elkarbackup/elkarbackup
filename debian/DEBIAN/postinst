@@ -25,9 +25,6 @@ fi
 
 if ! mysql -u"$dbusername" -p"$dbuserpassword" -h"$dbhost" "$dbname" </dev/null
 then
-    db_input high elkarbackup/dbadminname
-    db_input high elkarbackup/dbadminpassword
-    db_go
     db_get elkarbackup/dbadminname
     dbadminusername="$RET"
     db_reset elkarbackup/dbadminname
@@ -100,10 +97,10 @@ then
 fi
 # set rwx permissions for www-data and the backup user in the cache and log directories
 # as described in http://symfony.com/doc/current/book/installation.html#configuration-and-setup
-setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/cache/elkarbackup
-setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/cache/elkarbackup
-setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/log/elkarbackup
-setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/log/elkarbackup
+setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/cache/elkarbackup 2>/dev/null || ( echo "ACLs not supported. Remount with ACL and reconfigure with 'dpkg --configure --pending'" && false )
+setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/cache/elkarbackup 2>/dev/null
+setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/log/elkarbackup 2>/dev/null
+setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/log/elkarbackup 2>/dev/null
 chown -R $username.$username /var/cache/elkarbackup /var/log/elkarbackup /var/spool/elkarbackup
 chown -R www-data.www-data /var/lib/elkarbackup/sessions /etc/elkarbackup/parameters.yml /var/spool/elkarbackup/uploads
 
