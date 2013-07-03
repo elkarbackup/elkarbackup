@@ -11,12 +11,7 @@ if [ "$1" = "purge" -a -e /usr/share/debconf/confmodule ]; then
 fi
 
 if [ "$1" = "remove" ]; then
-    db_get elkarbackup/backupsusername
-    username="$RET"
-    if test "x$username" != xwww-data
-    then
-        deluser --system $username
-    fi
+    deluser --system elkarbackup
     . /usr/share/debconf/confmodule
     a2dissite elkarbackup || true
     if [ -f /etc/init.d/apache2 ]
