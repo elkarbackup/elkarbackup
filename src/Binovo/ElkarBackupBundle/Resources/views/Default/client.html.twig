@@ -61,7 +61,11 @@
                     {{ form_widget(job.description, {'attr': {'class': 'span10'}}) }}
                 </div>
                 <div class="controls">
+                    {% if job.vars.value.hasBackups %}
                     <a href="{{path('showJobBackup', {idClient: job.vars.value.client.id, idJob: job.vars.value.id, action: 'view'}) }}">{% trans %}Backups{% endtrans %} ({{ (job.vars.value.diskUsage / 1024) | number_format(0)  }} MB)</a><br />
+                    {% else %}
+                    {% trans %}Backups{% endtrans %} ({{ (job.vars.value.diskUsage / 1024) | number_format(0)  }} MB)<br />
+                    {% endif %}
                     {{job.vars.value.logEntry.dateTime.format('Y-m-d H:i:s')|default('')}} {{job.vars.value.logEntry.levelName|default('')}} {{ job.vars.value.logEntry.message|default('')|slice(0, 50) }}{% if job.vars.value.logEntry.message|default('')|length > 50 %}[...]{% endif %}
 
                 </div>

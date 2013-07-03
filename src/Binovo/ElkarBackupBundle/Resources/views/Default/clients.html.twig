@@ -60,7 +60,7 @@
                 <input class="btn" type="submit" value="{% trans %}Delete{% endtrans %}" />
             </form>
             <form action="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}" style="display:inline">
-                <input class="btn" type="submit" value="{% trans %}Restore{% endtrans %}" />
+                <input class="btn" type="submit"{% if not client.hasBackups %}disabled="disabled"{% endif %} value="{% trans %}Restore{% endtrans %}" />
             </form>
         </td>
     </tr>

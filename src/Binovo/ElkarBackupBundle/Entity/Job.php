@@ -144,6 +144,14 @@ class Job
     }
 
     /**
+     * Returns true if the backup directory exists
+     */
+    public function hasBackups()
+    {
+        return is_dir($this->getSnapshotRoot());
+    }
+
+    /**
      * Set description
      *
      * @param string $description
