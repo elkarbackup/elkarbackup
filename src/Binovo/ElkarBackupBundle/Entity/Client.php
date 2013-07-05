@@ -55,7 +55,7 @@ class Client
     /**
      * @ORM\Column(type="string", length=255)
      */
-    protected $url;
+    protected $url = '';
 
     /**
      * @ORM\ManyToMany(targetEntity="Script", inversedBy="preClients")
