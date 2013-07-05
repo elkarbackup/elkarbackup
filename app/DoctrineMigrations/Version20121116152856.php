@@ -27,7 +27,7 @@ class Version20121116152856 extends AbstractMigration
         $this->addSql("ALTER TABLE Job ADD CONSTRAINT FK_C395A61819EB6921 FOREIGN KEY (client_id) REFERENCES Client (id)");
         $this->addSql("ALTER TABLE Job ADD CONSTRAINT FK_C395A6187E3C61F9 FOREIGN KEY (owner_id) REFERENCES User (id)");
         $this->addSql("ALTER TABLE Job ADD CONSTRAINT FK_C395A6182D29E3C6 FOREIGN KEY (policy_id) REFERENCES Policy (id)");
-        $this->addSql("INSERT INTO `Policy` VALUES (1,'Example policy','Default policy','09:00|12:00|15:00',NULL,'1|2|3|4|5',NULL,3,'09:00',NULL,'1|2|3|4|5',NULL,5,'09:00',NULL,'1',NULL,4,'09:00','NaN',NULL,NULL,0,'09:00','NaN',NULL,'NaN',0,NULL,NULL,1)");
+        $this->addSql("INSERT INTO `Policy` VALUES (1,'Example policy','Default policy','12:00|15:00|21:00',NULL,'1|2|3|4|5',NULL,0,'21:00',NULL,'1|2|3|4|5',NULL,5,'21:00',NULL,'1',NULL,4,'21:00','1',NULL,NULL,12,'21:00',NULL,NULL,NULL,0,NULL,NULL,1)");
     }
 
     public function down(Schema $schema)
