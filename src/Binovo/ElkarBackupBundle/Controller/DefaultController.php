@@ -233,6 +233,9 @@ class DefaultController extends Controller
             $repository = $this->getDoctrine()
                 ->getRepository('BinovoElkarBackupBundle:Client');
             $client = $repository->find($id);
+            if (null == $client) {
+                throw $this->createNotFoundException($this->trans('Unable to find Client entity:') . $id);
+            }
         }
         foreach ($client->getJobs() as $job) {
             $job->setLogEntry($this->getLastLogForLink(sprintf('%%/client/%d/job/%d', $client->getId(), $job->getId())));
@@ -303,7 +306,7 @@ class DefaultController extends Controller
                                                                     array('%extrainfo%' => $e->getMessage()),
                                                                     'BinovoElkarBackup'));
 
-                return $this->redirect($this->generateUrl('editClient', array('id' => $client->getId())));
+                return $this->redirect($this->generateUrl('editClient', array('id' => $client->getId() == null ? 'new' : $client->getId())));
             }
         } else {
 
