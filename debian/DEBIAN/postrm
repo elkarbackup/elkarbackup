@@ -11,12 +11,12 @@ if [ "$1" = "purge" -a -e /usr/share/debconf/confmodule ]; then
 fi
 
 if [ "$1" = "remove" ]; then
-    deluser --system elkarbackup
+    deluser --system elkarbackup || echo "Problem deleting user elkarbackup"
     . /usr/share/debconf/confmodule
     a2dissite elkarbackup || true
     if [ -f /etc/init.d/apache2 ]
     then
-        invoke-rc.d apache2 reload
+        invoke-rc.d apache2 reload || true
     fi
     db_purge
 fi
