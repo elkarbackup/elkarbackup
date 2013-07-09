@@ -105,6 +105,7 @@
 'Jobs': 'Jobs'
 'Key file updated. The update should be effective in less than 2 minutes.': 'Key file updated. The update should be effective in less than 2 minutes.'
 'Key': 'Key'
+'Language': Language
 'language_en': English
 'language_es': Español
 'language_eu': Euskara
@@ -197,6 +198,7 @@
 'Status': 'Status'
 'Sunday': 'Sunday'
 'Sync first': 'Sync first'
+'Number of copies to keep': 'Number of copies to keep'
 'The number of copies to make during the day': 'The number of copies to make during the day'
 'There are no jobs': 'There are no jobs'
 'Three weeks': 'Three weeks'

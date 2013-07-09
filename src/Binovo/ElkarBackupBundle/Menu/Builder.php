@@ -158,7 +158,7 @@ class Builder extends ContainerAware
                       array('label'    => $t->trans('Session', array(), 'BinovoElkarBackup'),
                             'children' => array(array('label'    => $t->trans('Logout', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'logout'),
-                                                array('label'    => 'Hizkuntza',
+                                                array('label'    => $t->trans('Language', array(), 'BinovoElkarBackup'),
                                                       'children' => $this->getLanguageMenuEntries()))),
 
             );
