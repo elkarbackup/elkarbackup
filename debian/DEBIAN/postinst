@@ -23,7 +23,7 @@ else
     dbuserpassword="$RET"
 fi
 
-if ! mysql -u"$dbusername" -p"$dbuserpassword" -h"$dbhost" "$dbname" </dev/null
+if ! mysql -u"$dbusername" -p"$dbuserpassword" -h"$dbhost" "$dbname" </dev/null &>/dev/null
 then
     db_get elkarbackup/dbadminname
     dbadminusername="$RET"
@@ -41,9 +41,7 @@ then
     else
         user="'$dbusername'"
     fi
-    echo 'Create user'
-    echo "CREATE USER $user IDENTIFIED BY '$dbuserpassword';" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost" || true
-    echo "GRANT ALL ON $dbname.* TO $user;" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost" || true
+    echo "GRANT ALL ON $dbname.* TO $user IDENTIFIED BY '$dbuserpassword';" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost" || true
     echo 'Configure parameters'
     sed -i "s#database_host:.*#database_host: $dbhost#"                 /etc/elkarbackup/parameters.yml
     sed -i "s#database_name:.*#database_name: $dbname#"                 /etc/elkarbackup/parameters.yml
@@ -72,13 +70,13 @@ then
     echo "    url_prefix:" >> /etc/elkarbackup/parameters.yml
 fi
 echo Update DB
-php /usr/share/elkarbackup/app/console doctrine:migrations:migrate --no-interaction || true
+php /usr/share/elkarbackup/app/console doctrine:migrations:migrate --no-interaction >/dev/null || true
 echo Create root user
-php /usr/share/elkarbackup/app/console elkarbackup:create_admin || true
+php /usr/share/elkarbackup/app/console elkarbackup:create_admin >/dev/null || true
 echo Clean cache
-php /usr/share/elkarbackup/app/console cache:clear || true
+php /usr/share/elkarbackup/app/console cache:clear >/dev/null || true
 echo Dump assests
-php /usr/share/elkarbackup/app/console assetic:dump || true
+php /usr/share/elkarbackup/app/console assetic:dump >/dev/null || true
 echo Invalidate sessions
 rm -rf /var/lib/elkarbackup/sessions/*
 
@@ -87,6 +85,7 @@ sed -i "s/www-data/$username/" /etc/cron.d/elkarbackup
 if test x`grep $username /etc/passwd` = x
 then
     adduser --system --home /var/lib/elkarbackup --shell /bin/bash --group $username
+    chown -R elkarbackup.elkarbackup /var/lib/elkarbackup &>/dev/null
 fi
 if [ ! -f /var/lib/elkarbackup/.ssh/id_rsa ]
 then
