@@ -1,3 +1,16 @@
+'Generate': 'Sortu'
+'During the day': 'Egunean zehar'
+'Time of day': 'Ordutegia'
+'Days of the week': 'Astegunak'
+'Day of week': 'Asteko eguna'
+'Day of month': 'Hileko eguna'
+'Retention policy': 'Erretentzio politika'
+'Make backups during the day': 'Egin kopiak egunean zehar'
+'Number of copies to keep': 'Mantendu behar diren kopien kopurua'
+'Make daily backups': 'Egin eguneko kopiak'
+'Make weekly backups': 'Egin asteko kopiak'
+'Make monthly backups': 'Egin hileko kopiak'
+'Make yearly backups': 'Egin urteko kopiak'
 'Session': 'Saioa'
 'Remove logs older than': 'Hau baino zaharragoak diren log-ak ezabatu'
 'Currently not used': 'Gaur egun erabili gabe'
@@ -24,7 +37,7 @@
 'All messages': 'Mezu guztiak'
 'All': 'Guztia'
 'Authorized keys': 'Authorized keys'
-'Authorized_keys file (%filename%) updated.': 'Authorized_keys file (%filename%) updated.'
+'Authorized_keys file (%filename%) updated.': 'Authorized_keys fitxategia (%filename%) eguneratuta.'
 'Back to client': 'Bezerora bueltatu'
 'Back to job': 'Lanera bueltatu'
 'Backup script': 'Backup script'
@@ -44,10 +57,10 @@
 'Client "%clientid%" pre script failed. Aborting backup.': 'Client "%clientid%" pre script failed. Aborting backup.'
 'Client "%clientid%" pre script ok.': 'Client "%clientid%" pre script ok.'
 'Client "%clientid%" quota exceeded (quota: %quota%MB, disk usage: %du%MB).': 'Client "%clientid%" quota exceeded (quota: %quota%MB, disk usage: %du%MB).'
-'Client "%clientid%", Job "%jobid%" du begin.': 'Client "%clientid%", Job "%jobid%" du begin.'
-'Client "%clientid%", Job "%jobid%" du end.': 'Client "%clientid%", Job "%jobid%" du end.'
-'Client "%clientid%", Job "%jobid%" error.': 'Client "%clientid%", Job "%jobid%" error.'
-'Client "%clientid%", Job "%jobid%" ok.': 'Client "%clientid%", Job "%jobid%" ok.'
+'Client "%clientid%", Job "%jobid%" du begin.': 'Bezeroa "%clientid%", Kana "%jobid%" du hasiera.'
+'Client "%clientid%", Job "%jobid%" du end.': 'Bezeroa "%clientid%", Lana "%jobid%" du bukaera.'
+'Client "%clientid%", Job "%jobid%" error.': 'Bezeroa "%clientid%", Lana "%jobid%" errorea.'
+'Client "%clientid%", Job "%jobid%" ok.': 'Bezeroa "%clientid%", Lana "%jobid%" ok.'
 'Client': 'Bezeroa'
 'Clients': 'Bezeroak'
 'Command %command% failed. Diagnostic information follows: %output%': 'Command %command% failed. Diagnostic information follows: %output%'
@@ -90,7 +103,7 @@
 'Host': 'Host'
 'Hourly': 'Orduro'
 'Id': 'Id-a'
-'Include': 'Sartu'
+'Include': 'Sartu (Salbuespena)'
 'Invalid time specified.': 'Invalid time specified.'
 'Is active': 'Aktibo dago'
 'Job %jobid% has no policy': '%jobid% lanak ez du politikarik'
@@ -124,14 +137,14 @@
 'Never': 'Inoiz ez'
 'New password': 'Pasahitz berria'
 'New': 'Berria'
-'No keys defined': 'No keys defined'
+'No keys defined': 'Gakoak definitu gabe'
 'No script': 'No script'
 'No such job.': 'No such job.'
 'None': 'Batere ez'
-'Nothing to run.': 'Nothing to run.'
+'Nothing to run.': 'Ez dago ezer exekutatzeko.'
 'Notices and up': 'Notices and up'
 'Notify only': 'Bidaliko diren mezuak'
-'Object': 'Object'
+'Object': 'Objetua'
 'Old password': 'Pasahitz zaharra'
 'One day': 'Egun bat'
 'One week': 'Aste bete'
@@ -176,7 +189,7 @@
 'Three weeks': 'Hiru astea'
 'Three years': 'Hiru urte'
 'Thursday': 'Osteguna'
-'Time': 'Time'
+'Time': 'Ordua'
 'TODO': 'EGITEKE'
 'Tuesday': 'Asteartea'
 'Two weeks': 'Bi aste'
@@ -199,7 +212,7 @@
 'Username:': 'Erabiltzaile izena:'
 'Users': 'Erabiltzaileak'
 'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise': 'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise'
-'Warnings and up': 'Warnings and up'
+'Warnings and up': 'Abisuak eta gorago'
 'Wednesday': 'Asteazkena'
 'Weekly': 'Astero'
 'Welcome to the backup server configuration application.': 'Welcome to the backup server configuration application.'
@@ -220,7 +233,7 @@ policy_help: |
  </ol>
  Ikusten duzun moduan, aplikazioaren konfigurazio lehenetsiaren arabera fitxategi eta karpeta guztiak kopiatuko dira, Baztertu eremuarekin bat egiten dutenak baztertuz, beti ere ez badute bat egiten Sartu eremuko ereduekin. Kontutan izan lan bakoitzak bere Sartu eta Baztertu definizioak dituela. Beti izango dute lehentasuna lanetan definitutako arauak.
  <h4>Lehenengo sinkronizatu</h4>
- Lehenengo sinkronizatu aukeratuta dagoenean, sinkronizazio lanak egiteko beste urrats bat egiten da. When sync_first is enabled, all sync behaviour happens during an additional sync step. Even hourly calls only rotate the directories, without even connecting to the client. This ensures that the snapshots are consistent with the cost of an additional snapshot used only for syncing.
+ Lehenengo sinkronizatu aukeratuta dagoenean, sinkronizazio lanak egiteko beste urrats bat egiten da. Horly exekuzioek ere karpeten errotazio hutsa egingo dute, bezeroarekin konexiorik ezarri gabe.Honi esker snapshot-en konsistentzia ziurtatzen da sinkronizaziorako bakarrik erabiliko den beste snapshot baten gain-kostuarekin.
  <h4>Orduro</h4>
  Egunean zehar egindako kopiak.
  <h4>Egunero</h4>
@@ -299,8 +312,6 @@ params_help: |
  Eremu hauetan DBko konexioa konfiguratzen da. Kontuz ibili, daturen bat gaizki sartu ezkero aplikazioak errorea eman eta geratuko da.
  <h4>Mailer konfigurazioa</h4>
  Eremu hauetan aplikazioak posta elektronikoak nola bidaliko dituen konfiguratzen da. Kontuz bili, daturen bat gaizki sartu ezkero ezingo dira mezuak bidali.  <a href="http://symfony.com/doc/current/cookbook/email/email.html">Symfony proiektuko dokumentazioa</a> agian lagungarria izan daiteke.
- <h4>Backup-en karpeta</h4>
- Aplikazioak snapshot edo kopia guztiak karpeta honetan gordeko ditu. elkarbackup erabiltzaileak karpeta honetan idazteko baimenak izan beharko ditu.
  <h4>Hau baino zaharragoak diren log-ak ezabatu</h4>
  Log erregistroa handiegia ez suertatzeko aplikazioak aldiro garbiketa lana egingo du. Hemen jarritako balioa baino zaharragoak diren logak ezabatuko dira.
  <h4>Kuota abisuen maila</h4>
@@ -315,7 +326,8 @@ managebackups_help: |
  NFS zerbitzariaren host izena edo IP helbidea. Fitxategi sistema lokala erabiltzen denean, hutsik egon behar da.
  <p>Aplikazio honek autofs-kin dependentzia du urruneko fitxategi sistemak muntatzeko. autofs behar den bezala konfiguratuta ez badago eremu hau ez da editagarria izango.
  <h4>Karpeta</h4>
- Fitxategi sistema lokaleko path osoa edo NFS export-aren izena. Beti '/'-ekin hasi behar da.
+ Fitxategi sistema lokaleko path osoa edo NFS export-aren izena. Beti '/'-ekin hasi behar da.  Aplikazioak snapshot edo kopia guztiak karpeta honetan gordeko ditu. elkarbackup erabiltzaileak karpeta honetan idazteko baimenak izan beharko ditu.
+
 script_help: |
  <h4>Scritp-ei buruz</h4>
  Aplikazioak script-ak exekutatzen ditu backup erabiltzailea erabiliz. Script-ak exekutatu aurretik, aplikazioak ingurune aldagai hauek ezartzen ditu:
@@ -342,4 +354,3 @@ script_help: |
  Markatu ezazu beti ere script hau lan baten exekuzioa hasi aurretik abian jartzeko diseinatuta dagoenean.
  <h4>Lanaren post-script moduan exekutatu daiteke</h4>
  Markatu ezazu beti ere script hau lan baten exekuzioa bukatu ondoren abian jartzeko diseinatuta dagoenean.
-
