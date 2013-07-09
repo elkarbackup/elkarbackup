@@ -116,6 +116,7 @@
 'Invalid time specified.': 'El tiempo especificado no es válido.'
 'Is active': 'Está activo'
 'Jobs': 'Tareas'
+'Language': Idioma
 'Last log entry': 'Último evento'
 'Level': 'Nivel'
 'Link': 'Enlace'
@@ -134,6 +135,7 @@
 'Nothing to run.': 'Nada para ejecutar.'
 'Notices and up': 'Avisos y superior'
 'Notify only': 'Notificar sólo'
+'Number of copies to keep': 'Número de copias a conservar'
 'Object': 'Objeto'
 'Old password': 'Contraseña anterior'
 'Owner': 'Propietario'
@@ -240,9 +242,9 @@ job_help: |
  <h4>Espacio en disco</h4>
  El espacio que ocupan en disco los datos de esta tarea.
  <h4>Descripción</h4>
- Testo libre para describir la tarea. Introduce información que te sea útil. 
+ Testo libre para describir la tarea. Introduce información que te sea útil.
  <h4>Está activo</h4>
- Si no está activado no se realizarán las copias. 
+ Si no está activado no se realizarán las copias.
  <h4>Propietario</h4>
  De forma predeterminada, el usuario que ha creado la tarea es el propietario de la misma, y será a quien la aplicación envíe los mensajes asociados (más información en "Enviar avisos a" y "Notificar solo"). Solamente el administrador puede cambiar el propietario de una tarea.
  <h4>Enviar avisos a</h4>
@@ -265,7 +267,7 @@ job_help: |
  Como puedes observar, según la configuración predefinida de la aplicación se copiarán todos los ficheros y carpetas, excluyendo aquellas que coincidan con los patrones del campo Excluir, siempre y cuando no coincidan con los patrones del campo Incluir. Cuando el campo Incluir está vacío, y solo entonces, el sistema utilizará el contenido del campo Incluir definido en la política. Esto mismo es aplicable al campo Excluir.
 user_help: |
  <h4>Nombre</h4>
- Es el identificador de Usuario. Se mostrará en las listas y cuadros de selección. Cada usuario debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido 
+ Es el identificador de Usuario. Se mostrará en las listas y cuadros de selección. Cada usuario debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido
  <h4>Contraseña</h4>
  En este campo no puedes ver la contrasañe, pero lo puedes utilizar para cambiarla. Si introduces algo en este campo, estarás cambiando la contraseña de usuario.
  <h4>Correo electrónico</h4>
@@ -279,7 +281,7 @@ params_help: |
  <h4>Configuración del Mailer</h4>
  En estos campos se configura la parte del envío a través de correo electrónico. Cuidado, si cometes errores en esta parte no se podrán enviar los correos. Te puede ser útil la <a href="http://symfony.com/doc/current/cookbook/email/email.html">documentación del Proyecto Symfony</a>.
  <h4>Borrar logs más antiguos que</h4>
- Para que el registro de log no crezca demasiado la aplicación irá limpiandolo de vez en cuando. Se eliminarán las entradas que superen el valor introducido en este campo.  
+ Para que el registro de log no crezca demasiado la aplicación irá limpiandolo de vez en cuando. Se eliminarán las entradas que superen el valor introducido en este campo.
  <h4>Nivel de alerta de Cuota</h4>
  Se enviarán las alertas cuando un cliente supera en este % la cuota que se le ha establecido.
  <h4>Número de registros por página</h4>
@@ -309,9 +311,9 @@ script_help: |
  </ul>
  Si un pre-script de un cliente devuelve un valor distinto a 0, la aplicación abortará la ejecución de las tareas de ese cliente. Los resultados de los pre-scripts que se ejecutan a nivel de tarea no se tienen en cuenta.
  <h4>Nombre</h4>
- Es el identificador del Script. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido. 
+ Es el identificador del Script. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.
  <h4>Descripción</h4>
- Testo libre para describir el Script. Introduce información que te sea útil. 
+ Testo libre para describir el Script. Introduce información que te sea útil.
  <h4>Archivo</h4>
  Explora y selecciona el script que quieres subir.
  <h4>Ejecutar como pre-script de clientes</h4>
