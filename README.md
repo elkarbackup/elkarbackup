@@ -33,7 +33,7 @@ Well, you have two options:
 
 ## Download and build the package
 
-1. Download last version: `git clone git@github.com:elkarbackup/elkarbackup.git`
+1. Download latest version: `git clone git@github.com:elkarbackup/elkarbackup.git`
 2. Build Debian package from the source:
 
 - Bootstrap the application: this will install composer and dojo if necesary.
