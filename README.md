@@ -3,8 +3,8 @@ Elkarbackup
 
 This project is a web interface for the rsnapshot backup program.
 
-Installation&User Guide (Basque): https://github.com/elkarbackup/elkarbackup/blob/master/docs/Elkarbackup-Eskuliburua-eu-zuzenduta-2b.pdf?raw=true
-Installation&user Guide (Spanish): https://github.com/elkarbackup/elkarbackup/blob/master/docs/Elkarbackup-Eskuliburua-es-zuzenduta-2b.pdf?raw=true
+- Installation&User Guide (Basque): https://github.com/elkarbackup/elkarbackup/blob/master/docs/Elkarbackup-Eskuliburua-eu-zuzenduta-2b.pdf?raw=true
+- Installation&user Guide (Spanish): https://github.com/elkarbackup/elkarbackup/blob/master/docs/Elkarbackup-Eskuliburua-es-zuzenduta-2b.pdf?raw=true
 
 ###Supported languages:
 - English
