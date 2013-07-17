@@ -188,6 +188,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                                array('%command%' => $command,
                                      '%output%'  => "\n" . implode("\n", $commandOutput)),
                                $context);
+                    $ok = false;
                     break;
                 } else {
                     $this->info('Command %command% succeeded with output: %output%',
@@ -207,8 +208,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                 }
             }
         }
-        $ok = unlink($confFileName);
-        if (false === $ok) {
+        if (false === unlink($confFileName)) {
             $this->warn('Error unlinking config file %filename%.',
                         array('%filename%' => $confFileName),
                         $context);
