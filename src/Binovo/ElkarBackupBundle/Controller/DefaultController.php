@@ -555,7 +555,7 @@ class DefaultController extends Controller
                 $headers = array('Content-Type'        => 'application/x-gzip',
                                  'Content-Disposition' => sprintf('attachment; filename="%s.tar.gz"', basename($realPath)));
                 $f = function() use ($realPath){
-                    $command = sprintf('cd %s; tar zc %s', dirname($realPath), basename($realPath));
+                    $command = sprintf('cd "%s"; tar zc "%s"', dirname($realPath), basename($realPath));
                     passthru($command);
                 };
                 $this->info('Download backup directory %clientid%, %jobid% %path%',
