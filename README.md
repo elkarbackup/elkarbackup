@@ -25,8 +25,10 @@ Well, you have two options:
 
 ##Or download and install the Debian packages
 
-1. Install the required packages: `sudo apt-get install debconf php5 php5-cli rsnapshot mysql-server php5-mysql acl bzip2`
-2. Adding the repository: (todo)
+1. Adding GPG key: `wget -0 - http://elkarbackup.org/apt/archive.gpg.key | sudo apt-key add -`
+2. Edit your '/etc/apt/sources.list' and add this line: `deb http://elkarbackup.org/apt/debian squeeze main`
+3. Install the required packages: `sudo apt-get install debconf php5 php5-cli rsnapshot mysql-server php5-mysql acl bzip2`
+4. Install elkarbackup: `sudo apt-get install elkarbackup`
 
 
 # How to collaborate
