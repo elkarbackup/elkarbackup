@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 # Source debconf library.
@@ -25,6 +25,9 @@ fi
 
 if ! mysql -u"$dbusername" -p"$dbuserpassword" -h"$dbhost" "$dbname" </dev/null &>/dev/null
 then
+    db_input high elkarbackup/dbadminname     || true
+    db_input high elkarbackup/dbadminpassword || true
+    db_go || true
     db_get elkarbackup/dbadminname
     dbadminusername="$RET"
     db_reset elkarbackup/dbadminname

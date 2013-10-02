@@ -4,8 +4,6 @@ set -e
 # Source debconf library.
 . /usr/share/debconf/confmodule
 
-db_input high elkarbackup/dbadminname     || true
-db_input high elkarbackup/dbadminpassword || true
 db_input medium elkarbackup/dbhost        || true
 db_input low elkarbackup/dbname           || true
 db_input low elkarbackup/dbusername       || true

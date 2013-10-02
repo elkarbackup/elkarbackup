@@ -55,15 +55,18 @@ gzip -f --best .debian/usr/share/doc/elkarbackup/changelog.Debian
 # ensure directory permissions are right
 find .debian -type d | xargs chmod 755
 # set initial values for parametres
-sed -i 's#tmp_dir:.*#tmp_dir: /tmp#'                                       .debian/etc/elkarbackup/parameters.yml
-sed -i 's#database_name: tknikabackups#database_name: elkarbackup#'        .debian/etc/elkarbackup/parameters.yml
 sed -i 's#backup_dir:.*#backup_dir: /var/spool/elkarbackup/backups#'       .debian/etc/elkarbackup/parameters.yml
-sed -i 's#upload_dir:.*#upload_dir: /var/spool/elkarbackup/uploads#'       .debian/etc/elkarbackup/parameters.yml
+sed -i 's#database_name:.*#database_name: elkarbackup#'                    .debian/etc/elkarbackup/parameters.yml
+sed -i 's#database_password:.*#database_password: elkarbackup#'            .debian/etc/elkarbackup/parameters.yml
+sed -i 's#database_user:.*#database_user: elkarbackup#'                    .debian/etc/elkarbackup/parameters.yml
+sed -i 's#mailer_host:.*#mailer_host: localhost#'                          .debian/etc/elkarbackup/parameters.yml
+sed -i 's#mailer_password:.*#mailer_password: #'                           .debian/etc/elkarbackup/parameters.yml
 sed -i 's#mailer_transport:.*#mailer_transport: smtp#'                     .debian/etc/elkarbackup/parameters.yml
 sed -i 's#mailer_user:.*#mailer_user: #'                                   .debian/etc/elkarbackup/parameters.yml
-sed -i 's#mailer_password:.*#mailer_password: #'                           .debian/etc/elkarbackup/parameters.yml
-sed -i 's#mailer_host:.*#mailer_host: localhost#'                          .debian/etc/elkarbackup/parameters.yml
 sed -i 's#public_key:.*#public_key: /var/lib/elkarbackup/.ssh/id_rsa.pub#' .debian/etc/elkarbackup/parameters.yml
+sed -i 's#tmp_dir:.*#tmp_dir: /tmp#'                                       .debian/etc/elkarbackup/parameters.yml
+sed -i 's#upload_dir:.*#upload_dir: /var/spool/elkarbackup/uploads#'       .debian/etc/elkarbackup/parameters.yml
+
 # use prod environment in console by default
 sed -i "s#'dev'#'prod'#"                                                   .debian/usr/share/elkarbackup/app/console
 chmod a+x .debian/usr/share/elkarbackup/app/console
