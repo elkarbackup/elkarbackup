@@ -67,7 +67,7 @@ sed -i 's#public_key:.*#public_key: /var/lib/elkarbackup/.ssh/id_rsa.pub#' .debi
 sed -i 's#tmp_dir:.*#tmp_dir: /tmp#'                                       .debian/etc/elkarbackup/parameters.yml
 sed -i 's#upload_dir:.*#upload_dir: /var/spool/elkarbackup/uploads#'       .debian/etc/elkarbackup/parameters.yml
 # ensure config files have the right permissions
-chmod 0400 .debian/etc/sudoers.d/elkarbackup
+chmod 0440 .debian/etc/sudoers.d/elkarbackup
 chmod 0644 .debian/DEBIAN/conffiles .debian/DEBIAN/templates .debian/etc/cron.d/elkarbackup
 chmod 0755 .debian/DEBIAN/config .debian/DEBIAN/postinst .debian/DEBIAN/postrm .debian/DEBIAN/preinst
 
