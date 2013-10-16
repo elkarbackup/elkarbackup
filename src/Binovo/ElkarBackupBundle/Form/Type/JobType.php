@@ -22,7 +22,7 @@ class JobType extends AbstractType
                                                                 'attr'  => array('class'    => 'span12')))
                 ->add('policy'              , 'entity'  , array('label' => $t->trans('Policy', array(), 'BinovoElkarBackup'),
                                                                 'attr'     => array('class'    => 'span12'),
-                                                                'required' => false,
+                                                                'required' => true,
                                                                 'class'    => 'BinovoElkarBackupBundle:Policy',
                                                                 'property' => 'name'))
                 ->add('useLocalPermissions' , 'checkbox', array('label'    => $t->trans('Use local permissions', array(), 'BinovoElkarBackup'),
