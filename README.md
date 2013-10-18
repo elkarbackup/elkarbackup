@@ -1,47 +1,33 @@
-Elkarbackup
-===========
+# Elkarbackup
 
-This project is a web interface for the rsnapshot backup program.
+## What is it?
+Elkarbackup is a web interface for the RSnapshot backup software
 
-- [Installation&User Guide (Basque)] (https://github.com/elkarbackup/elkarbackup/blob/master/docs/Elkarbackup-Eskuliburua-eu-zuzenduta-2b.pdf?raw=true)
-- [Installation&user Guide (Spanish)] (https://github.com/elkarbackup/elkarbackup/blob/master/docs/Elkarbackup-Eskuliburua-es-zuzenduta-2b.pdf?raw=true)
+## Features
+- Centralized backups
+- Easy-to-use web interface
+- Backup Linux/Windows clients
+- Instant recovery!
+- Pre-scripts & Post-scripts
+- Multilanguage (English, Basque, Spanish)
 
-###Supported languages:
-- English
-- Spanish
-- Basque
+## Documentation
+* [Installation](https://github.com/elkarbackup/elkarbackup/wiki/Installation)
+* [Configuration](https://github.com/elkarbackup/elkarbackup/wiki/Configuration)
+* [Saving backups to NFS directory](https://github.com/elkarbackup/elkarbackup/wiki/Saving-backups-to-NFS-directory)
+* [FAQ](https://github.com/elkarbackup/elkarbackup/wiki/FAQ)
 
+Do you need more?
 
-#Do you want to try it?
-
-Well, you have two options:
-
-##Download a ready-to-use VM
-
-- IMG (raw) file for KVM-Proxmox (64-bit): http://ftp.tknika.net/elkarbackup/ElkarBackupServerBase2GB1.0.9_64b.img (2,1 G)
-- IMG (raw) file for KVM-Proxmox (32-bit): (todo)
-- VMDK file for VMWare (64-bit): http://ftp.tknika.net/elkarbackup/ElkarBackupServerBase2GB1.0.9_64b.vmdk (1,4 G)
-- VMDK file for VMWare (32-bit): (todo)
-
-##Or download and install the Debian packages
-
-1. Adding GPG key: `wget -O - http://elkarbackup.org/apt/archive.gpg.key | sudo apt-key add -`
-2. Edit your '/etc/apt/sources.list' and add this line: `deb http://elkarbackup.org/apt/debian squeeze main`
-3. Install the required packages: `sudo apt-get install debconf php5 php5-cli rsnapshot mysql-server php5-mysql acl bzip2`
-4. Install elkarbackup: `sudo apt-get install elkarbackup`
+- [Installation & User Guide (Basque)] (https://github.com/elkarbackup/elkarbackup/blob/master/docs/Elkarbackup-Eskuliburua-eu-zuzenduta-2b.pdf?raw=true)
+- [Installation & User Guide (Spanish)] (https://github.com/elkarbackup/elkarbackup/blob/master/docs/Elkarbackup-Eskuliburua-es-zuzenduta-2b.pdf?raw=true)
 
 
-# How to collaborate
+## Ready-to-use VM
 
-## Download and build the package
+If you prefer, you can download [ready-to-use VM] (https://github.com/elkarbackup/elkarbackup/wiki/DownloadVirtualMachine) for your KVM/Proxmox/VMware virtualization server
 
-1. Download latest version: `git clone git@github.com:elkarbackup/elkarbackup.git`
-2. Build Debian package from the source:
 
-- Bootstrap the application: this will install composer and dojo if necesary.
+## Develop
 
-    ./bootstrap.sh
-
-- Create the package
-
-    ./makepackage.sh
+Elkarbackup is free open source software. Download the source code, make your changes and [create your own Debian package](https://github.com/elkarbackup/elkarbackup/wiki/BuildPackage)
