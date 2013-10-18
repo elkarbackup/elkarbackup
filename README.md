@@ -3,6 +3,13 @@
 ## What is it?
 Elkarbackup is a web interface for the RSnapshot backup software
 
+<table>
+  <tr>
+    <td><img src="http://www.elkarbackup.org/images/elkarbackup_main_eu.png" width="350"></td>
+    <td><img src="http://www.elkarbackup.org/images/elkarbackup_restore_eu.png" width="350"></td>
+  </tr>
+</table>
+
 ## Features
 - Centralized backups
 - Easy-to-use web interface
