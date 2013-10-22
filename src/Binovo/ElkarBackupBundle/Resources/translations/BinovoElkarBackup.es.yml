@@ -19,7 +19,7 @@
 'One week': 'Una semana'
 'Two weeks': 'Dos semanas'
 'Three weeks': 'Tres semanas'
-'A month': 'Un més'
+'A month': 'Un mes'
 'Six months': 'Seis meses'
 'A year': 'Un año'
 'Two years': 'Dos años'
@@ -49,7 +49,7 @@
 'Make monthly backups': 'Realizar copias mensuales'
 'Make yearly backups': 'Realizar copias anuales'
 'Time of day': 'Horario'
-'Day of month': 'Día del més'
+'Day of month': 'Día del mes'
 'Days of the week': 'Días de la semana'
 'Retention policy': 'Política de retención'
 'Number of copies to keep': 'Número de copias a mantenter'
@@ -187,7 +187,7 @@ policy_help: |
  <h4>Nombre</h4>
  Es el identificador de la política. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.
  <h4>Descripción</h4>
- Testo libre para describir la política. Introduce información que te sea útil.
+ Texto libre para describir la política. Introduce información que te sea útil.
  <h4>Excluir e Incluir</h4>
  La aplicación utilizará cada línea del campo Excluir como patrón para excluir ficheros, y de la misma forma utilizará cada línea del campo Incluir como patrón de inclusión. Utilizando estos campos de forma adecuada podrás definir los ficheros que quieres incluir en las copias. Estos campos intervienen con cada carpeta y fichero de la copia de la siguiente forma:
  <ol>
@@ -224,7 +224,7 @@ client_help: |
  <h4>Espacio en disco</h4>
  Espacio ocupado en estos momentos por los datos del cliente.
  <h4>Descripción</h4>
- Testo libre para describir al cliente. Introduce información que te sea útil.
+ Texto libre para describir al cliente. Introduce información que te sea útil.
  <h4>Está activo</h4>
  Si no está activado no se realizarán las copias.
  <h4>Pre y post scripts</h4>
@@ -242,7 +242,7 @@ job_help: |
  <h4>Espacio en disco</h4>
  El espacio que ocupan en disco los datos de esta tarea.
  <h4>Descripción</h4>
- Testo libre para describir la tarea. Introduce información que te sea útil.
+ Texto libre para describir la tarea. Introduce información que te sea útil.
  <h4>Está activo</h4>
  Si no está activado no se realizarán las copias.
  <h4>Propietario</h4>
@@ -256,7 +256,7 @@ job_help: |
  <h4>Políticas</h4>
  Elige la política que se aplicará a esta tarea. Cada política define varios parámetros, entre ellos cuando se realizarán las copias, y cuantas copias guardarán. Si no se llena este campo, no se realizarán las copias.
  <h4>Utilizar permisos locales</h4>
- Rsnapshot siempres intenta mantener los permisos originales de los ficheros. Esto puede llegar a causar problemas con clientes Widows y con clientes Linux que utilizan ACLs. Si te ocurre algo así puedes activar esta opción, y de esta forma el servicio web no tendrá problemas de lectura de los ficheros.
+ Rsnapshot siempre intenta mantener los permisos originales de los ficheros. Esto puede llegar a causar problemas con clientes Windows y con clientes Linux que utilizan ACLs. Si te ocurre algo así puedes activar esta opción, y de esta forma el servicio web no tendrá problemas de lectura de los ficheros.
  <h4>Excluir e Incluir</h4>
  La aplicación utilizará cada línea del campo Excluir como patrón para excluir ficheros, y de la misma forma utilizará cada línea del campo Incluir como patrón de inclusión. Utilizando estos campos de forma adecuada podrás definir los ficheros que quieres incluir en las copias. Estos campos intervienen con cada carpeta y fichero de la copia de la siguiente forma:
  <ol>
@@ -313,7 +313,7 @@ script_help: |
  <h4>Nombre</h4>
  Es el identificador del Script. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.
  <h4>Descripción</h4>
- Testo libre para describir el Script. Introduce información que te sea útil.
+ Texto libre para describir el Script. Introduce información que te sea útil.
  <h4>Archivo</h4>
  Explora y selecciona el script que quieres subir.
  <h4>Ejecutar como pre-script de clientes</h4>
