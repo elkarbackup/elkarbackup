@@ -9,6 +9,11 @@ On Error Goto 0
 
 Const EXIT_SUCCESS = 0
 Const EXIT_ERROR   = 1
+Const LOG_ERROR    = 1
+
+Dim objShell
+
+Set objShell = WScript.CreateObject("WScript.Shell")
 
 Function MountVss(driveLetter, target)
     Dim shell
@@ -16,7 +21,6 @@ Function MountVss(driveLetter, target)
     shell.Run "cmd /c C:\ElkarBackup\vss """ & Mid(driveLetter, 1, 1) & ":""", 0, True
     MountVss = shell.Run("cmd /c C:\ElkarBackup\vss """ & Mid(driveLetter, 1, 1) & ":"" """ & target & """", 0, True)
 End Function
-
 
 Function ReadFile(filename)
     On Error Resume Next
@@ -50,6 +54,8 @@ Function SnapshotCreate(volume)
     errResult = objShadowStorage.Create(Mid(volume, 1, 1) & ":\", CONTEXT, strShadowId)
     If errResult = 0 Then
         SnapshotCreate = strShadowId
+    Else
+        objShell.LogEvent LOG_ERROR, "Error " & errResult & " creating snapshot of " & volume
     End If
 End Function
 
