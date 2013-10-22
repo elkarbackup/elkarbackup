@@ -22,6 +22,7 @@ Elkarbackup is a web interface for the RSnapshot backup software
 * [Installation](https://github.com/elkarbackup/elkarbackup/wiki/Installation)
 * [Configuration](https://github.com/elkarbackup/elkarbackup/wiki/Configuration)
 * [Saving backups to NFS directory](https://github.com/elkarbackup/elkarbackup/wiki/Saving-backups-to-NFS-directory)
+* [Redundant backup](https://github.com/elkarbackup/elkarbackup/wiki/RedundantBackup)
 * [FAQ](https://github.com/elkarbackup/elkarbackup/wiki/FAQ)
 
 Do you need more?
