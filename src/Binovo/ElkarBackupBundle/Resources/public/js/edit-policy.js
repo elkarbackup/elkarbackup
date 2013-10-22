@@ -317,7 +317,7 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
         dailyDaysOfWeekInput.value  = dojo.query('input[id^=daily][type=checkbox]')
             .filter(
                 function(item) {
-                    return item.checked;
+                    return item.checked && item.id != 'daily-activation';
                 })
             .map(
                 function(item) {
