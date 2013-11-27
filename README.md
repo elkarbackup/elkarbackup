@@ -27,8 +27,8 @@ Elkarbackup is a web interface for the RSnapshot backup software
 
 Do you need more?
 
-- [Installation & User Guide (Basque)] (https://github.com/elkarbackup/elkarbackup/blob/master/docs/Elkarbackup-Eskuliburua-eu-zuzenduta-2b.pdf?raw=true)
-- [Installation & User Guide (Spanish)] (https://github.com/elkarbackup/elkarbackup/blob/master/docs/Elkarbackup-Eskuliburua-es-zuzenduta-2b.pdf?raw=true)
+- [Installation & User Guide (Basque) V2.3] (https://github.com/elkarbackup/elkarbackup/blob/master/docs/Elkarbackup-Eskuliburua-eu-2.3.pdf?raw=true)
+- [Installation & User Guide (Spanish) V2.3] (https://github.com/elkarbackup/elkarbackup/blob/master/docs/Elkarbackup-Manual-es-2.3.pdf?raw=true)
 
 
 ## Ready-to-use VM
