@@ -1,5 +1,8 @@
+Alias /elkarbackup /usr/share/elkarbackup/web
 <Directory "/usr/share/elkarbackup/web/">
-   AllowOverride All
+   RewriteEngine On
+   RewriteCond %{REQUEST_FILENAME} !-f
+   RewriteRule ^(.*)$ /elkarbackup/app.php [QSA,L]
+   AllowOverride None
    Allow from All
 </Directory>
-Alias /elkarbackup /usr/share/elkarbackup/web
