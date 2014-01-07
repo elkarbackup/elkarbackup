@@ -39,3 +39,6 @@ If you prefer, you can download [ready-to-use VM] (https://github.com/elkarbacku
 ## Develop
 
 Elkarbackup is free open source software. Download the source code, make your changes and [create your own Debian package](https://github.com/elkarbackup/elkarbackup/wiki/BuildPackage)
+
+
+[![Analytics](https://ga-beacon.appspot.com/UA-3914088-10/elkarbackup/readme)](https://github.com/igrigorik/ga-beacon)
