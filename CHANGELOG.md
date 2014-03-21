@@ -2,6 +2,7 @@
 
 Features:
   - GUI - Clients: Show disk usage in GB (#8, @xezpeleta)
+  - Allow access with URL http://ipaddress/elkarbackup (#31, @elacunza)
 
 Bugfixes:
   - Windows snapshots: log snapshot creation errors as debugging aid (@blaskurain)
