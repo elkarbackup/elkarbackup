@@ -3,6 +3,7 @@
 Features:
   - GUI - Clients: Show disk usage in GB (#8, @xezpeleta)
   - Allow access with URL http://ipaddress/elkarbackup (#31, @elacunza)
+  - Report Elkarbackup status to Nagios: send_nsca_result.sh script (#21, @elacunza)
 
 Bugfixes:
   - Windows snapshots: log snapshot creation errors as debugging aid (@blaskurain)
