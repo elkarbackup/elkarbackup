@@ -1,10 +1,11 @@
-## [Upcoming version]
+## 1.0.22 (2014-03-21)
 
 Features:
   - GUI - Clients: Show disk usage in GB (#8, @xezpeleta)
 
 Bugfixes:
   - Windows snapshots: log snapshot creation errors as debugging aid (@blaskurain)
+  - Fix problem with monthly and yearly policy (#41, @xezpeleta)
 
 ## 1.0.21 (2013-10-22)
 
