@@ -25,7 +25,7 @@ class Policy
     {
         $allRetains = $this->allRetains;
         $retains = array();
-        list($year, $month, $day, $hour, $dayOfWeek) = explode('-', $time->format('Y-m-d-H:i-N'));
+        list($year, $month, $day, $hour, $dayOfWeek) = explode('-', $time->format('Y-n-j-H:i-N'));
         foreach ($allRetains as $retain) {
             $getCount       = "get{$retain}Count";
             $getDaysOfMonth = "get{$retain}DaysOfMonth";
