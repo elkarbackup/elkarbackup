@@ -35,6 +35,10 @@ Do you need more?
 
 If you prefer, you can download [ready-to-use VM] (https://github.com/elkarbackup/elkarbackup/wiki/DownloadVirtualMachine) for your KVM/Proxmox/VMware virtualization server
 
+## Mailing list
+
+Elkarbackup users can subscribe to our [mailing list](https://groups.google.com/forum/?hl=es#!forum/elkarbackup-users) to receive notifications about new versions or make any question.
+
 
 ## Develop
 
