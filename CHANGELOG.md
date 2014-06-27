@@ -1,3 +1,8 @@
+## Upcoming version
+
+Bugfixes:
+  - Include/Exclude bug #25 #29 #45 @alfredobz
+
 ## 1.0.22 (2014-03-21)
 
 Features:
