@@ -1,0 +1,6 @@
+/var/log/elkarbackup/BnvLog.log  /var/log/elkarbackup/prod.log {
+    rotate 8
+    weekly
+    compress
+    missingok
+}

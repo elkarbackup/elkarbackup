@@ -11,3 +11,4 @@
 /etc/elkarbackup/routing.yml
 /etc/elkarbackup/routing_dev.yml
 /etc/elkarbackup/security.yml
+/etc/logrotate.d/elkarbackup
