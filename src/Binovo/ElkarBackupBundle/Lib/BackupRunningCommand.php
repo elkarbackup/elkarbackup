@@ -111,11 +111,17 @@ abstract class BackupRunningCommand extends LoggingCommand
         $include = $job->getInclude();
         if ($include) {
             $includes = explode("\n", $include);
+	    foreach($includes as &$theInclude) {
+		$theInclude = str_replace('\ ', ' ', trim($theInclude));
+	    }
         }
         $excludes = array();
         $exclude = $job->getExclude();
         if ($exclude) {
             $excludes = explode("\n", $exclude);
+	    foreach($excludes as &$theExclude) {
+		$theExclude = str_replace('\ ', ' ', trim($theExclude));
+	    }
         }
         $syncFirst = (int)$job->getPolicy()->getSyncFirst();
         $context = array('link' => $this->generateJobRoute($idJob, $idClient));
