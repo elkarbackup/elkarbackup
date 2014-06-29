@@ -55,7 +55,7 @@ class User implements AdvancedUserInterface
     /**
      * @ORM\Column(type="string")
      */
-    private $roles = 'ROLE_USER';
+    private $roles = 'ROLE_ADMIN';
 
     public function __construct()
     {
