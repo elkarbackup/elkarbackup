@@ -109,7 +109,9 @@ chown -R www-data.www-data /var/lib/elkarbackup/sessions /etc/elkarbackup/parame
 uploadsdir="/var/spool/elkarbackup/uploads"
 olduploadsdir=`cat /etc/elkarbackup/parameters.yml|grep upload_dir|sed 's/.*: *//'`
 mkdir -p "$uploadsdir" || true
-mv "$olduploadsdir"/* "$uploadsdir" || true
+if [ ! "$olduploadsdir" == "$uploadsdir" ]; then
+  mv "$olduploadsdir"/* "$uploadsdir" || true
+fi
 chown -R www-data.www-data "$uploadsdir"
 sed -i "s#upload_dir:.*#upload_dir: $uploadsdir#" /etc/elkarbackup/parameters.yml
 sed -i -e "s#elkarbackupuser#$username#g" -e "s#\s*Cmnd_Alias\s*ELKARBACKUP_SCRIPTS.*#Cmnd_Alias ELKARBACKUP_SCRIPTS=$uploadsdir/*#" /etc/sudoers.d/elkarbackup
