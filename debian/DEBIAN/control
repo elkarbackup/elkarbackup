@@ -1,9 +1,9 @@
 Package: elkarbackup
-Version: 1.0.22
+Version: 1.0.23
 Section: devel
 Priority: optional
 Architecture: all
-Depends: acl, debconf, php5, php5-cli, rsnapshot, mysql-client, php5-mysql, sudo
+Depends: acl, debconf, php5, php5-cli, rsnapshot, mysql-client, php5-mysql, sudo, apache2
 Suggests: autofs5, bzip2
 Replaces: tknikabackups
 Maintainer: Victor Laskurain <blaskurain@binovo.es>

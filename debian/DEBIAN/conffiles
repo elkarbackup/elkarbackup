@@ -1,5 +1,5 @@
-/etc/apache2/conf.d/elkarbackup
-/etc/apache2/sites-available/elkarbackup
+/etc/apache2/conf-available/elkarbackup.conf
+/etc/apache2/sites-available/elkarbackup.conf
 /etc/auto.nfs4
 /etc/cron.d/elkarbackup
 /etc/sudoers.d/elkarbackup
