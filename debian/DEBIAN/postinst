@@ -129,7 +129,7 @@ if [ "$1" = "configure" ]; then
         fi
         
         if [ -d /etc/apache2/sites-available/ -a ! -L /etc/apache2/sites-available/$CONF.conf ]; then
-            ln -s ../sites-available/$CONF.conf /etc/apache/sites-enabled/$CONF.conf
+            ln -s ../sites-available/$CONF.conf /etc/apache2/sites-enabled/$CONF.conf
         fi
     fi
 fi
