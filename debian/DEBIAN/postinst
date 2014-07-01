@@ -136,6 +136,7 @@ if [ "$1" = "configure" ]; then
         if [ -d /etc/apache2/sites-available/ -a ! -L /etc/apache2/sites-available/$CONF.conf ]; then
             if [ -f /etc/apache2/sites-available/$CONF ]; then
                 mv /etc/apache2/sites-available/$CONF /etc/apache2/sites-available/$CONF.conf
+                rm /etc/apache2/sites-enabled/$CONF
             fi
             #a2ensite
             ln -s ../sites-available/$CONF.conf /etc/apache2/sites-enabled/$CONF.conf
