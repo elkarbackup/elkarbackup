@@ -123,9 +123,9 @@ if [ "$1" = "configure" ]; then
 
     if [ -e /usr/share/apache2/apache2-maintscript-helper ]; then
         . /usr/share/apache2/apache2-maintscript-helper
+        apache2_invoke enmod rewrite || exit $?
         apache2_invoke enconf $CONF || exit $?
         apache2_invoke ensite $CONF || exit $?
-        apache2_invoke enmod rewrite || exit $?
     elif [ "$COMMON_STATE" = "installed" ] || [ "$COMMON_STATE" = "unpacked" ] ; then
         if [ -d /etc/apache2/conf.d/ -a ! -L /etc/apache2/conf.d/$CONF.conf ]; then
             if [ -f /etc/apache2/conf.d/$CONF ]; then
