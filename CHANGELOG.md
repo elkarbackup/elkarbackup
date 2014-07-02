@@ -1,5 +1,8 @@
 ## Upcoming version
 
+Features:
+  - Ubuntu 14.04 Trusty / Debian 8 Jessie compatibility (#48 @xezpeleta)
+
 Bugfixes:
   - Include/Exclude bug (#25 #29 #45 @alfredobz)
   - Add logrotate policy (#42, @alfredobz)
