@@ -44,5 +44,3 @@ Elkarbackup users can subscribe to our [mailing list](https://groups.google.com/
 
 Elkarbackup is free open source software. Download the source code, make your changes and [create your own Debian package](https://github.com/elkarbackup/elkarbackup/wiki/BuildPackage)
 
-
-[![Analytics](https://ga-beacon.appspot.com/UA-3914088-10/elkarbackup/readme)](https://github.com/igrigorik/ga-beacon)
