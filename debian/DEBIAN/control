@@ -4,7 +4,7 @@ Section: devel
 Priority: optional
 Architecture: all
 Depends: acl, debconf, php5, php5-cli, rsnapshot, mysql-client, php5-mysql, sudo, apache2
-Suggests: autofs5, bzip2
+Suggests: autofs5, bzip2, mysql-server
 Replaces: tknikabackups
 Maintainer: Victor Laskurain <blaskurain@binovo.es>
 Description: Web configurator for rsnapshot
