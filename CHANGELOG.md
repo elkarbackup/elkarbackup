@@ -1,5 +1,10 @@
 ## Upcoming version
 
+Bugfixes:
+  - Fix dpkg-reconfigure error (#54 @xezpeleta)
+
+## 1.0.23 (2014/07/04)
+
 Features:
   - Ubuntu 14.04 Trusty / Debian 8 Jessie compatibility (#48 @xezpeleta)
 
