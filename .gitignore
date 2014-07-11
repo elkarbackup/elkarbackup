@@ -6,3 +6,4 @@ build/
 vendor
 bin
 composer.phar
+app/
