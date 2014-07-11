@@ -17,8 +17,8 @@
 
 <form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_enctype(form) }}>
     <legend id="legend">{% trans %}Edit Job{% endtrans %}</legend>
-    <div class="row-fluid">
-        <div class="span6">
+    <div class="row">
+        <div class="col-md-6">
 {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
 {% for flashMessage in app.session.flashbag.get('job') %}
             <div class="controls help-block">
@@ -37,13 +37,13 @@
                 {{ form_row(form.path) }}
                 <div class="control-group">
                     <label class="control-label">{% trans %}Disk usage{% endtrans %}</label>
-                    <div class="controls"><input class="span12" type="text" disabled="disabled" value="{{ (form.vars.value.diskUsage / 1024) | number_format(0)  }} MB" /></div>
+                    <div class="controls"><input class="col-md-12" type="text" disabled="disabled" value="{{ (form.vars.value.diskUsage / 1024) | number_format(0)  }} MB" /></div>
                 </div>
                 {{ form_row(form.description) }}
                 {{ form_row(form.isActive) }}
                 {{ form_row(form.owner, {read_only: not is_granted('ROLE_ADMIN')}) }}
                 {{ form_row(form.notificationsTo) }}
-                {{ form_row(form.notificationsEmail, {attr: {class: 'span12'}}) }}
+                {{ form_row(form.notificationsEmail, {attr: {class: 'col-md-12'}}) }}
                 {{ form_row(form.minNotificationLevel) }}
                 {{ form_row(form.preScripts) }}
                 {{ form_row(form.postScripts) }}
@@ -56,7 +56,7 @@
                 </div>
             </div>
         </div>
-        <div class="span6">
+        <div class="col-md-6">
             {% trans %}job_help{% endtrans %}
         </div>
     </div>

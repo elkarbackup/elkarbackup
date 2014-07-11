@@ -10,7 +10,7 @@
 <h3>{% trans %}Logs{% endtrans %}</h3>
 
 <form action="{{ path('showLogs') }}">
-<table class="table table-condensed table-bordered table-striped">
+<table class="table table-condensed table-hover table-striped">
     <tr>
         {# sorting of properties based on query components #}
         <th>{% trans %}Time{% endtrans %}</th>
@@ -26,12 +26,19 @@
 
     {# table body #}
     {% for logRecord in pagination %}
-    <tr>
+    <tr class=" {% if (logRecord.message) == 'FAIL'%}
+			danger
+		{% elseif (logRecord.message) == 'OK'%}
+			success
+		{% else %}
+			logs
+		{% endif %}" >
+
         <td style="white-space: nowrap;">{{ logRecord.dateTime.format('Y-m-d H:i:s') }}</td>
-        <td>{{ logRecord.levelName }}</td>
+        <td class="{% if (logRecord.levelName) == 'ERROR'%}danger{% endif %}">{{ logRecord.levelName }}</td>
         <td>{{ logRecord.source }}</td>
         <td>{{ logRecord.userName }}</td>
-        <td>{{ logRecord.message }}</td>
+        <td class="{% if (logRecord.message) == 'OK'%}success{% endif %}">{{ logRecord.message }}</td>
         <td style="white-space: nowrap;">{% if logRecord.link %}<a href="{{ logRecord.link }}">{{ logRecord.link }}</a>{% endif %}</td>
     </tr>
     {% endfor %}

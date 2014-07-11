@@ -14,8 +14,52 @@
 
 {% block body %}
 
-<div class="row-fluid">
+<div class="row">
 <div class="max10" >
+    
+    
+    
+    
+    
+    
+    
+    
+   <h3>{{ fsDiskUsage }}{% trans %}Clients{% endtrans %}</h3>
+
+
+<div class="progress">
+{% if fsDiskUsage <= 20 %}
+    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
+    <span class="sr-only">{{ fsDiskUsage }}% completado</span>
+    </div>
+{% elseif fsDiskUsage <= 60 %}
+    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
+    <span class="sr-only">{{ fsDiskUsage }}% completado</span>
+  </div>
+{% elseif fsDiskUsage <= 90 %}
+    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
+    <span class="sr-only">{{ fsDiskUsage }}% completado</span>
+  </div>
+{% elseif fsDiskUsage > 90 %}
+    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
+    <span class="sr-only">{{ fsDiskUsage }}% completado</span>
+  </div>
+{% endif %}
+</div> 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 <h3>{% trans %}Clients{% endtrans %}</h3>
 
 {% for flashMessage in app.session.flashbag.get('clients') %}
@@ -23,7 +67,7 @@
         {{ flashMessage }}
     </div>
 {% endfor %}
-<table class="table table-condensed table-bordered">
+<table class="table table-condensed table-hover">
     <tr>
         {# sorting of properties based on query components #}
         <th>{% trans %}Id{% endtrans %}</th>
@@ -44,7 +88,7 @@
         <td onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'">{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
         <td class="actions">
             <form data-bnv-message="{% trans with {'%name%': client.name } %}Really delete client %name%? This will remove all related jobs and backups.{% endtrans %}" class="delete-client" action="{{ path('deleteClient', {id: client.id}) }}" method="POST" style="display:inline">
-                <input class="btn" type="submit" value="{% trans %}Delete{% endtrans %}" />
+                <button class="btn btn-default btn-danger" type="submit" value="{% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span>{% trans %}Delete{% endtrans %}</button>
             </form>
         </td>
     </tr>
@@ -53,14 +97,14 @@
         <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'"><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
         <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'">{{ client.name ~ "/" ~ job.name }}</td>
         <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'" style="text-align:right;">{% if job.diskUsage / 1024 > 1024 %}{{ (job.diskUsage / 1024 / 1024) | number_format(1) }} GB{% else%} {{ (job.diskUsage / 1024) | number_format(0)}} MB{% endif %}</td>
-        <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'" style="{% if (job.logEntry.levelName)|default('') == 'ERROR'%}color:red{% endif %}">{{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ job.logEntry.message|default('')|slice(0, 50) }}{% if job.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
+        <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'" class="{% if (job.logEntry.levelName)|default('') == 'ERROR'%}alert alert-danger{% endif %}">{{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ job.logEntry.message|default('')|slice(0, 50) }}{% if job.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
         <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'">{% if job.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
         <td class="actions">
             <form data-bnv-message="{% trans with {'%name%': job.client.name ~ "/" ~ job.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" class="delete-job" action="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" method="POST" style="display:inline">
-                <input class="btn" type="submit" value="{% trans %}Delete{% endtrans %}" />
+		<button class="btn btn-default btn-danger" type="submit" value="{% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span>{% trans %}Delete{% endtrans %}</button>
             </form>
             <form action="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}" style="display:inline">
-                <input class="btn" type="submit"{% if not client.hasBackups %}disabled="disabled"{% endif %} value="{% trans %}Restore{% endtrans %}" />
+		<button class="btn btn-default btn-success {% if not client.hasBackups %}disabled{% endif %}" type="submit" value="{% trans %}Restore{% endtrans %}" /><span class="glyphicon glyphicon-cloud-download"></span>{% trans %}Restore{% endtrans %}</button>
             </form>
         </td>
     </tr>
@@ -68,7 +112,7 @@
     {% endfor %}
 </table>
 
-<button class="btn pull-right" type="button" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">{% trans %}New{% endtrans %}</button>
+<button class="btn pull-right btn-primary" type="button" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'"><span class="glyphicon glyphicon-plus"></span>{% trans %}New{% endtrans %}</button>
 
 <div class="navigation">
     {{ pagination.render()|raw }}

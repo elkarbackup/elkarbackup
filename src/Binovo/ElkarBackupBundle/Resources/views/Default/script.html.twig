@@ -9,8 +9,8 @@
 
 <form class="form-horizontal" action="{{ path('saveScript', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
     <legend>{% trans %}Edit script{% endtrans %}</legend>
-    <div class="row-fluid">
-        <div class="span6">
+    <div class="row">
+        <div class="col-md-6">
 {% for flashMessage in app.session.flashbag.get('editScript') %}
             <div class="controls help-block">
                 {{ flashMessage }}
@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <div class="span6">
+        <div class="col-md-6">
             {% trans %}script_help{% endtrans %}
         </div>
     </div>

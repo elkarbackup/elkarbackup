@@ -16,12 +16,12 @@ class JobType extends AbstractType
     {
         $t = $options['translator'];
         $builder->add('name'                , 'text'    , array('label' => $t->trans('Name', array(), 'BinovoElkarBackup'),
-                                                                'attr'  => array('class'    => 'span12')))
+                                                                'attr'  => array('class'    => 'form-control')))
                 ->add('description'         , 'textarea', array('label' => $t->trans('Description', array(), 'BinovoElkarBackup'),
                                                                 'required' => false,
-                                                                'attr'  => array('class'    => 'span12')))
+                                                                'attr'  => array('class'    => 'form-control','rows' => '3')))
                 ->add('policy'              , 'entity'  , array('label' => $t->trans('Policy', array(), 'BinovoElkarBackup'),
-                                                                'attr'     => array('class'    => 'span12'),
+                                                                'attr'     => array('class'    => 'form-control'),
                                                                 'required' => true,
                                                                 'class'    => 'BinovoElkarBackupBundle:Policy',
                                                                 'property' => 'name'))
@@ -29,19 +29,19 @@ class JobType extends AbstractType
                                                                 'required' => false))
                 ->add('exclude'             , 'textarea', array('label' => $t->trans('Exclude', array(), 'BinovoElkarBackup'),
                                                                 'required' => false,
-                                                                'attr' => array('class'    => 'span12')))
+                                                                'attr' => array('class'    => 'form-control','rows' => '3')))
                 ->add('include'             , 'textarea', array('label' => $t->trans('Include', array(), 'BinovoElkarBackup'),
                                                                 'required' => false,
-                                                                'attr' => array('class'    => 'span12')))
+                                                                'attr' => array('class'    => 'form-control','rows' => '3')))
                 ->add('owner'               , 'entity'  , array('label'    => $t->trans('Owner', array(), 'BinovoElkarBackup'),
                                                                 'property' => 'username',
-                                                                'attr'     => array('class'    => 'span12'),
+                                                                'attr'     => array('class'    => 'form-control'),
                                                                 'class'    => 'BinovoElkarBackupBundle:User'))
                 ->add('path'                , 'text'    , array('label' => $t->trans('Path', array(), 'BinovoElkarBackup'),
-                                                                'attr'  => array('class'    => 'span12')))
+                                                                'attr'  => array('class'    => 'form-control')))
                 ->add('notificationsTo'     , 'choice'  , array('label'    => $t->trans('Send notices to', array(), 'BinovoElkarBackup'),
                                                                 'required' => false,
-                                                                'attr'     => array('class'    => 'span12'),
+                                                                'attr'     => array('class'    => 'form-control'),
                                                                 'choices'  => array(Job::NOTIFY_TO_ADMIN => $t->trans('Admin', array(), 'BinovoElkarBackup'),
                                                                                     Job::NOTIFY_TO_OWNER => $t->trans('Owner', array(), 'BinovoElkarBackup'),
                                                                                     Job::NOTIFY_TO_EMAIL => $t->trans('Email', array(), 'BinovoElkarBackup')),
@@ -50,7 +50,7 @@ class JobType extends AbstractType
                 ->add('notificationsEmail'  , 'email'  , array('label'    => ' ',
                                                                'required' => false))
                 ->add('minNotificationLevel', 'choice'  , array('label'       => $t->trans('Notify only', array(), 'BinovoElkarBackup'),
-                                                                'attr'        => array('class'    => 'span12'),
+                                                                'attr'        => array('class'    => 'form-control'),
                                                                 'empty_value' => false,
                                                                 'required'    => false,
                                                                 'choices'      => array(Job::NOTIFICATION_LEVEL_ALL     => $t->trans('All messages'   , array(), 'BinovoElkarBackup'),
@@ -58,7 +58,7 @@ class JobType extends AbstractType
                                                                                         Job::NOTIFICATION_LEVEL_ERROR   => $t->trans('Errors and up'  , array(), 'BinovoElkarBackup'),
                                                                                         Job::NOTIFICATION_LEVEL_NONE    => $t->trans('None'           , array(), 'BinovoElkarBackup'))))
                 ->add('preScripts'          , 'entity'  , array('label' => $t->trans('Pre script', array(), 'BinovoElkarBackup'),
-                                                                'attr'     => array('class'    => 'span12'),
+                                                                'attr'     => array('class'    => 'form-control'),
                                                                 'required' => false,
                                                                 'multiple' => true,
                                                                 'class'    => 'BinovoElkarBackupBundle:Script',
@@ -68,7 +68,7 @@ class JobType extends AbstractType
                                                                 },
                                                                 'property' => 'name'))
                 ->add('postScripts'         , 'entity'  , array('label' => $t->trans('Post script', array(), 'BinovoElkarBackup'),
-                                                                'attr'     => array('class'    => 'span12'),
+                                                                'attr'     => array('class'    => 'form-control'),
                                                                 'required' => false,
                                                                 'multiple' => true,
                                                                 'class'    => 'BinovoElkarBackupBundle:Script',

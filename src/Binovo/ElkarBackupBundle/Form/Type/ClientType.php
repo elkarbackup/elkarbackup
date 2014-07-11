@@ -15,17 +15,17 @@ class ClientType extends AbstractType
     {
         $t = $options['translator'];
         $builder->add('name'          , 'text'      , array('label' => $t->trans('Name', array(), 'BinovoElkarBackup'),
-                                                            'attr'  => array('class'    => 'span12')))
+                                                            'attr'  => array('class'    => 'form-control')))
                 ->add('description'   , 'textarea'  , array('label' => $t->trans('Description', array(), 'BinovoElkarBackup'),
                                                             'required' => false,
-                                                            'attr'  => array('class'    => 'span12')))
+                                                            'attr'  => array('class'    => 'form-control','rows' => '3')))
                 ->add('url'           , 'text'      , array('label'    => $t->trans('Url', array(), 'BinovoElkarBackup'),
-                                                            'attr'     => array('class' => 'span12'),
+                                                            'attr'     => array('class' => 'form-control'),
                                                             'required' => false))
                 ->add('quota'         , 'integer'   , array('label' => $t->trans('Quota', array(), 'BinovoElkarBackup'),
-                                                            'attr'  => array('class'    => 'span12')))
+                                                            'attr'  => array('class'    => 'form-control')))
                 ->add('preScripts'    , 'entity'    , array('label' => $t->trans('Pre script', array(), 'BinovoElkarBackup'),
-                                                            'attr'     => array('class' => 'span12'),
+                                                            'attr'     => array('class' => 'form-control'),
                                                             'required' => false,
                                                             'multiple' => true,
                                                             'class'    => 'BinovoElkarBackupBundle:Script',
@@ -35,7 +35,7 @@ class ClientType extends AbstractType
                                                             },
                                                             'property' => 'name'))
                 ->add('postScripts'   , 'entity'    , array('label' => $t->trans('Post script', array(), 'BinovoElkarBackup'),
-                                                            'attr'     => array('class' => 'span12'),
+                                                            'attr'     => array('class' => 'form-control'),
                                                             'required' => false,
                                                             'multiple' => true,
                                                             'class'    => 'BinovoElkarBackupBundle:Script',

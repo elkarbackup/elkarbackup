@@ -2,6 +2,7 @@
  # @copyright 2012,2013 Binovo it Human Project, S.L.
  # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  #}
+
 {% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
 {% trans_default_domain 'BinovoElkarBackup' %}
 
@@ -25,8 +26,8 @@ font-size: 14px;
 <form id="form" class="form-horizontal" action="{{ path('savePolicy', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
     <fieldset>
         <legend>{% trans %}Edit policy{% endtrans %}</legend>
-        <div class="row-fluid">
-            <div class="span6">
+        <div class="row">
+            <div class="col-md-6">
                 {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
                 <div>
                     <div class="control-group">
@@ -241,7 +242,7 @@ font-size: 14px;
                     </div>
                 </div>
             </div>
-            <div class="span6">
+            <div class="col-md-6">
                 {% trans %}policy_help{% endtrans %}
             </div>
         </div>

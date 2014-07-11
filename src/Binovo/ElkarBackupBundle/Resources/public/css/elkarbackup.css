@@ -1,33 +1,80 @@
-/**
- * @copyright 2012,2013 Binovo it Human Project, S.L.
- * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
- */
-.btn-pull-right {
-  float: right;
-  margin-left: 4px;
+
+@import url(https://fonts.googleapis.com/css?family=Muli:400,300,300italic,400italic);
+
+/* |||  General */
+
+body { 
+    background: url("../img/imagotipo.png") no-repeat left bottom fixed #f0f0f0;
+    font-family: 'Muli', sans-serif;
 }
 
-.max10 {
-  max-width:950px;
+
+/* |||  RESET */
+
+legend { border: 0px !important; }
+
+/* recoloca checkbox */
+.radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] { margin-left: 0; }
+
+/* MENU SUPAERIOR  */
+
+.navbar { margin-bottom: 0; }
+.claro .dijitMenuBar { background: none; border: 0px; }
+.claro .dijitMenuItem { color: #fff }
+.claro .dijitMenuBar .dijitMenuItem { 
+    border-right: 1px solid rgba(255,255,255,0.07); 
+    margin: -1px; 
+    padding: 32px 20px; 
+    text-transform: uppercase;
 }
-td.actions, th.actions {
-  width:1px;
-  white-space:nowrap;
+
+.claro .dijitMenuBar .dijitMenuItemHover,
+.claro .dijitMenuBar .dijitMenuItemFocused,
+.claro .dijitMenuBar .dijitMenuItemActiveFocused,
+.claro .dijitMenuBar .dijitMenuItemActive{ 
+    background: #3b5269  !important; 
+    margin: -1px -1px -1px -2px !important; 
+    padding: 31px 20px !important;  
+    border: 1px solid #3b5269; 
+    border-right: 1px solid rgba(255,255,255,0.07); 
 }
-td.ids, th.ids {
-  width:1px;
-  white-space:nowrap;
+
+.current_ancestor{ 
+    background: #3b5269  !important; 
 }
-tr.client-row  td {
-  background-color: LightBlue;
-  cursor: pointer;
-  cursor: class;
+
+
+/* |||  General */
+
+.row { margin-left: 0; margin-right: 0 }
+
+.logo {
+    padding: 7px;
 }
-tr.job-row  td {
-  cursor: pointer;
-  cursor: class;
+
+#top {
+    background: #2D3F50;
+    border-bottom: 1px solid #f0f0f0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000
 }
-.red {
-  background-color: red;
-  color: white;
+
+#contenido {
+    background: rgba(255,255,255,0.69); 
+    padding: 10px;
+    margin-top: 80px;
 }
+
+.logo {
+    float: left;
+}
+
+.navbar {
+    float: right;
+}
+
+
+

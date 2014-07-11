@@ -15,12 +15,12 @@ class UserType extends AbstractType
     {
         $t = $options['translator'];
         $builder->add('username'    , 'text'    , array('label' => $t->trans('Name'     , array(), 'BinovoElkarBackup'),
-                                                        'attr'  => array('class'    => 'span12')))
+                                                        'attr'  => array('class'    => 'form-control')))
                 ->add('newPassword' , 'password', array('label' => $t->trans('Password' , array(), 'BinovoElkarBackup'),
                                                         'required' => false,
-                                                        'attr'  => array('class'    => 'span12')))
+                                                        'attr'  => array('class'    => 'form-control')))
                 ->add('email'       , 'email'   , array('label' => $t->trans('Email'    , array(), 'BinovoElkarBackup'),
-                                                        'attr'  => array('class'    => 'span12')))
+                                                        'attr'  => array('class'    => 'form-control')))
                 ->add('isActive'    , 'checkbox', array('label' => $t->trans('Is active', array(), 'BinovoElkarBackup'),
                                                         'required' => false));
     }

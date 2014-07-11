@@ -167,10 +167,10 @@ ssh_args	-o BatchMode=yes -o StrictHostKeyChecking=no
 #exclude	???
 #exclude	???
 {% for include in includes %}
-include	'{{ include }}'
+include	{{ include }}
 {% endfor %}
 {% for exclude in excludes %}
-exclude	'{{ exclude }}'
+exclude	{{ exclude }}
 {% endfor %}
 
 # The include_file and exclude_file parameters, if enabled, simply get
