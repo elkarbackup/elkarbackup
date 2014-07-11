@@ -132,7 +132,9 @@ if [ "$1" = "configure" ]; then
                 mv /etc/apache2/conf.d/$CONF /etc/apache2/conf-available/$CONF.conf
             fi
             #a2enconf
-            ln -s ../conf-available/$CONF.conf /etc/apache2/conf.d/$CONF.conf
+            if [ ! -f /etc/apache2/conf.d/$CONF.conf ]; then
+                ln -s ../conf-available/$CONF.conf /etc/apache2/conf.d/$CONF.conf
+	    fi
         fi
 
         if [ -d /etc/apache2/sites-available/ -a ! -L /etc/apache2/sites-available/$CONF.conf ]; then
@@ -141,7 +143,9 @@ if [ "$1" = "configure" ]; then
                 rm /etc/apache2/sites-enabled/$CONF
             fi
             #a2ensite
-            ln -s ../sites-available/$CONF.conf /etc/apache2/sites-enabled/$CONF.conf
+	    if [ ! -f /etc/apache2/sites-enabled/$CONF.conf ]; then
+                ln -s ../sites-available/$CONF.conf /etc/apache2/sites-enabled/$CONF.conf
+	    fi
         fi
 
         a2enmod rewrite
