@@ -17,46 +17,28 @@
 <div class="row">
 <div class="max10" >
     
-    
-    
-    
-    
-    
-    
-    
-   <h3>{{ fsDiskUsage }}{% trans %}Clients{% endtrans %}</h3>
+   <h3>{% trans %}Disk usage{% endtrans %}</h3>
 
 
 <div class="progress">
 {% if fsDiskUsage <= 20 %}
     <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
-    <span class="sr-only">{{ fsDiskUsage }}% completado</span>
+    	{{ fsDiskUsage }}%
     </div>
 {% elseif fsDiskUsage <= 60 %}
     <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
-    <span class="sr-only">{{ fsDiskUsage }}% completado</span>
+    	{{ fsDiskUsage }}%
   </div>
 {% elseif fsDiskUsage <= 90 %}
     <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
-    <span class="sr-only">{{ fsDiskUsage }}% completado</span>
+    	{{ fsDiskUsage }}%
   </div>
 {% elseif fsDiskUsage > 90 %}
     <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
-    <span class="sr-only">{{ fsDiskUsage }}% completado</span>
+    	{{ fsDiskUsage }}%
   </div>
 {% endif %}
 </div> 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
