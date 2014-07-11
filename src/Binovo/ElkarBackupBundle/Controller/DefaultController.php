@@ -767,12 +767,26 @@ class DefaultController extends Controller
         return $result;
     }
 
+    public function getFsSize( $path )
+    {
+        $size = (int)shell_exec(sprintf("df -k '%s' | tail -n1 | awk '{ print $2 }' | head -c -2", $path));
+        return $size;
+    }
+
+    public function getFsUsed( $path)
+    {
+        $size = (float)shell_exec(sprintf("df -k '%s' | tail -n1 | awk '{ print $3 }' | head -c -2", $path));
+        return $size;
+    }
+
     /**
      * @Route("/clients", name="showClients")
      * @Template()
      */
     public function showClientsAction(Request $request)
     {
+        $fsDiskUsage = (int)round($this->getFsUsed( Globals::getBackupDir() ) * 100 / $this->getFsSize( Globals::getBackupDir() ), 0, PHP_ROUND_HALF_UP);
+
         $repository = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Client');
         $query = $repository->createQueryBuilder('c')
@@ -796,7 +810,7 @@ class DefaultController extends Controller
         $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoElkarBackupBundle:Default:clients.html.twig',
-                             array('pagination' => $pagination));
+                             array('pagination' => $pagination, 'fsDiskUsage' => $fsDiskUsage));
     }
 
     /**
