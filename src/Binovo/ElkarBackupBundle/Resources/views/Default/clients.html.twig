@@ -70,7 +70,7 @@
         <td>{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
         <td class="actions">
             <form data-bnv-message="{% trans with {'%name%': client.name } %}Really delete client %name%? This will remove all related jobs and backups.{% endtrans %}" class="delete-client" action="{{ path('deleteClient', {id: client.id}) }}" method="POST" style="display:inline">
-                <button class="btn btn-default btn-danger" type="submit" value="{% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span>{% trans %}Delete{% endtrans %}</button>
+                <button class="btn btn-default btn-danger" type="submit" value=" {% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %}</button>
             </form>
         </td>
     </tr>
@@ -83,10 +83,10 @@
         <td>{% if job.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
         <td class="actions">
             <form data-bnv-message="{% trans with {'%name%': job.client.name ~ "/" ~ job.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" class="delete-job" action="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" method="POST" style="display:inline">
-		<button class="btn btn-default btn-danger" type="submit" value="{% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span>{% trans %}Delete{% endtrans %}</button>
+		          <button class="btn btn-default btn-danger" type="submit" value=" {% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %}</button>
             </form>
             <form action="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}" style="display:inline">
-		<button class="btn btn-default btn-success {% if not client.hasBackups %}disabled{% endif %}" type="submit" value="{% trans %}Restore{% endtrans %}" /><span class="glyphicon glyphicon-cloud-download"></span>{% trans %}Restore{% endtrans %}</button>
+              <button class="btn btn-default {% if not client.hasBackups %}disabled{% endif %}" type="submit" value="{% trans %}Restore{% endtrans %}" /><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Restore{% endtrans %}</button>
             </form>
         </td>
     </tr>
@@ -94,7 +94,10 @@
     {% endfor %}
 </table>
 
-<button class="btn pull-right btn-primary" type="button" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'"><span class="glyphicon glyphicon-plus"></span>{% trans %}New{% endtrans %}</button>
+
+<button type="button" class="btn pull-right btn-default" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">
+  <span class="glyphicon glyphicon-plus"></span> {% trans %}New{% endtrans %}
+</button>
 
 <div class="navigation">
     {{ pagination.render()|raw }}
