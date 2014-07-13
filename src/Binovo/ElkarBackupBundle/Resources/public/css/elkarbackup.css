@@ -1,10 +1,21 @@
 
-@import url(https://fonts.googleapis.com/css?family=Muli:400,300,300italic,400italic);
+@import url(http://fonts.googleapis.com/css?family=Muli:400,300,300italic,400italic|Montserrat);
+
+@font-face {
+  font-family: 'Muli';
+  src: url('../fonts/Muli-Light.ttf');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-Regular.ttf');
+}
+
 
 /* |||  General */
 
-body { 
-    background: url("../img/imagotipo.png") no-repeat left bottom fixed #f0f0f0;
+body {
+    /*background: url("../img/imagotipo.png") no-repeat left bottom fixed #f0f0f0;*/
     font-family: 'Muli', sans-serif;
 }
 
@@ -16,31 +27,32 @@ legend { border: 0px !important; }
 /* recoloca checkbox */
 .radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] { margin-left: 0; }
 
-/* MENU SUPAERIOR  */
+/* MENU SUPERIOR  */
 
 .navbar { margin-bottom: 0; }
 .claro .dijitMenuBar { background: none; border: 0px; }
 .claro .dijitMenuItem { color: #fff }
-.claro .dijitMenuBar .dijitMenuItem { 
-    border-right: 1px solid rgba(255,255,255,0.07); 
-    margin: -1px; 
-    padding: 32px 20px; 
+.claro .dijitMenuBar .dijitMenuItem {
+    border-right: 1px solid rgba(255,255,255,0.07);
+    margin: -1px;
+    padding: 32px 20px;
     text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .claro .dijitMenuBar .dijitMenuItemHover,
 .claro .dijitMenuBar .dijitMenuItemFocused,
 .claro .dijitMenuBar .dijitMenuItemActiveFocused,
-.claro .dijitMenuBar .dijitMenuItemActive{ 
-    background: #3b5269  !important; 
-    margin: -1px -1px -1px -2px !important; 
-    padding: 31px 20px !important;  
-    border: 1px solid #3b5269; 
-    border-right: 1px solid rgba(255,255,255,0.07); 
+.claro .dijitMenuBar .dijitMenuItemActive{
+    background: #3b5269  !important;
+    margin: -1px -1px -1px -2px !important;
+    padding: 31px 20px !important;
+    border: 1px solid #3b5269;
+    border-right: 1px solid rgba(255,255,255,0.07);
 }
 
-.current_ancestor{ 
-    background: #3b5269  !important; 
+.current_ancestor{
+    background: #3b5269  !important;
 }
 
 
@@ -63,7 +75,7 @@ legend { border: 0px !important; }
 }
 
 #contenido {
-    background: rgba(255,255,255,0.69); 
+    background: rgba(255,255,255,0.69);
     padding: 10px;
     margin-top: 80px;
 }
@@ -75,6 +87,3 @@ legend { border: 0px !important; }
 .navbar {
     float: right;
 }
-
-
-
