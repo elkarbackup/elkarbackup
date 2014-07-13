@@ -1,5 +1,9 @@
+/**
+* @copyright ChristianGR
+* @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+*/
 
-@import url(http://fonts.googleapis.com/css?family=Muli:400,300,300italic,400italic|Montserrat);
+/* ||| Fuentes */
 
 @font-face {
   font-family: 'Muli';
@@ -29,6 +33,7 @@ legend { border: 0px !important; }
 
 /* MENU SUPERIOR  */
 
+
 .navbar { margin-bottom: 0; }
 .claro .dijitMenuBar { background: none; border: 0px; }
 .claro .dijitMenuItem { color: #fff }
@@ -50,6 +55,7 @@ legend { border: 0px !important; }
     border: 1px solid #3b5269;
     border-right: 1px solid rgba(255,255,255,0.07);
 }
+
 
 .current_ancestor{
     background: #3b5269  !important;
