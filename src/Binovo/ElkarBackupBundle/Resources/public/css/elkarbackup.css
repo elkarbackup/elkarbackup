@@ -64,7 +64,7 @@ legend { border: 0px !important; }
 
 /* |||  General */
 
-.row { margin-left: 0; margin-right: 0 }
+.row { margin-left: 0; margin-right: 0; }
 
 .logo {
     padding: 7px;
@@ -92,4 +92,13 @@ legend { border: 0px !important; }
 
 .navbar {
     float: right;
+}
+
+.table tbody>tr>td.vert-align
+{
+    vertical-align: middle;
+}
+
+.client-row {
+  background-color:#f5f5f5;
 }
