@@ -6,15 +6,15 @@
 {% trans_default_domain 'BinovoElkarBackup' %}
 <html>
     <head>
-        <title>{% block title %}Backup server{% endblock %}</title>
+        <title>{% block title %}ElkarBackup{% endblock %}</title>
         <!-- Bootstrap -->
 
         {% stylesheets '@BinovoElkarBackupBundle/Resources/public/css/bootstrap.min.css' '@BinovoElkarBackupBundle/Resources/public/css/elkarbackup.css' %}
-		<link rel="stylesheet" href="{{ asset_url }}" media="screen" />
+		      <link rel="stylesheet" href="{{ asset_url }}" media="screen" />
         {% endstylesheets %}
 
-	<link rel="stylesheet" href="{{ asset('js/dojo-release/dijit/themes/claro/claro.css') }}" media="screen" />
-        
+	      <link rel="stylesheet" href="{{ asset('js/dojo-release/dijit/themes/claro/claro.css') }}" media="screen" />
+
         {% block scripts %}
         <script type="text/javascript" src="{{ asset('js/dojo-release/dojo/dojo.js') }}" data-dojo-config="async: true"></script>
             {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/base.js' %}
@@ -24,12 +24,12 @@
 
     </head>
     <body class="claro">
-        
+
         <div id="top">
             <div class="logo">
                 {% block header %}
                 {% endblock %}
-                <a href="/elkarbackup/clients"><img src="/elkarbackup/img/elkarbackup.png" alt="Elkar Backup" /></a>                         
+                <a href="/elkarbackup/clients"><img src="/elkarbackup/img/elkarbackup.png" alt="ElkarBackup" /></a>
             </div>
 
 		    <div class="navbar">
@@ -38,7 +38,7 @@
                 {% endblock %}
             </div>
         </div>
-            
+
         <div id="contenido" class="container">
             <div class="row">
                 {% block body %}
