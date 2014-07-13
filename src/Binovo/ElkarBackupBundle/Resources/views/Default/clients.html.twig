@@ -49,7 +49,7 @@
         {{ flashMessage }}
     </div>
 {% endfor %}
-<table class="table table-condensed table-hover">
+<table class="table table-condensed">
     <tr>
         {# sorting of properties based on query components #}
         <th>{% trans %}Id{% endtrans %}</th>
@@ -63,12 +63,12 @@
     {# table body #}
     {% for client in pagination %}
     <tr class="client-row">
-        <td onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'"><a href="{{ path('editClient', {id: client.id}) }}">{{ client.id }}</a></td>
-        <td onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'"><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
-        <td style="text-align:center{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{% if client.diskUsage / 1024 > 1024 %} {{ (client.diskUsage / 1024 / 1024 ) | number_format(1) }} GB{% else %} {{ (client.diskUsage / 1024) | number_format(0)}} MB{% endif %}{% if client.quota > 0 %} ({{ (client.diskUsage / client.quota * 100) | number_format(0)}}%){% endif %}</td>
-        <td style="{% if (client.logEntry.levelName)|default('') == 'ERROR'%}color:red{% endif %}">{{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ client.logEntry.message|default('')|slice(0, 50) }}{% if client.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
-        <td>{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
-        <td class="actions">
+        <td class="vert-align" onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'"><a href="{{ path('editClient', {id: client.id}) }}">{{ client.id }}</a></td>
+        <td class="vert-align" onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'"><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
+        <td class="vert-align" style="text-align:center{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{% if client.diskUsage / 1024 > 1024 %} {{ (client.diskUsage / 1024 / 1024 ) | number_format(1) }} GB{% else %} {{ (client.diskUsage / 1024) | number_format(0)}} MB{% endif %}{% if client.quota > 0 %} ({{ (client.diskUsage / client.quota * 100) | number_format(0)}}%){% endif %}</td>
+        <td class="vert-align" style="{% if (client.logEntry.levelName)|default('') == 'ERROR'%}color:red{% endif %}">{{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ client.logEntry.message|default('')|slice(0, 50) }}{% if client.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
+        <td class="vert-align" >{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
+        <td class="actions vert-align">
             <form data-bnv-message="{% trans with {'%name%': client.name } %}Really delete client %name%? This will remove all related jobs and backups.{% endtrans %}" class="delete-client" action="{{ path('deleteClient', {id: client.id}) }}" method="POST" style="display:inline">
                 <button class="btn btn-default btn-danger" type="submit" value=" {% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %}</button>
             </form>
@@ -76,12 +76,12 @@
     </tr>
         {% for job in client.jobs %}
     <tr class="job-row">
-        <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'"><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
-        <td onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'"><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.name ~ "/" ~ job.name }}</a></td>
-        <td style="text-align:center;">{% if job.diskUsage / 1024 > 1024 %}{{ (job.diskUsage / 1024 / 1024) | number_format(1) }} GB{% else%} {{ (job.diskUsage / 1024) | number_format(0)}} MB{% endif %}</td>
-        <td class="{% if (job.logEntry.levelName)|default('') == 'ERROR'%}alert alert-danger{% endif %}">{{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ job.logEntry.message|default('')|slice(0, 50) }}{% if job.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
-        <td>{% if job.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
-        <td class="actions">
+        <td class="vert-align" onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'"><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
+        <td class="vert-align" onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'"><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.name ~ "/" ~ job.name }}</a></td>
+        <td class="vert-align" style="text-align:center;">{% if job.diskUsage / 1024 > 1024 %}{{ (job.diskUsage / 1024 / 1024) | number_format(1) }} GB{% else%} {{ (job.diskUsage / 1024) | number_format(0)}} MB{% endif %}</td>
+        <td class="vert-align {% if (job.logEntry.levelName)|default('') == 'ERROR'%}alert alert-danger{% endif %}">{{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ job.logEntry.message|default('')|slice(0, 50) }}{% if job.logEntry.message|default('')|length > 50 %}[...]{% endif %}</td>
+        <td class="vert-align">{% if job.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
+        <td class="vert-align actions">
             <form data-bnv-message="{% trans with {'%name%': job.client.name ~ "/" ~ job.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" class="delete-job" action="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" method="POST" style="display:inline">
 		          <button class="btn btn-default btn-danger" type="submit" value=" {% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %}</button>
             </form>
