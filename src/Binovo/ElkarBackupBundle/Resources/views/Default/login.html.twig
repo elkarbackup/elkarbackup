@@ -10,10 +10,11 @@
 
 {% block body %}
 
-{% for aLocale in supportedLocales %}
-<a href="{{path('setLocale', {locale: aLocale[0]})}}">{{ aLocale[1] }}</a>
+| {% for aLocale in supportedLocales %}
+<a href="{{path('setLocale', {locale: aLocale[0]})}}">{{ aLocale[1] }}</a> |
 {% endfor %}
 
+<!--
 <form action="{{ path('login_check') }}" method="post" class="form-horizontal">
     <legend>{% trans %}Backup server login{% endtrans %}</legend>
     <div class="row">
@@ -36,7 +37,7 @@
                 </div>
             </div>
             <div class="control-group">
-                <div class="controls">                    
+                <div class="controls">
                     <button class="btn btn-default" type="submit" value="{% trans %}Login{% endtrans %}"><span class="glyphicon glyphicon-off"></span> {% trans %}Login{% endtrans %}</button>
                 </div>
             </div>
@@ -44,5 +45,24 @@
     </div>
 </div>
 </form>
+-->
+
+    <div class="container">
+
+      <form class="form-signin" role="form" action="{{ path('login_check') }}" method="post">
+        <h2 class="form-signin-heading">{% trans %}Backup server login{% endtrans %}</h2>
+        <input type="username" id="username" name="_username" class="form-control" placeholder="{% trans %}Username{% endtrans %}" required autofocus>
+        <input type="password" id="password" name="_password" class="form-control" placeholder="{% trans %}Password{% endtrans %}" required>
+        <div class="message">
+          <label>
+          {% if error %}
+            {{ error.message }}
+          {% endif %}
+        </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans %}Login{% endtrans %}</button>
+      </form>
+
+    </div>
 
 {% endblock %}

@@ -67,7 +67,7 @@
 'All': 'Todos'
 'Back to client': 'Volver al cliente'
 'Back to job': 'Volver a la tarea'
-'Backup server login': 'Acceso al servidor de copia de seguridad'
+'Backup server login': 'Inicio'
 'Backups': 'Copias de seguridad'
 'Change password': 'Cambiar contraseña'
 'Change': 'Cambiar'
@@ -324,4 +324,3 @@ script_help: |
  Activa esta opción si este script esta diseñado para ser ejecutado antes de la ejecución de una tarea.
  <h4>Ejecutar como post-script de tareas</h4>
  Activa esta opción si este script esta diseñado para ser ejecutado después de la ejecución de una tarea.
-
