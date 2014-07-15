@@ -1097,7 +1097,7 @@ EOF;
                                                                                                                                                                  'mail'     => 'mail',
                                                                                                                                                                  'sendmail' => 'sendmail',
                                                                                                                                                                  'smtp'     => 'smtp'),
-                                                             'label' => $t->trans('Mailer transpor'       , array(), 'BinovoElkarBackup')),
+                                                             'label' => $t->trans('Mailer transport'       , array(), 'BinovoElkarBackup')),
                         'mailer_host'               => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Mailer host'           , array(), 'BinovoElkarBackup')),
                         'mailer_user'               => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Mailer user'           , array(), 'BinovoElkarBackup')),
                         'mailer_password'           => array('type' => 'password', 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Mailer password'       , array(), 'BinovoElkarBackup')),
