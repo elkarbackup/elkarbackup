@@ -86,7 +86,7 @@
 		          <button class="btn btn-default btn-danger" type="submit" value=" {% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %}</button>
             </form>
             <form action="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}" style="display:inline">
-              <button class="btn btn-default {% if not client.hasBackups %}disabled{% endif %}" type="submit" value="{% trans %}Restore{% endtrans %}" /><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Restore{% endtrans %}</button>
+              <button class="btn btn-elkarbackup {% if not client.hasBackups %}disabled{% endif %}" type="submit" value="{% trans %}Restore{% endtrans %}" /><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Restore{% endtrans %}</button>
             </form>
         </td>
     </tr>
