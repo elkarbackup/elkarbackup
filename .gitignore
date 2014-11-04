@@ -18,3 +18,13 @@ composer.phar
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# vm dev
+web/js/*js
+web/css
+app/cache
+app/config
+app/console
+app/logs
+app/sessions
+bak.app/
