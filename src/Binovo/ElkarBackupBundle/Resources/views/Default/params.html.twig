@@ -22,13 +22,13 @@
             {% endfor %}
             {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
             <div>
-                <div class="control-group">
-                    <label class="control-label">{% trans %}Public key{% endtrans %}</label>
+                <div class="form-group">
+                    <label class="control-label col-sm-3">{% trans %}Public key{% endtrans %}</label>
                 {% if showKeyDownload %}
-                    <div class="controls">
+                    <div class="controls col-sm-9">
                     <button class="btn btn-elkarbackup" onclick="window.location='{{ path('downloadPublicKey') }}';" type="button">{% trans %}Download{% endtrans %} <span class="glyphicon glyphicon-download-alt"></span></button></div>
                 {% else %}
-                    <div class="controls"><input class="btn" onclick="dojo.byId('generateKey').submit()" type="button" value="{% trans %}Generate{% endtrans %}" /></div>
+                    <div class="controls col-sm-8"><input class="btn" onclick="dojo.byId('generateKey').submit()" type="button" value="{% trans %}Generate{% endtrans %}" /></div>
                 {% endif %}
                 </div>
                 {{ form_widget(form) }}
