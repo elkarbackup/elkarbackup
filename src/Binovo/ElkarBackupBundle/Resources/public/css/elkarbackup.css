@@ -38,6 +38,9 @@ body {
     font-family: 'Muli', sans-serif;
 }
 
+a {
+  color: #2d3f50;
+}
 
 
 /* |||  RESET 
@@ -46,7 +49,12 @@ body {
 legend { border: 0px !important; }
 
 /* recoloca checkbox */
-.radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] { margin-left: 0; }
+.radio input[type="radio"],
+.radio-inline input[type="radio"],
+.checkbox input[type="checkbox"], 
+.checkbox-inline input[type="checkbox"] { 
+  margin-left: 0;
+}
 
 
 
@@ -54,31 +62,77 @@ legend { border: 0px !important; }
 /* |||  MENU SUPERIOR  
 */
 
-.navbar { margin-bottom: 0; }
+
 .claro .dijitMenuBar { background: none; border: 0px; }
 .claro .dijitMenuItem { color: #fff }
-.claro .dijitMenuBar .dijitMenuItem {
-    border-right: 1px solid rgba(255,255,255,0.07);
-    padding: 32px 20px;
-    text-transform: uppercase;
+
+
+/* PARA NAVEGADORES */
+
+@media (min-width:700px){
+  .claro .dijitMenuBar .dijitMenuItem {
+      border-right: 1px solid rgba(255,255,255,0.07);
+      padding: 32px 20px;
+      text-transform: uppercase;
+  }
+
+  .navbar { 
+    margin-bottom: 0;
+    float: right;
+  }
+
+  .claro .dijitMenuBar .dijitMenuItemHover,
+  .claro .dijitMenuBar .dijitMenuItemSelected,
+  .claro .dijitMenuBar .dijitMenuItemFocused,
+  .claro .dijitMenuBar .dijitMenuItemActiveFocused,
+  .claro .dijitMenuBar .dijitMenuItemActive{
+      background: #3b5269  !important;
+      margin: -1px -1px -1px -2px !important;
+      padding: 31px 20px !important;
+      border: 1px solid #3b5269;
+      border-right: 1px solid rgba(255,255,255,0.07);
+  }
+
 }
 
-.claro .dijitMenuBar .dijitMenuItemHover,
-.claro .dijitMenuBar .dijitMenuItemSelected,
-.claro .dijitMenuBar .dijitMenuItemFocused,
-.claro .dijitMenuBar .dijitMenuItemActiveFocused,
-.claro .dijitMenuBar .dijitMenuItemActive{
-    background: #3b5269  !important;
-    margin: -1px -1px -1px -2px !important;
-    padding: 31px 20px !important;
-    border: 1px solid #3b5269;
-    border-right: 1px solid rgba(255,255,255,0.07);
+
+/* PARA MOVILES */
+
+@media (max-width:700px){
+  .claro .dijitMenuBar .dijitMenuItem {
+      padding: 10px;
+      text-transform: uppercase;
+      width: 100%;
+      display: block;
+      border-bottom: 1px solid #3b5269 !important;
+      text-align: center;
+  }
+
+  .navbar {
+    clear: both;
+    float: none;
+  }
+
+  .claro .dijitMenuBar .dijitMenuItemHover,
+  .claro .dijitMenuBar .dijitMenuItemSelected,
+  .claro .dijitMenuBar .dijitMenuItemFocused,
+  .claro .dijitMenuBar .dijitMenuItemActiveFocused,
+  .claro .dijitMenuBar .dijitMenuItemActive{
+      background: #3b5269  !important;
+      margin: -2px -1px -1px -1px !important;
+      border: 1px solid #2d3f50 !important;
+      border-bottom: 1px solid #3b5269 !important;
+  }
+
 }
+
+
 
 
 .current_ancestor{
     background: #3b5269  !important;
 }
+
 table.dijit.dijitMenu.menu_level_3,
 table.dijit.dijitMenu.menu_level_2,
 table.dijit.dijitMenu.menu_level_1 {
@@ -159,28 +213,46 @@ table.dijit.dijitMenu.menu_level_1 tbody tr td a {
     padding: 7px;
 }
 
-#top {
-    background: #2D3F50;
-    border-bottom: 1px solid #f0f0f0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000
-}
 
-#contenido {
+/* PARA MOVILES */
+
+@media (min-width:700px){
+  #top {
+      background: #2D3F50;
+      border-bottom: 1px solid #f0f0f0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000
+  }
+  #contenido {
     background: rgba(255,255,255,0.69);
     padding: 10px;
     margin-top: 80px;
+  }
 }
+
+/* PARA MOVILES */
+
+@media (max-width:700px){
+  #top {
+      background: #2D3F50;
+      border-bottom: 1px solid #f0f0f0;
+      position: relative;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000
+  }
+  #contenido {
+    margin-top: 0px;
+  }
+}
+
 
 .logo {
     float: left;
-}
-
-.navbar {
-    float: right;
 }
 
 
@@ -192,10 +264,6 @@ CLIENTS-TASKS
 .table tbody>tr>td.vert-align
 {
     vertical-align: middle;
-}
-
-.client-row {
-  background-color:#f5f5f5;
 }
 
 /*
