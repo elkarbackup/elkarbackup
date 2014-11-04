@@ -72,6 +72,12 @@
             <form data-bnv-message="{% trans with {'%name%': client.name } %}Really delete client %name%? This will remove all related jobs and backups.{% endtrans %}" class="delete-client" action="{{ path('deleteClient', {id: client.id}) }}" method="POST" style="display:inline">
                 <button class="btn btn-default btn-danger" type="submit" value=" {% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %}</button>
             </form>
+	{% if client.isActive %}                                    
+                <button type="button" class="btn btn-elkarbackup"
+                        onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: client.id}) }}'">
+                        <span class="glyphicon glyphicon-plus"></span> {% trans %}Add job{% endtrans %}
+                    </button>
+        {% endif %}
         </td>
     </tr>
         {% for job in client.jobs %}
