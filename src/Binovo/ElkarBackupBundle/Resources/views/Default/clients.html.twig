@@ -49,7 +49,7 @@
         {{ flashMessage }}
     </div>
 {% endfor %}
-<table class="table table-condensed">
+<table class="table table-condensed table-hover">
     <tr>
         {# sorting of properties based on query components #}
         <th>{% trans %}Id{% endtrans %}</th>
@@ -62,7 +62,7 @@
 
     {# table body #}
     {% for client in pagination %}
-    <tr class="client-row">
+<tr class="client-row {% if client.isActive %}enabled{% else %}disabled{% endif %}">
         <td class="vert-align" onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'"><a href="{{ path('editClient', {id: client.id}) }}">{{ client.id }}</a></td>
         <td class="vert-align" onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'"><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
         <td class="vert-align" style="text-align:center{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{% if client.diskUsage / 1024 > 1024 %} {{ (client.diskUsage / 1024 / 1024 ) | number_format(1) }} GB{% else %} {{ (client.diskUsage / 1024) | number_format(0)}} MB{% endif %}{% if client.quota > 0 %} ({{ (client.diskUsage / client.quota * 100) | number_format(0)}}%){% endif %}</td>
@@ -86,7 +86,7 @@
 		          <button class="btn btn-default btn-danger" type="submit" value=" {% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %}</button>
             </form>
             <form action="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}" style="display:inline">
-              <button class="btn btn-default {% if not client.hasBackups %}disabled{% endif %}" type="submit" value="{% trans %}Restore{% endtrans %}" /><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Restore{% endtrans %}</button>
+              <button class="btn btn-elkarbackup {% if not client.hasBackups %}disabled{% endif %}" type="submit" value="{% trans %}Restore{% endtrans %}" /><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Restore{% endtrans %}</button>
             </form>
         </td>
     </tr>
@@ -95,7 +95,7 @@
 </table>
 
 
-<button type="button" class="btn pull-right btn-default" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">
+<button type="button" class="btn pull-right btn-elkarbackup" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">
   <span class="glyphicon glyphicon-plus"></span> {% trans %}New{% endtrans %}
 </button>
 
@@ -106,3 +106,4 @@
 </div>
 
 {% endblock %}
+
