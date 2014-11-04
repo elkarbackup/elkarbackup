@@ -1,9 +1,22 @@
 /**
 * @copyright ChristianGR
 * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+
+
+azul oscuro cabecera:
+#2d3f50
+
+azul hover cabecera:
+#3b5269
+
 */
 
-/* ||| Fuentes */
+
+
+
+
+/* ||| Fuentes 
+*/
 
 @font-face {
   font-family: 'Muli';
@@ -16,7 +29,9 @@
 }
 
 
-/* |||  General */
+
+/* |||  General 
+*/
 
 body {
     /*background: url("../img/imagotipo.png") no-repeat left bottom fixed #f0f0f0;*/
@@ -24,28 +39,32 @@ body {
 }
 
 
-/* |||  RESET */
+
+/* |||  RESET 
+*/
 
 legend { border: 0px !important; }
 
 /* recoloca checkbox */
 .radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] { margin-left: 0; }
 
-/* MENU SUPERIOR  */
 
+
+
+/* |||  MENU SUPERIOR  
+*/
 
 .navbar { margin-bottom: 0; }
 .claro .dijitMenuBar { background: none; border: 0px; }
 .claro .dijitMenuItem { color: #fff }
 .claro .dijitMenuBar .dijitMenuItem {
     border-right: 1px solid rgba(255,255,255,0.07);
-    margin: -1px;
     padding: 32px 20px;
     text-transform: uppercase;
-    font-family: 'Montserrat', sans-serif;
 }
 
 .claro .dijitMenuBar .dijitMenuItemHover,
+.claro .dijitMenuBar .dijitMenuItemSelected,
 .claro .dijitMenuBar .dijitMenuItemFocused,
 .claro .dijitMenuBar .dijitMenuItemActiveFocused,
 .claro .dijitMenuBar .dijitMenuItemActive{
@@ -60,9 +79,79 @@ legend { border: 0px !important; }
 .current_ancestor{
     background: #3b5269  !important;
 }
+table.dijit.dijitMenu.menu_level_3,
+table.dijit.dijitMenu.menu_level_2,
+table.dijit.dijitMenu.menu_level_1 {
+  border: 1px solid #3b5269 !important;
+  min-width: 200px !important;
+  text-align: left !important;
+}
+
+table.dijit.dijitMenu.menu_level_3 tbody tr td,
+table.dijit.dijitMenu.menu_level_2 tbody tr td,
+table.dijit.dijitMenu.menu_level_1 tbody tr td {
+  border-bottom: 1px solid #496582 !important;
+  color: #fff !important;
+  text-align: left !important;
+}
+
+table.dijit.dijitMenu.menu_level_3 tbody tr td.dijitMenuItemLabel,
+table.dijit.dijitMenu.menu_level_2 tbody tr td.dijitMenuItemLabel,
+table.dijit.dijitMenu.menu_level_1 tbody tr td.dijitMenuItemLabel {
+  padding-left: 7px;
+}
+
+table.dijit.dijitMenu.menu_level_3 tbody tr,
+table.dijit.dijitMenu.menu_level_2 tbody tr,
+table.dijit.dijitMenu.menu_level_1 tbody tr {
+  background: #3b5269 !important;
+}
+
+table.dijit.dijitMenu.menu_level_3 tbody tr:hover,
+table.dijit.dijitMenu.menu_level_2 tbody tr:hover,
+table.dijit.dijitMenu.menu_level_1 tbody tr:hover {
+  background: #496582 !important;
+}
+
+table.dijit.dijitMenu.menu_level_3 tbody tr td a,
+table.dijit.dijitMenu.menu_level_2 tbody tr td a,
+table.dijit.dijitMenu.menu_level_1 tbody tr td a {
+  color: #fff !important;
+  text-decoration: none !important;
+  text-align: left !important;
+  float: left !important;
+}
+
+/* || FLECHA DE LOS SUBMENUS */
+
+.claro .dijitMenuExpand {
+    background-image: url("../img/spriteArrows.png") !important;
+    background-position: -70px 0 !important;
+    height: 7px;
+    margin-right: 3px;
+    width: 7px;
+}
 
 
-/* |||  General */
+/* |||  CLASES COMUNES 
+*/
+
+.btn-elkarbackup {
+  background: #2d3f50;
+  border-color: #2d3f50;
+  color: #fff;
+}
+
+.btn-elkarbackup:hover {
+  background: #1e2a36;
+  border-color: #1e2a36;
+  color: #fff;
+}
+
+
+
+/* |||  General 
+*/
 
 .row { margin-left: 0; margin-right: 0; }
 
@@ -93,6 +182,8 @@ legend { border: 0px !important; }
 .navbar {
     float: right;
 }
+
+
 
 /*
 CLIENTS-TASKS
