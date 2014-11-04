@@ -38,10 +38,57 @@ body {
     font-family: 'Muli', sans-serif;
 }
 
-a {
-  color: #2d3f50;
+h3, .h3 {
+    font-size: 27px;
+    margin-bottom: 20px;
+    padding: 20px 0 10px;
+    border-bottom: 1px dotted #ccc;
 }
 
+a {
+  color: #4c6987;
+}
+
+a:hover {
+  color: #567799;
+}
+
+table {
+  border: 1px solid #ddd;
+}
+
+table th:hover,
+table th {
+  background: #eaedef !important;
+  color: #68727d;
+  font-weight: normal;
+  padding: 10px 5px !important;
+  font-size: 16px;
+}
+
+table tr.client-row {
+  background: #f5f5f5;
+}
+
+table tr.client-row td {
+  border-bottom: 1px solid #c4c4c4 !important;
+}
+
+table tr.job-row td {
+  border: 0px solid #c4c4c4 !important;
+}
+
+tr.job-row td:first-child {
+  background: url("../img/job-row-lvl-2.png") no-repeat scroll 10px 11px rgba(0, 0, 0, 0);
+  padding: 0 0 0 25px;
+}
+
+
+table tr.disabled:hover,
+table tr.disabled {
+  background: #ebebeb !important;
+  opacity: .4;
+}
 
 /* |||  RESET 
 */
