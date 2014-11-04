@@ -82,8 +82,14 @@
         {% endfor %}
             <div class="control-group">
                 <div class="controls control-row">
-                    <input class="btn btn-pull-right" {% if not form.vars.value.id %}disabled="true" {% endif %}type="button" value="{% trans %}Add job{% endtrans %}" onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: form.vars.value.id}) }}'"/>
-		    <button type="submit" class="btn btn-default btn-primary btn-lg"><span class="glyphicon glyphicon-ok"></span>{% trans %}Save{% endtrans %}</button>	
+
+		    <button type="button" class="btn btn-pull-right"
+			{% if not form.vars.value.id %}disabled="true" {% endif %} 
+			onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: form.vars.value.id}) }}'">
+			<span class="glyphicon glyphicon-plus"></span> {% trans %}Add job{% endtrans %}
+		    </button>
+
+		    <button type="submit" class="btn btn-default btn-primary"><span class="glyphicon glyphicon-ok"></span> {% trans %}Save{% endtrans %}</button>	
                </div>
             </div>
             {{ form_widget(form._token) }}
