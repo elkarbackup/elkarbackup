@@ -11,8 +11,8 @@
 <form action="{{ path('generatePublicKey') }}" id="generateKey" method="post">
 {% endif %}
 </form>
+<h3>{% trans %}Manage parameters{% endtrans %}</h3>
 <form class="form-horizontal" action="{{ path('manageParameters') }}" method="post" {{ form_enctype(form) }}>
-    <legend>{% trans %}Manage parameters{% endtrans %}</legend>
     <div class="row">
         <div class="col-md-6">
             {% for flashMessage in app.session.flashbag.get('manageParameters') %}
@@ -25,7 +25,8 @@
                 <div class="control-group">
                     <label class="control-label">{% trans %}Public key{% endtrans %}</label>
                 {% if showKeyDownload %}
-                    <div class="controls"><input class="btn" onclick="window.location='{{ path('downloadPublicKey') }}';" type="button" value="{% trans %}Download{% endtrans %}" /></div>
+                    <div class="controls">
+                    <button class="btn btn-elkarbackup" onclick="window.location='{{ path('downloadPublicKey') }}';" type="button">{% trans %}Download{% endtrans %} <span class="glyphicon glyphicon-download-alt"></span></button></div>
                 {% else %}
                     <div class="controls"><input class="btn" onclick="dojo.byId('generateKey').submit()" type="button" value="{% trans %}Generate{% endtrans %}" /></div>
                 {% endif %}
@@ -34,7 +35,13 @@
             </div>
             <div class="control-group">
                 <div class="controls">
-                    <input class="btn pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
+    
+                    <button class="btn pull-right btn-elkarbackup" type="button">{% trans %}Save{% endtrans %} <span class="glyphicon glyphicon-save"></span></button>
+
+
+
+
+
                 </div>
             </div>
         </div>
