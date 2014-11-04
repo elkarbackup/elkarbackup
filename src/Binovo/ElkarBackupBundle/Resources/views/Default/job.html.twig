@@ -16,22 +16,32 @@
 {% block body %}
 
 <form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_enctype(form) }}>
+<ol class="breadcrumb">
+
+    <li><a class="host" href="{{path('editClient', {id: form.vars.value.client.id}) }}">{{ form.vars.value.client.name }}</a></li>
+    {% if form.vars.value.name is null %}
+        <li class="job-off">New Job</li>
+    {% else %}
+        <li class="job-on">{{ form.vars.value.name }}</li>
+    {% endif %}
+    {% if form.vars.value.hasBackups %}
+        <li class="link-to-backup pull-right"><a href="{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}"><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</a></li>
+    {% endif %}
+</ol>
+
+<!--    <a class="host" href="{{path('editClient', {id: form.vars.value.client.id}) }}">{% trans %}Client{% endtrans %}</a> / {{ form.vars.value.name }} antton -->
+
     <legend id="legend">{% trans %}Edit Job{% endtrans %}</legend>
     <div class="row">
         <div class="col-md-6">
 {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
 {% for flashMessage in app.session.flashbag.get('job') %}
-            <div class="controls help-block">
+            <div class="controls help-block alert alert-success">
                 {{ flashMessage }}
             </div>
 {% endfor %}
             <div>
                 <div class="controls">
-                    {% if form.vars.value.hasBackups %}
-                    <a href="{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}">{% trans %}Backups{% endtrans %}</a> <a href="{{path('editClient', {id: form.vars.value.client.id}) }}">{% trans %}Client{% endtrans %}</a>
-                    {% else %}
-                    <a href="{{path('editClient', {id: form.vars.value.client.id}) }}">{% trans %}Client{% endtrans %}</a>
-                    {% endif %}
                 </div>
                 {{ form_row(form.name) }}
                 {{ form_row(form.path) }}
