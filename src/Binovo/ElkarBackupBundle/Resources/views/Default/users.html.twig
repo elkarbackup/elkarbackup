@@ -18,7 +18,7 @@
 <div class="max10" >
 <h3>{% trans %}Users{% endtrans %}</h3>
 
-<table class="table table-condensed table-bordered table-striped">
+<table class="table table-condensed table-hover">
     <tr>
         {# sorting of properties based on query components #}
         <th>{% trans %}Id{% endtrans %}</th>
@@ -47,7 +47,7 @@
     {% endfor %}
 </table>
 
-<button class="btn pull-right" type="button" onclick="document.location.href='{{ path('editUser', {id: 'new'}) }}'">{% trans %}New{% endtrans %}</button>
+<button class="btn pull-right btn-elkarbackup" type="button" onclick="document.location.href='{{ path('editUser', {id: 'new'}) }}'">{% trans %}New{% endtrans %} <span class="glyphicon glyphicon-plus"></span></button>
 
 {# display navigation #}
 <div class="navigation">
