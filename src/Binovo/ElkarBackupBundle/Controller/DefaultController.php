@@ -343,7 +343,7 @@ class DefaultController extends Controller
                                                                 array('%extrainfo%' => $e->getMessage()), 'BinovoElkarBackup'));
         }
 
-        return $this->redirect($this->generateUrl('editClient', array('id' => $idClient)));
+        return $this->redirect($this->generateUrl('showClients'));
     }
 
     /**
