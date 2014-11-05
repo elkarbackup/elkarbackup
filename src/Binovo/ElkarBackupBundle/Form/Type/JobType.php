@@ -41,7 +41,7 @@ class JobType extends AbstractType
                                                                 'attr'  => array('class'    => 'form-control')))
                 ->add('notificationsTo'     , 'choice'  , array('label'    => $t->trans('Send notices to', array(), 'BinovoElkarBackup'),
                                                                 'required' => false,
-                                                                'attr'     => array('class'    => 'form-control'),
+                                                                'attr'     => array('class'    => 'form-control-no'),
                                                                 'choices'  => array(Job::NOTIFY_TO_ADMIN => $t->trans('Admin', array(), 'BinovoElkarBackup'),
                                                                                     Job::NOTIFY_TO_OWNER => $t->trans('Owner', array(), 'BinovoElkarBackup'),
                                                                                     Job::NOTIFY_TO_EMAIL => $t->trans('Email', array(), 'BinovoElkarBackup')),
