@@ -299,7 +299,7 @@ class DefaultController extends Controller
                     );
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('showClients'));
+                return $this->redirect($this->generateUrl('editClient', array('id' => $client->getId())));
             } catch (Exception $e) {
                 $this->get('session')->getFlashBag()->add('client',
                                                           $t->trans('Unable to save your changes: %extrainfo%',
@@ -526,7 +526,7 @@ class DefaultController extends Controller
                                                                     'BinovoElkarBackup'));
             }
 
-            return $this->redirect($this->generateJobRoute($job->getId(), $job->getClient()->getId()));
+            return $this->redirect($this->generateUrl('showClients'));
         } else {
 
             return $this->render('BinovoElkarBackupBundle:Default:job.html.twig',
@@ -716,7 +716,7 @@ class DefaultController extends Controller
                         array('link' => $this->generatePolicyRoute($id)));
             $em->flush();
 
-            return $this->redirect($this->generatePolicyRoute($policy->getId()));
+            return $this->redirect($this->generateUrl('showPolicies'));
         } else {
 
             return $this->render('BinovoElkarBackupBundle:Default:policy.html.twig',
@@ -1377,7 +1377,7 @@ EOF;
                             array('%scriptname%' => $script->getScriptname()),
                             array('link' => $this->generateScriptRoute($id)));
                 $em->flush();
-                $result = $this->redirect($this->generateScriptRoute($script->getId()));
+                $result = $this->redirect($this->generateUrl('showScripts'));
             }
         }
         if (!$result) {
@@ -1466,7 +1466,7 @@ EOF;
                         array('link' => $this->generateUserRoute($id)));
             $em->flush();
 
-            return $this->redirect($this->generateUserRoute($user->getId()));
+            return $this->redirect($this->generateUrl('showUsers'));
         } else {
 
             return $this->render('BinovoElkarBackupBundle:Default:user.html.twig',
