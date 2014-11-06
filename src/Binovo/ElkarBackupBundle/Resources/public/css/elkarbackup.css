@@ -15,7 +15,7 @@ azul hover cabecera:
 
 
 
-/* ||| Fuentes 
+/* ||| Fuentes
 */
 
 @font-face {
@@ -30,7 +30,7 @@ azul hover cabecera:
 
 
 
-/* |||  General 
+/* |||  General
 */
 
 body {
@@ -90,7 +90,7 @@ table tr.disabled {
   opacity: .4;
 }
 
-/* |||  RESET 
+/* |||  RESET
 */
 
 legend { border: 0px !important; }
@@ -98,15 +98,15 @@ legend { border: 0px !important; }
 /* recoloca checkbox */
 .radio input[type="radio"],
 .radio-inline input[type="radio"],
-.checkbox input[type="checkbox"], 
-.checkbox-inline input[type="checkbox"] { 
+.checkbox input[type="checkbox"],
+.checkbox-inline input[type="checkbox"] {
   margin-left: 0;
 }
 
 
 
 
-/* |||  MENU SUPERIOR  
+/* |||  MENU SUPERIOR
 */
 
 
@@ -123,7 +123,7 @@ legend { border: 0px !important; }
       text-transform: uppercase;
   }
 
-  .navbar { 
+  .navbar {
     margin-bottom: 0;
     float: right;
   }
@@ -234,7 +234,7 @@ table.dijit.dijitMenu.menu_level_1 tbody tr td a {
 }
 
 
-/* |||  CLASES COMUNES 
+/* |||  CLASES COMUNES
 */
 
 .btn-elkarbackup {
@@ -251,10 +251,15 @@ table.dijit.dijitMenu.menu_level_1 tbody tr td a {
 
 
 
-/* |||  General 
+/* |||  General
 */
 
 .row { margin-left: 0; margin-right: 0; }
+
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
 
 .logo {
     padding: 7px;

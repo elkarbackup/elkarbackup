@@ -49,17 +49,26 @@
         <div class="col-md-6">
         {% for job in form.jobs %}
             <div id="job-{{job.vars.value.id}}">
+              <div class="form-group col-md-12">
                 <div class="controls">
                     {{ form_widget(job.name, {'attr': {'class': 'input-medium'}}) }}
-                    {{ form_widget(job.policy) }}
                     {{ form_widget(job.isActive) }}{% trans %}active{% endtrans %}
                 </div>
                 <div class="controls">
-                    {{ form_widget(job.path, {'attr': {'class': 'col-md-10'}}) }}
+                  <div class="nopadding col-md-4">
+                    {{ form_widget(job.path, {'attr': {'class': 'form-control'}}) }}
+                  </div>
+                  <div class="nopadding col-md-8">
+                    {{ form_widget(job.policy, {'attr': {'class': 'form-control'}}) }}
+                  </div>
                 </div>
                 <div class="controls">
-                    {{ form_widget(job.description, {'attr': {'class': 'col-md-10'}}) }}
+                    {{ form_widget(job.description, {'attr': {'class': 'form-control col-md-12'}}) }}
                 </div>
+              </div>
+
+                {# DISABLED #}
+                {#
                 <div class="controls">
                     {% if job.vars.value.hasBackups %}
                     <a href="{{path('showJobBackup', {idClient: job.vars.value.client.id, idJob: job.vars.value.id, action: 'view'}) }}">{% trans %}Backups{% endtrans %} ({{ (job.vars.value.diskUsage / 1024) | number_format(0)  }} MB)</a><br />
@@ -67,11 +76,11 @@
                     {% trans %}Backups{% endtrans %} ({{ (job.vars.value.diskUsage / 1024) | number_format(0)  }} MB)<br />
                     {% endif %}
                     {{job.vars.value.logEntry.dateTime.format('Y-m-d H:i:s')|default('')}} {{job.vars.value.logEntry.levelName|default('')}} {{ job.vars.value.logEntry.message|default('')|slice(0, 50) }}{% if job.vars.value.logEntry.message|default('')|length > 50 %}[...]{% endif %}
-
                 </div>
-                <div class="controls control-row">
-                    <input class="btn delete-job" data-bnv-job-id="#job-{{job.vars.value.id}}" data-bnv-message="{% trans with {'%name%': job.vars.value.client.name ~ "/" ~ job.vars.value.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" type="button" value="{% trans %}Delete{% endtrans %}" />
-                    <input class="btn" type="button" value="{% trans %}Edit{% endtrans %}" onclick="document.location.href='{{ path('editJob', {idJob: job.vars.value.id, idClient: form.vars.value.id}) }}'"/>
+                #}
+                <div class="form-group control-row col-md-12">
+                    <input class="btn btn-elkarbackup delete-job" data-bnv-job-id="#job-{{job.vars.value.id}}" data-bnv-message="{% trans with {'%name%': job.vars.value.client.name ~ "/" ~ job.vars.value.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" type="button" value="{% trans %}Delete{% endtrans %}" />
+                    <input class="btn btn-elkarbackup" type="button" value="{% trans %}Edit{% endtrans %}" onclick="document.location.href='{{ path('editJob', {idJob: job.vars.value.id, idClient: form.vars.value.id}) }}'"/>
                 </div>
                 <br/>
             </div>
