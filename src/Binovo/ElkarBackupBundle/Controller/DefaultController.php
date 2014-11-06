@@ -299,7 +299,7 @@ class DefaultController extends Controller
                     );
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('editClient', array('id' => $client->getId())));
+                return $this->redirect($this->generateUrl('showClients'));
             } catch (Exception $e) {
                 $this->get('session')->getFlashBag()->add('client',
                                                           $t->trans('Unable to save your changes: %extrainfo%',
