@@ -35,6 +35,11 @@
 {% endspaceless %}
 {% endblock form_label %}
 
+{% block percent_widget %}
+  {{ block('form_widget_simple') }}
+  <span class="input-group-addon">%</span>
+{% endblock %}
+
 {% block form_widget_simple %}
 {% spaceless %}
     {% set type = type|default('text') %}
@@ -63,6 +68,9 @@
 
 {% block choice_widget_expanded %}
 {% spaceless %}
+    {% if id == 'form_warning_load_level' %}
+      xxx
+    {% endif %}
     <div {{ block('widget_container_attributes') }}>
     {% for child in form %}
         {{ form_widget(child) }} {{child.vars.label}}<br />
