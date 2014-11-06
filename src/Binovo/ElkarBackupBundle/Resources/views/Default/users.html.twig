@@ -36,8 +36,12 @@
         <td>{{ user.email }}</td>
         <td>{% if user.isActive %}{% trans %}Yes{% endtrans%}{% else%}{% trans %}No{% endtrans%}{% endif %}</td>
         <td class="actions">
-            <button class="btn btn-elkarbackup" type="button" onclick="document.location.href='{{ path('editUser', {id: user.id}) }}'"><span class="glyphicon glyphicon-pencil"></span> {% trans %}Edit{% endtrans %} </button>
-            <button class="btn btn-elkarbackup" type="button" onclick="document.location.href='{{ path('deleteUser', {id: user.id}) }}'" {% if user.isSuperuser() %} disabled="True"{% endif %}><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %} </button>
+          <form action="{{ path('editUser', {id: user.id}) }}" style="display:inline">
+            <button class="btn btn-elkarbackup" type="submit"><span class="glyphicon glyphicon-pencil"></span> {% trans %}Edit{% endtrans %} </button>
+          </form>
+          <form data-bnv-message="{% trans with {'%name%': user.username} %}Really delete user %name%?{% endtrans %}" class="delete-user" action="{{ path('deleteUser', {id: user.id}) }}" method="POST" style="display:inline">
+            <button class="btn btn-elkarbackup" type="submit" {% if user.isSuperuser() %} disabled="True"{% endif %}><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %} </button>
+          </form>
         </td>
     </tr>
     {% endfor %}
