@@ -42,7 +42,7 @@
 
 
 
-<h3>{% trans %}Clients{% endtrans %}</h3>
+<h3>{% trans %}Clients{% endtrans %}<a href="{{ path('sortJobs') }}"><span class="glyphicon glyphicon-cog pull-right" title="{% trans %}Sort jobs{% endtrans %}"></span></a></h3>
 
 {% for flashMessage in app.session.flashbag.get('clients') %}
     <div class="controls help-block">
