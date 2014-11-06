@@ -9,11 +9,11 @@
 
 {% block form_row %}
 {% spaceless %}
-    <div class="control-group">
+    <div class="form-group">
         {{ form_label(form) }}
         {{ form_errors(form) }}
-        <div class="controls">
-            {{ form_widget(form) }}
+        <div class="col-xs-12 col-md-9">
+          {{ form_widget(form) }}
         </div>
     </div>
 {% endspaceless %}
@@ -30,7 +30,7 @@
     {% if label is empty %}
         {% set label = name|humanize %}
     {% endif %}
-    {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' control-label')|trim}) %}
+    {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' control-label col-xs-12 col-md-3')|trim}) %}
     <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}</label>
 {% endspaceless %}
 {% endblock form_label %}
