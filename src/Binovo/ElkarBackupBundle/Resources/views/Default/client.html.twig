@@ -50,11 +50,15 @@
         {% for job in form.jobs %}
             <div id="job-{{job.vars.value.id}}">
               <div class="form-group col-md-12">
-                <div class="controls">
-                    {{ form_widget(job.name, {'attr': {'class': 'input-medium'}}) }}
-                    {{ form_widget(job.isActive) }}{% trans %}active{% endtrans %}
+                <div class="row">
+                  <div class="nopadding col-md-4">
+                    {{ form_widget(job.name, {'attr': {'class': 'form-control'}}) }}
+                  </div>
+                  <div class="col-md-6">
+                    {{ form_widget(job.isActive) }} {% trans %}Active{% endtrans %}
+                  </div>
                 </div>
-                <div class="controls">
+                <div class="row">
                   <div class="nopadding col-md-4">
                     {{ form_widget(job.path, {'attr': {'class': 'form-control'}}) }}
                   </div>
@@ -62,7 +66,7 @@
                     {{ form_widget(job.policy, {'attr': {'class': 'form-control'}}) }}
                   </div>
                 </div>
-                <div class="controls">
+                <div class="row">
                     {{ form_widget(job.description, {'attr': {'class': 'form-control col-md-12'}}) }}
                 </div>
               </div>
