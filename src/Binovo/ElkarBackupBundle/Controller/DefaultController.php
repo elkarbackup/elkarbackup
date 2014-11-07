@@ -299,7 +299,7 @@ class DefaultController extends Controller
                     );
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('showClients'));
+                return $this->redirect($this->generateUrl('editClient', array('id' => $client->getId())));
             } catch (Exception $e) {
                 $this->get('session')->getFlashBag()->add('client',
                                                           $t->trans('Unable to save your changes: %extrainfo%',
@@ -1004,8 +1004,15 @@ EOF;
                           array('type'         => new AuthorizedKeyType($t),
                                 'allow_add'    => true,
                                 'allow_delete' => true,
+                                'attr'         => array('class'    => 'form-control'),
                                 'options'      => array('required' => false,
                                                         'attr'     => array('class' => 'span10'))));
+        /*
+        $formBuilder->add('host'      , 'text'  , array('required' => false,
+                                                        'label'    => $t->trans('Host', array(), 'BinovoElkarBackup'),
+                                                        'attr'     => array('class'    => 'form-control'),
+                                                        'disabled' => !$this->isAutoFsAvailable()));
+        */
         $form = $formBuilder->getForm();
         if ($request->isMethod('POST')) {
             $form->bind($request);
@@ -1128,7 +1135,7 @@ EOF;
                                                                                                                                                                  'P5Y' => $t->trans('Five years' , array(), 'BinovoElkarBackup'),
                                                                                                                                                                  ''    => $t->trans('Never'      , array(), 'BinovoElkarBackup')),
                                                              'label' => $t->trans('Remove logs older than', array(), 'BinovoElkarBackup')),
-                        'warning_load_level'        => array('type' => 'percent' , 'required' => false, 'attr' => array('class' => 'form-quota-level col-lg-10'), 'label' => $t->trans('Quota warning level', array(), 'BinovoElkarBackup')),
+                        'warning_load_level'        => array('type' => 'percent' , 'required' => false, 'attr' => array('class' => 'form-control form-quota-level'), 'label' => $t->trans('Quota warning level', array(), 'BinovoElkarBackup')),
                         'pagination_lines_per_page' => array('type' => 'integer' , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Records per page'   , array(), 'BinovoElkarBackup')),
                         'url_prefix'                => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Url prefix'         , array(), 'BinovoElkarBackup')),
             );
@@ -1219,9 +1226,9 @@ EOF;
         $t = $this->get('translator');
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)
-            ->add('oldPassword' , 'password', array('label' => $t->trans('Old password'        , array(), 'BinovoElkarBackup')))
-            ->add('newPassword' , 'password', array('label' => $t->trans('New password'        , array(), 'BinovoElkarBackup')))
-            ->add('newPassword2', 'password', array('label' => $t->trans('Confirm new password', array(), 'BinovoElkarBackup')))
+            ->add('oldPassword' , 'password', array('required' => true, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Old password'        , array(), 'BinovoElkarBackup')))
+            ->add('newPassword' , 'password', array('required' => true, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('New password'        , array(), 'BinovoElkarBackup')))
+            ->add('newPassword2', 'password', array('required' => true, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Confirm new password', array(), 'BinovoElkarBackup')))
             ->getForm();
         if ($request->isMethod('POST')) {
             $form->bind($request);
