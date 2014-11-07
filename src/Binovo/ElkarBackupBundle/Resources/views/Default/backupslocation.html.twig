@@ -18,7 +18,7 @@
 
 </form>
 <form class="form-horizontal" action="{{ path('manageBackupsLocation') }}" method="post" {{ form_enctype(form) }}>
-    <legend>{% trans %}Manage backups location{% endtrans %}</legend>
+    <h3>{% trans %}Manage backups location{% endtrans %}</h3>
     <div class="row">
         <div class="col-md-6">
             {% for flashMessage in app.session.flashbag.get('manageParameters') %}
@@ -30,7 +30,7 @@
             {{ form_widget(form) }}
             <div class="control-group">
                 <div class="controls">
-                    <input class="btn pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
+                    <input class="btn btn-elkarbackup pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
                 </div>
             </div>
         </div>
