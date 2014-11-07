@@ -39,7 +39,7 @@
         <td onclick="document.location.href='{{ path('editScript', {id: script.id}) }}'" class="ids"><a href="{{ path('editScript', {id: script.id}) }}">{{ script.id }}</a></td>
         <td>{{ script.name }}</td>
         <td>{{ script.description }}</td>
-        <td class="actions">
+        <td class="actions" style="width:20%; text-align: center">
           <form action="{{ path('editScript', {id: script.id}) }}" style="display:inline">
             <button class="btn btn-elkarbackup" type="submit"><span class="glyphicon glyphicon-pencil"></span> {% trans %}Edit{% endtrans %} </button>
           </form>
