@@ -41,7 +41,7 @@
                 <button class="btn btn-elkarbackup" type="submit"><span class="glyphicon glyphicon-pencil"></span> {% trans %}Edit{% endtrans %} </button>
               </form>
               <form data-bnv-message="{% trans with {'%name%': policy.name} %}Really delete policy %name%?{% endtrans %}" class="delete-policy" action="{{ path('deletePolicy', {id: policy.id}) }}" method="POST" style="display:inline">
-                <button class="btn btn-elkarbackup" type="submit"><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %} </button>
+                <button class="btn btn-default btn-danger" type="submit"><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %} </button>
               </form>
 
         </td>
