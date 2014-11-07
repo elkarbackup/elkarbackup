@@ -15,17 +15,19 @@
 {% block body %}
 
 <form class="form-horizontal" action="{{ path('configureRepositoryBackupScript') }}" method="post" {{ form_enctype(form) }}>
-    <legend>{% trans %}Repository backups script{% endtrans %}</legend>
+    <h3>{% trans %}Repository backups script{% endtrans %}</h3>
     {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
     <div class="row">
         <div class="col-md-6">
             <div class="control-group">
-                <label class="control-label">{% trans %}Backup script{% endtrans %}</label>
-                <div class="controls"><input class="btn" onclick="window.location='{{ path('getRepositoryBackupScript') }}'" type="button" value="{% trans %}Download{% endtrans %}" /></div>
+                <label class="control-label col-xs-12 col-md-3">{% trans %}Backup script{% endtrans %}</label>
+                <div class="controls"><input class="btn btn-elkarbackup" onclick="window.location='{{ path('getRepositoryBackupScript') }}'" type="button" value="{% trans %}Download{% endtrans %}" /></div>
             </div>
         </div>
     </div>
 </form>
+<br />
+<br />
 <form class="form-horizontal" action="{{ path('configureRepositoryBackupScript') }}" method="post" {{ form_enctype(form) }}>
     <legend>{% trans %}Authorized keys{% endtrans %}</legend>
     <div class="row">
@@ -48,9 +50,11 @@
             </div>
             <div id="add-key" class="controls">
                 <br />
-                <input data-command="add-key" class="btn btn-pull-right" type="button" value="{% trans %}Add key{% endtrans %}" onclick=""/>
+                <input data-command="add-key" class="btn btn-elkarbackup btn-pull-right" type="button" value="{% trans %}Add key{% endtrans %}" onclick=""/>
             </div>
-            <input class="btn btn-pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
+            <div class="form-group pull-right">
+              <button class="btn btn-elkarbackup" type="submit"><span class="glyphicon glyphicon-plus"></span> {% trans %}Save{% endtrans %}</button>
+            </div>
         </div>
         <div class="col-md-6">
             {% trans %}backupscriptconfig_help{% endtrans %}
@@ -60,8 +64,8 @@
 <div style="display:none" id="prototype">
     <div class="control-group">
         <label class="control-label">{% trans %}Comment / Key{% endtrans %}</label>
-        <div style="height:0px" class="controls">
-            {{ form_widget(form.publicKeys.vars.prototype.comment) }} {{ form_widget(form.publicKeys.vars.prototype.publicKey) }} <input data-command="delete-key" class="btn" type="button" value="{% trans %}Delete{% endtrans %}">
+        <div style="height:30px" class="controls">
+            {{ form_widget(form.publicKeys.vars.prototype.comment) }} {{ form_widget(form.publicKeys.vars.prototype.publicKey) }} <input data-command="delete-key" class="btn-elkarbackup btn-sx" type="button" value="{% trans %}Delete{% endtrans %}">
         </div>
     </div>
 </div>
