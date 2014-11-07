@@ -44,10 +44,11 @@
 {% spaceless %}
     {% set type = type|default('text') %}
     {% if type == 'file' %}
-    <input type="file" style="display:none" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
-    <div class="input-append">
-        <input class="input-large" id="visual_{{id}}" type="text">
-        <a class="btn" onclick="dojo.byId('{{id}}').click();">{{ 'Browse'|trans({}, translation_domain) }}</a>
+    <div class="input-group">
+      <span class="input-group-btn">
+        <span class="btn btn-elkarbackup btn-file">Browse&hellip; <input type="file" {{ block('widget_attributes') }} /></span>
+      </span>
+      <input type="text" class="form-control" id="visual_{{id}}" readonly>
     </div>
 
     <script type="text/javascript">
@@ -60,6 +61,7 @@
                          dojo.byId('{{id}}').value = dojo.byId('visual_{{id}}').value;
                      });
     </script>
+
     {% else %}
     <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
     {% endif %}
