@@ -101,6 +101,7 @@ legend { border: 0px !important; }
 .checkbox input[type="checkbox"],
 .checkbox-inline input[type="checkbox"] {
   margin-left: 0;
+  position: relative;
 }
 
 
@@ -327,6 +328,21 @@ table.dijit.dijitMenu.menu_level_1 tbody tr td a {
     float: left;
 }
 
+
+/*
+POLICY
+*/
+.legend
+{
+  margin-bottom: 0px !important;
+  font-weight: normal !important;
+}
+
+.panel-legend
+{
+    padding-top: 10px;
+    font-size: 18px !important;
+}
 
 
 /*
