@@ -83,10 +83,11 @@
                 </div>
                 #}
                 <div class="form-group control-row col-md-12">
-                    <input class="btn btn-elkarbackup delete-job" data-bnv-job-id="#job-{{job.vars.value.id}}" data-bnv-message="{% trans with {'%name%': job.vars.value.client.name ~ "/" ~ job.vars.value.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" type="button" value="{% trans %}Delete{% endtrans %}" />
-                    <input class="btn btn-elkarbackup" type="button" value="{% trans %}Edit{% endtrans %}" onclick="document.location.href='{{ path('editJob', {idJob: job.vars.value.id, idClient: form.vars.value.id}) }}'"/>
+                    <button class="btn btn-elkarbackup delete-job btn-danger" data-bnv-job-id="#job-{{job.vars.value.id}}" data-bnv-message="{% trans with {'%name%': job.vars.value.client.name ~ "/" ~ job.vars.value.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" type="button"><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %}</button>
+                    <button class="btn btn-elkarbackup" type="button" onclick="document.location.href='{{ path('editJob', {idJob: job.vars.value.id, idClient: form.vars.value.id}) }}'"><span class="glyphicon glyphicon-pencil"></span> {% trans %}Edit{% endtrans %}</button>
                 </div>
-                <br/>
+            </div>
+            <div class="row col-md-12" style="padding-top: 40px;">
             </div>
         {% else %}
             <div class="controls">
