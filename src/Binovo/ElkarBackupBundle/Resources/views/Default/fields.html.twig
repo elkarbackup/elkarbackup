@@ -46,7 +46,7 @@
     {% if type == 'file' %}
     <div class="input-group">
       <span class="input-group-btn">
-        <span class="btn btn-elkarbackup btn-file">Browse&hellip; <input type="file" {{ block('widget_attributes') }} /></span>
+        <span class="btn btn-elkarbackup btn-file">{% trans %}Browse{% endtrans %}&hellip; <input type="file" {{ block('widget_attributes') }} /></span>
       </span>
       <input type="text" class="form-control" id="visual_{{id}}" readonly>
     </div>
