@@ -70,9 +70,6 @@
 
 {% block choice_widget_expanded %}
 {% spaceless %}
-    {% if id == 'form_warning_load_level' %}
-      xxx
-    {% endif %}
     <div {{ block('widget_container_attributes') }}>
     {% for child in form %}
         {{ form_widget(child) }} {{child.vars.label}}<br />
