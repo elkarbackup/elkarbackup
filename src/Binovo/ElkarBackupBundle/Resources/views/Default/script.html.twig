@@ -29,7 +29,7 @@
                 </label>
                 <div class="controls">
 {% if form.vars.value.isUsed %}
-                    {% trans %}Used by{% endtrans %}
+                    {% trans %}<h4 style="margin-bottom: 0px;">Used by</h4>{% endtrans %}
     {% for client in form.vars.value.postClients %}
                     <br><a href="{{ path('editClient', {id: client.id}) }}">{% trans with {'%name%': client.name} %}Client %name% as post script{% endtrans %}</a>
     {% endfor %}
