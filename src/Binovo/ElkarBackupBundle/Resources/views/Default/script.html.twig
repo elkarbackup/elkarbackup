@@ -7,8 +7,11 @@
 
 {% block body %}
 
+<div class="pull-right" style="margin-top: 40px;">
+  <button class="btn btn-elkarbackup" onclick="window.location.href='{{path('downloadScript', {id: form.vars.value.id}) }}'"><span class="glyphicon glyphicon-download-alt"></span> {% trans %}Download{% endtrans %}</button>
+</div>
 <form class="form-horizontal" action="{{ path('saveScript', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
-    <legend>{% trans %}Edit script{% endtrans %}</legend>
+    <h3>{% trans %}Edit script{% endtrans %}</h3>
     <div class="row">
         <div class="col-md-6">
 {% for flashMessage in app.session.flashbag.get('editScript') %}
@@ -18,7 +21,6 @@
 {% endfor %}
             {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
             <div class="controls">
-                <a href="{{path('downloadScript', {id: form.vars.value.id}) }}">{% trans %}Download{% endtrans %}</a>
             </div>
             {{ form_widget(form) }}
             <div class="control-group">
@@ -47,7 +49,7 @@
             </div>
             <div class="control-group">
                 <div class="controls">
-                    <input class="btn btn-pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
+                    <input class="btn btn-elkarbackup pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
                 </div>
             </div>
         </div>
