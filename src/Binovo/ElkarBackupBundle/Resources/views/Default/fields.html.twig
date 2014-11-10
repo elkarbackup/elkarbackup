@@ -6,7 +6,6 @@
  Customizations for
  vendor/symfony/symfony/src/Symfony/Bridge/Twig/Resources/views/Form/
 #}
-
 {% block form_row %}
 {% spaceless %}
     <div class="form-group">
@@ -46,7 +45,7 @@
     {% if type == 'file' %}
     <div class="input-group">
       <span class="input-group-btn">
-        <span class="btn btn-elkarbackup btn-file">{% trans %}Browse{% endtrans %}&hellip; <input type="file" {{ block('widget_attributes') }} /></span>
+        <span class="btn btn-elkarbackup btn-file"><span class="glyphicon glyphicon-folder-open"></span> {{ 'Browse'|trans({}, 'BinovoElkarBackup') }}&hellip; <input type="file" {{ block('widget_attributes') }} /></span>
       </span>
       <input type="text" class="form-control" id="visual_{{id}}" readonly>
     </div>

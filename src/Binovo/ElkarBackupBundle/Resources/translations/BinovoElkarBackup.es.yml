@@ -3,6 +3,7 @@
 'Add key': 'Añadir clave'
 'Sort jobs': 'Ordenar tareas'
 'Edit script': 'Editar script'
+'File': 'Fichero'
 'Download': 'Descargar'
 'Currently not used': 'Actualmente no se utiliza'
 'Runs as before client script': 'Ejecutar como pre-script de clientes'
@@ -183,6 +184,7 @@
 'Wrong old password': 'Antigua contraseña incorrecta'
 'Yearly': 'Anual'
 'Yes': 'Sí'
+'Browse': 'Examinar'
 policy_help: |
  <h4>Nombre</h4>
  Es el identificador de la política. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.
