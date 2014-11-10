@@ -340,6 +340,12 @@ POLICY
     font-weight: normal !important;
 }
 
+/*
+SORT JOBS
+*/
+.dojoDndItemAnchor{
+  background-color: #759DC0 !important;
+}
 
 /*
 CLIENTS-TASKS

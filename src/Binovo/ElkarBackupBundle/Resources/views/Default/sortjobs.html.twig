@@ -25,7 +25,7 @@
         </div>
 {% endfor %}
         <form action="{{ path('sortJobs') }}" method="post" {{ form_enctype(form) }}>
-            <table id="jobs" class="table table-condensed table-bordered">
+            <table id="jobs" class="table table-condensed table-bordered table-hover">
                 <tr>
                     {# sorting of properties based on query components #}
                     <th>{% trans %}Id{% endtrans %}</th>
