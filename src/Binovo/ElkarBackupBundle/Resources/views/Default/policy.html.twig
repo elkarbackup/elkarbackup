@@ -25,7 +25,7 @@ font-size: 14px;
 
 <form id="form" class="form-horizontal" action="{{ path('savePolicy', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
     <fieldset>
-        <legend>{% trans %}Edit policy{% endtrans %}</legend>
+        <h3>{% trans %}Edit policy{% endtrans %}</h3>
         <div class="row">
             <div class="col-md-6">
                 {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}

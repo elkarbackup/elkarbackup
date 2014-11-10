@@ -332,16 +332,12 @@ table.dijit.dijitMenu.menu_level_1 tbody tr td a {
 /*
 POLICY
 */
-.legend
-{
-  margin-bottom: 0px !important;
-  font-weight: normal !important;
-}
-
 .panel-legend
 {
     padding-top: 10px;
+    margin-bottom: 0px !important;
     font-size: 18px !important;
+    font-weight: normal !important;
 }
 
 
