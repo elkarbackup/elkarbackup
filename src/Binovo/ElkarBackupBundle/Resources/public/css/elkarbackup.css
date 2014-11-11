@@ -406,3 +406,56 @@ LOGIN PAGE
 .btn-lg {
   background-color: #2D3F50;
 }
+
+
+
+/* PAGINACIONES
+*/
+
+.navigation.binovo-pagination {
+    text-align: center;
+}
+
+.binovo-pagination .pagination > span {
+    display: inline;
+}
+
+.binovo-pagination .pagination > span > a {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    color: #4c6987;
+    float: left;
+    line-height: 1.42857;
+    margin-left: -1px;
+    padding: 6px 12px;
+    position: relative;
+    text-decoration: none;
+}
+
+.binovo-pagination .pagination > span > a:hover,
+.binovo-pagination .pagination > span > a:focus,
+.binovo-pagination .pagination > span > a:active,
+ {
+    background-color: #eee;
+    border: 1px solid #ddd;
+    color: #2d3f50;
+}
+
+.binovo-pagination .pagination > span.current {
+    float: left;
+    line-height: 1.59;
+    margin-left: -1px;
+    padding: 6px 12px;
+    position: relative;
+    text-decoration: none;
+    background-color: #4c6987;
+    border-color: #4c6987;
+    color: #fff;
+    cursor: default;
+    z-index: 2;
+}
+
+
+
+
+
