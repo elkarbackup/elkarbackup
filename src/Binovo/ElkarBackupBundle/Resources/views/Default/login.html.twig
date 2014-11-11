@@ -2,17 +2,13 @@
  # @copyright 2012,2013 Binovo it Human Project, S.L.
  # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  #}
-{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% extends 'BinovoElkarBackupBundle:Default:base.login.html.twig' %}
 {% trans_default_domain 'BinovoElkarBackup' %}
 
 {% block menu %}
 {% endblock %}
 
 {% block body %}
-
-| {% for aLocale in supportedLocales %}
-<a href="{{path('setLocale', {locale: aLocale[0]})}}">{{ aLocale[1] }}</a> |
-{% endfor %}
 
 <!--
 <form action="{{ path('login_check') }}" method="post" class="form-horizontal">
@@ -25,9 +21,9 @@
     {% endif %}
             </div>
             <div class="control-group">
-                <label for="username" class="control-label">{% trans %}Username:{% endtrans %}</label>
+                a<label for="username" class="control-label">{% trans %}Username:{% endtrans %}</label>
                 <div class="controls">
-                    <input class="col-md-12" type="text" id="username" name="_username" value="{{ last_username }}" />
+                    d<input class="col-md-12" type="text" id="username" name="_username" value="{{ last_username }}" />
                 </div>
             </div>
             <div class="control-group">
@@ -47,22 +43,55 @@
 </form>
 -->
 
-    <div class="container">
+<div class="container">
 
-      <form class="form-signin" role="form" action="{{ path('login_check') }}" method="post">
-        <h2 class="form-signin-heading">{% trans %}Backup server login{% endtrans %}</h2>
-        <input type="username" id="username" name="_username" class="form-control" placeholder="{% trans %}Username{% endtrans %}" required autofocus>
-        <input type="password" id="password" name="_password" class="form-control" placeholder="{% trans %}Password{% endtrans %}" required>
-        <div class="message">
-          <label>
-          {% if error %}
-            {{ error.message }}
-          {% endif %}
-        </label>
+    <form class="form-signin" role="form" action="{{ path('login_check') }}" method="post">
+
+        <h2 class="login-elkarbackup">{% trans %}Backup server login{% endtrans %}</h2>
+
+        
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <div class="glyphicon glyphicon-envelope"> </div>
+                </div>                
+                <input class="form-control" id="username" name="_username" type="email" placeholder="{% trans %}Username{% endtrans %}" required autofocus />
+            </div>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans %}Login{% endtrans %}</button>
-      </form>
+        
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <div class="glyphicon glyphicon-lock"> </div>
+                </div>
+                <input type="password" class="form-control" id="password" name="_password" placeholder="{% trans %}Password{% endtrans %}" required />
+            </div>
+        </div>
 
-    </div>
+
+        <div class="message">
+            <p class="bg-warning">
+                {% if error %}
+                    {{ error.message }}
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-8 nopadding language">
+                <p><span class="glyphicon glyphicon-flag"></span> selecciona idioma</p>
+                <p>{% for aLocale in supportedLocales %}
+                    <a href="{{path('setLocale', {locale: aLocale[0]})}}">{{ aLocale[1] }}</a>
+                {% endfor %}</p>
+            </div>
+
+            <div class="col-sm-4 nopadding">
+                <button class="btn btn-login btn-default btn-block" type="submit"><span class="glyphicon glyphicon-lock"></span> {% trans %}Login{% endtrans %}</button>
+            </div>
+        </div>
+    
+    </form>
+
+</div>
 
 {% endblock %}
