@@ -325,6 +325,10 @@ table.dijit.dijitMenu.menu_level_1 tbody tr td a {
   width: 60%;
 }
 
+span.required {
+  color: red;
+}
+
 
 /* PARA MOVILES */
 
