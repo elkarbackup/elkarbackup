@@ -316,6 +316,15 @@ table.dijit.dijitMenu.menu_level_1 tbody tr td a {
     padding: 7px;
 }
 
+.error-top {
+  display: block;
+  left: 50%;
+  position: absolute;
+  text-align: center;
+  top: -99px;
+  width: 60%;
+}
+
 
 /* PARA MOVILES */
 
@@ -482,8 +491,3 @@ LOGIN PAGE
     cursor: default;
     z-index: 2;
 }
-
-
-
-
-
