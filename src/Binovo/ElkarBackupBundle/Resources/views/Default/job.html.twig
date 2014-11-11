@@ -24,8 +24,18 @@
 {% endif %}
 
 <div class="top-action-buttons pull-right">
+  <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnRunNowDisabled'">
+          {% trans %}Job has not yet been saved{% endtrans %}
+  </div>
+  <div class="btn-group inline" {% if not form.vars.value.id %}id="btnRunNowDisabled"{% endif %}>
     <button class="btn btn-elkarbackup btn-pull-right" type="button" id="runNow"><span class="glyphicon glyphicon-repeat"></span> {% trans %}Run now{% endtrans %}</button>
+  </div>
+  <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnRestoreDisabled'">
+          {% trans %}Backup not found{% endtrans %}
+  </div>
+  <div class="btn-group inline" {% if hasBackups == false %}id="btnRestoreDisabled"{% endif %}>
     <button type="button" class="btn btn-elkarbackup btn-pull-right" {% if hasBackups == false %}disabled="true" {% endif %} onclick="document.location.href='{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}'"><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</button>
+  </div>
 </div>
 
 <form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_enctype(form) }}>
