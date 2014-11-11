@@ -24,27 +24,11 @@
 {% endif %}
 
 <div class="top-action-buttons pull-right">
-    <button class="btn btn-elkarbackup btn-pull-right" type="button" id="runNow"><span class="glyphicon glyphicon-repeat"></span> {% trans %}Run now{% endtrans %}"</button>
+    <button class="btn btn-elkarbackup btn-pull-right" type="button" id="runNow"><span class="glyphicon glyphicon-repeat"></span> {% trans %}Run now{% endtrans %}</button>
     <button type="button" class="btn btn-elkarbackup btn-pull-right" {% if hasBackups == false %}disabled="true" {% endif %} onclick="document.location.href='{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}'"><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</button>
 </div>
 
 <form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_enctype(form) }}>
-<!--
-<ol class="breadcrumb">
-
-    <li><a class="host" href="{{path('editClient', {id: form.vars.value.client.id}) }}">{{ form.vars.value.client.name }}</a></li>
-    {% if form.vars.value.name is null %}
-        <li class="job-off">New Job</li>
-    {% else %}
-        <li class="job-on">{{ form.vars.value.name }}</li>
-    {% endif %}
-    {% if form.vars.value.id %}
-	{% if form.vars.value.hasBackups %}
-	 <li id="link-to-backup" class="link-to-backup pull-right"><a href="{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}"><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</a></li>
-	{% endif %}
-    {% endif %}
-</ol>
--->
 
     <h3 id="legend">{% trans %}Edit Job{% endtrans %}</h3>
     <div class="row">
