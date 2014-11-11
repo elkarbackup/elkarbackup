@@ -499,3 +499,21 @@ LOGIN PAGE
     cursor: default;
     z-index: 2;
 }
+
+
+/* FEEDBACK EN LOS INPUTS
+*/
+
+.porcentaje {
+  background: none repeat scroll 0 0 rgba(0, 0, 0, 0.1);
+  border-left: 1px solid #ccc;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+
+
