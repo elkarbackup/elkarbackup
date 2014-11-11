@@ -15,7 +15,21 @@
 
 {% block body %}
 
+
+{% set hasBackups = false %}
+{% if form.vars.value.id %}
+  {% if form.vars.value.hasBackups %}
+    {% set hasBackups = true %}
+  {% endif %}
+{% endif %}
+
+<div class="top-action-buttons pull-right">
+    <button class="btn btn-elkarbackup btn-pull-right" type="button" id="runNow"><span class="glyphicon glyphicon-repeat"></span> {% trans %}Run now{% endtrans %}"</button>
+    <button type="button" class="btn btn-elkarbackup btn-pull-right" {% if hasBackups == false %}disabled="true" {% endif %} onclick="document.location.href='{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}'"><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</button>
+</div>
+
 <form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_enctype(form) }}>
+<!--
 <ol class="breadcrumb">
 
     <li><a class="host" href="{{path('editClient', {id: form.vars.value.client.id}) }}">{{ form.vars.value.client.name }}</a></li>
@@ -30,7 +44,7 @@
 	{% endif %}
     {% endif %}
 </ol>
-
+-->
 
     <h3 id="legend">{% trans %}Edit Job{% endtrans %}</h3>
     <div class="row">
@@ -62,8 +76,7 @@
             </div>
             <div class="control-group">
                 <div class="controls">
-                    <input class="btn btn-elkarbackup btn-pull-right" type="button" value="{% trans %}Run now{% endtrans %}" id="runNow"/>
-                    <input class="btn btn-elkarbackup btn-pull-right" type="submit" value="{% trans %}Save{% endtrans %}" />
+                    <input class="btn btn-elkarbackup pull-right" type="submit" value="{% trans %}Save{% endtrans %}" />
                 </div>
             </div>
         </div>
