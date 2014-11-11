@@ -41,8 +41,29 @@ body {
 h3, .h3 {
     font-size: 27px;
     margin-bottom: 20px;
-    padding: 20px 0 10px;
+    padding: 10px 0 5px 10px;
     border-bottom: 1px dotted #ccc;
+}
+
+.title-img {
+    height: 30px;
+    margin-top: -5px;
+    width: 30px;
+}
+
+.jumbotron {
+    padding-bottom: 20px;
+    padding-top: 20px;
+    margin-bottom: 0px;
+    margin-top: 10px;
+}
+
+.jumbotron h3, .jumbotron .h3  {
+    padding-top: 0px;
+}
+
+.progress-bar-info {
+    background-color: #2d3f50;
 }
 
 a {
@@ -78,11 +99,18 @@ table tr.job-row td {
   border: 0px solid #c4c4c4 !important;
 }
 
-tr.job-row td:first-child {
-  background: url("../img/job-row-lvl-2.png") no-repeat scroll 10px 11px rgba(0, 0, 0, 0);
-  padding: 0 0 0 25px;
+.client-icon {
+    background: url("../img/ico-client.svg") no-repeat scroll 0 0;
+    display: inline-block;
+    height: 20px;
+    margin-bottom: -4px;
+    width: 20px;
 }
 
+tr.job-row td:first-child span {
+    margin-left: 3px;
+    margin-right: 3px;
+}
 
 table tr.disabled:hover,
 table tr.disabled {
@@ -406,3 +434,56 @@ LOGIN PAGE
 .btn-lg {
   background-color: #2D3F50;
 }
+
+
+
+/* PAGINACIONES
+*/
+
+.navigation.binovo-pagination {
+    text-align: center;
+}
+
+.binovo-pagination .pagination > span {
+    display: inline;
+}
+
+.binovo-pagination .pagination > span > a {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    color: #4c6987;
+    float: left;
+    line-height: 1.42857;
+    margin-left: -1px;
+    padding: 6px 12px;
+    position: relative;
+    text-decoration: none;
+}
+
+.binovo-pagination .pagination > span > a:hover,
+.binovo-pagination .pagination > span > a:focus,
+.binovo-pagination .pagination > span > a:active,
+ {
+    background-color: #eee;
+    border: 1px solid #ddd;
+    color: #2d3f50;
+}
+
+.binovo-pagination .pagination > span.current {
+    float: left;
+    line-height: 1.59;
+    margin-left: -1px;
+    padding: 6px 12px;
+    position: relative;
+    text-decoration: none;
+    background-color: #4c6987;
+    border-color: #4c6987;
+    color: #fff;
+    cursor: default;
+    z-index: 2;
+}
+
+
+
+
+
