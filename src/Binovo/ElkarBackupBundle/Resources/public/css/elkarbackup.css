@@ -244,6 +244,8 @@ table.dijit.dijitMenu.menu_level_1 tbody tr td a {
   color: #fff;
 }
 
+.btn-elkarbackup:active,
+.btn-elkarbackup:focus,
 .btn-elkarbackup:hover {
   background: #1e2a36;
   border-color: #1e2a36;
