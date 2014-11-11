@@ -7,7 +7,7 @@
 
 {% block body %}
 
-<div class="pull-right" style="margin-top: 40px;">
+<div class="top-action-buttons pull-right">
   <button class="btn btn-elkarbackup" onclick="window.location.href='{{path('downloadScript', {id: form.vars.value.id}) }}'"><span class="glyphicon glyphicon-download-alt"></span> {% trans %}Download{% endtrans %}</button>
 </div>
 <form class="form-horizontal" action="{{ path('saveScript', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
