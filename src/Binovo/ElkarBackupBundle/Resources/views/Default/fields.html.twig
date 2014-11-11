@@ -80,14 +80,14 @@
 {% block form_errors %}
 {% spaceless %}
     {% if errors|length > 0 %}
-<div class="control-group">
-    <div class="controls help-block red">
+<div class="control-group error-top">
+    <div class="alert alert-danger">
         {% for error in errors %}
-            <div>{{
+            <p>{{
                 error.messagePluralization is null
                     ? error.messageTemplate|trans(error.messageParameters, 'validators')
                     : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators')
-            }}</div>
+            }}</p>
         {% endfor %}
     </div>
 </div>
