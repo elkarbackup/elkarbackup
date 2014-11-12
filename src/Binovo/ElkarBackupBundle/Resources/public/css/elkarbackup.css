@@ -34,7 +34,6 @@ azul hover cabecera:
 html, body { padding: 0; margin: 0; }
 
 body.login {
-  background: url("../img/bg-login1.jpg") no-repeat fixed center;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -42,6 +41,10 @@ body.login {
   font-family: asap;
   color: #281809;
 }
+
+.bg1 { background: url("../img/bg-login1.jpg") no-repeat fixed center; }
+.bg2 { background: url("../img/bg-login2.jpg") no-repeat fixed center; }
+.bg0 { background: url("../img/bg-login3.jpg") no-repeat fixed center; }
 
 .language,
 .language a,
@@ -73,7 +76,7 @@ h2.login-elkarbackup {
     background: none repeat scroll 0 0 rgba(45, 63, 80, 0.93);
     margin: 15% auto 0;
     overflow: hidden;
-    padding: 20px 40px;
+    padding: 20px 40px 40px 40px;
     width: 480px;
 }
 
