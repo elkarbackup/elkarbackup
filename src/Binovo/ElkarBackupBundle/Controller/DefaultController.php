@@ -1113,17 +1113,10 @@ EOF;
                                                                                                                                                                  'sendmail' => 'sendmail',
                                                                                                                                                                  'smtp'     => 'smtp'),
                                                              'label' => $t->trans('Mailer transport'       , array(), 'BinovoElkarBackup')),
-<<<<<<< HEAD
-                        'mailer_host'               => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Mailer host'           , array(), 'BinovoElkarBackup')),
-                        'mailer_user'               => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Mailer user'           , array(), 'BinovoElkarBackup')),
-                        'mailer_password'           => array('type' => 'password', 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Mailer password'       , array(), 'BinovoElkarBackup')),
-                        'max_log_age'               => array('type' => 'choice'  , 'required' => false, 'attr' => array('class' => 'span12'), 'choices' => array('P1D' => $t->trans('One day'    , array(), 'BinovoElkarBackup'),
-=======
                         'mailer_host'               => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Mailer host'           , array(), 'BinovoElkarBackup')),
                         'mailer_user'               => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Mailer user'           , array(), 'BinovoElkarBackup')),
                         'mailer_password'           => array('type' => 'password', 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Mailer password'       , array(), 'BinovoElkarBackup')),
                         'max_log_age'               => array('type' => 'choice'  , 'required' => false, 'attr' => array('class' => 'form-control'), 'choices' => array('P1D' => $t->trans('One day'    , array(), 'BinovoElkarBackup'),
->>>>>>> cdf659427fa39fb79beebef137061d490c0f6ebf
                                                                                                                                                                  'P1W' => $t->trans('One week'   , array(), 'BinovoElkarBackup'),
                                                                                                                                                                  'P2W' => $t->trans('Two weeks'  , array(), 'BinovoElkarBackup'),
                                                                                                                                                                  'P3W' => $t->trans('Three weeks', array(), 'BinovoElkarBackup'),
