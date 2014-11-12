@@ -11,7 +11,7 @@
   <button class="btn btn-elkarbackup" onclick="window.location.href='{{path('downloadScript', {id: form.vars.value.id}) }}'"><span class="glyphicon glyphicon-download-alt"></span> {% trans %}Download{% endtrans %}</button>
 </div>
 <form class="form-horizontal" action="{{ path('saveScript', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
-    <h3>{% trans %}Edit script{% endtrans %}</h3>
+    <h3 id="legend">{% trans %}Edit script{% endtrans %}</h3>
     <div class="row">
         <div class="col-md-6">
 {% for flashMessage in app.session.flashbag.get('editScript') %}
@@ -22,14 +22,41 @@
             {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
             <div class="controls">
             </div>
-            {{ form_widget(form) }}
+	     <div class="form-group">
+	     <label class="required control-label col-xs-12 col-md-3">{% trans %}Name{% endtrans %}</label><div class="col-xs-12 col-md-9"> {{ form_widget(form.name) }}</div></div>
+	     <div class="form-group">
+	     <label class="control-label col-xs-12 col-md-3">{% trans %}Description{% endtrans %}</label><div class="col-xs-12 col-md-9"> {{ form_widget(form.description) }}</div></div>
+	     <div class="form-group">
+	     <label class="required control-label col-xs-12 col-md-3">{% trans %}File{% endtrans %}</label><div class="col-xs-12 col-md-9"> {{ form_widget(form.scriptFile) }}</div></div>
+		<h3>Run as</h3>
+
+<div class="container-fluid">
+    <div class="row">
+     <div class="col-md-4">Run as</div>
+     <div class="col-md-4">Before</div>
+     <div class="col-md-4">After</div>
+    </div>
+    <div class="row">
+     <div class="col-md-4">Client</div>
+     <div class="col-md-4">{{ form_widget(form.isClientPre) }}</div>
+     <div class="col-md-4">{{ form_widget(form.isClientPost) }}</div>
+    </div>
+    <div class="row">
+     <div class="col-md-4">Job</div>
+     <div class="col-md-4">{{ form_widget(form.isJobPre) }}</div>
+     <div class="col-md-4">{{ form_widget(form.isJobPost) }}</div>
+    </div>
+  </div>
+
+	     {{ form_widget(form._token) }}
+	
             <div class="control-group">
                 <label class="control-label" >
 
                 </label>
                 <div class="controls">
 {% if form.vars.value.isUsed %}
-                    <h4 style="margin-bottom: 0px;">{% trans %}Used by{% endtrans %}</h4>
+                    <h3 style="margin-bottom: 0px;">{% trans %}Used by{% endtrans %}</h3>
     {% for client in form.vars.value.postClients %}
                     <br><a href="{{ path('editClient', {id: client.id}) }}">{% trans with {'%name%': client.name} %}Client %name% as post script{% endtrans %}</a>
     {% endfor %}
