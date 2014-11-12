@@ -2,96 +2,83 @@
  # @copyright 2012,2013 Binovo it Human Project, S.L.
  # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  #}
-{% extends 'BinovoElkarBackupBundle:Default:base.login.html.twig' %}
+<!DOCTYPE html>
+
 {% trans_default_domain 'BinovoElkarBackup' %}
 
-{% block menu %}
-{% endblock %}
+<html>
+    <head>
+        <title>{% block title %}ElkarBackup{% endblock %}</title>
+      <!-- Dojo 1.8.1-->
+      <link rel="stylesheet" href="{{ asset('js/dojo-release/dijit/themes/claro/claro.css') }}" media="screen" />
 
-{% block body %}
+      <!-- Bootstrap 3.2-->
 
-<!--
-<form action="{{ path('login_check') }}" method="post" class="form-horizontal">
-    <legend>{% trans %}Backup server login{% endtrans %}</legend>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="control-group">
-    {% if error %}
-                <div class="controls">{{ error.message }}</div>
-    {% endif %}
-            </div>
-            <div class="control-group">
-                a<label for="username" class="control-label">{% trans %}Username:{% endtrans %}</label>
-                <div class="controls">
-                    d<input class="col-md-12" type="text" id="username" name="_username" value="{{ last_username }}" />
-                </div>
-            </div>
-            <div class="control-group">
-                <label for="password" class="control-label">{% trans %}Password:{% endtrans %}</label>
-                <div class="controls">
-                    <input class="col-md-12" type="password" id="password" name="_password" />
-                </div>
-            </div>
-            <div class="control-group">
-                <div class="controls">
-                    <button class="btn btn-default" type="submit" value="{% trans %}Login{% endtrans %}"><span class="glyphicon glyphicon-off"></span> {% trans %}Login{% endtrans %}</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</form>
--->
-
-<div class="container">
-
-    <form class="form-signin" role="form" action="{{ path('login_check') }}" method="post">
-
-        <h2 class="login-elkarbackup">{% trans %}Backup server login{% endtrans %}</h2>
-
-        
-        <div class="form-group">
-            <div class="input-group">
-                <div class="input-group-addon">
-                    <div class="glyphicon glyphicon-user"> </div>
-                </div>                
-                <input class="form-control" id="username" name="_username" type="text" placeholder="{% trans %}Username{% endtrans %}" required autofocus />
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <div class="input-group">
-                <div class="input-group-addon">
-                    <div class="glyphicon glyphicon-lock"> </div>
-                </div>
-                <input type="password" class="form-control" id="password" name="_password" placeholder="{% trans %}Password{% endtrans %}" required />
-            </div>
-        </div>
+        {% stylesheets '@BinovoElkarBackupBundle/Resources/public/css/bootstrap.min.css' '@BinovoElkarBackupBundle/Resources/public/css/elkarbackup.css' %}
+          <link rel="stylesheet" href="{{ asset_url }}" media="screen" />
+        {% endstylesheets %}
 
 
-        <div class="message">
-            <p class="bg-warning">
-                {% if error %}
-                    {{ error.message }}
-                {% endif %}
-            </p>
-        </div>
+        {% block scripts %}
+        <script type="text/javascript" src="{{ asset('js/dojo-release/dojo/dojo.js') }}" data-dojo-config="async: true"></script>
+            {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/base.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+            {% endjavascripts %}
+        {% endblock %}
 
-        <div class="form-group">
-            <div class="col-sm-8 nopadding language">
-                <p><span class="glyphicon glyphicon-flag"></span> selecciona idioma</p>
-                <p>{% for aLocale in supportedLocales %}
-                    <a href="{{path('setLocale', {locale: aLocale[0]})}}">{{ aLocale[1] }}</a>
-                {% endfor %}</p>
-            </div>
+    </head>
+    <body class="login bg{{ random(2) }}">
 
-            <div class="col-sm-4 nopadding">
-                <button class="btn btn-login btn-default btn-block" type="submit"><span class="glyphicon glyphicon-lock"></span> {% trans %}Login{% endtrans %}</button>
-            </div>
-        </div>
-    
-    </form>
+                  <div class="container">
 
-</div>
+                      <form class="form-signin" role="form" action="{{ path('login_check') }}" method="post">
 
-{% endblock %}
+                          <h2 class="login-elkarbackup">{% trans %}Backup server login{% endtrans %}</h2>
+
+
+                          <div class="form-group">
+                              <div class="input-group">
+                                  <div class="input-group-addon">
+                                      <div class="glyphicon glyphicon-user"> </div>
+                                  </div>
+                                  <input class="form-control" id="username" name="_username" type="text" placeholder="{% trans %}Username{% endtrans %}" required autofocus />
+                              </div>
+                          </div>
+
+                          <div class="form-group">
+                              <div class="input-group">
+                                  <div class="input-group-addon">
+                                      <div class="glyphicon glyphicon-lock"> </div>
+                                  </div>
+                                  <input type="password" class="form-control" id="password" name="_password" placeholder="{% trans %}Password{% endtrans %}" required />
+                              </div>
+                          </div>
+
+
+                          <div class="message">
+                              <p class="bg-warning">
+                                  {% if error %}
+                                      {{ error.message }}
+                                  {% endif %}
+                              </p>
+                          </div>
+
+                          <div class="form-group">
+                              <div class="col-sm-8 nopadding language">
+                                  <p><span class="glyphicon glyphicon-flag"></span> selecciona idioma</p>
+                                  <p>{% for aLocale in supportedLocales %}
+                                      <a href="{{path('setLocale', {locale: aLocale[0]})}}">{{ aLocale[1] }}</a>
+                                  {% endfor %}</p>
+                              </div>
+
+                              <div class="col-sm-4 nopadding">
+                                  <button class="btn btn-login btn-default btn-block" type="submit"><span class="glyphicon glyphicon-lock"></span> {% trans %}Login{% endtrans %}</button>
+                              </div>
+                          </div>
+
+                      </form>
+
+                  </div>
+
+    </body>
+</html>

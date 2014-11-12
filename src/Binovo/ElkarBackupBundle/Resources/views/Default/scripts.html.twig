@@ -44,7 +44,12 @@
             <button class="btn btn-elkarbackup" type="submit"><span class="glyphicon glyphicon-pencil"></span> {% trans %}Edit{% endtrans %} </button>
           </form>
           <form data-bnv-message="{% trans with {'%name%': script.scriptname} %}Really delete script %name%?{% endtrans %}" class="delete-script" action="{{ path('deleteScript', {id: script.id}) }}" method="POST" style="display:inline">
-            <button class="btn btn-default btn-danger" type="submit" {% if script.isUsed %} disabled="True"{% endif %}><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %} </button>
+            <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnDeleteScriptDisabled'">
+                    {% trans %}This script is used by some client or job{% endtrans %}
+            </div>
+            <div class="btn-group inline" {% if script.isUsed %}id="btnDeleteScriptDisabled"{% endif %}>
+              <button class="btn btn-default btn-danger" type="submit" {% if script.isUsed %} disabled="True"{% endif %}><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %} </button>
+            </div>
           </form>
         </td>
     </tr>
