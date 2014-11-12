@@ -121,7 +121,7 @@ class Builder extends ContainerAware
     {
         $t = $this->container->get('translator');
         $menu = array(array('label'    => $t->trans('Jobs', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Show jobs', array(), 'BinovoElkarBackup'),
+                            'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'showClients'),
                                                 array('label'    => $t->trans('Add client', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'editClient',
