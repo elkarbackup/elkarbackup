@@ -185,8 +185,12 @@
 'Yearly': 'Anual'
 'Yes': 'Sí'
 'Browse': 'Examinar'
-'Show jobs': 'Mostrar tareas'
 'Add client': 'Agregar cliente'
+'Job execution requested successfully': 'La ejecución de la tarea se ha puesto en cola correctamente'
+'Really delete client %name%? This will remove all related jobs and backups': '¿Quiere eliminar el cliente %name%? Se eliminarán todas sus tareas y backups'
+'Really delete job %name%? This will remove all related backups': '¿Quiere eliminar la tarea %name%? También se eliminarán sus backups'
+'Really delete policy %name%?': '¿Quiere eliminar la política %name%?'
+'Really delete script %name%?': '¿Quiere eliminar el script %name%?'
 policy_help: |
  <h4>Nombre</h4>
  Es el identificador de la política. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.

@@ -242,7 +242,6 @@
 'Yearly': 'Yearly'
 'Yes': 'Yes'
 'You forgot to specify hours during the day': 'You forgot to specify hours during the day'
-'Show jobs': 'Show jobs'
 'Add client': 'Add client'
 policy_help: |
  <h4>Name</h4>
