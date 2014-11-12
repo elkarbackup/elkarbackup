@@ -14,7 +14,7 @@
 'Session': 'Saioa'
 'Remove logs older than': 'Hau baino zaharragoak diren log-ak ezabatu'
 'Currently not used': 'Gaur egun erabili gabe'
-'Edit script': 'Script-a editatu'
+'Edit script': 'Scripta editatu'
 'File': 'Fitxategia'
 'Browse': 'Arakatu'
 'Runs as before client script': 'Exekutatu bezero baten Pre-script moduan'
@@ -22,7 +22,7 @@
 'Runs as after client script': 'Exekutatu bezero baten Post-script moduan'
 'Runs as after job script': 'Exekutatu lan baten Post-script moduan'
 'Used by': 'Hemen erabiltzen da'
-'Scripts': 'Script-ak'
+'Scripts': 'Scriptak'
 'Sort jobs': 'Lanak ordenatu'
 'A month': 'Hilabete bat'
 'A year': 'Urte bat'
@@ -41,7 +41,7 @@
 'Back to client': 'Bezerora bueltatu'
 'Back to job': 'Lanera bueltatu'
 'Backup script': 'Backup script'
-'Backup server login': 'Backup Zerbitzaria. Saioa hasi'
+'Backup server login': 'Saioa hasi'
 'Backups dir': 'Backup karpeta'
 'Backups': 'Backupak'
 'Change password': 'Pasahitza aldatu'
@@ -167,8 +167,8 @@
 'Quota': 'Kuota'
 'Quota warning level': 'Kuota abisuen maila'
 'Records per page': 'Orrialdeko erregistro kopurua'
-'Repository backups script': 'Biltegiaren kopia egiteko script-a'
-'Repository backup script': 'Biltegiaren kopia egiteko script-a'
+'Repository backups script': 'Biltegiaren kopia egiteko scripta'
+'Repository backup script': 'Biltegiaren kopia egiteko scripta'
 'Run now': 'Exekutatu orain'
 'Running %command%': 'Running %command%'
 'Saturday': 'Larunbata'
@@ -220,6 +220,17 @@
 'Wrong old password': 'Wrong old password'
 'Yearly': 'Urtero'
 'Yes': 'Bai'
+'Add client': 'Gehitu bezeroa'
+'Job execution requested successfully': 'Atazaren exekuzioa ilaran ondo gehitu da'
+'Really delete client %name%? This will remove all related jobs and backups': '%name% bezeroa ezabatu nahi duzu? Bere ataza eta backup guztiak ere ezabatuko dira'
+'Really delete job %name%? This will remove all related backups': '%name% ataza ezabatu nahi duzu? Bere backup guztiak ezabatuko dira'
+'Really delete policy %name%?': '%name% politika ezabatu nahi duzu?'
+'Really delete script %name%?': '%name% scripta ezabatu nahi duzu?'
+'Backup not found': 'Ez dago segurtasun kopiarik'
+'Client has not yet been saved': 'Bezeroa ez da gorde'
+'Job has not yet been saved': 'Lana ez da gorde'
+'Impossible to delete superuser account': 'Super erabiltzailearen kontua ezin da ezabatu'
+'This script is used by some client or job': 'Bezero edo lan batek script hau erabiltzen du'
 policy_help: |
  <h4>Izena</h4>
  Politikaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Politika bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
@@ -264,7 +275,7 @@ client_help: |
  <h4>Aktibo dago</h4>
  Kontrol-laukia markatuta ez badago, snapshot-ak ez dira egingo.
  <h4>Pre eta post scriptak</h4>
- Bezero honen edozein lan abiatu aurretik eta bukatu ondoren exekutatuko diren script-ak. Adibidez VPN konexioak zabaldu, sareko karpetak aktibatu, eta abar.
+ Bezero honen edozein lan abiatu aurretik eta bukatu ondoren exekutatuko diren scriptak. Adibidez VPN konexioak zabaldu, sareko karpetak aktibatu, eta abar.
 client_job_help: |
  <h4>Lanak</h4>
  Lan baten parametro garrantzitsuenak hemendik editatu ditzakezu. Aldaketak egin ondoren izan gogoan gorde egin behar dituzula.
@@ -285,8 +296,8 @@ job_help: |
  Zuk erabakiko duzu aplikazioak zeintzuei bidaliko dizkien (posta elektronikoz) sortzen diren ebentuen abisuak. Aplikazioak "Bidaliko diren mezuak" eremuan dagoen balioa erabiliko du bidali beharreko informazioa zein den erabakitzeko. Abisuak beste edozein posta elektronikora ere bidaltzeko aukera dago. Egin beharreko gauza bakarra helbidea kutxatxoan idaztea da.
  <h4>Bidaliko diren mezuak</h4>
  Jasoko duzun mezu kopurua gutxitzeko, aukera ezazu zein motatako mezuak jaso nahi dituzun.
- <h4>Pre eta post script-ak</h4>
- Lan hau abiatu aurretik eta bukatu ondoren exekutatuko diren script-ak. Adibidez VPN konexioak zabaldu, sareko karpetak aktibatu, eta abar.
+ <h4>Pre eta post scriptak</h4>
+ Lan hau abiatu aurretik eta bukatu ondoren exekutatuko diren scriptak. Adibidez VPN konexioak zabaldu, sareko karpetak aktibatu, eta abar.
  <h4>Politika</h4>
  Aukeratu lan honek jarraituko duen politika. Politika bakoitzak hainbat gauza zehazten ditu, besteak beste Kopiak noiz egin behar diren eta zenbat kopia mantenduko diren. Eremu hau ez bada betetzen, ez dira kopiak egingo.
  <h4>Erabili baimen lokalak</h4>
@@ -331,7 +342,7 @@ managebackups_help: |
 
 script_help: |
  <h4>Scritp-ei buruz</h4>
- Aplikazioak script-ak exekutatzen ditu backup erabiltzailea erabiliz. Script-ak exekutatu aurretik, aplikazioak ingurune aldagai hauek ezartzen ditu:
+ Aplikazioak scriptak exekutatzen ditu backup erabiltzailea erabiliz. Scriptak exekutatu aurretik, aplikazioak ingurune aldagai hauek ezartzen ditu:
  <ul>
   <li>ELKARBACKUP_LEVEL:  bere balioa JOB edo CLIENT izan daiteke</li>
   <li>ELKARBACKUP_EVENT:  bere balioa PRE edo POST izan daiteke</li>
@@ -342,11 +353,11 @@ script_help: |
  </ul>
  Bezero baten pre-script batek 0 ez den balioa bueltatzen badu, aplikazioak bertan behera utziko ditu bezero horren lanak. Lan mailan exekutatzen diren pre-scripten emaitzak ez ditu ezertarako kontutan hartzen.
  <h4>Izena</h4>
- Script-aren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Script bakoitzak izen ezberdina izan behar du,eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
+ Scriptaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Script bakoitzak izen ezberdina izan behar du,eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
  <h4>Azalpena</h4>
- Script-a deskribatzeko testu librea. Sartu hemen zuretzat lagungarria izan daitekeen informazioa.
+ Scripta deskribatzeko testu librea. Sartu hemen zuretzat lagungarria izan daitekeen informazioa.
  <h4>Fitxategia</h4>
- Arakatu eta aukeratu igo nahi duzun script-a.
+ Arakatu eta aukeratu igo nahi duzun scripta.
  <h4>Bezeroaren pre-script moduan exekutatu daiteke</h4>
  Markatu ezazu beti ere script hau bezero baten exekuzioa hasi aurretik abian jartzeko diseinatuta dagoenean.
  <h4>Bezeroaren post-script moduan exekutatu daiteke</h4>

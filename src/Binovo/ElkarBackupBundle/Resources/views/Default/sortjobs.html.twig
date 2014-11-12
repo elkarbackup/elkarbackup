@@ -15,7 +15,7 @@
 
 {% block body %}
 
-<div class="row-fluid">
+<div class="row">
     <div class="max10" >
         <h3>{% trans %}Sort jobs{% endtrans %}</h3>
 
@@ -25,7 +25,7 @@
         </div>
 {% endfor %}
         <form action="{{ path('sortJobs') }}" method="post" {{ form_enctype(form) }}>
-            <table id="jobs" class="table table-condensed table-bordered">
+            <table id="jobs" class="table table-condensed table-bordered table-hover">
                 <tr>
                     {# sorting of properties based on query components #}
                     <th>{% trans %}Id{% endtrans %}</th>
@@ -40,7 +40,7 @@
                 </tr>
 {% endfor %}
             </table>
-            <button class="btn btn-pull-right" type="submit">{% trans %}Save{% endtrans %}</button>
+            <button class="btn btn-elkarbackup pull-right" type="submit">{% trans %}Save{% endtrans %}</button>
             {{ form_rest(form) }}
         </form>
     </div>

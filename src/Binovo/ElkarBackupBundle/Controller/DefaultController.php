@@ -299,7 +299,7 @@ class DefaultController extends Controller
                     );
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('editClient', array('id' => $client->getId())));
+                return $this->redirect($this->generateUrl('showClients'));
             } catch (Exception $e) {
                 $this->get('session')->getFlashBag()->add('client',
                                                           $t->trans('Unable to save your changes: %extrainfo%',
@@ -343,7 +343,7 @@ class DefaultController extends Controller
                                                                 array('%extrainfo%' => $e->getMessage()), 'BinovoElkarBackup'));
         }
 
-        return $this->redirect($this->generateUrl('editClient', array('id' => $idClient)));
+        return $this->redirect($this->generateUrl('showClients'));
     }
 
     /**
@@ -526,7 +526,7 @@ class DefaultController extends Controller
                                                                     'BinovoElkarBackup'));
             }
 
-            return $this->redirect($this->generateJobRoute($job->getId(), $job->getClient()->getId()));
+            return $this->redirect($this->generateUrl('showClients'));
         } else {
 
             return $this->render('BinovoElkarBackupBundle:Default:job.html.twig',
@@ -716,7 +716,7 @@ class DefaultController extends Controller
                         array('link' => $this->generatePolicyRoute($id)));
             $em->flush();
 
-            return $this->redirect($this->generatePolicyRoute($policy->getId()));
+            return $this->redirect($this->generateUrl('showPolicies'));
         } else {
 
             return $this->render('BinovoElkarBackupBundle:Default:policy.html.twig',
@@ -767,12 +767,26 @@ class DefaultController extends Controller
         return $result;
     }
 
+    public function getFsSize( $path )
+    {
+        $size = (int)shell_exec(sprintf("df -k '%s' | tail -n1 | awk '{ print $2 }' | head -c -2", $path));
+        return $size;
+    }
+
+    public function getFsUsed( $path)
+    {
+        $size = (float)shell_exec(sprintf("df -k '%s' | tail -n1 | awk '{ print $3 }' | head -c -2", $path));
+        return $size;
+    }
+
     /**
      * @Route("/clients", name="showClients")
      * @Template()
      */
     public function showClientsAction(Request $request)
     {
+        $fsDiskUsage = (int)round($this->getFsUsed( Globals::getBackupDir() ) * 100 / $this->getFsSize( Globals::getBackupDir() ), 0, PHP_ROUND_HALF_UP);
+
         $repository = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Client');
         $query = $repository->createQueryBuilder('c')
@@ -796,7 +810,7 @@ class DefaultController extends Controller
         $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoElkarBackupBundle:Default:clients.html.twig',
-                             array('pagination' => $pagination));
+                             array('pagination' => $pagination, 'fsDiskUsage' => $fsDiskUsage));
     }
 
     /**
@@ -990,6 +1004,7 @@ EOF;
                           array('type'         => new AuthorizedKeyType($t),
                                 'allow_add'    => true,
                                 'allow_delete' => true,
+                                'attr'         => array('class'    => 'form-control'),
                                 'options'      => array('required' => false,
                                                         'attr'     => array('class' => 'span10'))));
         $form = $formBuilder->getForm();
@@ -1040,11 +1055,11 @@ EOF;
         $formBuilder = $this->createFormBuilder($data);
         $formBuilder->add('host'      , 'text'  , array('required' => false,
                                                         'label'    => $t->trans('Host', array(), 'BinovoElkarBackup'),
-                                                        'attr'     => array('class'    => 'span12'),
+                                                        'attr'     => array('class'    => 'form-control'),
                                                         'disabled' => !$this->isAutoFsAvailable()));
         $formBuilder->add('directory' , 'text'  , array('required' => false,
                                                         'label'    => $t->trans('Directory', array(), 'BinovoElkarBackup'),
-                                                        'attr'     => array('class' => 'span12')));
+                                                        'attr'     => array('class' => 'form-control')));
         $result = null;
         $form = $formBuilder->getForm();
         if ($request->isMethod('POST')) {
@@ -1088,20 +1103,27 @@ EOF;
     public function manageParametersAction(Request $request)
     {
         $t = $this->get('translator');
-        $params = array('database_host'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('MySQL host'            , array(), 'BinovoElkarBackup')),
-                        'database_port'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('MySQL port'            , array(), 'BinovoElkarBackup')),
-                        'database_name'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('MySQL DB name'         , array(), 'BinovoElkarBackup')),
-                        'database_user'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('MySQL user'            , array(), 'BinovoElkarBackup')),
-                        'database_password'         => array('type' => 'password', 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('MySQL password'        , array(), 'BinovoElkarBackup')),
-                        'mailer_transport'          => array('type' => 'choice'  , 'required' => false, 'attr' => array('class' => 'span12'), 'choices' => array('gmail'    => 'gmail',
+        $params = array('database_host'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('MySQL host'            , array(), 'BinovoElkarBackup')),
+                        'database_port'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('MySQL port'            , array(), 'BinovoElkarBackup')),
+                        'database_name'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('MySQL DB name'         , array(), 'BinovoElkarBackup')),
+                        'database_user'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('MySQL user'            , array(), 'BinovoElkarBackup')),
+                        'database_password'         => array('type' => 'password', 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('MySQL password'        , array(), 'BinovoElkarBackup')),
+                        'mailer_transport'          => array('type' => 'choice'  , 'required' => false, 'attr' => array('class' => 'form-control'), 'choices' => array('gmail'    => 'gmail',
                                                                                                                                                                  'mail'     => 'mail',
                                                                                                                                                                  'sendmail' => 'sendmail',
                                                                                                                                                                  'smtp'     => 'smtp'),
                                                              'label' => $t->trans('Mailer transport'       , array(), 'BinovoElkarBackup')),
+<<<<<<< HEAD
                         'mailer_host'               => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Mailer host'           , array(), 'BinovoElkarBackup')),
                         'mailer_user'               => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Mailer user'           , array(), 'BinovoElkarBackup')),
                         'mailer_password'           => array('type' => 'password', 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Mailer password'       , array(), 'BinovoElkarBackup')),
                         'max_log_age'               => array('type' => 'choice'  , 'required' => false, 'attr' => array('class' => 'span12'), 'choices' => array('P1D' => $t->trans('One day'    , array(), 'BinovoElkarBackup'),
+=======
+                        'mailer_host'               => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Mailer host'           , array(), 'BinovoElkarBackup')),
+                        'mailer_user'               => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Mailer user'           , array(), 'BinovoElkarBackup')),
+                        'mailer_password'           => array('type' => 'password', 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Mailer password'       , array(), 'BinovoElkarBackup')),
+                        'max_log_age'               => array('type' => 'choice'  , 'required' => false, 'attr' => array('class' => 'form-control'), 'choices' => array('P1D' => $t->trans('One day'    , array(), 'BinovoElkarBackup'),
+>>>>>>> cdf659427fa39fb79beebef137061d490c0f6ebf
                                                                                                                                                                  'P1W' => $t->trans('One week'   , array(), 'BinovoElkarBackup'),
                                                                                                                                                                  'P2W' => $t->trans('Two weeks'  , array(), 'BinovoElkarBackup'),
                                                                                                                                                                  'P3W' => $t->trans('Three weeks', array(), 'BinovoElkarBackup'),
@@ -1114,9 +1136,9 @@ EOF;
                                                                                                                                                                  'P5Y' => $t->trans('Five years' , array(), 'BinovoElkarBackup'),
                                                                                                                                                                  ''    => $t->trans('Never'      , array(), 'BinovoElkarBackup')),
                                                              'label' => $t->trans('Remove logs older than', array(), 'BinovoElkarBackup')),
-                        'warning_load_level'        => array('type' => 'percent' , 'required' => false, 'attr' => array('class' => 'span11'), 'label' => $t->trans('Quota warning level', array(), 'BinovoElkarBackup')),
-                        'pagination_lines_per_page' => array('type' => 'integer' , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Records per page'   , array(), 'BinovoElkarBackup')),
-                        'url_prefix'                => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'span12'), 'label' => $t->trans('Url prefix'         , array(), 'BinovoElkarBackup')),
+                        'warning_load_level'        => array('type' => 'percent' , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Quota warning level', array(), 'BinovoElkarBackup')),
+                        'pagination_lines_per_page' => array('type' => 'integer' , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Records per page'   , array(), 'BinovoElkarBackup')),
+                        'url_prefix'                => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Url prefix'         , array(), 'BinovoElkarBackup')),
             );
         $defaultData = array();
         foreach ($params as $paramName => $formField) {
@@ -1205,9 +1227,9 @@ EOF;
         $t = $this->get('translator');
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)
-            ->add('oldPassword' , 'password', array('label' => $t->trans('Old password'        , array(), 'BinovoElkarBackup')))
-            ->add('newPassword' , 'password', array('label' => $t->trans('New password'        , array(), 'BinovoElkarBackup')))
-            ->add('newPassword2', 'password', array('label' => $t->trans('Confirm new password', array(), 'BinovoElkarBackup')))
+            ->add('oldPassword' , 'password', array('required' => true, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Old password'        , array(), 'BinovoElkarBackup')))
+            ->add('newPassword' , 'password', array('required' => true, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('New password'        , array(), 'BinovoElkarBackup')))
+            ->add('newPassword2', 'password', array('required' => true, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Confirm new password', array(), 'BinovoElkarBackup')))
             ->getForm();
         if ($request->isMethod('POST')) {
             $form->bind($request);
@@ -1230,6 +1252,7 @@ EOF;
                 $this->info('Change password for user %username% failed. Wrong old password.',
                             array('%username%' => $user->getUsername()),
                             array('link' => $this->generateUserRoute($user->getId())));
+
             }
             if ($ok) {
                 $user->setPassword($encoder->encodePassword($data['newPassword'], $user->getSalt()));
@@ -1240,8 +1263,9 @@ EOF;
                 $this->info('Change password for user %username%.',
                             array('%username%' => $user->getUsername()),
                             array('link' => $this->generateUserRoute($user->getId())));
+                $manager->flush();
             }
-            $manager->flush();
+
 
             return $this->redirect($this->generateUrl('changePassword'));
         } else {
@@ -1363,7 +1387,7 @@ EOF;
                             array('%scriptname%' => $script->getScriptname()),
                             array('link' => $this->generateScriptRoute($id)));
                 $em->flush();
-                $result = $this->redirect($this->generateScriptRoute($script->getId()));
+                $result = $this->redirect($this->generateUrl('showScripts'));
             }
         }
         if (!$result) {
@@ -1452,7 +1476,7 @@ EOF;
                         array('link' => $this->generateUserRoute($id)));
             $em->flush();
 
-            return $this->redirect($this->generateUserRoute($user->getId()));
+            return $this->redirect($this->generateUrl('showUsers'));
         } else {
 
             return $this->render('BinovoElkarBackupBundle:Default:user.html.twig',

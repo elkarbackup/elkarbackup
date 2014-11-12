@@ -4,6 +4,14 @@
  */
 require(['dojo', 'dojo/fx/Toggler', 'dojo/ready'],
 function(dojo, Toggler, ready){
+
+var pathJob = window.location.pathname.split( '/' );
+var newposition = pathJob.length;
+var runNowtrue = pathJob[newposition-1];
+if (runNowtrue == 'new'){
+	dojo.attr(dojo.byId('runNow'), 'disabled', true);
+} 
+
     var initNotificationsEmail;
 
     initNotificationsEmail = function() {
@@ -29,15 +37,16 @@ function(dojo, Toggler, ready){
 	 	                           form: dojo.byId('runNowForm'), 
 	 	                           handleAs: 'text', 
 	 	                           load: function(data) { 
-	 	                               dojo.place('<div class="controls help-block">' + data + '</div>', dojo.byId('legend'), 'after'); 
+	 	                               dojo.place('<div class="controls help-block alert alert-success">' + data + '</div>', dojo.byId('legend'), 'after'); 
 	 	                               dojo.attr(dojo.byId('runNow'), 'disabled', true) ;
 	 	                           }, 
 	 	                           error: function(data) { 
-	 	                               dojo.place('<div class="controls help-block">' + data + '</div>', dojo.byId('legend'), 'after'); 
+	 	                               dojo.place('<div class="controls help-block alert alert-danger">' + data + '</div>', dojo.byId('legend'), 'after'); 
 	 	                           } 
 	 	                       }; 
 	 	                       console.log(args); 
 	 	                       dojo.xhrPost(args); 
+				       document.getElementById("contenido").scrollIntoView();	
 	 	                   }); 
           });
 

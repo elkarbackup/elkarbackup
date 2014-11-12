@@ -1,3 +1,5 @@
+# Symfony2 files     #
+######################
 web/bundles/
 app/bootstrap.php.cache
 app/cache/*
@@ -6,3 +8,23 @@ build/
 vendor
 bin
 composer.phar
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# vm dev
+#web/js/*js
+#web/css
+#app/cache
+#app/config
+#app/console
+#app/logs
+#app/sessions
+#bak.app/

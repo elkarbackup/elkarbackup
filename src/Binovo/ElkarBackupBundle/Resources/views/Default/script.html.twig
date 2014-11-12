@@ -7,10 +7,18 @@
 
 {% block body %}
 
+<div class="top-action-buttons pull-right">
+  <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnDownloadScriptDisabled'">
+          {% trans %}Script has not yet been saved{% endtrans %}
+  </div>
+  <div class="btn-group inline" {% if not form.vars.value.id %}id="btnDownloadScriptDisabled"{% endif %}>
+    <button class="btn btn-elkarbackup" {% if not form.vars.value.id %}disabled="true"{% endif %} onclick="window.location.href='{{path('downloadScript', {id: form.vars.value.id}) }}'"><span class="glyphicon glyphicon-download-alt"></span> {% trans %}Download{% endtrans %}</button>
+  </div>
+</div>
 <form class="form-horizontal" action="{{ path('saveScript', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
-    <legend>{% trans %}Edit script{% endtrans %}</legend>
-    <div class="row-fluid">
-        <div class="span6">
+    <h3 id="legend">{% trans %}Edit script{% endtrans %}</h3>
+    <div class="row">
+        <div class="col-md-6">
 {% for flashMessage in app.session.flashbag.get('editScript') %}
             <div class="controls help-block">
                 {{ flashMessage }}
@@ -18,16 +26,56 @@
 {% endfor %}
             {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
             <div class="controls">
-                <a href="{{path('downloadScript', {id: form.vars.value.id}) }}">{% trans %}Download{% endtrans %}</a>
             </div>
-            {{ form_widget(form) }}
-            <div class="control-group">
-                <label class="control-label" >
 
-                </label>
+       <div class="form-group">
+          <label class="required control-label col-xs-12 col-md-3">{% trans %}Name{% endtrans %}</label>
+          <div class="col-xs-12 col-md-9"> {{ form_widget(form.name) }}</div>
+       </div>
+       <div class="form-group">
+          <label class="control-label col-xs-12 col-md-3">{% trans %}Description{% endtrans %}</label>
+          <div class="col-xs-12 col-md-9"> {{ form_widget(form.description) }}</div>
+       </div>
+       <div class="form-group">
+          <label class="required control-label col-xs-12 col-md-3">{% trans %}File{% endtrans %}</label>
+          <div class="col-xs-12 col-md-9"> {{ form_widget(form.scriptFile) }}</div>
+       </div>
+
+      <div class="form-group">
+  		    <label class="control-label col-xs-12 col-md-3">Run as</label>
+          <div class="col-xs-12 col-md-9">
+            <table class="table table-condensed text-center">
+              <tr>
+                <th></th>
+                <th class="text-center">Before</th>
+                <th class="text-center">After</th>
+              </tr>
+              <tr>
+               <th>Client</th>
+               <td>{{ form_widget(form.isClientPre) }}</td>
+               <td>{{ form_widget(form.isClientPost) }}</td>
+             </tr>
+              <tr>
+               <th>Job</th>
+               <td>{{ form_widget(form.isJobPre) }}</td>
+               <td>{{ form_widget(form.isJobPost) }}</td>
+             </tr>
+            </table>
+          </div>
+      </div>
+
+	     {{ form_widget(form._token) }}
+
+            <div class="control-group">
+                <div class="controls">
+                    <input class="btn btn-elkarbackup pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
+                </div>
+            </div>
+
+            <div class="control-group col-md-11">
+              <h3 style="margin-bottom: 0px;">{% trans %}Used by{% endtrans %}</h3>
                 <div class="controls">
 {% if form.vars.value.isUsed %}
-                    {% trans %}Used by{% endtrans %}
     {% for client in form.vars.value.postClients %}
                     <br><a href="{{ path('editClient', {id: client.id}) }}">{% trans with {'%name%': client.name} %}Client %name% as post script{% endtrans %}</a>
     {% endfor %}
@@ -45,13 +93,8 @@
 {% endif %}
                 </div>
             </div>
-            <div class="control-group">
-                <div class="controls">
-                    <input class="btn btn-pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
-                </div>
-            </div>
         </div>
-        <div class="span6">
+        <div class="col-md-6">
             {% trans %}script_help{% endtrans %}
         </div>
     </div>

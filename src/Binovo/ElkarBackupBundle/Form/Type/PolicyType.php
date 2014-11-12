@@ -15,10 +15,10 @@ class PolicyType extends AbstractType
     {
         $t = $options['translator'];
         $builder->add('name'              , 'text'    , array('label' => $t->trans('Name'       , array(), 'BinovoElkarBackup'),
-                                                              'attr' => array('class'    => 'span12')))
+                                                              'attr' => array('class'    => 'form-control')))
                 ->add('description'       , 'textarea', array('label' => $t->trans('Description', array(), 'BinovoElkarBackup'),
                                                               'required' => false,
-                                                              'attr' => array('class'    => 'span12')))
+                                                              'attr' => array('class'    => 'form-control','rows' => '3')))
                 ->add('hourlyHours'       , 'hidden'  , array('required' => false))
                 ->add('hourlyDaysOfMonth' , 'hidden'  , array('required' => false))
                 ->add('hourlyDaysOfWeek'  , 'hidden'  , array('required' => false))
@@ -46,10 +46,10 @@ class PolicyType extends AbstractType
                 ->add('yearlyCount'       , 'hidden'  , array('required' => false))
                 ->add('exclude'           , 'textarea', array('label' => $t->trans('Exclude', array(), 'BinovoElkarBackup'),
                                                               'required' => false,
-                                                              'attr' => array('class'    => 'span12')))
+                                                              'attr' => array('class'    => 'form-control','rows' => '3')))
                 ->add('include'           , 'textarea', array('label' => $t->trans('Include', array(), 'BinovoElkarBackup'),
                                                               'required' => false,
-                                                              'attr' => array('class'    => 'span12')))
+                                                              'attr' => array('class'    => 'form-control','rows' => '3')))
                 ->add('syncFirst'         , 'checkbox', array('label' => $t->trans('Sync first', array(), 'BinovoElkarBackup'),
                                                               'required' => false))
             ;
