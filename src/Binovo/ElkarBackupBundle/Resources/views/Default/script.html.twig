@@ -27,47 +27,52 @@
             {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
             <div class="controls">
             </div>
-	     <div class="form-group">
-	     <label class="required control-label col-xs-12 col-md-3">{% trans %}Name{% endtrans %}</label><div class="col-xs-12 col-md-9"> {{ form_widget(form.name) }}</div></div>
-	     <div class="form-group">
-	     <label class="control-label col-xs-12 col-md-3">{% trans %}Description{% endtrans %}</label><div class="col-xs-12 col-md-9"> {{ form_widget(form.description) }}</div></div>
-	     <div class="form-group">
-	     <label class="required control-label col-xs-12 col-md-3">{% trans %}File{% endtrans %}</label><div class="col-xs-12 col-md-9"> {{ form_widget(form.scriptFile) }}</div></div>
 
-    <br />
-		<h4>Run as</h4>
+       <div class="form-group">
+          <label class="required control-label col-xs-12 col-md-3">{% trans %}Name{% endtrans %}</label>
+          <div class="col-xs-12 col-md-9"> {{ form_widget(form.name) }}</div>
+       </div>
+       <div class="form-group">
+          <label class="control-label col-xs-12 col-md-3">{% trans %}Description{% endtrans %}</label>
+          <div class="col-xs-12 col-md-9"> {{ form_widget(form.description) }}</div>
+       </div>
+       <div class="form-group">
+          <label class="required control-label col-xs-12 col-md-3">{% trans %}File{% endtrans %}</label>
+          <div class="col-xs-12 col-md-9"> {{ form_widget(form.scriptFile) }}</div>
+       </div>
 
-    <div class="container-fluid">
-      <div class="row">
-       <div class="col-md-4"></div>
-       <div class="col-md-4">Before</div>
-       <div class="col-md-4">After</div>
+      <div class="form-group">
+  		    <label class="control-label col-xs-12 col-md-3">Run as</label>
+          <div class="col-xs-12 col-md-9">
+            <table class="table table-condensed text-center">
+              <tr>
+                <th></th>
+                <th class="text-center">Before</th>
+                <th class="text-center">After</th>
+              </tr>
+              <tr>
+               <th>Client</th>
+               <td>{{ form_widget(form.isClientPre) }}</td>
+               <td>{{ form_widget(form.isClientPost) }}</td>
+             </tr>
+              <tr>
+               <th>Job</th>
+               <td>{{ form_widget(form.isJobPre) }}</td>
+               <td>{{ form_widget(form.isJobPost) }}</td>
+             </tr>
+            </table>
+          </div>
       </div>
-      <div class="row">
-       <div class="col-md-4">Client</div>
-       <div class="col-md-4">{{ form_widget(form.isClientPre) }}</div>
-       <div class="col-md-4">{{ form_widget(form.isClientPost) }}</div>
-      </div>
-      <div class="row">
-       <div class="col-md-4">Job</div>
-       <div class="col-md-4">{{ form_widget(form.isJobPre) }}</div>
-       <div class="col-md-4">{{ form_widget(form.isJobPost) }}</div>
-      </div>
-    </div>
 
 	     {{ form_widget(form._token) }}
 
-            <br />
             <div class="control-group">
                 <div class="controls">
                     <input class="btn btn-elkarbackup pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
                 </div>
             </div>
 
-            <br />
-            <br />
-
-            <div class="control-group">
+            <div class="control-group col-md-11">
               <h3 style="margin-bottom: 0px;">{% trans %}Used by{% endtrans %}</h3>
                 <div class="controls">
 {% if form.vars.value.isUsed %}
