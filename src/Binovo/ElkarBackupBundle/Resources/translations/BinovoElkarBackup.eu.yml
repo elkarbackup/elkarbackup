@@ -221,7 +221,7 @@
 'Yearly': 'Urtero'
 'Yes': 'Bai'
 'Show jobs': 'Atazak'
-'Add client': 'Bezero berria'
+'Add client': 'Gehitu bezeroa'
 policy_help: |
  <h4>Izena</h4>
  Politikaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Politika bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
