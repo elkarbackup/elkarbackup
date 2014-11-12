@@ -1,0 +1,25 @@
+
+
+bg-login1.jpg
+--------------
+Title: CERN Server 03
+Author: Florian Hirzinger
+License: CC BY-SA 3.0
+Source: http://it.wikipedia.org/wiki/Server_farm#mediaviewer/File:CERN_Server_03.jpg
+
+
+bg-login2.jpg
+--------------
+Title: Ken Thompson (sitting) and Dennis Ritchie at PDP-11
+Author: Peter Hamer - Ken Thompson (sitting)-&-Dennis Ritchie at PDP-11
+License: CC BY-SA 2.0
+Source: http://en.wikipedia.org/wiki/History_of_Unix#mediaviewer/File:Ken_Thompson_%28sitting%29_and_Dennis_Ritchie_at_PDP-11_%282876612463%29.jpg
+
+
+
+bg-login3.jpg
+--------------
+Title: Wmf sdtpa servers 2009-01-20 36
+Author: Eigenes Werk
+License: CC BY 2.5
+Source: http://de.wikipedia.org/wiki/Wikipedia:Sorge_dich_nicht_um_die_Server#mediaviewer/File:Wmf_sdtpa_servers_2009-01-20_36.jpg
