@@ -3,6 +3,7 @@
 'Add key': 'Añadir clave'
 'Sort jobs': 'Ordenar tareas'
 'Edit script': 'Editar script'
+'File': 'Fichero'
 'Download': 'Descargar'
 'Currently not used': 'Actualmente no se utiliza'
 'Runs as before client script': 'Ejecutar como pre-script de clientes'
@@ -67,7 +68,7 @@
 'All': 'Todos'
 'Back to client': 'Volver al cliente'
 'Back to job': 'Volver a la tarea'
-'Backup server login': 'Acceso al servidor de copia de seguridad'
+'Backup server login': 'Inicio'
 'Backups': 'Copias de seguridad'
 'Change password': 'Cambiar contraseña'
 'Change': 'Cambiar'
@@ -183,6 +184,18 @@
 'Wrong old password': 'Antigua contraseña incorrecta'
 'Yearly': 'Anual'
 'Yes': 'Sí'
+'Browse': 'Examinar'
+'Add client': 'Agregar cliente'
+'Job execution requested successfully': 'La ejecución de la tarea se ha puesto en cola correctamente'
+'Really delete client %name%? This will remove all related jobs and backups': '¿Quiere eliminar el cliente %name%? Se eliminarán todas sus tareas y backups'
+'Really delete job %name%? This will remove all related backups': '¿Quiere eliminar la tarea %name%? También se eliminarán sus backups'
+'Really delete policy %name%?': '¿Quiere eliminar la política %name%?'
+'Really delete script %name%?': '¿Quiere eliminar el script %name%?'
+'Backup not found': 'No hay backups'
+'Client has not yet been saved': 'El cliente no ha sido guardado'
+'Job has not yet been saved': 'La tarea no ha sido guardada'
+'Impossible to delete superuser account': 'No es posible eliminar la cuenta superusuario'
+'This script is used by some client or job': 'Algún cliente o tarea está usando este script'
 policy_help: |
  <h4>Nombre</h4>
  Es el identificador de la política. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.
@@ -324,4 +337,3 @@ script_help: |
  Activa esta opción si este script esta diseñado para ser ejecutado antes de la ejecución de una tarea.
  <h4>Ejecutar como post-script de tareas</h4>
  Activa esta opción si este script esta diseñado para ser ejecutado después de la ejecución de una tarea.
-

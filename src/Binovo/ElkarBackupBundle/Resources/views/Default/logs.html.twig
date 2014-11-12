@@ -10,7 +10,7 @@
 <h3>{% trans %}Logs{% endtrans %}</h3>
 
 <form action="{{ path('showLogs') }}">
-<table class="table table-condensed table-bordered table-striped">
+<table class="table table-condensed table-hover table-striped">
     <tr>
         {# sorting of properties based on query components #}
         <th>{% trans %}Time{% endtrans %}</th>
@@ -26,7 +26,11 @@
 
     {# table body #}
     {% for logRecord in pagination %}
-    <tr>
+    <tr class="
+    {% if (logRecord.levelName) == 'ERROR'%}danger {% endif %}
+		{% if (logRecord.message) == 'OK'%}success {% endif %}
+    logs" >
+
         <td style="white-space: nowrap;">{{ logRecord.dateTime.format('Y-m-d H:i:s') }}</td>
         <td>{{ logRecord.levelName }}</td>
         <td>{{ logRecord.source }}</td>
@@ -37,7 +41,7 @@
     {% endfor %}
 </table>
 </form>
-<div class="navigation">
+<div class="navigation binovo-pagination">
     {{ pagination.render()|raw }}
 </div>
 

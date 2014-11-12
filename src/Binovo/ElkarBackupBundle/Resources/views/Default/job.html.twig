@@ -15,35 +15,54 @@
 
 {% block body %}
 
+
+{% set hasBackups = false %}
+{% if form.vars.value.id %}
+  {% if form.vars.value.hasBackups %}
+    {% set hasBackups = true %}
+  {% endif %}
+{% endif %}
+
+<div class="top-action-buttons pull-right">
+  <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnRunNowDisabled'">
+          {% trans %}Job has not yet been saved{% endtrans %}
+  </div>
+  <div class="btn-group inline" {% if not form.vars.value.id %}id="btnRunNowDisabled"{% endif %}>
+    <button class="btn btn-elkarbackup btn-pull-right" type="button" id="runNow"><span class="glyphicon glyphicon-repeat"></span> {% trans %}Run now{% endtrans %}</button>
+  </div>
+  <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnRestoreDisabled'">
+          {% trans %}Backup not found{% endtrans %}
+  </div>
+  <div class="btn-group inline" {% if hasBackups == false %}id="btnRestoreDisabled"{% endif %}>
+    <button type="button" class="btn btn-elkarbackup btn-pull-right" {% if hasBackups == false %}disabled="true" {% endif %} onclick="document.location.href='{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}'"><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</button>
+  </div>
+</div>
+
 <form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_enctype(form) }}>
-    <legend id="legend">{% trans %}Edit Job{% endtrans %}</legend>
-    <div class="row-fluid">
-        <div class="span6">
+
+    <h3 id="legend">{% trans %}Edit Job{% endtrans %}</h3>
+    <div class="row">
+        <div class="col-md-6">
 {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
 {% for flashMessage in app.session.flashbag.get('job') %}
-            <div class="controls help-block">
+            <div class="controls help-block alert alert-success" class="alert alert-success">
                 {{ flashMessage }}
             </div>
 {% endfor %}
             <div>
                 <div class="controls">
-                    {% if form.vars.value.hasBackups %}
-                    <a href="{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}">{% trans %}Backups{% endtrans %}</a> <a href="{{path('editClient', {id: form.vars.value.client.id}) }}">{% trans %}Client{% endtrans %}</a>
-                    {% else %}
-                    <a href="{{path('editClient', {id: form.vars.value.client.id}) }}">{% trans %}Client{% endtrans %}</a>
-                    {% endif %}
                 </div>
                 {{ form_row(form.name) }}
                 {{ form_row(form.path) }}
-                <div class="control-group">
-                    <label class="control-label">{% trans %}Disk usage{% endtrans %}</label>
-                    <div class="controls"><input class="span12" type="text" disabled="disabled" value="{{ (form.vars.value.diskUsage / 1024) | number_format(0)  }} MB" /></div>
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-md-3">{% trans %}Disk usage{% endtrans %}</label>
+                    <div class="col-xs-12 col-md-9"><input type="text" disabled="disabled" value="{{ (form.vars.value.diskUsage / 1024) | number_format(0)  }} MB" /></div>
                 </div>
                 {{ form_row(form.description) }}
                 {{ form_row(form.isActive) }}
                 {{ form_row(form.owner, {read_only: not is_granted('ROLE_ADMIN')}) }}
                 {{ form_row(form.notificationsTo) }}
-                {{ form_row(form.notificationsEmail, {attr: {class: 'span12'}}) }}
+                {{ form_row(form.notificationsEmail, {attr: {class: 'col-md-12'}}) }}
                 {{ form_row(form.minNotificationLevel) }}
                 {{ form_row(form.preScripts) }}
                 {{ form_row(form.postScripts) }}
@@ -51,12 +70,11 @@
             </div>
             <div class="control-group">
                 <div class="controls">
-                    <input class="btn btn-pull-right" type="button" value="{% trans %}Run now{% endtrans %}" id="runNow"/>
-                    <input class="btn btn-pull-right" type="submit" value="{% trans %}Save{% endtrans %}" />
+                    <input class="btn btn-elkarbackup pull-right" type="submit" value="{% trans %}Save{% endtrans %}" />
                 </div>
             </div>
         </div>
-        <div class="span6">
+        <div class="col-md-6">
             {% trans %}job_help{% endtrans %}
         </div>
     </div>

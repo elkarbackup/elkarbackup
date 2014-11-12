@@ -15,13 +15,13 @@ class ScriptType extends AbstractType
     {
         $t = $options['translator'];
         $builder->add('name'        , 'text'    , array('label' => $t->trans('Name'     , array(), 'BinovoElkarBackup'),
-                                                        'attr'  => array('class'    => 'span12')))
+                                                        'attr'  => array('class'    => 'form-control')))
                 ->add('description' , 'textarea', array('label' => $t->trans('Description' , array(), 'BinovoElkarBackup'),
                                                         'required' => false,
-                                                        'attr'  => array('class'    => 'span12')))
+                                                        'attr'  => array('class'    => 'form-control','rows' => '3')))
                 ->add('scriptFile'  , 'file'    , array('label' => $t->trans('File' , array(), 'BinovoElkarBackup'),
                                                         'required' => $options['scriptFileRequired'],
-                                                        'attr'  => array('class'    => 'span12')))
+                                                        'attr'  => array('class'    => 'form-control')))
                 ->add('isClientPre' , 'checkbox', array('label' => $t->trans('Runs as before client script', array(), 'BinovoElkarBackup'),
                                                         'required' => false))
                 ->add('isClientPost', 'checkbox', array('label' => $t->trans('Runs as after client script', array(), 'BinovoElkarBackup'),

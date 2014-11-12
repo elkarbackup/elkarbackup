@@ -6,14 +6,17 @@
  Customizations for
  vendor/symfony/symfony/src/Symfony/Bridge/Twig/Resources/views/Form/
 #}
-
 {% block form_row %}
 {% spaceless %}
-    <div class="control-group">
+  {% if form.vars.block_prefixes.2 == 'percent' %}
+    <div class="form-group has-feedback">
+  {% else %}
+    <div class="form-group">
+  {% endif %}
         {{ form_label(form) }}
         {{ form_errors(form) }}
-        <div class="controls">
-            {{ form_widget(form) }}
+        <div class="col-xs-12 col-md-9">
+          {{ form_widget(form) }}
         </div>
     </div>
 {% endspaceless %}
@@ -30,19 +33,27 @@
     {% if label is empty %}
         {% set label = name|humanize %}
     {% endif %}
-    {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' control-label')|trim}) %}
-    <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}</label>
+    {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' control-label col-xs-12 col-md-3')|trim}) %}
+    <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %}
+      <span class="required" title="{% trans %}This field is required{% endtrans %}">*</span>
+    {% endif %}</label>
 {% endspaceless %}
 {% endblock form_label %}
+
+{% block percent_widget %}
+  {{ block('form_widget_simple') }}
+  <span class="form-control-feedback percent">%</span>
+{% endblock %}
 
 {% block form_widget_simple %}
 {% spaceless %}
     {% set type = type|default('text') %}
     {% if type == 'file' %}
-    <input type="file" style="display:none" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
-    <div class="input-append">
-        <input class="input-large" id="visual_{{id}}" type="text">
-        <a class="btn" onclick="dojo.byId('{{id}}').click();">{{ 'Browse'|trans({}, translation_domain) }}</a>
+    <div class="input-group">
+      <span class="input-group-btn">
+        <span class="btn btn-elkarbackup btn-file"><span class="glyphicon glyphicon-folder-open"></span> {{ 'Browse'|trans({}, 'BinovoElkarBackup') }}&hellip; <input type="file" {{ block('widget_attributes') }} /></span>
+      </span>
+      <input type="text" class="form-control" id="visual_{{id}}" readonly>
     </div>
 
     <script type="text/javascript">
@@ -55,6 +66,7 @@
                          dojo.byId('{{id}}').value = dojo.byId('visual_{{id}}').value;
                      });
     </script>
+
     {% else %}
     <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
     {% endif %}
@@ -74,14 +86,14 @@
 {% block form_errors %}
 {% spaceless %}
     {% if errors|length > 0 %}
-<div class="control-group">
-    <div class="controls help-block red">
+<div class="control-group error-top">
+    <div class="alert alert-danger">
         {% for error in errors %}
-            <div>{{
+            <p>{{
                 error.messagePluralization is null
                     ? error.messageTemplate|trans(error.messageParameters, 'validators')
                     : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators')
-            }}</div>
+            }}</p>
         {% endfor %}
     </div>
 </div>

@@ -1,5 +1,11 @@
 # Elkarbackup
 
+
+V1.1 changes:
+
+- New Bootstrap 3.2
+- New ...
+
 ## What is it?
 Elkarbackup is a web interface for the RSnapshot backup software
 
