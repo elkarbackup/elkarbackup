@@ -44,7 +44,7 @@
     <div class="col-md-12">
 
 
-<h3><img src="img/ico-client.svg" class="title-img" alt="" /> {% trans %}Clients{% endtrans %}<a href="{{ path('sortJobs') }}"><span class="glyphicon glyphicon-cog pull-right" title="{% trans %}Sort jobs{% endtrans %}"></span></a></h3>
+<h3>{% trans %}Jobs{% endtrans %}<a href="{{ path('sortJobs') }}"><span class="glyphicon glyphicon-cog pull-right" title="{% trans %}Sort jobs{% endtrans %}"></span></a></h3>
 
 {% for flashMessage in app.session.flashbag.get('clients') %}
     <div class="controls help-block">

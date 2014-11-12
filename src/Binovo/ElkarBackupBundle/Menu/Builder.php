@@ -120,10 +120,10 @@ class Builder extends ContainerAware
     public function mainMenu(FactoryInterface $factory, array $options)
     {
         $t = $this->container->get('translator');
-        $menu = array(array('label'    => $t->trans('Clients', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoElkarBackup'),
+        $menu = array(array('label'    => $t->trans('Jobs', array(), 'BinovoElkarBackup'),
+                            'children' => array(array('label'    => $t->trans('Show jobs', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'showClients'),
-                                                array('label'    => $t->trans('Add', array(), 'BinovoElkarBackup'),
+                                                array('label'    => $t->trans('Add client', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'editClient',
                                                       'routeParameters' => array('id' => 'new')),
                                                 array('label'    => $t->trans('Sort jobs', array(), 'BinovoElkarBackup'),
