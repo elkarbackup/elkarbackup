@@ -15,22 +15,30 @@
 
 {% block body %}
 
+
+{% set hasBackups = false %}
+{% if form.vars.value.id %}
+  {% if form.vars.value.hasBackups %}
+    {% set hasBackups = true %}
+  {% endif %}
+{% endif %}
+
+<div class="top-action-buttons pull-right">
+  <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnRunNowDisabled'">
+          {% trans %}Job has not yet been saved{% endtrans %}
+  </div>
+  <div class="btn-group inline" {% if not form.vars.value.id %}id="btnRunNowDisabled"{% endif %}>
+    <button class="btn btn-elkarbackup btn-pull-right" type="button" id="runNow"><span class="glyphicon glyphicon-repeat"></span> {% trans %}Run now{% endtrans %}</button>
+  </div>
+  <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnRestoreDisabled'">
+          {% trans %}Backup not found{% endtrans %}
+  </div>
+  <div class="btn-group inline" {% if hasBackups == false %}id="btnRestoreDisabled"{% endif %}>
+    <button type="button" class="btn btn-elkarbackup btn-pull-right" {% if hasBackups == false %}disabled="true" {% endif %} onclick="document.location.href='{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}'"><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</button>
+  </div>
+</div>
+
 <form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_enctype(form) }}>
-<ol class="breadcrumb">
-
-    <li><a class="host" href="{{path('editClient', {id: form.vars.value.client.id}) }}">{{ form.vars.value.client.name }}</a></li>
-    {% if form.vars.value.name is null %}
-        <li class="job-off">New Job</li>
-    {% else %}
-        <li class="job-on">{{ form.vars.value.name }}</li>
-    {% endif %}
-    {% if form.vars.value.id %}
-	{% if form.vars.value.hasBackups %}
-	 <li id="link-to-backup" class="link-to-backup pull-right"><a href="{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}"><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</a></li>
-	{% endif %}
-    {% endif %}
-</ol>
-
 
     <h3 id="legend">{% trans %}Edit Job{% endtrans %}</h3>
     <div class="row">
@@ -62,8 +70,7 @@
             </div>
             <div class="control-group">
                 <div class="controls">
-                    <input class="btn btn-elkarbackup btn-pull-right" type="button" value="{% trans %}Run now{% endtrans %}" id="runNow"/>
-                    <input class="btn btn-elkarbackup btn-pull-right" type="submit" value="{% trans %}Save{% endtrans %}" />
+                    <input class="btn btn-elkarbackup pull-right" type="submit" value="{% trans %}Save{% endtrans %}" />
                 </div>
             </div>
         </div>

@@ -35,8 +35,8 @@ $builder->add('username'    , 'text'    , array('label' => $t->trans('Name'     
 	->add('newPassword', 'repeated', array('type' => 'password',
 			     'options' => array('attr' => array('class' => 'password-field form-control')),
 			     'required' => true,
-			     'first_options'  => array('label' => $t->trans('Password' , array(), 'BinovoElkarBackup')),
-			     'second_options' => array('label' => 'Repeat Password'),
+			     'first_options'  => array('label' => $t->trans('New password' , array(), 'BinovoElkarBackup')),
+			     'second_options' => array('label' => $t->trans('Confirm new password', array(), 'BinovoElkarBackup')),
     			     'invalid_message' => 'The password fields must match.',
 
 				));

@@ -14,6 +14,15 @@
 
 {% block body %}
 
+<div class="top-action-buttons pull-right">
+  <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnAddJobDisabled'">
+          {% trans %}Client has not yet been saved{% endtrans %}
+  </div>
+  <div class="btn-group inline" {% if not form.vars.value.id %}id="btnAddJobDisabled"{% endif %}>
+    <button type="button" class="btn btn-elkarbackup btn-pull-right" {% if not form.vars.value.id %}disabled="true"{% endif %} onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: form.vars.value.id}) }}'"> <span class="glyphicon glyphicon-plus"></span> {% trans %}Add job{% endtrans %}</button>
+  </div>
+</div>
+
 <form class="form-horizontal" action="{{ path('saveClient', {id: form.vars.value.id}) }}" method="POST" {{ form_enctype(form) }}>
     <h3>{% trans %}Edit client{% endtrans %}</h3>
     <div class="row">
@@ -83,7 +92,7 @@
                 </div>
                 #}
                 <div class="form-group control-row col-md-12">
-                    <button class="btn btn-elkarbackup delete-job btn-danger" data-bnv-job-id="#job-{{job.vars.value.id}}" data-bnv-message="{% trans with {'%name%': job.vars.value.client.name ~ "/" ~ job.vars.value.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" type="button"><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %}</button>
+                    <button class="btn delete-job btn-danger" data-bnv-job-id="#job-{{job.vars.value.id}}" data-bnv-message="{% trans with {'%name%': job.vars.value.client.name ~ "/" ~ job.vars.value.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" type="button"><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %}</button>
                     <button class="btn btn-elkarbackup" type="button" onclick="document.location.href='{{ path('editJob', {idJob: job.vars.value.id, idClient: form.vars.value.id}) }}'"><span class="glyphicon glyphicon-pencil"></span> {% trans %}Edit{% endtrans %}</button>
                 </div>
             </div>
@@ -97,8 +106,7 @@
             <div class="control-group">
                 <div class="controls control-row">
 
-		    <button type="button" class="btn btn-elkarbackup btn-pull-right" {% if not form.vars.value.id %}disabled="true" {% endif %} onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: form.vars.value.id}) }}'"> <span class="glyphicon glyphicon-plus"></span> {% trans %}Add job{% endtrans %}</button>
-		    <button type="submit" class="btn btn-elkarbackup"><span class="glyphicon glyphicon-ok"></span> {% trans %}Save{% endtrans %}</button>
+		    <button type="submit" class="btn btn-elkarbackup pull-right">{% trans %}Save{% endtrans %}</button>
                </div>
             </div>
             {{ form_widget(form._token) }}

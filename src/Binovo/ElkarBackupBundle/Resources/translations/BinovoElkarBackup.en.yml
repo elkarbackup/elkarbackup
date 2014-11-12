@@ -242,6 +242,7 @@
 'Yearly': 'Yearly'
 'Yes': 'Yes'
 'You forgot to specify hours during the day': 'You forgot to specify hours during the day'
+'Add client': 'Add client'
 policy_help: |
  <h4>Name</h4>
  This is the identifier for the policy. It will show up in lists and combo boxes. The name must be unique among all policies, the application will complain if you try to use a name which is already in use.

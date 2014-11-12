@@ -1129,7 +1129,7 @@ EOF;
                                                                                                                                                                  'P5Y' => $t->trans('Five years' , array(), 'BinovoElkarBackup'),
                                                                                                                                                                  ''    => $t->trans('Never'      , array(), 'BinovoElkarBackup')),
                                                              'label' => $t->trans('Remove logs older than', array(), 'BinovoElkarBackup')),
-                        'warning_load_level'        => array('type' => 'percent' , 'required' => false, 'attr' => array('class' => 'form-quota-level col-lg-10'), 'label' => $t->trans('Quota warning level', array(), 'BinovoElkarBackup')),
+                        'warning_load_level'        => array('type' => 'percent' , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Quota warning level', array(), 'BinovoElkarBackup')),
                         'pagination_lines_per_page' => array('type' => 'integer' , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Records per page'   , array(), 'BinovoElkarBackup')),
                         'url_prefix'                => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Url prefix'         , array(), 'BinovoElkarBackup')),
             );
