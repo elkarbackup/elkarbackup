@@ -167,8 +167,8 @@
 'Quota': 'Kuota'
 'Quota warning level': 'Kuota abisuen maila'
 'Records per page': 'Orrialdeko erregistro kopurua'
-'Repository backups script': 'Biltegiaren kopia egiteko script-a'
-'Repository backup script': 'Biltegiaren kopia egiteko script-a'
+'Repository backups script': 'Biltegiaren kopia egiteko scripta'
+'Repository backup script': 'Biltegiaren kopia egiteko scripta'
 'Run now': 'Exekutatu orain'
 'Running %command%': 'Running %command%'
 'Saturday': 'Larunbata'
@@ -226,6 +226,10 @@
 'Really delete job %name%? This will remove all related backups': '%name% ataza ezabatu nahi duzu? Bere backup guztiak ezabatuko dira'
 'Really delete policy %name%?': '%name% politika ezabatu nahi duzu?'
 'Really delete script %name%?': '%name% scripta ezabatu nahi duzu?'
+'Backup not found': 'Ez dago segurtasun kopiarik'
+'Client has not yet been saved': 'Bezeroa ez da gorde'
+'Job has not yet been saved': 'Lana ez da gorde'
+'Impossible to delete superuser account': 'Super erabiltzailearen kontua ezin da ezabatu'
 policy_help: |
  <h4>Izena</h4>
  Politikaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Politika bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
@@ -348,7 +352,7 @@ script_help: |
  </ul>
  Bezero baten pre-script batek 0 ez den balioa bueltatzen badu, aplikazioak bertan behera utziko ditu bezero horren lanak. Lan mailan exekutatzen diren pre-scripten emaitzak ez ditu ezertarako kontutan hartzen.
  <h4>Izena</h4>
- Script-aren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Script bakoitzak izen ezberdina izan behar du,eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
+ Scriptaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Script bakoitzak izen ezberdina izan behar du,eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
  <h4>Azalpena</h4>
  Scripta deskribatzeko testu librea. Sartu hemen zuretzat lagungarria izan daitekeen informazioa.
  <h4>Fitxategia</h4>
