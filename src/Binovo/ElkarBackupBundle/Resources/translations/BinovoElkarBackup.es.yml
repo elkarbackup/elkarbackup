@@ -196,6 +196,10 @@
 'Job has not yet been saved': 'La tarea no ha sido guardada'
 'Impossible to delete superuser account': 'No es posible eliminar la cuenta superusuario'
 'This script is used by some client or job': 'Algún cliente o tarea está usando este script'
+'Run as': 'Ejecutar como'
+'Job': 'Tarea'
+'Before': 'Antes'
+'After': 'Después'
 policy_help: |
  <h4>Nombre</h4>
  Es el identificador de la política. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.

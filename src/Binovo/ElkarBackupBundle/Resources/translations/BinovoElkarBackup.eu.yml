@@ -231,6 +231,10 @@
 'Job has not yet been saved': 'Lana ez da gorde'
 'Impossible to delete superuser account': 'Super erabiltzailearen kontua ezin da ezabatu'
 'This script is used by some client or job': 'Bezero edo lan batek script hau erabiltzen du'
+'Run as': 'Nola exekutatu'
+'Job': 'Lana'
+'Before': 'Lehenago'
+'After': 'Ondoren'
 policy_help: |
  <h4>Izena</h4>
  Politikaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Politika bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
