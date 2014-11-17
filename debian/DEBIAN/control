@@ -1,11 +1,11 @@
 Package: elkarbackup
-Version: 1.0.23
+Version: 1.1.0
 Section: devel
 Priority: optional
 Architecture: all
 Depends: acl, debconf, php5, php5-cli, rsnapshot, mysql-client, php5-mysql, sudo, apache2
 Suggests: autofs5, bzip2, mysql-server
 Replaces: tknikabackups
-Maintainer: Victor Laskurain <blaskurain@binovo.es>
+Maintainer: Xabi Ezpeleta <xezpeleta@tknika.net>
 Description: Web configurator for rsnapshot
  Simple Web configurator for rsnapshot
