@@ -1,6 +1,30 @@
 ## Upcoming version
 
 Bugfixes:
+  - Menu logo with a wrong link (#60)
+  - Show jobs disabled when the client is disabled (#61)
+  - Script edition: add translations to the new checkbox table (#62)
+
+## 1.1.0 (2014/11/17)
+
+Features:
+  - New Bootstrap 3.2.0
+  - New theme (by @christiangr #51)
+  - Improved usability
+    - Buttons with icons
+    - "Clients" renamed to "Job" on the menu (#36)
+    - Reallocated action buttons
+    - "Run now": improved feedback (#34)
+    - Disabled buttons (explain the reason with a tooltip)
+    - Colorized backup error messages
+    - Direct link to client/job filtered log
+    - Show required fields with a red asterisk
+    - New return page after submitting a form
+  - Show elkarbackup version on the login (#9)
+  - Disk or storage disk usage bar (#8)
+  - Password change: ask password twice (#55)
+
+Bugfixes:
   - Fix dpkg-reconfigure error (#54 @xezpeleta)
 
 ## 1.0.23 (2014/07/04)
