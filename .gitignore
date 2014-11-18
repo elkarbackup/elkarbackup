@@ -9,6 +9,10 @@ vendor
 bin
 composer.phar
 
+# Makepackage #
+###############
+.debian
+
 # OS generated files #
 ######################
 .DS_Store
