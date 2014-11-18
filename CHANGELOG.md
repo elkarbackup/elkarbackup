@@ -1,4 +1,4 @@
-## Upcoming version
+## 1.1.1 (2014/11/18)
 
 Bugfixes:
   - Menu logo with a wrong link (#60)
@@ -36,7 +36,7 @@ Bugfixes:
   - Include/Exclude bug (#25 #29 #45 @alfredobz)
   - Add logrotate policy (#42, @alfredobz)
 
-## 1.0.22 (2014-03-21)
+## 1.0.22 (2014/03/21)
 
 Features:
   - GUI - Clients: Show disk usage in GB (#8, @xezpeleta)
@@ -47,7 +47,7 @@ Bugfixes:
   - Windows snapshots: log snapshot creation errors as debugging aid (@blaskurain)
   - Fix problem with monthly and yearly policy (#41, @xezpeleta)
 
-## 1.0.21 (2013-10-22)
+## 1.0.21 (2013/10/22)
 
 Bugfixes:
   - Fix problem with daily policy (#17, @blaskurain)
