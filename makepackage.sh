@@ -8,6 +8,9 @@
 # prepare source for build
 #
 
+if [ -d .debian ]; then
+    rm -fR .debian
+fi
 mkdir .debian
 cp -a debian/* .debian
 if [ ! -d .debian/usr/share/elkarbackup ]
