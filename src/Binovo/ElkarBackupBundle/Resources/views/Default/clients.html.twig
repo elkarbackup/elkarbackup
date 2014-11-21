@@ -64,7 +64,7 @@
 
     {# table body #}
     {% for client in pagination %}
-<tr class="client-row {% if client.isActive == false %}disabled{% endif %}">
+<tr class="client-row client-{{client.id}} {% if client.isActive == false %}disabled{% endif %}">
         <td class="vert-align" onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'"><a href="{{ path('editClient', {id: client.id}) }}"><span class="client-icon"></span> {{ client.id }}</a></td>
         <td class="vert-align" onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'"><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
         <td class="vert-align" style="text-align:center{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{% if client.diskUsage / 1024 > 1024 %} {{ (client.diskUsage / 1024 / 1024 ) | number_format(1) }} GB{% else %} {{ (client.diskUsage / 1024) | number_format(0)}} MB{% endif %}{% if client.quota > 0 %} ({{ (client.diskUsage / client.quota * 100) | number_format(0)}}%){% endif %}</td>
@@ -83,7 +83,7 @@
         </td>
     </tr>
         {% for job in client.jobs %}
-    <tr class="job-row {% if (job.isActive == false) or (client.isActive == false) %}disabled{% endif %}">
+    <tr class="job-row client-{{client.id}}-job-{{job.id}} {% if (job.isActive == false) or (client.isActive == false) %}disabled{% endif %}">
         <td class="vert-align" onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'"><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}"><span class="glyphicon glyphicon-folder-open"></span> {{ client.id }}.{{ job.id }}</a></td>
         <td class="vert-align" onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'"><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.name ~ "/" ~ job.name }}</a></td>
         <td class="vert-align" style="text-align:center;">{% if job.diskUsage / 1024 > 1024 %}{{ (job.diskUsage / 1024 / 1024) | number_format(1) }} GB{% else%} {{ (job.diskUsage / 1024) | number_format(0)}} MB{% endif %}</td>
