@@ -18,8 +18,8 @@ function(dojo, domConstruct, fx, ready) {
             animation.play();
             break;
         case 'add-key':
-            newNode = dojo.place(String.trim(dojo.byId('prototype').innerHTML.replace(/__name__/g, 'n_' + iNewKey)), dojo.byId('add-key'), 'before');
-            animation = [fx.wipeIn({node: newNode})];
+            newNode = dojo.place(dojo.string.trim(dojo.byId('prototype').innerHTML.replace(/__name__/g, 'n_' + iNewKey)), dojo.byId('add-key'), 'before');
+	              animation = [fx.wipeIn({node: newNode})];
             if (1 == dojo.query('#public-keys input[data-command=delete-key]').length) { // adding first key
                 animation.push(fx.wipeOut({node: 'no-keys-defined'}));
             }
