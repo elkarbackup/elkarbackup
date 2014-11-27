@@ -1,6 +1,7 @@
 ## Upcoming Version
   - Fixed "Add key" button issue in Google Chrome (#65)
   - Fixed restore-directory navigation issue (#66)
+  - Improved script edition form "used by" section (#63)
 
 ## 1.1.1 (2014/11/18)
 
