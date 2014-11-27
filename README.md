@@ -1,14 +1,10 @@
 # Elkarbackup
 
 ## What is it?
-Elkarbackup is a web interface for the RSnapshot backup software
+ElkarBackup is a free open-source backup solution based on RSync/RSnapshot
 
-<table>
-  <tr>
-    <td><img src="http://www.elkarbackup.org/images/elkarbackup_main_eu.png" width="330"></td>
-    <td><img src="http://www.elkarbackup.org/images/elkarbackup_restore_eu.png" width="330"></td>
-  </tr>
-</table>
+<img src="http://www.elkarbackup.org/images/screenshots/login.png" />
+<img src="http://www.elkarbackup.org/images/screenshots/jobs.png" />
 
 ## Features
 - Centralized backups
