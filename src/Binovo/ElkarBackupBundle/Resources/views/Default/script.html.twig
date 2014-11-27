@@ -72,25 +72,55 @@
                 </div>
             </div>
 
-            <div class="control-group col-md-11">
-              <h3 style="margin-bottom: 0px;">{% trans %}Used by{% endtrans %}</h3>
-                <div class="controls">
+            <div class="control-group col-md-12 col-xs-12">
+              <h3>{% trans %}Used by{% endtrans %}</h3>
+                <div class="controls col-md-12 col-xs-12">
 {% if form.vars.value.isUsed %}
+            
+<table class="table table-condensed text-center">
+              <tr>
+                <th class="text-center">{% trans %}Client{% endtrans %}</th>
+                <th class="text-center">{% trans %}Job{% endtrans %}</th>
+                <th class="text-center">{% trans %}Run as{% endtrans %}</th>
+              </tr>
+
+
+
+
+
     {% for client in form.vars.value.postClients %}
-                    <br><a href="{{ path('editClient', {id: client.id}) }}">{% trans with {'%name%': client.name} %}Client %name% as post script{% endtrans %}</a>
+                <tr>
+		 <td><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>  
+		 <td> - </td>
+		 <td>{% trans %}After{% endtrans %}</td>
+		</tr>
     {% endfor %}
     {% for client in form.vars.value.preClients %}
-                    <br><a href="{{ path('editClient', {id: client.id}) }}">{% trans with {'%name%': client.name} %}Client %name% as pre script{% endtrans %}</a>
+                <tr>
+		 <td><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>  
+		 <td> - </td>
+		 <td>{% trans %}Before{% endtrans %}</td>
+		</tr>
     {% endfor %}
     {% for job in form.vars.value.postJobs %}
-                    <br><a href="{{ path('editJob', {idClient: job.client.id, idJob: job.id}) }}">{% trans with {'%name%': job.name} %}Job %name% as post script{% endtrans %}</a>
+                <tr>
+		 <td>{{ job.client.name }}</td>  
+		 <td><a href="{{ path('editJob', {idClient: job.client.id, idJob: job.id}) }}">{{ job.name}}</a> </td>
+		 <td>{% trans %}After{% endtrans %}</td>
+		</tr>
     {% endfor %}
     {% for job in form.vars.value.preJobs %}
-                    <br><a href="{{ path('editJob', {idClient: job.client.id, idJob: job.id}) }}">{% trans with {'%name%': job.name} %}Job %name% as pre script{% endtrans %}</a>
+                <tr>
+		 <td>{{ job.client.name }}</td>  
+		 <td><a href="{{ path('editJob', {idClient: job.client.id, idJob: job.id}) }}">{{ job.name}}</a> </td>
+		 <td>{% trans %}Before{% endtrans %}</td>
+		</tr>
     {% endfor %}
+	</table>
 {% else %}
     {% trans %}Currently not used{% endtrans %}
 {% endif %}
+
                 </div>
             </div>
         </div>
