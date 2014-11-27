@@ -1,4 +1,4 @@
-{##
+{## 
  # @copyright 2012,2013 Binovo it Human Project, S.L.
  # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  #}
@@ -9,9 +9,10 @@
 
 <p>
     <h3>
-    {{ job.client.name ~ '/' ~ job.name ~ '/' ~ path }}
+    {{ job.client.name ~ '/' ~ job.name ~ path }}
     </h3>
-    <a href="{{ path('editClient', {id: job.client.id}) }}"><b>{% trans %}Back to client{% endtrans %}</b></a><br />
+
+   <a href="{{ path('editClient', {id: job.client.id}) }}"><b>{% trans %}Back to client{% endtrans %}</b></a><br />
     <a href="{{ path('editJob',    {idClient: job.client.id, idJob: job.id}) }}"><b>{% trans %}Back to job{% endtrans %}</b></a>
 </p>
 
@@ -25,18 +26,31 @@
             <th>{% trans %}Modification date{% endtrans %}</th>
             <th>{% trans %}Actions{% endtrans %}</th>
         </tr>
+
     {% for file in content %}
-        <tr>
-            <td>
-                <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'view'}) }}"><i class="{% if file.2 %}icon-folder-open{% else %}icon-file{% endif %}"></i> {{ file.0 }}</a>
-            </td>
-            <td>
-                {{ file.1.format('Y-m-d H:i:s') }}
-            </td>
-            <td>
-                {% if file.0 != ".." and file.0 != "." %} <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download'}) }}"> <b>{% if file.2 %}{% trans %}Download as .tgz{% endtrans %}{% else %}Download{% endif %}</b></a> {% endif %}
-            </td>
-        </tr>
+      {% if file.0 != "." %}
+ 	{% if path|length > 1 or ( file.0 != ".." and file.0 != ".") %}
+		<tr>
+
+		    <td>
+
+
+		        <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id , path: path  ~ file.0 ~ '/' , action: 'view'}) }}">
+			<i class="{% if file.2 %}icon-folder-open{% else %}icon-file{% endif %}"></i> {{ file.0 }}</a>
+
+		    </td>
+		    <td>
+		        {{ file.1.format('Y-m-d H:i:s') }}
+		    </td>
+		    <td>
+		        {% if file.0 != ".." and file.0 != "." %} 
+			<a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download'}) }}"> 
+			<b>{% if file.2 %}{% trans %}Download as .tgz{% endtrans %}{% else %}Download{% endif %}</b></a> 	{% endif %}
+		    </td>
+		</tr>
+
+	{% endif %}
+      {% endif %}
     {% endfor %}
 </p>
 
