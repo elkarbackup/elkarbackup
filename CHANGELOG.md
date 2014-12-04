@@ -1,7 +1,11 @@
-## Upcoming Version
+## 1.1.2 (2014/12/04)
+Features:
+  - Improved script edition form "used by" section (#63)
+
+Bugfixes:
   - Fixed "Add key" button issue in Google Chrome (#65)
   - Fixed restore-directory navigation issue (#66)
-  - Improved script edition form "used by" section (#63)
+  - Added sort jobs help panel (#33)
 
 ## 1.1.1 (2014/11/18)
 
