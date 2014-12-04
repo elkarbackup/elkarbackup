@@ -370,3 +370,7 @@ script_help: |
  Markatu ezazu beti ere script hau lan baten exekuzioa hasi aurretik abian jartzeko diseinatuta dagoenean.
  <h4>Lanaren post-script moduan exekutatu daiteke</h4>
  Markatu ezazu beti ere script hau lan baten exekuzioa bukatu ondoren abian jartzeko diseinatuta dagoenean.
+sort_jobs_help: |
+ <h4>Lanak ordenatu</h4>
+ Lanen exekuzio ordena aldatu dezakezu. Erabilgarria izan daiteke lan bat baina gehiago ordu berean programatuak dituzunean.
+ <p>Arrastatu eta jaregin lanaren lehentasuna aldatzeko</p> 

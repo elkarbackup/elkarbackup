@@ -341,3 +341,7 @@ script_help: |
  Activa esta opción si este script esta diseñado para ser ejecutado antes de la ejecución de una tarea.
  <h4>Ejecutar como post-script de tareas</h4>
  Activa esta opción si este script esta diseñado para ser ejecutado después de la ejecución de una tarea.
+sort_jobs_help: |
+ <h4>Ordenar tareas</h4>
+ Puedes cambiar el orden de ejecución de las tareas. Es útil a la hora de priorizar tareas programadas a la misma hora.
+ <p>Arrastra y suelta para cambiar el orden</p>

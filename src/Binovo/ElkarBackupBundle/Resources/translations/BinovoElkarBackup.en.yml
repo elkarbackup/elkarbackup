@@ -393,3 +393,7 @@ script_help: |
  Check this field if the script is designed to run when opening the job.
  <h4>Runs as after job script</h4>
  Check this field if the script is designed to run when closing the job.
+sort_jobs_help: |
+ <h4>Sorting jobs</h4>
+ You can change job execution order. It's really usefull if you have multiple jobs scheduled at the same time.
+ <p>You can order as you desire just drag&drop-ing</p> 

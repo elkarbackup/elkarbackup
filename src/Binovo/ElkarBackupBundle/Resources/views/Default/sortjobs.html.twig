@@ -18,6 +18,8 @@
 <div class="row">
     <div class="max10" >
         <h3>{% trans %}Sort jobs{% endtrans %}</h3>
+        <div class="row">
+          <div class="col-md-6">
 
 {% for flashMessage in app.session.flashbag.get('sortJobs') %}
         <div class="controls help-block">
@@ -43,6 +45,11 @@
             <button class="btn btn-elkarbackup pull-right" type="submit">{% trans %}Save{% endtrans %}</button>
             {{ form_rest(form) }}
         </form>
+        </div>
+        <div class="col-md-6">
+          {% trans %}sort_jobs_help{% endtrans %}
+        </div>
+      </div>
     </div>
 </div>
 
