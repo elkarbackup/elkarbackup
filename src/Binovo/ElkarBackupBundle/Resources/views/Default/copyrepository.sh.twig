@@ -13,6 +13,9 @@ SERVER={{ server }}
 SERVER_USER={{ backupsuser }}
 UPLOADS={{ uploads }}
 
+echo "Starting backup..."
+echo "Date: " `date "+%Y-%m-%d (%H:%M)"`
+
 ssh "$SERVER_USER@$SERVER" "cd '$REPOSITORY'; find . -maxdepth 2 -mindepth 2" | sed s/^..// | while read jobId
 do
     echo Backing up job $jobId
@@ -23,3 +26,17 @@ echo Backing up mysql DB
 ssh "$SERVER_USER@$SERVER" "mysqldump -u$MYSQL_USER -p$MYSQL_PASSWORD -h$MYSQL_HOST $MYSQL_DB" > elkarbackup.sql
 echo Backing up uploads
 rsync -aH --delete "$SERVER_USER@$SERVER":"$UPLOADS/" uploads
+
+USED=`df -h . | awk 'NR==2 { print $3 }'`
+USE=`df -h . | awk 'NR==2 { print $5 }'`
+AVAILABLE=`df -h . | awk 'NR==2 { print $4 }'`
+
+echo "Backup finished succesfully!"
+echo "Date: " `date "+%Y-%m-%d (%H:%M)"`
+echo ""
+echo "**** INFO ****"
+echo "Used disk space: $USED ($USE)"
+echo "Available disk space: $AVAILABLE"
+echo ""
+echo "Power off!"
+sudo nohup shutdown 1 &
