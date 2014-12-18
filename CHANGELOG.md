@@ -2,6 +2,9 @@
 Features:
   - Improve redudant backup notification (#69)
 
+Bugfixes:
+  - Allow spaces/backslashes in paths (#70)
+
 ## 1.1.2 (2014/12/04)
 Features:
   - Improved script edition form "used by" section (#63)
