@@ -23,7 +23,7 @@ class ClientType extends AbstractType
                                                             'attr'     => array('class' => 'form-control'),
                                                             'required' => false))
                 ->add('quota'         , 'integer'   , array('label' => $t->trans('Quota', array(), 'BinovoElkarBackup'),
-                                                            'attr'  => array('class'    => 'form-control')))
+                                                            'attr'  => array('class'    => 'form-control','min' => '-1')))
                 ->add('preScripts'    , 'entity'    , array('label' => $t->trans('Pre script', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class' => 'form-control'),
                                                             'required' => false,
