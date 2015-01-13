@@ -20,9 +20,11 @@ class ClientType extends AbstractType
         // User will see the quota in GB (fields.html.twig), but we will save it in KBs
         $builder->addEventListener(FormEvents::BIND_CLIENT_DATA, function (FormEvent $event) {
           $data = $event->getData();
-          $quota = $data["quota"] * 1024 * 1024;
-          $data["quota"] = intval($quota);
-          $event->setData($data);
+          if ($data['quota'] > 0) {
+            $quota = $data['quota'] * 1024 * 1024;
+            $data["quota"] = intval($quota);
+            $event->setData($data);
+          }
         }, 255);
 
         $t = $options['translator'];
