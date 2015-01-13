@@ -8,11 +8,23 @@ namespace Binovo\ElkarBackupBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class ClientType extends AbstractType
 {
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        // Modify 'quota' value
+        // User will see the quota in GB (fields.html.twig), but we will save it in KBs
+        $builder->addEventListener(FormEvents::BIND_CLIENT_DATA, function (FormEvent $event) {
+          $data = $event->getData();
+          $quota = $data["quota"] * 1024 * 1024;
+          $data["quota"] = intval($quota);
+          $event->setData($data);
+        }, 255);
+
         $t = $options['translator'];
         $builder->add('name'          , 'text'      , array('label' => $t->trans('Name', array(), 'BinovoElkarBackup'),
                                                             'attr'  => array('class'    => 'form-control')))
@@ -23,7 +35,7 @@ class ClientType extends AbstractType
                                                             'attr'     => array('class' => 'form-control'),
                                                             'required' => false))
                 ->add('quota'         , 'integer'   , array('label' => $t->trans('Quota', array(), 'BinovoElkarBackup'),
-                                                            'attr'  => array('class'    => 'form-control','min' => '-1')))
+                                                            'attr'  => array('class'    => 'form-control','min' => '-1', 'step' => 'any')))
                 ->add('preScripts'    , 'entity'    , array('label' => $t->trans('Pre script', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class' => 'form-control'),
                                                             'required' => false,

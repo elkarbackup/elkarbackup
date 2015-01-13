@@ -164,7 +164,7 @@
 'Pre script': 'Pre script'
 'Public key': 'Gako publikoa'
 'Public key generation requested': 'Public key generation requested'
-'Quota': 'Kuota'
+'Quota': 'Kuota (GB)'
 'Quota warning level': 'Kuota abisuen maila'
 'Records per page': 'Orrialdeko erregistro kopurua'
 'Repository backups script': 'Biltegiaren kopia egiteko scripta'
@@ -271,7 +271,7 @@ client_help: |
    <li><i>erabiltzailea@domeinu.izena:</i> Adi bi puntuekin. Goian azaldu dugun berdina, baina ssh erabili beharrean urruneko rsync zerbitzarira konektatuko da.</li>
  </ul>
  <h4>Kuota</h4>
- Bezeroaren datuek diskoan erabili dezaketen lekua KB-etan. -1 balioak "mugarik ez" esan nahi du. Konfiguratutako mugara heltzen denean (balio lehenetsia %80koa da), aplikazioak mezuak bidaliko ditu bezero horren lan bakoitzean mezuak jasotzeko konfiguratu diren helbideetara. Diskoaren erabilera ezarritako kuota gainditzen duenean ez dira programatutako kopiak egingo, eta errore bat sortuko da egoera azalduz.
+ Bezeroaren datuek diskoan erabili dezaketen lekua GB-etan. -1 balioak "mugarik ez" esan nahi du. Konfiguratutako mugara heltzen denean (balio lehenetsia %80koa da), aplikazioak mezuak bidaliko ditu bezero horren lan bakoitzean mezuak jasotzeko konfiguratu diren helbideetara. Diskoaren erabilera ezarritako kuota gainditzen duenean ez dira programatutako kopiak egingo, eta errore bat sortuko da egoera azalduz.
  <h4>Diskoaren erabilera</h4>
  Une hauetan bezeroaren datuek diskoan okupatzen ari direna.
  <h4>Azalpena</h4>
@@ -373,4 +373,4 @@ script_help: |
 sort_jobs_help: |
  <h4>Lanak ordenatu</h4>
  Lanen exekuzio ordena aldatu dezakezu. Erabilgarria izan daiteke lan bat baina gehiago ordu berean programatuak dituzunean.
- <p>Arrastatu eta jaregin lanaren lehentasuna aldatzeko</p> 
+ <p>Arrastatu eta jaregin lanaren lehentasuna aldatzeko</p>

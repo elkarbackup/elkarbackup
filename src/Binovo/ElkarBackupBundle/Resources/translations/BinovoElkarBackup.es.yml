@@ -42,7 +42,7 @@
 'Generate': 'Generar'
 'Run now': 'Ejecutar ahora'
 'Use local permissions': 'Utilizar permisos locales'
-'Quota': 'Cuota'
+'Quota': 'Cuota (GB)'
 'During the day': 'Durante el día'
 'Make backups during the day': 'Realizar copias durante el día'
 'Make daily backups': 'Realizar copias diarias'
@@ -237,7 +237,7 @@ client_help: |
    <li><i>usuario@nombre.dominio:</i> Atención a los dos puntos. Igual que en el punto anterior, pero en vez de utilizar una conexión ssh utilizará rsync para la comunicación con el cliente.</li>
  </ul>
  <h4>Cuota</h4>
- Espacio de disco disponible para los datos del cliente en KB. El valor -1 signfica "sin límite". Cuando se alcance el límite configurado (por defecto el 80%), la aplicación enviará un mensaje a las direcciones configuradas en las tareas que pertenecen a dicho cliente. Si se supera la cuota establecida para un cliente no se realizarán copias de sus tareas, y se generará un error mostrando la situación.
+ Espacio de disco disponible para los datos del cliente en GB. El valor -1 signfica "sin límite". Cuando se alcance el límite configurado (por defecto el 80%), la aplicación enviará un mensaje a las direcciones configuradas en las tareas que pertenecen a dicho cliente. Si se supera la cuota establecida para un cliente no se realizarán copias de sus tareas, y se generará un error mostrando la situación.
  <h4>Espacio en disco</h4>
  Espacio ocupado en estos momentos por los datos del cliente.
  <h4>Descripción</h4>

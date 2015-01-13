@@ -168,7 +168,7 @@
 'Public key generation requested': 'Public key generation requested'
 'Public key': 'Public key'
 'Quota warning level': 'Quota warning level'
-'Quota': 'Quota'
+'Quota': 'Quota (GB)'
 'Really delete client %name%? This will remove all related jobs and backups': 'Really delete client %name%? This will remove all related jobs and backups.'
 'Really delete job %name%? This will remove all related backups': 'Really delete job %name%? This will remove all related backups.'
 'Really delete policy %name%?': 'Really delete policy %name%?'
@@ -289,7 +289,7 @@ client_help: |
    <li><i>user@domain.name:</i> Notice the colon. Same as above but instead of using ssh connections it will connect to the remote rsync server.</li>
  </ul>
  <h4>Quota</h4>
- The amount of disk space in KB this client is allowed to use. -1 means "no limit". When the configured threshold is reached (80% by default) the application broadcasts a warning to the notification recipients specified in each job. The application discards backup jobs with an error if the disk usage is higher than the quota.
+ The amount of disk space in GB this client is allowed to use. -1 means "no limit". When the configured threshold is reached (80% by default) the application broadcasts a warning to the notification recipients specified in each job. The application discards backup jobs with an error if the disk usage is higher than the quota.
  <h4>Disk usage</h4>
  The currently used disk space by this client.
  <h4>Description</h4>
@@ -396,4 +396,4 @@ script_help: |
 sort_jobs_help: |
  <h4>Sorting jobs</h4>
  You can change job execution order. It's really usefull if you have multiple jobs scheduled at the same time.
- <p>You can order as you desire just drag&drop-ing</p> 
+ <p>You can order as you desire just drag&drop-ing</p>

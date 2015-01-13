@@ -66,9 +66,14 @@
                          dojo.byId('{{id}}').value = dojo.byId('visual_{{id}}').value;
                      });
     </script>
-
+    {#
+      Show Quota in GB
+    #}
+    {% elseif id == 'Client_quota' and value > 0 %}
+      {% set value = value / 1024 / 1024 %}
+      <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value|number_format(2, '.', ',') }}" {% endif %}/>
     {% else %}
-    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+      <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
     {% endif %}
 {% endspaceless %}
 {% endblock form_widget_simple %}
