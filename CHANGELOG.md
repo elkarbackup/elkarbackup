@@ -6,6 +6,7 @@ Features:
 Bugfixes:
   - Allow spaces/backslashes in excludes/includes (#70)
   - Set minimum value -1 for quota (#67)
+  - Restore tree: remove links from filenames (#72)
 
 ## 1.1.2 (2014/12/04)
 Features:
