@@ -2,6 +2,7 @@
 Features:
   - Improve redudant backup notification (#69)
   - Client edition: show quota in GB (#67)
+  - Restore tree: added folder/file icons (#72)
 
 Bugfixes:
   - Allow spaces/backslashes in excludes/includes (#70)
