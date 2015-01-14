@@ -1,9 +1,11 @@
 ## Upcoming release
 Features:
   - Improve redudant backup notification (#69)
+  - Client edition: show quota in GB (#67)
 
 Bugfixes:
-  - Allow spaces/backslashes in paths (#70)
+  - Allow spaces/backslashes in excludes/includes (#70)
+  - Set minimum value -1 for quota (#67)
 
 ## 1.1.2 (2014/12/04)
 Features:
