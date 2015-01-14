@@ -1,4 +1,4 @@
-{## 
+{##
  # @copyright 2012,2013 Binovo it Human Project, S.L.
  # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  #}
@@ -34,17 +34,22 @@
 
 		    <td>
 
-
+          {% if file.2 %}
 		        <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id , path: path  ~ file.0 ~ '/' , action: 'view'}) }}">
-			<i class="{% if file.2 %}icon-folder-open{% else %}icon-file{% endif %}"></i> {{ file.0 }}</a>
+			           <span class="glyphicon glyphicon-folder-open"></span>
+                 &nbsp;{{ file.0 }}
+            </a>
+          {% else %}
+            <span class="glyphicon glyphicon-file"></span>&nbsp;{{ file.0 }}
+          {% endif %}
 
 		    </td>
 		    <td>
 		        {{ file.1.format('Y-m-d H:i:s') }}
 		    </td>
 		    <td>
-		        {% if file.0 != ".." and file.0 != "." %} 
-			<a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download'}) }}"> 
+		        {% if file.0 != ".." and file.0 != "." %}
+			<a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download'}) }}">
 			<b>{% if file.2 %}{% trans %}Download as .tgz{% endtrans %}{% else %}Download{% endif %}</b></a> 	{% endif %}
 		    </td>
 		</tr>
