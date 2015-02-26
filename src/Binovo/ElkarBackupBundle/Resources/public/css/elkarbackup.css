@@ -169,6 +169,14 @@ h3, .h3 {
     background-color: #2d3f50;
 }
 
+.display-block {
+  display: block;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
 a {
   color: #4c6987;
 }

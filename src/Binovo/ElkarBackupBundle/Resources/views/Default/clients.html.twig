@@ -44,7 +44,7 @@
     <div class="col-md-12">
 
 
-<h3>{% trans %}Jobs{% endtrans %}<a href="{{ path('sortJobs') }}"><span class="glyphicon glyphicon-cog pull-right" title="{% trans %}Sort jobs{% endtrans %}"></span></a><a href="{{ path('editClient', {id: 'new'}) }}"><span class="glyphicon glyphicon-plus btn-add-client pull-right" title="{% trans %}Add client{% endtrans %}"></span></a></h3>
+<h3 id="legend">{% trans %}Jobs{% endtrans %}<a href="{{ path('sortJobs') }}"><span class="glyphicon glyphicon-cog pull-right" title="{% trans %}Sort jobs{% endtrans %}"></span></a><a href="{{ path('editClient', {id: 'new'}) }}"><span class="glyphicon glyphicon-plus btn-add-client pull-right" title="{% trans %}Add client{% endtrans %}"></span></a></h3>
 
 {% for flashMessage in app.session.flashbag.get('clients') %}
     <div class="controls help-block">
@@ -93,13 +93,16 @@
             <form data-bnv-message="{% trans with {'%name%': job.client.name ~ "/" ~ job.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" class="delete-job" action="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" method="POST" style="display:inline">
 		          <button class="btn btn-default btn-danger" type="submit" value=" {% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %}</button>
             </form>
-            <form action="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}" style="display:inline">
+            <form class="inline-block" action="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}">
           <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: [ {% for job in client.jobs %}{% if not job.hasBackups %}'btnRestore{{ client.id }}{{ job.id }}', {% endif %}{% endfor %} ]">
                   {% trans %}Backup not found{% endtrans %}
               </div>
             <div class="btn-group inline" id="btnRestore{{ client.id }}{{ job.id }}">
               <button class="btn btn-elkarbackup {% if not job.hasBackups %}disabled{% endif %}" type="submit" value="{% trans %}Restore{% endtrans %}" /><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Restore{% endtrans %}</button>
             </div>
+          </form>
+            <form class="runNowForm inline-block" action="{{ path('runJob', {idJob: job.id, idClient: client.id}) }}" method="POST">
+              <button class="btn btn-elkarbackup btn-pull-right runNow" type="button"><span class="glyphicon glyphicon-repeat"></span> {% trans %}Run now{% endtrans %}</button>
             </form>
         </td>
     </tr>
