@@ -39,7 +39,7 @@ class ClientType extends AbstractType
                 ->add('quota'         , 'integer'   , array('label' => $t->trans('Quota', array(), 'BinovoElkarBackup'),
                                                             'attr'  => array('class'    => 'form-control','min' => '-1', 'step' => 'any')))
                 ->add('preScripts'    , 'entity'    , array('label' => $t->trans('Pre script', array(), 'BinovoElkarBackup'),
-                                                            'attr'     => array('class' => 'form-control'),
+                                                            'attr'     => array('class' => 'autoheight form-control','data-dojo-type' => 'dojox.form.CheckedMultiSelect'),
                                                             'required' => false,
                                                             'multiple' => true,
                                                             'class'    => 'BinovoElkarBackupBundle:Script',
@@ -49,7 +49,7 @@ class ClientType extends AbstractType
                                                             },
                                                             'property' => 'name'))
                 ->add('postScripts'   , 'entity'    , array('label' => $t->trans('Post script', array(), 'BinovoElkarBackup'),
-                                                            'attr'     => array('class' => 'form-control'),
+                                                            'attr'     => array('class' => 'autoheight form-control','data-dojo-type' => 'dojox.form.CheckedMultiSelect'),
                                                             'required' => false,
                                                             'multiple' => true,
                                                             'class'    => 'BinovoElkarBackupBundle:Script',

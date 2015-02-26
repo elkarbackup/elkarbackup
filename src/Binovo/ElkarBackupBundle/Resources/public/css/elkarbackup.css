@@ -573,3 +573,30 @@ CLIENTS-TASKS
   border-top-right-radius: 3px;
   border-bottom-right-radius: 3px;
 }
+
+
+/* CLIENT AND JOB EDITION
+*/
+
+.autoheight {
+  height: 100px;
+  overflow-y:scroll;
+}
+
+.dojoxCheckedMultiSelectSelect{
+  display: none;
+}
+
+
+/* Scrollbar for Pre and Post Script Form  Only Webkit */
+
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}

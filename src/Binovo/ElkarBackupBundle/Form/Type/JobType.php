@@ -58,7 +58,7 @@ class JobType extends AbstractType
                                                                                         Job::NOTIFICATION_LEVEL_ERROR   => $t->trans('Errors and up'  , array(), 'BinovoElkarBackup'),
                                                                                         Job::NOTIFICATION_LEVEL_NONE    => $t->trans('None'           , array(), 'BinovoElkarBackup'))))
                 ->add('preScripts'          , 'entity'  , array('label' => $t->trans('Pre script', array(), 'BinovoElkarBackup'),
-                                                                'attr'     => array('class'    => 'form-control'),
+                                                                'attr'     => array('class' => 'autoheight form-control','data-dojo-type' => 'dojox.form.CheckedMultiSelect'),
                                                                 'required' => false,
                                                                 'multiple' => true,
                                                                 'class'    => 'BinovoElkarBackupBundle:Script',
@@ -68,7 +68,7 @@ class JobType extends AbstractType
                                                                 },
                                                                 'property' => 'name'))
                 ->add('postScripts'         , 'entity'  , array('label' => $t->trans('Post script', array(), 'BinovoElkarBackup'),
-                                                                'attr'     => array('class'    => 'form-control'),
+                                                                'attr'     => array('class' => 'autoheight form-control','data-dojo-type' => 'dojox.form.CheckedMultiSelect'),
                                                                 'required' => false,
                                                                 'multiple' => true,
                                                                 'class'    => 'BinovoElkarBackupBundle:Script',
