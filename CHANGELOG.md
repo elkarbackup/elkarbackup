@@ -3,6 +3,8 @@ Features:
   - Improve redudant backup notification (#69)
   - Client edition: show quota in GB (#67)
   - Restore tree: added folder/file icons (#72)
+  - Show clients: new add-client button on top (#36)
+  - Client and job edition: Improve script selector (#68)
 
 Bugfixes:
   - Allow spaces/backslashes in excludes/includes (#70)
