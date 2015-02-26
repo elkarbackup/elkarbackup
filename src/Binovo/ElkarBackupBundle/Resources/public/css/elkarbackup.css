@@ -3,7 +3,7 @@
    - Author: Christian GR
    - e-mail: christiangr@gmail.com
    - Web:    www.christiangr.com
-   
+
 */
 
 
@@ -200,6 +200,11 @@ table tr.client-row td {
 
 table tr.job-row td {
   border: 0px solid #c4c4c4 !important;
+}
+
+.btn-add-client {
+  font-size: 24px;
+  margin: 0 8px;
 }
 
 .client-icon {

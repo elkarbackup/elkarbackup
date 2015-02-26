@@ -44,7 +44,7 @@
     <div class="col-md-12">
 
 
-<h3>{% trans %}Jobs{% endtrans %}<a href="{{ path('sortJobs') }}"><span class="glyphicon glyphicon-cog pull-right" title="{% trans %}Sort jobs{% endtrans %}"></span></a></h3>
+<h3>{% trans %}Jobs{% endtrans %}<a href="{{ path('sortJobs') }}"><span class="glyphicon glyphicon-cog pull-right" title="{% trans %}Sort jobs{% endtrans %}"></span></a><a href="{{ path('editClient', {id: 'new'}) }}"><span class="glyphicon glyphicon-plus btn-add-client pull-right" title="{% trans %}Add client{% endtrans %}"></span></a></h3>
 
 {% for flashMessage in app.session.flashbag.get('clients') %}
     <div class="controls help-block">
