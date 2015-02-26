@@ -21,6 +21,9 @@
                            dojo.query('.runNow')
                             .on('click',
                            function (e){
+                             var msg;
+                             msg = dojo.getAttr(e.target, 'data-bnv-message');
+                             if (confirm(msg)) {
                                var args = {
                                  form: e.target.form,
                                  handleAs: 'text',
@@ -33,6 +36,10 @@
                                };
                                console.log(args);
                                dojo.xhrPost(args);
-                               });
+                             } else {
+                                 e.preventDefault();
+                                 return false;
+                             }
+                          });
           });
 });

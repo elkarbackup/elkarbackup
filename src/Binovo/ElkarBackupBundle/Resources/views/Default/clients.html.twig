@@ -72,7 +72,7 @@
         <td class="vert-align" >{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
         <td class="actions vert-align">
             <form data-bnv-message="{% trans with {'%name%': client.name } %}Really delete client %name%? This will remove all related jobs and backups.{% endtrans %}" class="delete-client" action="{{ path('deleteClient', {id: client.id}) }}" method="POST" style="display:inline">
-                <button class="btn btn-default btn-danger" type="submit" value=" {% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %}</button>
+                <button class="btn btn-default btn-danger" type="submit" value=" {% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span> </button>
             </form>
 	{% if client.isActive %}
                 <button type="button" class="btn btn-elkarbackup"
@@ -91,7 +91,7 @@
         <td class="vert-align">{% if job.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
         <td class="vert-align actions">
             <form data-bnv-message="{% trans with {'%name%': job.client.name ~ "/" ~ job.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" class="delete-job" action="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" method="POST" style="display:inline">
-		          <button class="btn btn-default btn-danger" type="submit" value=" {% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %}</button>
+		          <button class="btn btn-default btn-danger" type="submit" value=" {% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span> </button>
             </form>
             <form class="inline-block" action="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}">
           <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: [ {% for job in client.jobs %}{% if not job.hasBackups %}'btnRestore{{ client.id }}{{ job.id }}', {% endif %}{% endfor %} ]">
@@ -102,7 +102,7 @@
             </div>
           </form>
             <form class="runNowForm inline-block" action="{{ path('runJob', {idJob: job.id, idClient: client.id}) }}" method="POST">
-              <button class="btn btn-elkarbackup btn-pull-right runNow" type="button"><span class="glyphicon glyphicon-repeat"></span> {% trans %}Run now{% endtrans %}</button>
+              <button data-bnv-message="{% trans with {'%name%': job.name } %}Really run now job %name%? {% endtrans %}" class="btn btn-elkarbackup btn-pull-right runNow" type="button"><span class="glyphicon glyphicon-repeat"></span> {% trans %}Run now{% endtrans %}</button>
             </form>
         </td>
     </tr>
