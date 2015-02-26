@@ -1,4 +1,6 @@
 ## Upcoming release
+
+## 1.1.3 (2015/02/26)
 Features:
   - Improve redudant backup notification (#69)
   - Client edition: show quota in GB (#67)
