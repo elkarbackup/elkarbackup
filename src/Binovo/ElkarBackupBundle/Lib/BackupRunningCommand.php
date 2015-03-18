@@ -96,6 +96,8 @@ abstract class BackupRunningCommand extends LoggingCommand
 
     protected function runJob(Job $job, $runnableRetains)
     {
+        $warnings = False;
+
         $container = $this->getContainer();
 
         $backupDir  = $container->getParameter('backup_dir');
@@ -111,17 +113,17 @@ abstract class BackupRunningCommand extends LoggingCommand
         $include = $job->getInclude();
         if ($include) {
             $includes = explode("\n", $include);
-	    foreach($includes as &$theInclude) {
-		$theInclude = str_replace('\ ', ' ', trim($theInclude));
-	    }
+            foreach($includes as &$theInclude) {
+                $theInclude = str_replace('\ ', ' ', trim($theInclude));
+	          }
         }
         $excludes = array();
         $exclude = $job->getExclude();
         if ($exclude) {
             $excludes = explode("\n", $exclude);
-	    foreach($excludes as &$theExclude) {
-		$theExclude = str_replace('\ ', ' ', trim($theExclude));
-	    }
+	          foreach($excludes as &$theExclude) {
+		            $theExclude = str_replace('\ ', ' ', trim($theExclude));
+            }
         }
         $syncFirst = (int)$job->getPolicy()->getSyncFirst();
         $context = array('link' => $this->generateJobRoute($idJob, $idClient));
@@ -175,6 +177,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                         $this->info('Job "%jobid%" pre script ok.', array('%jobid%' => $job->getId()), $context);
                     } else {
                         $this->err('Job "%jobid%" pre script error.', array('%jobid%' => $job->getId()), $context);
+                        $warnings = True;
                     }
                 }
             }
@@ -210,6 +213,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                         $this->info('Job "%jobid%" post script ok.', array('%jobid%' => $job->getId()), $context);
                     } else {
                         $this->err('Job "%jobid%" post script error.', array('%jobid%' => $job->getId()), $context);
+                        $warnings = True;
                     }
                 }
             }
@@ -220,6 +224,11 @@ abstract class BackupRunningCommand extends LoggingCommand
                         $context);
         }
 
+        if (True === $ok) {
+          if (True === $warnings) {
+            $ok = 2;
+          }
+        }
         return $ok;
     }
 
@@ -340,12 +349,21 @@ abstract class BackupRunningCommand extends LoggingCommand
                                           '%quota%'     => $client->getQuota() / 1024),
                                     $context);
                     }
-                    if ($this->runJob($job, $retains)) {
+                    $jobstatus=$this->runJob($job, $retains);
+                    if (False === $jobstatus){
+                        // ERROR
+                        $this->err('Client "%clientid%", Job "%jobid%" error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
+                        $this->err('FAIL', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
+                    } elseif (True === $jobstatus){
+                        // OK
                         $this->info('Client "%clientid%", Job "%jobid%" ok.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                         $this->info('OK', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
                     } else {
-                        $this->err('Client "%clientid%", Job "%jobid%" error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
-                        $this->err('FAIL', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
+                        // WARNING
+                        if (2 == $jobstatus){
+                          $this->warn('Client "%clientid%", Job "%jobid%" ok with warnings.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
+                          $this->warn('WARNING', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
+                        }
                     }
                     $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
                     $this->info('Client "%clientid%", Job "%jobid%" du begin.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);

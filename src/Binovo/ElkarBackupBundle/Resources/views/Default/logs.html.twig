@@ -28,6 +28,7 @@
     {% for logRecord in pagination %}
     <tr class="
     {% if (logRecord.levelName) == 'ERROR'%}danger {% endif %}
+    {% if (logRecord.levelName) == 'WARNING'%}warning {% endif %}
 		{% if (logRecord.message) == 'OK'%}success {% endif %}
     logs" >
 
