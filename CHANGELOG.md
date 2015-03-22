@@ -1,4 +1,7 @@
 ## Upcoming release
+Features:
+  - Scripts: new var ELKARBACKUP_NAME available (#22)
+  - Show warning on job status when the script fails (#4)
 
 ## 1.1.3 (2015/02/26)
 Features:
