@@ -281,13 +281,14 @@ abstract class BackupRunningCommand extends LoggingCommand
             return false;
         }
         $commandOutput = array();
-        $command       = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" sudo "%s" 2>&1',
+        $command       = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_NAME="%s" sudo "%s" 2>&1',
                                  $level,
                                  'pre' == $type ? 'PRE' : 'POST',
                                  $entity->getUrl(),
                                  $entity->getId(),
                                  $entity->getSnapshotRoot(),
                                  $status,
+                                 $entity->getName(),
                                  $scriptFile);
         exec($command, $commandOutput, $status);
         if (0 != $status) {
