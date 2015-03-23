@@ -358,8 +358,11 @@ script_help: |
   <li>ELKARBACKUP_JOB_NAME: lanaren izena (hutsik bezeroan) </li>
   <li>ELKARBACKUP_OWNER_EMAIL: lanaren arduradunaren email helbidea (hutsik bezeroan) </li>
   <li>ELKARBACKUP_RECIPIENT_LIST: lanaren notifikazio email zerrenda (hutsik bezeroan) </li>
+  <li>ELKARBACKUP_CLIENT_TOTAL_SIZE: bezeroaren tamaina guztira (KB-etan) </li>
+  <li>ELKARBACKUP_JOB_TOTAL_SIZE: lanaren tamaina guztira (KB-etan) </li>
+  <li>ELKARBACKUP_JOB_RUN_SIZE: lan exekuzio honetan kopiatutako fitxategien tamaina (KB-etan) </li>
  </ul>
- Bezero baten pre-script batek 0 ez den balioa bueltatzen badu, aplikazioak bertan behera utziko ditu bezero horren lanak. Lan mailan exekutatzen diren pre-scripten emaitzak ez ditu ezertarako kontutan hartzen.
+ Bezero baten pre-script batek 0 ez den balioa bueltatzen badu, aplikazioak bertan behera utziko ditu bezero horren lanak. Lan mailako pre-script exekuzioak huts egitean, WARNING abisu bat sortuko da (backup lanak jarraituko du).
  <h4>Izena</h4>
  Scriptaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Script bakoitzak izen ezberdina izan behar du,eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
  <h4>Azalpena</h4>

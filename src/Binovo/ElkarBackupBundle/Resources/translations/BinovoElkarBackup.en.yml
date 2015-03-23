@@ -380,8 +380,11 @@ script_help: |
   <li>ELKARBACKUP_JOB_NAME: job name (empty in client) </li>
   <li>ELKARBACKUP_OWNER_EMAIL: job owner's email address (empty in client) </li>
   <li>ELKARBACKUP_RECIPIENT_LIST: job recipients email addresses (empty in client) </li>
+  <li>ELKARBACKUP_CLIENT_TOTAL_SIZE: current client disk usage (in KB) </li>
+  <li>ELKARBACKUP_JOB_TOTAL_SIZE: current job disk usage (in KB) </li>
+  <li>ELKARBACKUP_JOB_RUN_SIZE: data size backed up this run (in KB) </li>
  </ul>
- If any pre client script returns an exits status other than 0 the application aborts the process and prevents jobs of the client from running. On the other hand, the application ignores the exist status of the pre job scripts.
+ If any pre client script returns an exit status other than 0 the application aborts the process and prevents jobs of the client from running. On the other hand, the application will trigger a warning alert if the exit status of the pre job script is other than 0 (backup execution will not be aborted).
  <h4>Name</h4>
  This is the identifier for the script. It will show up in lists and combo boxes. The name must be unique among all scripts, the application will complain if you try to use a name which is already in use.
  <h4>Description</h4>

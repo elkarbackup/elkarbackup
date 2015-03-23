@@ -329,8 +329,11 @@ script_help: |
   <li>ELKARBACKUP_JOB_NAME: nombre de la tarea (vacio en cliente) </li>
   <li>ELKARBACKUP_OWNER_EMAIL: email del responsable de la tarea (vacio en cliente) </li>
   <li>ELKARBACKUP_RECIPIENT_LIST: direcciones email de notificaciones de la tarea (vacio en cliente) </li>
+  <li>ELKARBACKUP_CLIENT_TOTAL_SIZE: tamaño en disco total del cliente (en KB) </li>
+  <li>ELKARBACKUP_JOB_TOTAL_SIZE: tamaño en disco total de la tarea (en KB) </li>
+  <li>ELKARBACKUP_JOB_RUN_SIZE: tamaño de los datos copiados en esta tarea (en KB) </li>
  </ul>
- Si un pre-script de un cliente devuelve un valor distinto a 0, la aplicación abortará la ejecución de las tareas de ese cliente. Los resultados de los pre-scripts que se ejecutan a nivel de tarea no se tienen en cuenta.
+ Si un pre-script de un cliente devuelve un valor distinto a 0, la aplicación abortará la ejecución de las tareas de ese cliente. Cuando un pre-script a nivel de tarea devuelve un valor diferente a 0, la aplicación generará un aviso tipo WARNING (la copia continuará).
  <h4>Nombre</h4>
  Es el identificador del Script. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.
  <h4>Descripción</h4>
