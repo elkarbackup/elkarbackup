@@ -27,7 +27,7 @@
         {% endblock %}
 
     </head>
-    <body class="login bg{{ random(2) }}">
+    <body class="login {%if not disable_background %} bg{{ random(2) }}{% else %} nobg{% endif %}">
 
                   <div class="container">
 

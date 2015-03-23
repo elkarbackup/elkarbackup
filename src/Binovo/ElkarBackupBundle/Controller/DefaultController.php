@@ -213,11 +213,17 @@ class DefaultController extends Controller
         foreach ($locales as $locale) {
             $localesWithNames[] = array($locale, $t->trans("language_$locale", array(), 'BinovoElkarBackup'));
         }
+        if ($this->container->hasParameter('disable_background')) {
+          $disable_background = $this->container->getParameter('disable_background');
+        } else {
+          $disable_background = False;
+        }
 
         return $this->render('BinovoElkarBackupBundle:Default:login.html.twig', array(
                                  'last_username' => $session->get(SecurityContext::LAST_USERNAME),
                                  'error'         => $error,
-                                 'supportedLocales' => $localesWithNames));
+                                 'supportedLocales' => $localesWithNames,
+                                 'disable_background' => $disable_background));
     }
 
     /**

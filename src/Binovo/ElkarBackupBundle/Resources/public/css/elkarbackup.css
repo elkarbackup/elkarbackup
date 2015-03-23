@@ -50,6 +50,7 @@ body.login {
 .bg1 { background: url("../img/bg-login1.jpg") no-repeat fixed center; }
 .bg2 { background: url("../img/bg-login2.jpg") no-repeat fixed center; }
 .bg0 { background: url("../img/bg-login3.jpg") no-repeat fixed center; }
+.nobg { background-color: lightgray; }
 
 .language,
 .language a,
