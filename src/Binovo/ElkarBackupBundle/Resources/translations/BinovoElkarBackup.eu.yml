@@ -354,6 +354,10 @@ script_help: |
   <li>ELKARBACKUP_ID:     lanaren id kodea edo bezeroaren id kodea (zenbakia) </li>
   <li>ELKARBACKUP_PATH:   snapshot edo kopia erroaren path edo bide osoa </li>
   <li>ELKARBACKUP_STATUS: Post-script baten irteera egoera, bestelakorik ezean beti 0 izango da</li>
+  <li>ELKARBACKUP_CLIENT_NAME:  bezeroaren izena </li>
+  <li>ELKARBACKUP_JOB_NAME: lanaren izena (hutsik bezeroan) </li>
+  <li>ELKARBACKUP_OWNER_EMAIL: lanaren arduradunaren email helbidea (hutsik bezeroan) </li>
+  <li>ELKARBACKUP_RECIPIENT_LIST: lanaren notifikazio email zerrenda (hutsik bezeroan) </li>
  </ul>
  Bezero baten pre-script batek 0 ez den balioa bueltatzen badu, aplikazioak bertan behera utziko ditu bezero horren lanak. Lan mailan exekutatzen diren pre-scripten emaitzak ez ditu ezertarako kontutan hartzen.
  <h4>Izena</h4>

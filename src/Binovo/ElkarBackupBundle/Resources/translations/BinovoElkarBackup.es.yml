@@ -325,6 +325,10 @@ script_help: |
   <li>ELKARBACKUP_ID:     el código id de la tarea o del cliente (número) </li>
   <li>ELKARBACKUP_PATH:   el path o ruta completa de la copia</li>
   <li>ELKARBACKUP_STATUS: Estado de salida de un Post-script, generalmente será 0</li>
+  <li>ELKARBACKUP_CLIENT_NAME:  nombre del cliente </li>
+  <li>ELKARBACKUP_JOB_NAME: nombre de la tarea (vacio en cliente) </li>
+  <li>ELKARBACKUP_OWNER_EMAIL: email del responsable de la tarea (vacio en cliente) </li>
+  <li>ELKARBACKUP_RECIPIENT_LIST: direcciones email de notificaciones de la tarea (vacio en cliente) </li>
  </ul>
  Si un pre-script de un cliente devuelve un valor distinto a 0, la aplicación abortará la ejecución de las tareas de ese cliente. Los resultados de los pre-scripts que se ejecutan a nivel de tarea no se tienen en cuenta.
  <h4>Nombre</h4>

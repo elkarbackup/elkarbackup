@@ -260,6 +260,8 @@ abstract class BackupRunningCommand extends LoggingCommand
             $errScriptMissing = 'Client "%entityid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.';
             $errScriptOk      = 'Client "%entityid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%';
             $level            = 'CLIENT';
+            $job_name         = '';
+            $owner_email      = '';
         } else {
             $entity = $job;
             $context          = array('link' => $this->generateJobRoute($job->getId(), $client->getId()));
@@ -267,6 +269,9 @@ abstract class BackupRunningCommand extends LoggingCommand
             $errScriptMissing = 'Job "%entityid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.';
             $errScriptOk      = 'Job "%entityid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%';
             $level            = 'JOB';
+            $job_name         = $job->getName();
+            $owner_email      = $entity->getOwner()->getEmail();
+            $recipient_list   = $job->getNotificationsEmail();
         }
         $scriptName = $script->getName();
         $scriptFile = $script->getScriptPath();
@@ -281,14 +286,17 @@ abstract class BackupRunningCommand extends LoggingCommand
             return false;
         }
         $commandOutput = array();
-        $command       = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_NAME="%s" sudo "%s" 2>&1',
+        $command       = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_JOB_NAME="%s" ELKARBACKUP_OWNER_EMAIL="%s" ELKARBACKUP_RECIPIENT_LIST="%s" sudo "%s" 2>&1',
                                  $level,
                                  'pre' == $type ? 'PRE' : 'POST',
                                  $entity->getUrl(),
                                  $entity->getId(),
                                  $entity->getSnapshotRoot(),
                                  $status,
-                                 $entity->getName(),
+                                 $client->getName(),
+                                 $job_name,
+                                 $owner_email,
+                                 $recipient_list,
                                  $scriptFile);
         exec($command, $commandOutput, $status);
         if (0 != $status) {
