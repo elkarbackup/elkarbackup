@@ -72,6 +72,12 @@ then
     echo                                     >> /etc/elkarbackup/parameters.yml
     echo "    url_prefix:" >> /etc/elkarbackup/parameters.yml
 fi
+if test "x`grep disable_background /etc/elkarbackup/parameters.yml`" = x
+then
+    echo "    Add disable_background"
+    echo                                 >> /etc/elkarbackup/parameters.yml
+    echo "    disable_background: false" >> /etc/elkarbackup/parameters.yml
+fi
 echo Update DB
 php /usr/share/elkarbackup/app/console doctrine:migrations:migrate --no-interaction >/dev/null || true
 echo Create root user
