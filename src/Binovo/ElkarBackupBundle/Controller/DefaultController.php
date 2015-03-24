@@ -1138,6 +1138,7 @@ EOF;
                         'warning_load_level'        => array('type' => 'percent' , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Quota warning level', array(), 'BinovoElkarBackup')),
                         'pagination_lines_per_page' => array('type' => 'integer' , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Records per page'   , array(), 'BinovoElkarBackup')),
                         'url_prefix'                => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Url prefix'         , array(), 'BinovoElkarBackup')),
+                        'disable_background'        => array('type' => 'checkbox', 'required' => false, 'label' => $t-> trans('Disable background', array(), 'BinovoElkarBackup')),
             );
         $defaultData = array();
         foreach ($params as $paramName => $formField) {
@@ -1160,6 +1161,13 @@ EOF;
                 if ('password' == $params[$paramName]['type']) {
                     if (!empty($paramValue)) {
                         $ok = $this->setParameter($paramName, $paramValue);
+                    }
+                } elseif ('checkbox' == $params[$paramName]['type']) {
+                    // Workaround to store value in boolean format
+                    if (!empty($paramValue)) {
+                        $ok = $this->setParameter($paramName, 'true');
+                    } else {
+                        $ok = $this->setParameter($paramName, 'false');
                     }
                 } else {
                     if ($paramValue != $this->container->getParameter($paramName)) {
