@@ -1,5 +1,6 @@
 ## Upcoming release
 Features:
+  - Parameters: added disable_background (#79)
   - Scripts: new environment variables available (#22 #30)
   - Show warning on job status when the script fails (#4)
 
