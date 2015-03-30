@@ -243,9 +243,7 @@ class DefaultController extends Controller
                 throw $this->createNotFoundException($this->trans('Unable to find Client entity:') . $id);
             }
         }
-        foreach ($client->getJobs() as $job) {
-            $job->setLogEntry($this->getLastLogForLink(sprintf('%%/client/%d/job/%d', $client->getId(), $job->getId())));
-        }
+
         $form = $this->createForm(new ClientType(), $client, array('translator' => $this->get('translator')));
         $this->info('View client %clientid%',
                     array('%clientid%' => $id),
@@ -271,19 +269,11 @@ class DefaultController extends Controller
                 ->getRepository('BinovoElkarBackupBundle:Client');
             $client = $repository->find($id);
         }
-        $jobsToDelete = array(); // we store here the jobs that are missing in the form
-        foreach ($client->getJobs() as $job) {
-            $jobsToDelete[$job->getId()] = $job;
-        }
+
         $form = $this->createForm(new ClientType(), $client, array('translator' => $t));
         $form->bind($request);
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            foreach ($client->getJobs() as $job) {
-                if (isset($jobsToDelete[$job->getid()])) {
-                    unset($jobsToDelete[$job->getid()]);
-                }
-            }
             try {
                 foreach ($jobsToDelete as $idJob => $job) {
                     $client->getJobs()->removeElement($job);
