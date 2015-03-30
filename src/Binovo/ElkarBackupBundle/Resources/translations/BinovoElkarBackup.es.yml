@@ -332,6 +332,10 @@ script_help: |
   <li>ELKARBACKUP_CLIENT_TOTAL_SIZE: tamaño en disco total del cliente (en KB) </li>
   <li>ELKARBACKUP_JOB_TOTAL_SIZE: tamaño en disco total de la tarea (en KB) </li>
   <li>ELKARBACKUP_JOB_RUN_SIZE: tamaño de los datos copiados en esta tarea (en KB) </li>
+  <li>ELKARBACKUP_CLIENT_STARTTIME: timestamp de inicio de backup del cliente (solo disponible en post-client)</li>
+  <li>ELKARBACKUP_CLIENT_ENDTIME: timestamp de fin de backup del cliente (solo disponible en post-client)</li>
+  <li>ELKARBACKUP_JOB_STARTTIME: timestamp de inicio de backup de la tarea (solo disponible en post-job)</li>
+  <li>ELKARBACKUP_JOB_ENDTIME: timestamp de fin de backup de la tarea (solo disponible en post-job)</li>
  </ul>
  Si un pre-script de un cliente devuelve un valor distinto a 0, la aplicación abortará la ejecución de las tareas de ese cliente. Cuando un pre-script a nivel de tarea devuelve un valor diferente a 0, la aplicación generará un aviso tipo WARNING (la copia continuará).
  <h4>Nombre</h4>

@@ -96,6 +96,7 @@ abstract class BackupRunningCommand extends LoggingCommand
 
     protected function runJob(Job $job, $runnableRetains)
     {
+        $stats = [];
         $warnings = False;
 
         $container = $this->getContainer();
@@ -173,7 +174,7 @@ abstract class BackupRunningCommand extends LoggingCommand
             $mustRunScripts = !$job->getPolicy()->isRotation($retain);
             if ($mustRunScripts) {
                 foreach ($job->getPreScripts() as $script) {
-                    if ($this->runScript('pre', 0, $job->getClient(), $job, $script, null)) {
+                    if ($this->runScript('pre', 0, $job->getClient(), $job, $script, $stats)) {
                         $this->info('Job "%jobid%" pre script ok.', array('%jobid%' => $job->getId()), $context);
                     } else {
                         $this->err('Job "%jobid%" pre script error.', array('%jobid%' => $job->getId()), $context);
@@ -181,6 +182,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                     }
                 }
             }
+            $job_starttime = time();
             // run rsnapshot. sync first if needed
             $commands = array();
             if ($job->getPolicy()->mustSync($retain)) {
@@ -206,6 +208,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                                 $context);
                 }
             }
+            $job_endtime = time();
             // get disk usage
             $du_before = $job->getDiskUsage();
             $this->info('Client "%clientid%", Job "%jobid%" du begin.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
@@ -217,7 +220,9 @@ abstract class BackupRunningCommand extends LoggingCommand
             // post script execution if needed
             if ($mustRunScripts) {
                 foreach ($job->getPostScripts() as $script) {
-                    $stats['ELKARBACKUP_JOB_RUN_SIZE'] = $job_run_size;
+                    $stats['ELKARBACKUP_JOB_RUN_SIZE']      = $job_run_size;
+                    $stats['ELKARBACKUP_JOB_STARTTIME']     = $job_starttime;
+                    $stats['ELKARBACKUP_JOB_ENDTIME']       = $job_endtime;
                     if ($this->runScript('post', $status, $job->getClient(), $job, $script, $stats)) {
                         $this->info('Job "%jobid%" post script ok.', array('%jobid%' => $job->getId()), $context);
                     } else {
@@ -277,6 +282,15 @@ abstract class BackupRunningCommand extends LoggingCommand
             $recipient_list   = '';
             $job_total_size   = 0;
             $job_run_size     = 0;
+            $job_starttime    = 0;
+            $job_endtime      = 0;
+            if ($type == 'post') {
+              $client_endtime   = $stats['ELKARBACKUP_CLIENT_ENDTIME'];
+              $client_starttime = $stats['ELKARBACKUP_CLIENT_STARTTIME'];
+            } else {
+              $client_endtime   = 0;
+              $client_starttime = 0;
+            }
         } else {
             $entity = $job;
             $context          = array('link' => $this->generateJobRoute($job->getId(), $client->getId()));
@@ -288,10 +302,16 @@ abstract class BackupRunningCommand extends LoggingCommand
             $owner_email      = $job->getOwner()->getEmail();
             $recipient_list   = $job->getNotificationsEmail();
             $job_total_size   = $job->getDiskUsage();
+            $client_starttime = 0;
+            $client_endtime   = 0;
             if ($type == 'post') {
               $job_run_size     = $stats['ELKARBACKUP_JOB_RUN_SIZE'];
+              $job_starttime    = $stats['ELKARBACKUP_JOB_STARTTIME'];
+              $job_endtime      = $stats['ELKARBACKUP_JOB_ENDTIME'];
             } else {
               $job_run_size     = 0;
+              $job_starttime    = 0;
+              $job_endtime      = 0;
             }
         }
         $scriptName = $script->getName();
@@ -307,7 +327,7 @@ abstract class BackupRunningCommand extends LoggingCommand
             return false;
         }
         $commandOutput = array();
-        $command       = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_JOB_NAME="%s" ELKARBACKUP_OWNER_EMAIL="%s" ELKARBACKUP_RECIPIENT_LIST="%s" ELKARBACKUP_CLIENT_TOTAL_SIZE="%s" ELKARBACKUP_JOB_TOTAL_SIZE="%s" ELKARBACKUP_JOB_RUN_SIZE="%s" sudo "%s" 2>&1',
+        $command       = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_JOB_NAME="%s" ELKARBACKUP_OWNER_EMAIL="%s" ELKARBACKUP_RECIPIENT_LIST="%s" ELKARBACKUP_CLIENT_TOTAL_SIZE="%s" ELKARBACKUP_JOB_TOTAL_SIZE="%s" ELKARBACKUP_JOB_RUN_SIZE="%s" ELKARBACKUP_CLIENT_STARTTIME="%s" ELKARBACKUP_CLIENT_ENDTIME="%s" ELKARBACKUP_JOB_STARTTIME="%s" ELKARBACKUP_JOB_ENDTIME="%s" sudo "%s" 2>&1',
                                  $level,
                                  'pre' == $type ? 'PRE' : 'POST',
                                  $entity->getUrl(),
@@ -321,6 +341,10 @@ abstract class BackupRunningCommand extends LoggingCommand
                                  $client->getDiskUsage(),
                                  $job_total_size,
                                  $job_run_size,
+                                 $client_starttime,
+                                 $client_endtime,
+                                 $job_starttime,
+                                 $job_endtime,
                                  $scriptFile);
         exec($command, $commandOutput, $status);
         if (0 != $status) {
@@ -365,6 +389,7 @@ abstract class BackupRunningCommand extends LoggingCommand
         $lastClient = null;
         $state = self::NEW_CLIENT;
         $clientMessages = array();
+        $stats['ELKARBACKUP_CLIENT_STARTTIME'] = time();
         while ($i < count($jobs)) { // the last clients post script runs after the loop
             $job = $jobs[$i];
             switch ($state) {
@@ -419,7 +444,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                     $context = array('link' => $this->generateClientRoute($idClient));
                     $allScriptsOk = true;
                     foreach ($scripts as $script) {
-                        if ($this->runScript('post', 0, $lastClient, null, $script)) {
+                        if ($this->runScript('post', 0, $lastClient, null, $script, $stats)) {
                             $this->info('Client "%clientid%" post script ok.', array('%clientid%' => $idClient), $context);
                         } else {
                             $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
@@ -450,7 +475,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                 } else {
                     $state = self::RUN_JOB;
                     foreach ($scripts as $script) {
-                        if ($this->runScript('pre', 0, $client, null, $script, null)) {
+                        if ($this->runScript('pre', 0, $client, null, $script, $stats)) {
                             $this->info('Client "%clientid%" pre script ok.', array('%clientid%' => $idClient), $context);
                         } else {
                             $this->err('Client "%clientid%" pre script failed. Aborting backup.', array('%clientid%' => $idClient), $context);
@@ -500,12 +525,13 @@ abstract class BackupRunningCommand extends LoggingCommand
             $manager->flush();
         }
         if ($lastClient) {
+            $stats['ELKARBACKUP_CLIENT_ENDTIME'] = time();
             $idClient = $lastClient->getId();
             $scripts  = $lastClient->getPostScripts();
             $context  = array('link' => $this->generateClientRoute($idClient));
             $allScriptsOk = true;
             foreach ($scripts as $script) {
-                if ($this->runScript('post', 0, $lastClient, null, $script, null)) {
+                if ($this->runScript('post', 0, $lastClient, null, $script, $stats)) {
                     $this->info('Client "%clientid%" post script ok.', array('%clientid%' => $idClient), $context);
                 } else {
                     $this->err('Client "%clientid%" post script error.', array('%clientid%' => $idClient), $context);
