@@ -49,8 +49,21 @@
 		    </td>
 		    <td>
 		        {% if file.0 != ".." and file.0 != "." %}
-			<a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download'}) }}">
-			<b>{% if file.2 %}{% trans %}Download as .tgz{% endtrans %}{% else %}Download{% endif %}</b></a> 	{% endif %}
+
+              {% if file.2 %}
+                <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download'}) }}"><b>
+                  {% trans %}Download as .tgz{% endtrans %}
+                </b></a>
+                &nbsp;|&nbsp;
+                <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'downloadzip'}) }}"><b>
+                  {% trans %}Download as .zip{% endtrans %}
+                </b></a>
+              {% else %}
+                <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download'}) }}"><b>
+                  {% trans %}Download{% endtrans %}
+                </b></a>
+              {% endif %}
+            {% endif %}
 		    </td>
 		</tr>
 

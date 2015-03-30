@@ -531,7 +531,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/client/{idClient}/job/{idJob}/backup/{action}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "action" = "view|download"}, defaults={"path" = "/"}, name="showJobBackup")
+     * @Route("/client/{idClient}/job/{idJob}/backup/{action}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "action" = "view|download|downloadzip"}, defaults={"path" = "/"}, name="showJobBackup")
      * @Method("GET")
      */
     public function showJobBackupAction(Request $request, $idClient, $idJob, $action, $path)
@@ -558,6 +558,25 @@ class DefaultController extends Controller
                                  'Content-Disposition' => sprintf('attachment; filename="%s.tar.gz"', basename($realPath)));
                 $f = function() use ($realPath){
                     $command = sprintf('cd "%s"; tar zc "%s"', dirname($realPath), basename($realPath));
+                    passthru($command);
+                };
+                $this->info('Download backup directory %clientid%, %jobid% %path%',
+                            array('%clientid%' => $idClient,
+                                  '%jobid%'    => $idJob,
+                                  '%path%'     => $path),
+                            array('link' => $this->generateUrl('showJobBackup',
+                                                               array('action'   => $action,
+                                                                     'idClient' => $idClient,
+                                                                     'idJob'    => $idJob,
+                                                                     'path'     => $path))));
+                $this->getDoctrine()->getManager()->flush();
+
+                return new StreamedResponse($f, 200, $headers);
+            } elseif ('downloadzip' == $action) {
+                $headers = array('Content-Type'        => 'application/zip',
+                                 'Content-Disposition' => sprintf('attachment; filename="%s.zip"', basename($realPath)));
+                $f = function() use ($realPath){
+                    $command = sprintf('cd "%s"; zip -r - "%s"', dirname($realPath), basename($realPath));
                     passthru($command);
                 };
                 $this->info('Download backup directory %clientid%, %jobid% %path%',

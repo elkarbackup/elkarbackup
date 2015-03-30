@@ -1,5 +1,6 @@
 ## Upcoming release
 Features:
+  - Download directory in ZIP format (#74)
   - Edit client: remove multiple job edition (#37)
   - Parameters: added disable_background (#79)
   - Scripts: new environment variables available (#22 #30 #80)
