@@ -592,6 +592,10 @@ class DefaultController extends Controller
 
                 return new StreamedResponse($f, 200, $headers);
             } else {
+                // Check if Zip is in the user path
+                system('which zip', $cmdretval);
+                $isZipInstalled = !$cmdretval;
+
                 $content = scandir($realPath);
                 if (false === $content) {
                     $content = array();
@@ -616,7 +620,8 @@ class DefaultController extends Controller
                                      array('content'  => $content,
                                            'job'      => $job,
                                            'path'     => $path,
-                                           'realPath' => $realPath));
+                                           'realPath' => $realPath,
+                                           'isZipInstalled' => $isZipInstalled));
             }
         } else {
             $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension

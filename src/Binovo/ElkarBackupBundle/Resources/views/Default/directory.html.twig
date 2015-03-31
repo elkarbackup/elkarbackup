@@ -54,10 +54,12 @@
                 <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download'}) }}"><b>
                   {% trans %}Download as .tgz{% endtrans %}
                 </b></a>
+                {% if isZipInstalled %}
                 &nbsp;|&nbsp;
                 <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'downloadzip'}) }}"><b>
                   {% trans %}Download as .zip{% endtrans %}
                 </b></a>
+                {% endif %}
               {% else %}
                 <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download'}) }}"><b>
                   {% trans %}Download{% endtrans %}
