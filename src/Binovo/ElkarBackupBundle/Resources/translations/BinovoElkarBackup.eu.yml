@@ -168,6 +168,8 @@
 'Quota': 'Kuota (GB)'
 'Quota warning level': 'Kuota abisuen maila'
 'Records per page': 'Orrialdeko erregistro kopurua'
+'Removing the policy %name% failed. Check that it is not in use.': 'Ezin izan da %name% politika ezabatu. Konprobatu ez dagoela erabiltzen.'
+'Removing the script %name% failed. Check that it is not in use.': 'Ezin izan da %name% scripta ezabatu. Konprobatu ez dagoela erabiltzen.'
 'Repository backups script': 'Biltegiaren kopia egiteko scripta'
 'Repository backup script': 'Biltegiaren kopia egiteko scripta'
 'Run now': 'Exekutatu orain'

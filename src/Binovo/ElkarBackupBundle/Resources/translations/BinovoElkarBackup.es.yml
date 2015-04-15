@@ -150,6 +150,8 @@
 'Policy': 'Política'
 'Post script': 'Post-script'
 'Pre script': 'Pre-script'
+'Removing the policy %name% failed. Check that it is not in use.': 'No se ha podido eliminar la política %name%. Compruebe que no esté en uso.'
+'Removing the script %name% failed. Check that it is not in use.': 'No se ha podido eliminar el script %name%. Compruebe que no esté en uso.'
 'Running %command%':
 'Saturday': 'Sábado'
 'Save': 'Guardar'

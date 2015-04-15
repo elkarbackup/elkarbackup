@@ -706,7 +706,7 @@ class DefaultController extends Controller
             $manager->flush();
         } catch (PDOException $e) {
             $this->get('session')->getFlashBag()->add('showPolicies',
-                                                      $t->trans('Removing the policy %name% failed. Check that it is not in use.', array('%name' => $policy->getName()), 'BinovoElkarBackup'));
+                                                      $t->trans('Removing the policy %name% failed. Check that it is not in use.', array('%name%' => $policy->getName()), 'BinovoElkarBackup'));
         }
 
         return $this->redirect($this->generateUrl('showPolicies'));
