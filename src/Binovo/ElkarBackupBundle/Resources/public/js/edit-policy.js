@@ -30,7 +30,7 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
             if (!isNaN(h) && h >= 0 && h <= 23 && !isNaN(m) && m >= 0 && m <= 59) {
                 date.setHours(h);
                 date.setMinutes(m);
-            }   
+            }
         }
         return date;
     };
@@ -55,10 +55,19 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
                         dojo.setAttr(element, 'disabled', !checkbox.checked);
                     }
                 });
+            dojo.query('button', panel).forEach(
+                function(element) {
+                  var widget = registry.getEnclosingWidget(element);
+                  if (widget != panelWidget) {
+                      widget.set('disabled', !checkbox.checked);
+                  } else {
+                      dojo.setAttr(element, 'disabled', !checkbox.checked);
+                  }
+                });
             if (!checkbox.checked) {
-                registry.byNode(dojo.query('[id*=Count]', panel)[0]).set('value', 0);                
+                registry.byNode(dojo.query('[id*=Count]', panel)[0]).set('value', 0);
             }
-            dojo.setAttr(checkbox, 'disabled', false);            
+            dojo.setAttr(checkbox, 'disabled', false);
         }
         dojo.query('.activation-controller')
             .on('change',
@@ -90,7 +99,7 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
     };
     initDailyDays = function() {
         dojo.query('input[id^=daily][type=checkbox]').forEach(function(input){input.checked = false;});
-        dojo.forEach(dojo.byId('Policy_dailyDaysOfWeek').value.split('|'), 
+        dojo.forEach(dojo.byId('Policy_dailyDaysOfWeek').value.split('|'),
                      function(dayIdx) {
                          dayIdx = Number(dayIdx);
                          if (dayIdx >= 1 && dayIdx <= 7) {
@@ -101,7 +110,7 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
     initHourlyDays = function() {
         var dailyHoursInput;
         dailyHoursInput = dojo.byId('Policy_dailyHours');
-        dojo.forEach(dojo.byId('Policy_hourlyDaysOfWeek').value.split('|'), 
+        dojo.forEach(dojo.byId('Policy_hourlyDaysOfWeek').value.split('|'),
                      function(dayIdx) {
                          dayIdx = Number(dayIdx);
                          if (dayIdx >= 1 && dayIdx <= 7) {
@@ -132,13 +141,13 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
         if (isNaN(value)) {
             value = 0;
         }
-        dijit.byId('monthlyCount').set('value', value);        
+        dijit.byId('monthlyCount').set('value', value);
     };
     initMonthlyDayOfMonth = function() {
         var value;
         value = Number(dojo.byId('Policy_monthlyDaysOfMonth').value);
         if (value >= 1 && value <= 31) {
-            dijit.byId('dayOfMonth').set('value', value);            
+            dijit.byId('dayOfMonth').set('value', value);
         }
     };
     initMonthlyHour = function() {
@@ -189,7 +198,7 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
         if (isNaN(value)) {
             value = 0;
         }
-        dijit.byId('yearlyCount').set('value', value);        
+        dijit.byId('yearlyCount').set('value', value);
     };
     initYearlyDay = function() {
         var year, month, day;
@@ -224,11 +233,12 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
                                   }});
         p = domConstruct.place("<p></p>", "hourlyHoursAdd", "before");
         domConstruct.place(timeWidget.domNode, p, 'last');
-        removeButton = domConstruct.place('<i class="icon-remove" style="margin-left:1em"></i>', p, 'last');
+        //removeButton = domConstruct.place('<i class="glyphicon-remove" style="margin-left:1em"></i>', p, 'last');
+        removeButton = domConstruct.place(' <button type="button" class="btn btn-default btn-sm"><span class="glyphicon-minus"></button>', p, 'last');
         dojo.connect(removeButton, "onclick",(function(p){
                                                   return function() {
                                                       if (dojo.getAttr(dojo.byId('duringTheDay-activation'), 'checked')) {
-                                                          domConstruct.destroy(p);                                                          
+                                                          domConstruct.destroy(p);
                                                       }
                                                   };})(p));
         return timeWidget;

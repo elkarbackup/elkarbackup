@@ -65,7 +65,9 @@ font-size: 14px;
                                 <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId:'hourlyCount'">
                                     {% trans %}The number of copies to make during the day{% endtrans %}
                                 </div>
-                                <i class="icon-plus" id="hourlyHoursAdd"></i>
+                                <button type="button" class="btn btn-default btn-sm" id="hourlyHoursAdd">
+                                  <span class="glyphicon-plus"> {% trans %}Add{% endtrans %}
+                                </button>
                             </fieldset>
                             <fieldset>
                                 <legend class="panel-legend">{% trans %}Days of the week{% endtrans %}</legend>
