@@ -6,7 +6,9 @@ require(['dojo', 'dojo/dom-construct', 'dijit/form/TimeTextBox', 'dojo/store/Mem
 function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentPane, registry, domClass, win, ready){
     var dateToHour, englishWeekDayToIdx, getHourlyHours, hourToDate, idxToEnglishWeekDay, initActivationCheckboxes, initDailyDays, initDailyCount, initDailyHour, initHourlyDays, initHourlyHours, initMonthlyCount, initMonthlyDayOfMonth, initMonthlyHour, initSaveButton, initWeeklyCount, initWeeklyDayOfWeek, initWeeklyHour, initYearlyCount, initYearlyDay, initYearlyHour, newTimeWidget, onSubmitClick;
     dateToHour = function (d) {
-        return string.pad(d.getHours(), 2, '0') + ":" + string.pad(d.getMinutes(), 2, '0');
+        if (d) {
+          return string.pad(d.getHours(), 2, '0') + ":" + string.pad(d.getMinutes(), 2, '0');
+        }
     };
     englishWeekDayToIdx = function(weekday) {
         var dayToIndex = {monday:1, tuesday:2, wednesday:3, thursday:4, friday:5, saturday:6, sunday:7};
@@ -233,7 +235,6 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
                                   }});
         p = domConstruct.place("<p></p>", "hourlyHoursAdd", "before");
         domConstruct.place(timeWidget.domNode, p, 'last');
-        //removeButton = domConstruct.place('<i class="glyphicon-remove" style="margin-left:1em"></i>', p, 'last');
         removeButton = domConstruct.place(' <button type="button" class="btn btn-default btn-sm"><span class="glyphicon-minus"></button>', p, 'last');
         dojo.connect(removeButton, "onclick",(function(p){
                                                   return function() {
@@ -387,7 +388,7 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
         yearlyCountInput.value       = dijit.byId('yearlyCount').value;
         yearlyDaysOfMonthInput.value = isNaN(dijit.byId('dayOfYear').value.getDate()) ? '' : dijit.byId('dayOfYear').value.getDate();
         yearlyDaysOfWeekInput.value  = '';
-        yearlyHoursInput.value       = dateToHour(dijit.byId('yearlyHour').value);
+        //yearlyHoursInput.value       = dateToHour(dijit.byId('yearlyHour').value);
         yearlyMonthsInput.value      = isNaN(dijit.byId('dayOfYear').value.getMonth()) ? '' : (dijit.byId('dayOfYear').value.getMonth() + 1);
 
         return true;

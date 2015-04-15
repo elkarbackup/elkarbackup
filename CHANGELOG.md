@@ -7,6 +7,7 @@ Features:
   - Show warning on job status when the script fails (#4)
 
 Bugfixes:
+  - Fixed policy edition issue in the yearly tab (#84)
   - Fixed policy edition issue in the hourly tab (#83)
   - Fixed error removing a policy. Improve alert error and translations. (#85)
 
