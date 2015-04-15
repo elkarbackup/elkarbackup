@@ -693,6 +693,7 @@ class DefaultController extends Controller
      */
     public function deletePolicyAction(Request $request, $id)
     {
+        $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Policy');
         $manager = $db->getManager();
