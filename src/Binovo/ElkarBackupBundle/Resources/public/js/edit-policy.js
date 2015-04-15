@@ -262,7 +262,8 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
             if (0 == countWidget.value && activeInput.checked) {
                 valid = false;
                 domClass.remove(messages[i], 'hide');
-                win.scrollIntoView(messages[i]);
+                //win.scrollIntoView(messages[i]);
+                dojo.byId('contenido').scrollIntoView();
             }
         }
         // do not allow the first active block to have count = 1 and then request rotations
@@ -276,7 +277,8 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
                 if (dojo.byId(activations[i]).checked) {
                     valid = false;
                     domClass.remove(rotationMsg, 'hide');
-                    win.scrollIntoView(rotationMsg);
+                    //win.scrollIntoView(rotationMsg);
+                    dojo.byId('contenido').scrollIntoView();
                     break;
                 }
             }
