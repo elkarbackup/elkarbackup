@@ -6,6 +6,9 @@ Features:
   - Scripts: new environment variables available (#22 #30 #80)
   - Show warning on job status when the script fails (#4)
 
+Bugfixes:
+  - Fixed error removing a policy. Improve alert error and translations. (#85)
+
 ## 1.1.3 (2015/02/26)
 Features:
   - Improve redudant backup notification (#69)
