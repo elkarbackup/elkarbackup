@@ -5,6 +5,7 @@ Features:
   - Parameters: added disable_background (#79)
   - Scripts: new environment variables available (#22 #30 #80)
   - Show warning on job status when the script fails (#4)
+  - Policy edition: improve error messages (#86)
 
 Bugfixes:
   - Fixed policy edition issue in the yearly tab (#84)
