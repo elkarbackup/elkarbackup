@@ -235,7 +235,7 @@ function(dojo, domConstruct, TimeTextBox, Memory, string, TabContainer, ContentP
                                   }});
         p = domConstruct.place("<p></p>", "hourlyHoursAdd", "before");
         domConstruct.place(timeWidget.domNode, p, 'last');
-        removeButton = domConstruct.place(' <button type="button" class="btn btn-default btn-sm"><span class="glyphicon-minus"></button>', p, 'last');
+        removeButton = domConstruct.place('<button type="button" class="btn btn-default btn-sm" style="margin-left:0.5em"><span class="glyphicon-minus"></button>', p, 'last');
         dojo.connect(removeButton, "onclick",(function(p){
                                                   return function() {
                                                       if (dojo.getAttr(dojo.byId('duringTheDay-activation'), 'checked')) {
