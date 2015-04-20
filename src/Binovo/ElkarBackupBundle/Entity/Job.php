@@ -242,8 +242,11 @@ class Job
 
             return $this->path;
         } else {
-
-            return sprintf("%s:%s", $this->client->getUrl(), $this->path);
+          // return url without ssh_args
+          if (strpos($clientUrl, 'ssh_args') !== false) {
+            $clientUrl = explode(" ", $clientUrl)[0];
+          }
+          return sprintf("%s:%s", $clientUrl, $this->path);
         }
     }
 
@@ -631,5 +634,19 @@ class Job
     public function getPostScripts()
     {
         return $this->postScripts;
+    }
+
+    /**
+     * Get sshArgs
+     *
+     * @return string
+     */
+    public function getSshArgs()
+    {
+        $clientUrl = $this->client->getUrl();
+        if (strpos($clientUrl, 'ssh_args') !== false) {
+          $args = explode("ssh_args=", $clientUrl)[1];
+          return $args;
+        }
     }
 }

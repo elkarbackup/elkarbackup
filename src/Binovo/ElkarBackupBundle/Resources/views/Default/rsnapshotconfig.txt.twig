@@ -143,7 +143,7 @@ rsync_long_args	--delete --numeric-ids --relative --delete-excluded --chmod=Fug=
 
 # ssh has no args passed by default, but you can specify some here.
 #
-ssh_args	-o BatchMode=yes -o StrictHostKeyChecking=no
+ssh_args	-o BatchMode=yes -o StrictHostKeyChecking=no {{sshArgs}}
 
 # Default arguments for the "du" program (for disk space reporting).
 # The GNU version of "du" is preferred. See the man page for more details.
@@ -212,4 +212,3 @@ sync_first	0
 
 # LOCALHOST
 backup	{{url}}	.
-

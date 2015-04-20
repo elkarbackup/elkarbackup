@@ -412,6 +412,7 @@ class DefaultController extends Controller
             throw $this->createNotFoundException($t->trans('Unable to find Job entity: ', array(), 'BinovoElkarBackup') . $idClient . " " . $idJob);
         }
         $tmpDir = $this->container->getParameter('tmp_dir');
+        $sshArgs = $job->getSshArgs();
         $url = $job->getUrl();
         $idJob = $job->getId();
         $policy = $job->getPolicy();
@@ -471,7 +472,8 @@ class DefaultController extends Controller
                                    'snapshotRoot'        => $job->getSnapshotRoot(),
                                    'syncFirst'           => $syncFirst,
                                    'url'                 => $url,
-                                   'useLocalPermissions' => $job->getUseLocalPermissions()),
+                                   'useLocalPermissions' => $job->getUseLocalPermissions(),
+                                   'sshArgs'             => $sshArgs),
                              $response);
     }
 

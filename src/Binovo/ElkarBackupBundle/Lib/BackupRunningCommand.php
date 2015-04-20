@@ -142,7 +142,8 @@ abstract class BackupRunningCommand extends LoggingCommand
                                          'snapshotRoot'        => $job->getSnapshotRoot(),
                                          'syncFirst'           => $syncFirst,
                                          'url'                 => $url,
-                                         'useLocalPermissions' => $job->getUseLocalPermissions()));
+                                         'useLocalPermissions' => $job->getUseLocalPermissions(),
+                                         'sshArgs'             => $job->getSshArgs()));
         $confFileName = sprintf("%s/rsnapshot.%s_%s.cfg", $tmpDir, $idClient, $idJob);
         $fd = fopen($confFileName, 'w');
         if (false === $fd) {
