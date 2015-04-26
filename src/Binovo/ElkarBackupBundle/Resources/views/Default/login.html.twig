@@ -81,7 +81,19 @@
                             </div>
                           </div>
                       </form>
+
+                      {% if alert %}
+                      <div></div>
+                      <div class="login-alert alert alert-danger">
+                        <span class="glyphicon glyphicon-exclamation-sign"aria-hidden="true"></span>
+                        <span class="sr-only">Error:</span>
+                        {{ alert | raw }}
+                      </div>
+                      <div></div>
+                      {% endif %}
+
                   </div>
+
 
     </body>
 </html>

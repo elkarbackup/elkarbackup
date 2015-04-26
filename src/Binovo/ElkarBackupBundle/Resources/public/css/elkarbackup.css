@@ -87,6 +87,13 @@ h2.login-elkarbackup {
     width: 480px;
 }
 
+.login-alert {
+    margin-top: 20px;
+    width: 480px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 /* PARA NAVEGADORES */
 

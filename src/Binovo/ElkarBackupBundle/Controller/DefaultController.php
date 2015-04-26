@@ -219,11 +219,22 @@ class DefaultController extends Controller
           $disable_background = False;
         }
 
+        // Warning for Rsnapshot 1.3.1-4 in Debian Jessie
+        $rsnapshot_path = shell_exec(sprintf('which rsnapshot'));
+        $rsnapshot_jessie_md5 = '7d9eb926a1c4d6fcbf81d939d9f400ea';
+        $rsnapshot_local_md5 = explode(' ', shell_exec(sprintf('md5sum %s', $rsnapshot_path)))[0];
+        if ( $rsnapshot_jessie_md5 == $rsnapshot_local_md5 ) {
+          $alert = "WARNING! Change your Rsnapshot version <a href='https://github.com/elkarbackup/elkarbackup/wiki/JessieRsnapshotIssue'>More info</a>";
+          syslog(LOG_INFO, 'Rsnapshot 1.3.1-4 not working with SSH args. Downgrade it or fix it. More info: https://github.com/elkarbackup/elkarbackup/issues/88"');
+          $disable_background = True;
+        }
+
         return $this->render('BinovoElkarBackupBundle:Default:login.html.twig', array(
                                  'last_username' => $session->get(SecurityContext::LAST_USERNAME),
                                  'error'         => $error,
                                  'supportedLocales' => $localesWithNames,
-                                 'disable_background' => $disable_background));
+                                 'disable_background' => $disable_background,
+                                 'alert' => $alert));
     }
 
     /**
