@@ -81,8 +81,8 @@ fi
 if test "x`grep mailer_from /etc/elkarbackup/parameters.yml`" = x
 then
     echo "    Add mailer_from"
-    echo                                 >> /etc/elkarbackup/parameters.yml
-    echo "    mailer_from: elkarbackup@localhost" >> /etc/elkarbackup/parameters.yml
+    echo                    >> /etc/elkarbackup/parameters.yml
+    echo "    mailer_from:" >> /etc/elkarbackup/parameters.yml
 fi
 echo Update DB
 php /usr/share/elkarbackup/app/console doctrine:migrations:migrate --no-interaction >/dev/null || true

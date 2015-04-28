@@ -51,7 +51,7 @@ abstract class BackupRunningCommand extends LoggingCommand
     {
         $container        = $this->getContainer();
         $adminEmail       = $container->get('doctrine')->getRepository('BinovoElkarBackupBundle:User')->find(User::SUPERUSER_ID)->getEmail();
-        if ($container->hasParameter('mailer_from')) {
+        if ($container->hasParameter('mailer_from') && $container->getParameter('mailer_from') != "") {
           $fromEmail      = $container->getParameter('mailer_from');
         } else {
           $fromEmail      = $adminEmail;
