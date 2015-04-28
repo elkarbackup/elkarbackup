@@ -8,6 +8,7 @@ Features:
   - Policy edition: improve error messages (#86)
   - Support for custom SSH args (#87)
   - Check rsnapshot version and show warning (#88)
+  - Added a new param mailer_from (#81)
 
 Bugfixes:
   - Fixed policy edition issue in the yearly tab (#84)

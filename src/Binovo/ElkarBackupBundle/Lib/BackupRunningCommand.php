@@ -49,12 +49,18 @@ abstract class BackupRunningCommand extends LoggingCommand
      */
     protected function sendNotifications(Job $job, $messages)
     {
-        $adminEmail       = $this->getContainer()->get('doctrine')->getRepository('BinovoElkarBackupBundle:User')->find(User::SUPERUSER_ID)->getEmail();
+        $container        = $this->getContainer();
+        $adminEmail       = $container->get('doctrine')->getRepository('BinovoElkarBackupBundle:User')->find(User::SUPERUSER_ID)->getEmail();
+        if ($container->hasParameter('mailer_from')) {
+          $fromEmail      = $container->getParameter('mailer_from');
+        } else {
+          $fromEmail      = $adminEmail;
+        }
         $idClient         = $job->getClient()->getId();
         $idJob            = $job->getId();
-        $translator       = $this->getContainer()->get('translator');
+        $translator       = $container->get('translator');
         $recipients       = array();
-        $engine           = $this->getContainer()->get('templating');
+        $engine           = $container->get('templating');
         $filteredMessages = array();
         foreach ($messages as $aMessage) {
             if ($aMessage->getLevel() >= $job->getMinNotificationLevel()) {
@@ -79,7 +85,7 @@ abstract class BackupRunningCommand extends LoggingCommand
             }
             $message = \Swift_Message::newInstance()
                 ->setSubject($translator->trans('Log for backup from job %joburl%', array('%joburl%' => $job->getUrl()), 'BinovoElkarBackup'))
-                ->setFrom($adminEmail)
+                ->setFrom(array($fromEmail => 'ElkarBackup'))
                 ->setTo($recipients)
                 ->setBody($engine->render('BinovoElkarBackupBundle:Default:logreport.html.twig',
                                           array('base'     => gethostname(),
@@ -87,7 +93,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                                                 'messages' => $filteredMessages)),
                           'text/html');
             try {
-                $this->getContainer()->get('mailer')->send($message);
+                $container->get('mailer')->send($message);
             } catch (Exception $e) {
                 $this->err('Command was unable to send the notification message: %exception%', array('%exception%' => $e->getMessage()));
             }
