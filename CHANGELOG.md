@@ -6,6 +6,8 @@ Features:
   - Scripts: new environment variables available (#22 #30 #80)
   - Show warning on job status when the script fails (#4)
   - Policy edition: improve error messages (#86)
+  - Support for custom SSH args (#87)
+  - Check rsnapshot version and show warning (#88)
 
 Bugfixes:
   - Fixed policy edition issue in the yearly tab (#84)
