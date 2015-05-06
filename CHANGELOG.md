@@ -1,4 +1,4 @@
-## Upcoming release
+## 1.1.4 (2015/05/06)
 Features:
   - Download directory in ZIP format (#74)
   - Edit client: remove multiple job edition (#37)

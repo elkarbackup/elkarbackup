@@ -1,6 +1,16 @@
-tknikabackups (1.0B1) unstable; urgency=low
+elkarbackup (1.1.4) stable; urgency=high
 
-  * Initial release.
-    + Initial package
+   * Feature: Download directory in ZIP format (#74)
+   * Feature: Edit client: remove multiple job edition (#37)
+   * Feature: Parameters: added disable_background (#79)
+   * Feature: Scripts: new environment variables available (#22 #30 #80)
+   * Feature: Show warning on job status when the script fails (#4)
+   * Feature: Policy edition: improve error messages (#86)
+   * Feature: Support for custom SSH args (#87)
+   * Feature: Check rsnapshot version and show warning (#88)
+   * Feature: Added a new param mailer_from (#81)
+   * Bugfix: Fixed policy edition issue in the yearly tab (#84)
+   * Bugfix: Fixed policy edition issue in the hourly tab (#83)
+   * Bugfix: Fixed error removing a policy. Improve alert error and translations. (#85)
 
- -- Victor Laskurain <blaskurain@binovo.es>  Wed, 14 Nov 2012 08:55:05 +0100
+  -- Xabier Ezpeleta <xezpeleta@gmail.com> Wed, 6 May 2015 08:32:04 +0200
