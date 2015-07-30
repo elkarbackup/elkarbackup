@@ -121,7 +121,7 @@ abstract class BackupRunningCommand extends LoggingCommand
         if ($include) {
             $includes = explode("\n", $include);
             foreach($includes as &$theInclude) {
-                $theInclude = str_replace('\ ', ' ', trim($theInclude));
+                $theInclude = str_replace('\ ', '?', trim($theInclude));
 	          }
         }
         $excludes = array();
@@ -129,7 +129,7 @@ abstract class BackupRunningCommand extends LoggingCommand
         if ($exclude) {
             $excludes = explode("\n", $exclude);
 	          foreach($excludes as &$theExclude) {
-		            $theExclude = str_replace('\ ', ' ', trim($theExclude));
+		            $theExclude = str_replace('\ ', '?', trim($theExclude));
             }
         }
         $syncFirst = (int)$job->getPolicy()->getSyncFirst();
