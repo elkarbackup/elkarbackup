@@ -1,17 +1,25 @@
-# Symfony2 files     #
-######################
-web/bundles/
-app/bootstrap.php.cache
-app/cache/*
-app/logs/*
-build/
-vendor
-bin
-composer.phar
+# Symfony2 default gitignore #
+##############################
+/app/bootstrap.php.cache
+/app/cache/*
+!app/cache/.gitkeep
+#/app/config/parameters.yml
+/app/logs/*
+!app/logs/.gitkeep
+/app/phpunit.xml
+/bin/
+/composer.phar
+/vendor/
+/web/bundles/
+/web/js/*
+!/web/js/dojo-release
+!/web/js/dojo-release-*
+/web/css/
 
 # Makepackage #
 ###############
 .debian
+build
 
 # OS generated files #
 ######################
@@ -22,13 +30,3 @@ composer.phar
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-# vm dev
-#web/js/*js
-#web/css
-#app/cache
-#app/config
-#app/console
-#app/logs
-#app/sessions
-#bak.app/
