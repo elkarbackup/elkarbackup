@@ -823,15 +823,16 @@ class DefaultController extends Controller
 
         $repository = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Client');
+        //$query = $repository->createQueryBuilder('c')
+        //    ->getQuery();
         $query = $repository->createQueryBuilder('c')
-            ->getQuery();
-
+            ->addOrderBy('c.id', 'ASC');
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->container->getParameter('pagination_lines_per_page'))
-            );
+        );
         foreach ($pagination as $i => $client) {
             $client->setLogEntry($this->getLastLogForLink('%/client/' . $client->getId()));
             foreach ($client->getJobs() as $job) {
