@@ -1,3 +1,7 @@
+## Upcoming version
+Bugfixes:
+  - Exclude not working (#95)
+
 ## 1.1.4 (2015/05/06)
 Features:
   - Download directory in ZIP format (#74)
