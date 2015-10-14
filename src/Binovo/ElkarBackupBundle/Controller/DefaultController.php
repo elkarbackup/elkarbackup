@@ -823,10 +823,9 @@ class DefaultController extends Controller
 
         $repository = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Client');
-        //$query = $repository->createQueryBuilder('c')
-        //    ->getQuery();
         $query = $repository->createQueryBuilder('c')
-            ->addOrderBy('c.id', 'ASC');
+            ->addOrderBy('c.id', 'ASC')
+            ->getQuery();
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
