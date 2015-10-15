@@ -1,7 +1,7 @@
-## Upcoming version
+## 1.1.5 (2015/10/14)
 Bugfixes:
   - Exclude not working (#95)
-  - Client pagination bug (#94) 
+  - Client pagination bug (#94)
 
 ## 1.1.4 (2015/05/06)
 Features:
