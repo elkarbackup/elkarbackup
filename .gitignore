@@ -18,6 +18,7 @@
 !/web/js/dojo-release
 !/web/js/dojo-release-*
 /web/css/
+/app/sessions/*
 
 # Makepackage #
 ###############
