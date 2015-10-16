@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ClientType extends AbstractType
 {
@@ -66,12 +67,12 @@ class ClientType extends AbstractType
                                                             'label'        => $t->trans('Jobs', array(), 'BinovoElkarBackup')));
     }
 
-    public function getDefaultOptions(array $options)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return array(
-            'data_class' => 'Binovo\ElkarBackupBundle\Entity\Client',
-            'translator' => null,
-        );
+        $resolver->setDefaults(array(
+          'data_class' => 'Binovo\ElkarBackupBundle\Entity\Client',
+          'translator' => null,
+        ));
     }
 
     public function getName()

@@ -8,6 +8,7 @@ namespace Binovo\ElkarBackupBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ScriptType extends AbstractType
 {
@@ -32,13 +33,13 @@ class ScriptType extends AbstractType
                                                         'required' => false));
     }
 
-    public function getDefaultOptions(array $options)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return array(
-            'data_class'         => 'Binovo\ElkarBackupBundle\Entity\Script',
-            'translator'         => null,
-            'scriptFileRequired' => false,
-        );
+        $resolver->setDefaults(array(
+          'data_class'         => 'Binovo\ElkarBackupBundle\Entity\Script',
+          'translator'         => null,
+          'scriptFileRequired' => false,
+        ));
     }
 
     public function getName()

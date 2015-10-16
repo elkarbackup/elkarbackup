@@ -8,6 +8,7 @@ namespace Binovo\ElkarBackupBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class JobForSortType extends AbstractType
 {
@@ -17,11 +18,11 @@ class JobForSortType extends AbstractType
 
     }
 
-    public function getDefaultOptions(array $options)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return array(
-            'data_class' => 'Binovo\ElkarBackupBundle\Entity\Job',
-        );
+        $resolver->setDefaults(array(
+          'data_class' => 'Binovo\ElkarBackupBundle\Entity\Job',
+        ));
     }
 
     public function getName()
