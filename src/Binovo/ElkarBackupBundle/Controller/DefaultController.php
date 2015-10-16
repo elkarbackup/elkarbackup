@@ -287,18 +287,20 @@ class DefaultController extends Controller
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             try {
-                foreach ($jobsToDelete as $idJob => $job) {
-                    $client->getJobs()->removeElement($job);
-                    $em->remove($job);
-                    $msg = new Message('DefaultController', 'TickCommand',
-                                       json_encode(array('command' => "elkarbackup:delete_job_backups",
-                                                         'client'  => (int)$id,
-                                                         'job'     => $idJob)));
-                    $em->persist($msg);
-                    $this->info('Delete client %clientid%, job %jobid%',
-                                array('%clientid%' => $client->getId(),
-                                      '%jobid%' => $job->getId()),
-                                array('link' => $this->generateJobRoute($job->getId(), $client->getId())));
+                if (isset($jobsToDelete)){
+                    foreach ($jobsToDelete as $idJob => $job) {
+                        $client->getJobs()->removeElement($job);
+                        $em->remove($job);
+                        $msg = new Message('DefaultController', 'TickCommand',
+                                           json_encode(array('command' => "elkarbackup:delete_job_backups",
+                                                             'client'  => (int)$id,
+                                                             'job'     => $idJob)));
+                        $em->persist($msg);
+                        $this->info('Delete client %clientid%, job %jobid%',
+                                    array('%clientid%' => $client->getId(),
+                                          '%jobid%' => $job->getId()),
+                                    array('link' => $this->generateJobRoute($job->getId(), $client->getId())));
+                    }
                 }
                 $em->persist($client);
                 $this->info('Save client %clientid%',
