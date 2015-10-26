@@ -9,15 +9,13 @@
 <html>
     <head>
         <title>{% block title %}ElkarBackup{% endblock %}</title>
-      <!-- Dojo 1.8.1-->
-      <link rel="stylesheet" href="{{ asset('js/dojo-release/dijit/themes/claro/claro.css') }}" media="screen" />
+        <!-- Dojo 1.8.1-->
+        <link rel="stylesheet" href="{{ asset('js/dojo-release/dijit/themes/claro/claro.css') }}" media="screen" />
 
-      <!-- Bootstrap 3.2-->
-
-        {% stylesheets '@BinovoElkarBackupBundle/Resources/public/css/bootstrap.min.css' '@BinovoElkarBackupBundle/Resources/public/css/elkarbackup.css' %}
-          <link rel="stylesheet" href="{{ asset_url }}" media="screen" />
-        {% endstylesheets %}
-
+        <!-- Bootstrap 3.2-->
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" media="screen" />
+        <!-- @ChristianGR elkarbackup theme -->
+        <link rel="stylesheet" href="{{ asset('@BinovoElkarBackupBundle/Resources/public/css/elkarbackup.css') }}" />
 
         {% block scripts %}
         <script type="text/javascript" src="{{ asset('js/dojo-release/dojo/dojo.js') }}" data-dojo-config="async: true"></script>
