@@ -23,7 +23,8 @@
         "knplabs/knp-paginator-bundle": "^2.5",
         "twig/extensions": "^1.3",
         "jms/security-extra-bundle": "^1.5",
-        "jms/di-extra-bundle": "^1.6"
+        "jms/di-extra-bundle": "^1.6",
+        "twbs/bootstrap": "^3.3"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
@@ -38,6 +39,7 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
         ],
         "post-update-cmd": [
+            "cp vendor/twbs/bootstrap/dist/css/bootstrap*.css web/css",
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
