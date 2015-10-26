@@ -220,9 +220,9 @@ class DefaultController extends Controller
         }
 
         // Warning for Rsnapshot 1.3.1-4 in Debian Jessie
-        $rsnapshot_path = shell_exec(sprintf('which rsnapshot'));
         $rsnapshot_jessie_md5 = '7d9eb926a1c4d6fcbf81d939d9f400ea';
         if (is_callable('shell_exec') && false === stripos(ini_get('disable_functions'), 'shell_exec')) {
+          $rsnapshot_path = shell_exec(sprintf('which rsnapshot'));
           $sresult = explode(' ', shell_exec(sprintf('md5sum %s', $rsnapshot_path)));
           if (is_array($sresult)) {
             $rsnapshot_local_md5 = $sresult[0];
