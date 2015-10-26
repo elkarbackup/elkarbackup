@@ -223,7 +223,13 @@ class DefaultController extends Controller
         $rsnapshot_path = shell_exec(sprintf('which rsnapshot'));
         $rsnapshot_jessie_md5 = '7d9eb926a1c4d6fcbf81d939d9f400ea';
         if (is_callable('shell_exec') && false === stripos(ini_get('disable_functions'), 'shell_exec')) {
-          $rsnapshot_local_md5 = explode(' ', shell_exec(sprintf('md5sum %s', $rsnapshot_path)))[0];
+          $sresult = explode(' ', shell_exec(sprintf('md5sum %s', $rsnapshot_path)));
+          if (is_array($sresult)) {
+            $rsnapshot_local_md5 = $sresult[0];
+          } else {
+            # PHP 5.3 or higher
+            $rsnapshot_local_md5 = $sresult;
+          }
         } else {
           $rsnapshot_local_md5 = "unknown";
           syslog(LOG_INFO, 'Impossible to check rsnapshot version. More info: https://github.com/elkarbackup/elkarbackup/issues/88"');
