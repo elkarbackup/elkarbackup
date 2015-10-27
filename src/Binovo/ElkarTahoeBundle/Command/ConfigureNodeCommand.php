@@ -153,6 +153,8 @@ class ConfigureNodeCommand extends LoggingCommand
         if (0 == $status) {
             $this->info('New alias created [ elkarbackup: ]');
         }
+        
+        //TODO: update tahoe_ready parameter
 
         return 0;
 
