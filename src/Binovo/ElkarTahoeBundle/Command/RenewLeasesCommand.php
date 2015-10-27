@@ -36,6 +36,7 @@ class RenewLeasesCommand extends LoggingCommand
             return $status;
         }
         $this->info('Tahoe leases have been renewed');
+        //TODO: check $commandOutput
         return 0;        
     }
 
