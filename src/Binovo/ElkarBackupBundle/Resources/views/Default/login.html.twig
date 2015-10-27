@@ -12,13 +12,13 @@
         <!-- Dojo 1.8.1-->
         <link rel="stylesheet" href="{{ asset('js/dojo-release/dijit/themes/claro/claro.css') }}" media="screen" />
 
+        <!-- Bootstrap 3.3-->
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" media="screen" />
+
         <!-- @ChristianGR elkarbackup theme -->
         {% stylesheets '@BinovoElkarBackupBundle/Resources/public/css/elkarbackup.css' %}
-		      <link rel="stylesheet" href="{{ asset_url }}" media="screen" />
+          <link rel="stylesheet" href="{{ asset_url }}" media="screen" />
         {% endstylesheets %}
-
-        <!-- Bootstrap 3.2-->
-        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" media="screen" />
 
         {% block scripts %}
         <script type="text/javascript" src="{{ asset('js/dojo-release/dojo/dojo.js') }}" data-dojo-config="async: true"></script>
