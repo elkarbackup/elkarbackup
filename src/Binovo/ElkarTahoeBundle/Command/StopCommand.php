@@ -26,8 +26,9 @@ class StopCommand extends LoggingCommand
         $context = array('source' => 'StopCommand');
 
         $tahoeAlias = 'tahoe';
+        $elkarbackupNodePath = '/var/lib/elkarbackup/.tahoe/';
 
-        $command = $tahoeAlias . ' stop';
+        $command = $tahoeAlias . ' stop ' . $elkarbackupNodePath;
         $commandOutput  = array();
         $status         = 0;
         exec($command, $commandOutput, $status);
