@@ -26,8 +26,9 @@ class StartCommand extends LoggingCommand
         $context = array('source' => 'StartCommand');
 
         $tahoeAlias = 'tahoe';
+        $elkarbackupNodePath = '/var/lib/elkarbackup/.tahoe/';
 
-        $command = $tahoeAlias . ' start';
+        $command = $tahoeAlias . ' start ' . $elkarbackupNodePath;
         $commandOutput  = array();
         $status         = 0;
         exec($command, $commandOutput, $status);
