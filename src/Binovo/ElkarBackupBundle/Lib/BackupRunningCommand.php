@@ -238,6 +238,15 @@ abstract class BackupRunningCommand extends LoggingCommand
                     }
                 }
             }
+            
+            //tahoe backup
+            $tahoe = $container->get('Tahoe');
+
+            $tahoeOn = $container->getParameter('tahoe_active');
+            //tahoe_active cannot be set to true if tahoe-lafs package is not installed
+
+            if($tahoeOn) $tahoe->backup($job, $retain); //queue the job
+
         }
         if (false === unlink($confFileName)) {
             $this->warn('Error unlinking config file %filename%.',
