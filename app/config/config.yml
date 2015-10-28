@@ -115,5 +115,8 @@ services:
             - [setContainer,  [@service_container] ]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+    Tahoe:
+        class: Binovo\ElkarTahoeBundle\Utils\TahoeBackup
+        arguments: ["@BnvWebLogger"]
 parameters:
     supported_locales: [es, en, eu]
