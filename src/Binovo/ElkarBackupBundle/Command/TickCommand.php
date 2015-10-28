@@ -34,6 +34,8 @@ class TickCommand extends BackupRunningCommand
         $allOk = $this->removeOldLogs() && $allOk;
         try { // we don't want to miss a backup because a command fails, so catch any exception
             $this->executeMessages($input, $output);
+            //TODO: dequeue tahoe jobs and run them
+            
         } catch (Exception $e) {
             $this->err('Exception running queued commands: %exceptionmsg%', array('%exceptionmsg%' => $e->getMessage()));
             $this->getContainer()->get('doctrine')->getManager()->flush();
