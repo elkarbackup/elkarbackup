@@ -28,15 +28,13 @@ class ConfigureNodeCommand extends LoggingCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $context = array('source' => 'CreateTahoeNodeCommand');
+        $context = array('source' => 'ConfigureTahoeNodeCommand');
 
         $tahoeAlias = 'tahoe'; //tahoe binary path
 
         //Node creation
-        if( is_dir('.tahoe/') )
-            $this->info('Tahoe node exists');    
-        else {
-            $command = $tahoeAlias . ' create-client';
+        if(!is_dir('.tahoe/')) {
+            $command = $tahoeAlias . ' create-client 2>&1';
             $commandOutput  = array();
             $status         = 0;
             exec($command, $commandOutput, $status);
@@ -44,8 +42,12 @@ class ConfigureNodeCommand extends LoggingCommand
                 $this->err('Error creating Tahoe node: ' . implode("\n", $commandOutput));
                 return $status;
             }
-            $this->info('Tahoe node created ~/.tahoe/ ');     
+            $this->info($commandOutput[0]);     
         }
+
+        //Set: tahoe - not ready (remove file)
+        $readyFile = '.tahoe/imReady.txt';
+        if(file_exists($readyFile)) unlink($readyFile);
 
         //Node configuration
         $nodeConfigFile = '.tahoe/tahoe.cfg';
@@ -121,7 +123,7 @@ class ConfigureNodeCommand extends LoggingCommand
                 $newName = 'old_aliases_' . $newName . 'Z'; //zulu time (utc)
                 if(is_writeable($nodeConfigFile))
                     file_put_contents($aliasesFile, 'introducer.furl = ' . $oldFurl . "\n", FILE_APPEND);
-                $command = 'mv ' . $aliasesFile . ' .tahoe/private/' . $newName;
+                $command = 'mv ' . $aliasesFile . ' .tahoe/private/' . $newName . ' 2>&1';
                 $commandOutput  = array();
                 $status         = 0;
                 exec($command, $commandOutput, $status);
@@ -135,34 +137,42 @@ class ConfigureNodeCommand extends LoggingCommand
         }
 
         //Launch daemon - Node connexion
-        $command = $tahoeAlias . ' restart'; //works even if it was not running
+        $command = $tahoeAlias . ' restart 2>&1'; //works even if it was not running
         $commandOutput  = array();
         $status         = 0;
         exec($command, $commandOutput, $status);   
         if (0 != $status) {
-            $this->err('Error starting Tahoe node: ' . implode("\n", $commandOutput));
+            $errStart = count($commandOutput)-2;
+            $this->err('Error starting Tahoe node: ' . $commandOutput[$errStart]);
             return $status;
         }
-        $this->info('Tahoe node started: ' . implode("\n", $commandOutput));
 
         //Create elkarbackup directory in the tahoe grid
         $command = $tahoeAlias . ' create-alias elkarbackup:';
         $commandOutput  = array();
         $status = 0;
         exec($command, $commandOutput, $status);
-        if (0 == $status) {
+        if (0 == $status)
             $this->info('New alias created [ elkarbackup: ]');
-        }
         
-        //TODO: update tahoe_ready parameter
-
+        //Check if tahoe is ready to work
+        $command        = $tahoeAlias . ' ls elkarbackup:';
+        $commandOutput  = array();
+        $status         = 0;
+        exec($command, $commandOutput, $status);
+        if (0 != $status) {
+            $this->err("Error connecting to the tahoe grid. Tahoe storage not ready to work.\nMake sure the configuration parameters are right, if so it might be a network (grid) issue.");
+            return $status;
+        }
+        //Set: tahoe - ready (create file)
+        $file = fopen($readyFile, 'w');
+        fclose($file);
+  
         return 0;
-
     }
 
     protected function getNameForLogs()
     {
         return 'ConfigureTahoeNodeCommand';
     }
-
 }
