@@ -241,11 +241,9 @@ abstract class BackupRunningCommand extends LoggingCommand
             
             //tahoe backup
             $tahoe = $container->get('Tahoe');
-
+            $tahoeInstalled = $tahoe->isInstalled();
             $tahoeOn = $container->getParameter('tahoe_active');
-            //tahoe_active cannot be set to true if tahoe-lafs package is not installed
-
-            if($tahoeOn) $tahoe->backup($job, $retain); //queue the job
+            if($tahoeInstalled && $tahoeOn) $tahoe->enqueueJob($job, $retain);
 
         }
         if (false === unlink($confFileName)) {
