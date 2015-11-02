@@ -1119,7 +1119,6 @@ EOF;
 
         $result = null;
         $form = $formBuilder->getForm();
-        if($tahoeReady)
         if ($request->isMethod('POST')) {
             $form->bind($request);
             $data = $form->getData();
