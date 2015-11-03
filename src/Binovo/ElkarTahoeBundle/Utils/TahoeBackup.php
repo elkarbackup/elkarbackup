@@ -35,7 +35,8 @@ class TahoeBackup
     }
 
 
-    protected function _fullRetain($path, $retention) {
+    protected function _fullRetain($path, $retention)
+    {
 
         $command = self::TAHOE_ALIAS . ' ls ' . $path . ' 2>&1';
         $commandOutput  = array();
@@ -46,7 +47,7 @@ class TahoeBackup
             return $status;
         }
         $i = count($commandOutput);
-        if($i > $retention) {
+        if ($i > $retention) {
             $command = self::TAHOE_ALIAS . ' unlink ' . $path . $commandOutput[0] . ' 2>&1';
             $commandOutput  = array();
             $status         = 0;
@@ -80,7 +81,7 @@ class TahoeBackup
 
         $retains = $job->getPolicy()->getRetains();
         foreach ($retains as $r) {
-            if($r[0]===$retain) {
+            if ($r[0]===$retain) {
                 $retention = $r[1];
                 break;
             }
@@ -88,15 +89,19 @@ class TahoeBackup
         // $retention should always be greater than 0
 
 
-        if(!$job->getPolicy()->isRotation($retain)) { //no rotation
+        if (!$job->getPolicy()->isRotation($retain)) { //no rotation
 
             $url = $job->getUrl();
             $end = strlen($url);
-            if('/' == $url[$end-1]) $end--;
+            if ('/' == $url[$end-1]) {
+                $end--;
+            }
             $fileName = '';
-            for($i=0;$i<$end;$i++) {
+            for ($i=0;$i<$end;$i++) {
                 $fileName .= $url[$i];
-                if('/'==$url[$i]) $fileName = '';
+                if ('/'==$url[$i]) {
+                    $fileName = '';
+                }
             }
 
             $command = self::TAHOE_ALIAS . ' backup ' . $url . ' ' . $this->_getJobPath($job) . ' 2>&1';
@@ -132,8 +137,13 @@ class TahoeBackup
 
             $path = $this->_getJobPath($job) . $retain . '/';
             $result = $this->_fullRetain($path, $retention);
-            if(0 === $result) $this->_logger->info($retain . ' was full: oldest item *deleted');
-            else if (null != $resutl) return $result;
+            if (0 === $result) {
+                $this->_logger->info($retain . ' was full: oldest item *deleted');
+            } else {
+                if (null != $resutl) {
+                    return $result;
+                }
+            }
 
 
         } else { //rotation
@@ -141,7 +151,9 @@ class TahoeBackup
 
             $previousRetain = null;
             foreach ($retains as $r) {
-                if($r[0]===$retain) break;
+                if ($r[0]===$retain) {
+                    break;
+                }
                 $previousRetain = $r[0];
             }
             // $previous should never be null if it's a rotation
@@ -154,7 +166,7 @@ class TahoeBackup
                 $this->_logger->err('Cannot access to tahoe storage [rot_ls1]: ' . implode("\n",$commandOutput), $this->_context);
                 return $status;
             }
-            if(count($commandOutput) > 0) {
+            if (count($commandOutput) > 0) {
                 $command = self::TAHOE_ALIAS . ' cp -r ' . $this->_getJobPath($job) . $previousRetain  . '/' . $commandOutput[0];
                 $command .=                       ' ' . $this->_getJobPath($job) . $retain          . '/' . $commandOutput[0] . ' 2>&1';
                 $commandOutput  = array();
@@ -167,45 +179,45 @@ class TahoeBackup
 
                 $path = $this->_getJobPath($job) . $retain . '/';
                 $result = $this->_fullRetain($path, $retention);
-                if(0 === $result) $this->_logger->info($retain . ' was full: oldest item *deleted');
-                else if (null != $resutl) return $result;
-
+                if (0 === $result) {
+                    $this->_logger->info($retain . ' was full: oldest item *deleted');
+                } else {
+                    if (null != $resutl) {
+                        return $result;
+                    }
+                }
             } else {
                 $this->_logger->warn('Backup rotation was tried but no items were found in the previous retain level');
             }
 
         }
-
-        
         return true;
     }
 
     
-    public function enqueueJob(Job $job, $retain) {
+    public function enqueueJob(Job $job, $retain)
+    {
 
         $this->_queue->enqueue(new Pair($job, $retain));
     }
 
-    public function isInstalled() {
+    public function isInstalled()
+    {
         $command = 'dpkg-query -W tahoe-lafs';
         exec($command, $commandOutput, $status);
-        if (0 != $status)
+        if (0 != $status) {
             return $status;
+        }
 
         return true;
     }
 
     public function runAllQueuedJobs() {
 
-        foreach($this->_queue as $pair) {
+        foreach ($this->_queue as $pair) {
             $this->_runJob($pair);
         }
 
     }
-
-    /*  //No reason to make runJob public (for now)
-    public function runJob(Job $job, $retain) {
-        $this->_runJob(new Pair($job, $retain));
-    } */
 
 }
