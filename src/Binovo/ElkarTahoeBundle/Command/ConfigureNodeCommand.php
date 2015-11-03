@@ -6,6 +6,7 @@
 
 namespace Binovo\ElkarTahoeBundle\Command;
 
+use \Exception;
 use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,11 +30,10 @@ class ConfigureNodeCommand extends LoggingCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $context = array('source' => 'ConfigureTahoeNodeCommand');
-
         $tahoeAlias = 'tahoe'; //tahoe binary path
 
         //Node creation
-        if(!is_dir('.tahoe/')) {
+        if (!is_dir('.tahoe/')) {
             $command = $tahoeAlias . ' create-client 2>&1';
             $commandOutput  = array();
             $status         = 0;
@@ -47,23 +47,33 @@ class ConfigureNodeCommand extends LoggingCommand
 
         //Set: tahoe - not ready (remove file)
         $readyFile = '.tahoe/imReady.txt';
-        if(file_exists($readyFile)) unlink($readyFile);
+        if (file_exists($readyFile)) {
+            unlink($readyFile);
+        }
 
         //Node configuration
         $nodeConfigFile = '.tahoe/tahoe.cfg';
 
         $attr = array();
         // [node]
-        if ( !($attr['nickname'] = $input->getArgument('nname')) ) $attr['nickname'] = 'elkarbackup_node';
+        if ( !($attr['nickname'] = $input->getArgument('nname')) ) {
+            $attr['nickname'] = 'elkarbackup_node';
+        }
         // [client]
         $attr['introducer.furl'] = $input->getArgument('i.furl');
 
-        if ( !($attr['shares.needed'] = $input->getArgument('s.K')) ) $attr['shares.needed'] = 3;
-        if ( !($attr['shares.happy'] = $input->getArgument('s.H')) ) $attr['shares.happy'] = 7;
-        if ( !($attr['shares.total'] = $input->getArgument('s.N')) ) $attr['shares.total'] = 10;
+        if ( !($attr['shares.needed'] = $input->getArgument('s.K')) ) {
+            $attr['shares.needed'] = 3;
+        }
+        if ( !($attr['shares.happy'] = $input->getArgument('s.H')) ) {
+            $attr['shares.happy'] = 7;
+        }
+        if ( !($attr['shares.total'] = $input->getArgument('s.N')) ) {
+            $attr['shares.total'] = 10;
+        }
 
-        if(file_exists($nodeConfigFile)) {
-            if(is_writeable($nodeConfigFile) ) {
+        if (file_exists($nodeConfigFile)) {
+            if (is_writeable($nodeConfigFile) ) {
                 try {
                     $content = file_get_contents($nodeConfigFile);
                     $keys = array_keys($attr);
@@ -72,24 +82,30 @@ class ConfigureNodeCommand extends LoggingCommand
                         $newLine = $key . ' = ' . $attr[$key];
 
                         $i=strpos($content, ($key . ' =') );
-                        if('introducer.furl' == $key) {
+                        if ('introducer.furl' == $key) {
                             $j=$i+strlen('introducer.furl = ');
                             $oldFurl = ''; 
                         }                     
-                        if('#' == $content[$i-1]) $i--;                      
-                        for(;$i<strlen($content);$i++) {
-                            if("\n" == $content[$i]) break;
-                            if('introducer.furl' == $key and $i == $j) {
+                        if ('#' == $content[$i-1]) {
+                            $i--;                      
+                        }
+                        for (;$i<strlen($content);$i++) {
+                            if ("\n" == $content[$i]) {
+                                break;
+                            }
+                            if ('introducer.furl' == $key and $i == $j) {
                                 $oldFurl = $oldFurl . $content[$i];
                                 $j++;
                             }
                             $oldLine = $oldLine . $content[$i];
                         }
-                        if('introducer.furl' == $key) $oldFurlLine = $oldLine;
+                        if ('introducer.furl' == $key) {
+                            $oldFurlLine = $oldLine;
+                        }
                         $content = str_replace($oldLine, $newLine, $content);
                     }
 
-                    if(file_put_contents($nodeConfigFile, $content) > 0) {
+                    if (file_put_contents($nodeConfigFile, $content) > 0) {
                         $this->info('Node configuration set');
                     } else {
                         $commandOutput = 'Error while writing file';
@@ -113,16 +129,17 @@ class ConfigureNodeCommand extends LoggingCommand
         }
 
         //Manage aliases
-        if($oldFurl != $attr['introducer.furl']) {
+        if ($oldFurl != $attr['introducer.furl']) {
 
             $aliasesFile = '.tahoe/private/aliases';
-            if(file_exists($aliasesFile))
-            {
+            if (file_exists($aliasesFile)) {
+
                 date_default_timezone_set("UTC");
                 $newName = date("Y-m-d_H:i:s", time());
                 $newName = 'old_aliases_' . $newName . 'Z'; //zulu time (utc)
-                if(is_writeable($nodeConfigFile))
+                if (is_writeable($nodeConfigFile)) {
                     file_put_contents($aliasesFile, 'introducer.furl = ' . $oldFurl . "\n", FILE_APPEND);
+                }
                 $command = 'mv ' . $aliasesFile . ' .tahoe/private/' . $newName . ' 2>&1';
                 $commandOutput  = array();
                 $status         = 0;
@@ -152,8 +169,9 @@ class ConfigureNodeCommand extends LoggingCommand
         $commandOutput  = array();
         $status = 0;
         exec($command, $commandOutput, $status);
-        if (0 == $status)
+        if (0 == $status) {
             $this->info('New alias created [ elkarbackup: ]');
+        }
         
         //Check if tahoe is ready to work
         $command        = $tahoeAlias . ' ls elkarbackup:';
@@ -175,4 +193,5 @@ class ConfigureNodeCommand extends LoggingCommand
     {
         return 'ConfigureTahoeNodeCommand';
     }
+
 }
