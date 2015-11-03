@@ -6,6 +6,7 @@
 
 namespace Binovo\ElkarTahoeBundle\Command;
 
+use \Exception;
 use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,14 +29,14 @@ class RenewLeasesCommand extends LoggingCommand
         $context = array('source' => 'RenewLeasesCommand');
         $tahoeAlias = 'tahoe';
 
-        if(!$this->_isTahoeReady()) {
+        if (!$this->_isTahoeReady()) {
             $when = $this->_getLastRenewDate();
-            if(null==$when) $when = 'never';
+            if (null==$when) {
+                $when = 'never';
+            }
             $this->err('Warning: tahoe storage is not properly configurated. Lease renewal not performed since [' . $when . ']' );
             return 1;
         }
-
-        //TODO: check if the time between the last renew and now is higher than the tahoe renew frequency (params)
 
         $command = $tahoeAlias . ' deep-check --add-lease elkarbackup: 2>&1';
         $commandOutput  = array();
@@ -65,34 +66,35 @@ class RenewLeasesCommand extends LoggingCommand
     }
 
 
-    protected function _getLastRenewDate() {
+    protected function _getLastRenewDate()
+    {
 
-        if(file_exists(self::LAST_RENEW_FILE)) {
+        if (file_exists(self::LAST_RENEW_FILE)) {
             $content = file_get_contents(self::LAST_RENEW_FILE);
             $startingTag = 'last-> renew ';
             $date='';
             $i=strpos($content, $startingTag)+strlen($startingTag);
-            while("\n"!=$content[$i]) {
+            while ("\n"!=$content[$i]) {
                 $date.=$content[$i];
                 $i++;
             }
             
-            if(true) { //convert utc to local time
-                $rawDate = '';
-                for($i=0;$i<strlen($date);$i++) {
-                    $rawDate.= $date[$i];
-                    if('('==$date[$i+2]) break;
+
+            $rawDate = '';
+            for ($i=0;$i<strlen($date);$i++) {
+                $rawDate.= $date[$i];
+                if ('('==$date[$i+2]) {
+                    break;
                 }
-
-                $localTimezone = date_default_timezone_get();
-                date_default_timezone_set('UTC');
-                $realDate = strtotime($rawDate);
-                date_default_timezone_set($localTimezone);
-                $gmtDate = date("Y-m-d H:i:s", $realDate);
-
-                return $gmtDate;
             }
-            return $date;
+
+            $localTimezone = date_default_timezone_get();
+            date_default_timezone_set('UTC');
+            $realDate = strtotime($rawDate);
+            date_default_timezone_set($localTimezone);
+            $gmtDate = date("Y-m-d H:i:s", $realDate);
+
+            return $gmtDate;
         }
         return null;
     }
@@ -104,7 +106,8 @@ class RenewLeasesCommand extends LoggingCommand
     }
 
 
-    protected function _updateFile($commandOutput) {
+    protected function _updateFile($commandOutput)
+    {
 
         date_default_timezone_set('UTC');
         $newDate = date("Y-m-d H:i:s", time());
@@ -113,17 +116,17 @@ class RenewLeasesCommand extends LoggingCommand
         $update = $startingTag . 'renew ' . $newDate . " (utc)\n";
         $update = $update . $commandOutput[0] . $closingTag;
 
-        if(file_exists(self::LAST_RENEW_FILE) && is_writable(self::LAST_RENEW_FILE)) {
+        if (file_exists(self::LAST_RENEW_FILE) && is_writable(self::LAST_RENEW_FILE)) {
             $content = file_get_contents(self::LAST_RENEW_FILE);
             $oldLine = '';
 
             $beginPos=strpos($content, $startingTag)+strlen($startingTag);
             $endPos=strpos($content, $closingTag);
             $stopNewLine = false;
-            while($beginPos<$endPos && $i<strlen($content)) {
+            while ($beginPos<$endPos && $i<strlen($content)) {
                 $oldLine = $oldLine . $content[$beginPos];
-                if(!$stopNewLine) {
-                    if("\n"===$content[$beginPos]) {
+                if (!$stopNewLine) {
+                    if ("\n"===$content[$beginPos]) {
                         $stopNewLine=true;
                         $newLine = $oldLine;
                     }
@@ -135,7 +138,7 @@ class RenewLeasesCommand extends LoggingCommand
 
             $content = str_replace($oldLine, $newLine, $content);
             try {
-                if(file_put_contents(self::LAST_RENEW_FILE, $content) > 0) {
+                if (file_put_contents(self::LAST_RENEW_FILE, $content) > 0) {
                     $this->info('Node configuration set');
                 } else {
                     $this->warn('Warning renew log coud not be updated');
@@ -144,7 +147,9 @@ class RenewLeasesCommand extends LoggingCommand
                 $this->warn('Warning renew log coud not be updated: ' . $e->getMessage());
             }
         } else {
-            if( file_exists(self::LAST_RENEW_FILE) ) unlink(self::LAST_RENEW_FILE);
+            if (file_exists(self::LAST_RENEW_FILE)) {
+                unlink(self::LAST_RENEW_FILE);
+            }
             $file = fopen(self::LAST_RENEW_FILE, "w");
             fwrite($file, $update . "\n");
             fclose($file);
