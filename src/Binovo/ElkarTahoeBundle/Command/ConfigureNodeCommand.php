@@ -113,7 +113,7 @@ class ConfigureNodeCommand extends LoggingCommand
                         return 1;
                     }
                 } catch(Exception $e) {
-                    $commandOutput = 'Error : '.$e;
+                    $commandOutput = 'Error : '.$e->getMessage();
                     $this->err('Error configuring tahoe node: ' . $commandOutput);
                     return 1;
                 }
@@ -179,9 +179,11 @@ class ConfigureNodeCommand extends LoggingCommand
         $status         = 0;
         exec($command, $commandOutput, $status);
         if (0 != $status) {
-            $this->err("Error connecting to the tahoe grid. Tahoe storage not ready to work.\nMake sure the configuration parameters are right, if so it might be a network (grid) issue.");
+            $this->err("Error connecting to the tahoe grid. Tahoe storage not ready to work.\n
+                Make sure the introducers furl is correct. Also the introducer node might be down or no storage nodes might be available.");
             return $status;
         }
+        
         //Set: tahoe - ready (create file)
         $file = fopen($readyFile, 'w');
         fclose($file);
