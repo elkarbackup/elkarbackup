@@ -120,6 +120,25 @@ class Builder extends ContainerAware
     public function mainMenu(FactoryInterface $factory, array $options)
     {
         $t = $this->container->get('translator');
+
+        if ($this->container->get('Tahoe')->isInstalled()) {
+            $configChildren = array(array('label'    => $t->trans('Manage parameters', array(), 'BinovoElkarBackup'),
+                                                  'route'    => 'manageParameters'),
+                                            array('label'    => $t->trans('Manage backups location', array(), 'BinovoElkarBackup'),
+                                                  'route'    => 'manageBackupsLocation'),
+                                            array('label'    => 'Manage tahoe storage', //trans *******
+                                                  'route'    => 'tahoeConfig'),
+                                            array('label'    => $t->trans('Repository backup script', array(), 'BinovoElkarBackup'),
+                                                  'route'    => 'configureRepositoryBackupScript'));
+        } else {
+            $configChildren = array(array('label'    => $t->trans('Manage parameters', array(), 'BinovoElkarBackup'),
+                                                  'route'    => 'manageParameters'),
+                                            array('label'    => $t->trans('Manage backups location', array(), 'BinovoElkarBackup'),
+                                                  'route'    => 'manageBackupsLocation'),
+                                            array('label'    => $t->trans('Repository backup script', array(), 'BinovoElkarBackup'),
+                                                  'route'    => 'configureRepositoryBackupScript'));
+        }
+
         $menu = array(array('label'    => $t->trans('Jobs', array(), 'BinovoElkarBackup'),
                             'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'showClients'),
@@ -146,12 +165,7 @@ class Builder extends ContainerAware
                                                 array('label'    => $t->trans('Change password', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'changePassword'))),
                       array('label'    => $t->trans('Config', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Manage parameters', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'manageParameters'),
-                                                array('label'    => $t->trans('Manage backups location', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'manageBackupsLocation'),
-                                                array('label'    => $t->trans('Repository backup script', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'configureRepositoryBackupScript'))),
+                            'children' => $configChildren ),
                       array('label'    => $t->trans('Logs', array(), 'BinovoElkarBackup'),
                             'children' => array(array('label'    => $t->trans('Show Logs', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'showLogs'))),
@@ -159,7 +173,7 @@ class Builder extends ContainerAware
                             'children' => array(array('label'    => $t->trans('Logout', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'logout'),
                                                 array('label'    => $t->trans('Language', array(), 'BinovoElkarBackup'),
-                                                      'children' => $this->getLanguageMenuEntries()))),
+                                                      'children' => $this->getLanguageMenuEntries() )))
 
             );
 
