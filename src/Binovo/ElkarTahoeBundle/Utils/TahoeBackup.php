@@ -9,41 +9,43 @@ namespace Binovo\ElkarTahoeBundle\Utils;
 use Binovo\ElkarBackupBundle\Entity\Job;
 use Binovo\ElkarTahoeBundle\Utils\Pair;
 use Symfony\Bridge\Monolog\Logger;
-//translator
 use \SplQueue;
 
 
 class TahoeBackup
 {
-
+    
     const TAHOE_ALIAS = 'tahoe'; //tahoe bin file path
 
     protected $_logger;
-    //protected $_trans;
     protected $_context;
     protected $_queue;
 
 
     public function __construct(Logger $log)
     {
-    //it is a service so it gets called only once
-
         $this->_logger = $log;
-        //TODO: inject translator
         $this->_context = array('source' => 'TahoeBackup');
         $this->_queue = new SplQueue();
     }
 
 
-    protected function _fullRetain($path, $retention)
+
+    public function enqueueJob(Job $job, $retain)
     {
 
+        $this->_queue->enqueue(new Pair($job, $retain));
+    }
+
+
+    protected function _fullRetain($path, $retention)
+    {
         $command = self::TAHOE_ALIAS . ' ls ' . $path . ' 2>&1';
         $commandOutput  = array();
         $status         = 0;
         exec($command, $commandOutput, $status);
         if (0 != $status) {
-            $this->_logger->err('Cannot access to tahoe storage [fullRetain_ls]: ' . implode("\n",$commandOutput), $this->_context);
+            $this->_logger->err('Cannot access to Tahoe storage [fullRetain_ls]: ' . implode("\n", $commandOutput), $this->_context);
             return $status;
         }
         $i = count($commandOutput);
@@ -53,16 +55,14 @@ class TahoeBackup
             $status         = 0;
             exec($command, $commandOutput, $status);
             if (0 != $status) {
-                $this->_logger->err('Cannot access to tahoe storage [no_rot_unlink]: ' . implode("\n",$commandOutput), $this->_context);
+                $this->_logger->err('Cannot access to Tahoe storage [no_rot_unlink]: ' . implode("\n", $commandOutput), $this->_context);
                 return $status;
             }
-
             return 0;
         }
-
         return null;
-
     }
+
 
     protected function _getJobPath(Job $job) {
 
@@ -92,6 +92,7 @@ class TahoeBackup
         return $value . '/' . sprintf('%04d', $idClient) . '/' . sprintf('%04d', $idJob) . '/';
     }
 
+
     protected function _getJobTahoePath(Job $job) {
 
         $idClient = $job->getClient()->getId();
@@ -101,12 +102,30 @@ class TahoeBackup
     }
 
 
+    public function isInstalled()
+    {   //doesent work after uninstalling
+
+        $command = 'dpkg-query -W tahoe-lafs';
+        exec($command, $commandOutput, $status);
+        if (0 != $status) {
+            return $status;
+        }
+        return true;
+    }
+
+
+    public function runAllQueuedJobs() {
+
+        foreach ($this->_queue as $pair) {
+            $this->_runJob($pair);
+        }
+    }
+
+
     protected function _runJob(Pair $pair) {
 
-
-
         if (!file_exists('.tahoe/imReady.txt')) {
-            $this->_logger->err('Cannot perform backup on tahoe storage: tahoe configuration not properly set', $this->_context);
+            $this->_logger->err('Cannot perform backup on Tahoe storage: Tahoe configuration not properly set', $this->_context);
             return -1;
         }
 
@@ -125,8 +144,8 @@ class TahoeBackup
         if (!$job->getPolicy()->isRotation($retain)) { //no rotation
 
             $backupDir = $this->_getJobPath($job);
-            if(false == $backupDir) {
-                $this->_logger->err('Cannot perform backup on tahoe storage [no_rot_getDir]: Cannot obtain source directory', $this->_context);
+            if (false == $backupDir) {
+                $this->_logger->err('Cannot perform backup on Tahoe storage [no_rot_getDir]: Cannot obtain source directory', $this->_context);
                 return 1;
             }
             $backupDir .= $retain . '.0';
@@ -134,7 +153,7 @@ class TahoeBackup
             $command = self::TAHOE_ALIAS . ' backup ' . $backupDir . ' ' . $this->_getJobTahoePath($job) . ' 2>&1';
             exec($command, $commandOutput, $status);
             if (0 != $status) {
-                $this->_logger->err('Cannot perform backup on tahoe storage [no_rot_backup]: ' . implode("\n",$commandOutput), $this->_context);
+                $this->_logger->err('Cannot perform backup on Tahoe storage [no_rot_backup]: ' . implode("\n", $commandOutput), $this->_context);
                 return $status;
             }
 
@@ -143,7 +162,7 @@ class TahoeBackup
             $status         = 0;
             exec($command, $commandOutput, $status);
             if (0 != $status) {
-                $this->_logger->err('Cannot access to tahoe storage [no_rot_ls1]: ' . implode("\n",$commandOutput), $this->_context);
+                $this->_logger->err('Cannot access to Tahoe storage [no_rot_ls1]: ' . implode("\n", $commandOutput), $this->_context);
                 return $status;
             }
 
@@ -155,7 +174,7 @@ class TahoeBackup
             $status         = 0;
             exec($command, $commandOutput, $status);
             if (0 != $status) {
-                $this->_logger->err('Cannot access to tahoe storage [no_rot_mv]: ' . implode("\n",$commandOutput), $this->_context);
+                $this->_logger->err('Cannot access to Tahoe storage [no_rot_mv]: ' . implode("\n", $commandOutput), $this->_context);
                 return $status;
             }
 
@@ -192,7 +211,7 @@ class TahoeBackup
                 $status         = 0;
                 exec($command, $commandOutput, $status);
                 if (0 != $status) {
-                    $this->_logger->err('Cannot access to tahoe storage [rot_cp]: ' . implode("\n",$commandOutput), $this->_context);
+                    $this->_logger->err('Cannot access to Tahoe storage [rot_cp]: ' . implode("\n", $commandOutput), $this->_context);
                     return $status;
                 }
 
@@ -213,32 +232,6 @@ class TahoeBackup
 
         }
         return true;
-    }
-
-    
-    public function enqueueJob(Job $job, $retain)
-    {
-
-        $this->_queue->enqueue(new Pair($job, $retain));
-    }
-
-    public function isInstalled()
-    {   //doesent work after uninstalling
-
-        $command = 'dpkg-query -W tahoe-lafs';
-        exec($command, $commandOutput, $status);
-        if (0 != $status) {
-            return $status;
-        }
-        return true;
-    }
-
-    public function runAllQueuedJobs() {
-
-        foreach ($this->_queue as $pair) {
-            $this->_runJob($pair);
-        }
-
     }
 
 }

@@ -126,7 +126,7 @@ class Builder extends ContainerAware
                                                   'route'    => 'manageParameters'),
                                             array('label'    => $t->trans('Manage backups location', array(), 'BinovoElkarBackup'),
                                                   'route'    => 'manageBackupsLocation'),
-                                            array('label'    => 'Manage tahoe storage', //trans *******
+                                            array('label'    => $t->trans('Manage Tahoe storage', array(), 'BinovoElkarTahoe'),
                                                   'route'    => 'tahoeConfig'),
                                             array('label'    => $t->trans('Repository backup script', array(), 'BinovoElkarBackup'),
                                                   'route'    => 'configureRepositoryBackupScript'));

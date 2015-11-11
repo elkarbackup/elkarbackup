@@ -20,7 +20,7 @@ class AppKernel extends Kernel
             new JMS\DiExtraBundle\JMSDiExtraBundle($this),
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
             new Binovo\ElkarBackupBundle\BinovoElkarBackupBundle(),
-            new Binovo\ElkarBackupBundle\BinovoTahoeBackupBundle(),
+            new Binovo\ElkarTahoeBundle\BinovoElkarTahoeBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),

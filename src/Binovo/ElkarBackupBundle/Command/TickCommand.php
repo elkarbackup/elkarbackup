@@ -34,7 +34,7 @@ class TickCommand extends BackupRunningCommand
         $allOk = $this->removeOldLogs() && $allOk;
         try { // we don't want to miss a backup because a command fails, so catch any exception
             $this->executeMessages($input, $output);
-            
+
             //last but not least, backup @tahoe
             $this->getContainer()->get('Tahoe')->runAllQueuedJobs();
         } catch (Exception $e) {

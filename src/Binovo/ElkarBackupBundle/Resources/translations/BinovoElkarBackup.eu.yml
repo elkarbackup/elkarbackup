@@ -346,6 +346,9 @@ managebackups_help: |
  <p>Aplikazio honek autofs-kin dependentzia du urruneko fitxategi sistemak muntatzeko. autofs behar den bezala konfiguratuta ez badago eremu hau ez da editagarria izango.
  <h4>Karpeta</h4>
  Fitxategi sistema lokaleko path osoa edo NFS export-aren izena. Beti '/'-ekin hasi behar da.  Aplikazioak snapshot edo kopia guztiak karpeta honetan gordeko ditu. elkarbackup erabiltzaileak karpeta honetan idazteko baimenak izan beharko ditu.
+ <h4>Tahoe biltegia</h4>
+ Bigarren biltegi bat aktibatzen du. Aktibatzerakoan tahoe configuratzeaz gogoratu.
+ <p>Funtzionalitate hau tahoe-lafs paketea erabiltzen du. Tahoe-lafs intalaturik ez badago laukia desaktibatuta agertuko da.</p>
 
 script_help: |
  <h4>Scritp-ei buruz</h4>

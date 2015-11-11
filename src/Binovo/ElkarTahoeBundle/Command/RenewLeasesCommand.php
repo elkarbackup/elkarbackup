@@ -30,12 +30,15 @@ class RenewLeasesCommand extends LoggingCommand
         $tahoeAlias = 'tahoe';
 
         if (!$this->_isTahoeReady()) {
-            $when = $this->_getLastRenewDate();
-            if (null==$when) {
-                $when = 'never';
+            if ($this->getContainer()->get('Tahoe')->isInstalled()){
+                $when = $this->_getLastRenewDate();
+                if (null!=$when) {
+                    $this->err('Warning: Tahoe storage is actually not configured properly or configured at all. Lease renewal not performed since [' . $when . ']', $context);
+                } else {
+                    $this->warn('Tahoe storage not configured', $context);
+                }
             }
-            $this->err('Warning: tahoe storage is not properly configurated. Lease renewal not performed since [' . $when . ']' );
-            return 1;
+            return 1; 
         }
 
         $command = $tahoeAlias . ' deep-check --add-lease elkarbackup: 2>&1';
@@ -43,26 +46,15 @@ class RenewLeasesCommand extends LoggingCommand
         $status         = 0;
         exec($command, $commandOutput, $status);
         if (0 != $status) {
-            $hideURI = $commandOutput[0];
-            //TODO: hide uri on error
-                //use shell_exec?
-                //or depending on status dont show the error -> ez
-            /*$j=strpos($hideURI, '/uri/' );
-            for(;$i<strlen(hideURI);$i++)*/
-            $this->err('Error ' . $status . ': trying to renew tahoe leases: ' . $hideURI);
+            //$commandOutput[] may contain sensitive data
+            $this->err('Error trying to renew Tahoe leases', $context);
             return $status;
         }
 
         $this->_updateFile($commandOutput);
 
-        $this->info('Tahoe leases have been renewed');
+        $this->info('Tahoe leases have been renewed', $context);
         return 0;        
-    }
-
-
-    protected function getNameForLogs()
-    {
-        return 'RenewLeasesCommand';
     }
 
 
@@ -99,6 +91,12 @@ class RenewLeasesCommand extends LoggingCommand
         return null;
     }
 
+
+    protected function getNameForLogs()
+    {
+        return 'RenewLeasesCommand';
+    }
+    
 
     protected function _isTahoeReady() {
 
@@ -139,12 +137,12 @@ class RenewLeasesCommand extends LoggingCommand
             $content = str_replace($oldLine, $newLine, $content);
             try {
                 if (file_put_contents(self::LAST_RENEW_FILE, $content) > 0) {
-                    $this->info('Node configuration set');
+                    $this->info('Renew date printed', $context);
                 } else {
-                    $this->warn('Warning renew log coud not be updated');
+                    $this->warn('Warning: renew log could not be updated', $context);
                 }
             } catch (Exception $e) {
-                $this->warn('Warning renew log coud not be updated: ' . $e->getMessage());
+                $this->warn('Warning: renew log could not be updated: ' . $e->getMessage(), $context);
             }
         } else {
             if (file_exists(self::LAST_RENEW_FILE)) {

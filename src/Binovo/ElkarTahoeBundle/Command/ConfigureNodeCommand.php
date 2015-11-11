@@ -39,10 +39,10 @@ class ConfigureNodeCommand extends LoggingCommand
             $status         = 0;
             exec($command, $commandOutput, $status);
             if (0 != $status) {
-                $this->err('Error creating Tahoe node: ' . implode("\n", $commandOutput));
+                $this->err('Error creating Tahoe node: ' . implode("\n", $commandOutput), $context);
                 return $status;
             }
-            $this->info($commandOutput[0]);     
+            $this->info($commandOutput[0], $context);     
         }
 
         //Set: tahoe - not ready (remove file)
@@ -106,25 +106,21 @@ class ConfigureNodeCommand extends LoggingCommand
                     }
 
                     if (file_put_contents($nodeConfigFile, $content) > 0) {
-                        $this->info('Node configuration set');
+                        $this->info('Node configuration set', $context);
                     } else {
-                        $commandOutput = 'Error while writing file';
-                        $this->err('Error configuring tahoe node: ' . $commandOutput);
+                        $this->err('Error configuring tahoe node: Error while writing file', $context);
                         return 1;
                     }
-                } catch(Exception $e) {
-                    $commandOutput = 'Error : '.$e->getMessage();
-                    $this->err('Error configuring tahoe node: ' . $commandOutput);
+                } catch (Exception $e) {
+                    $this->err('Error configuring tahoe node: ' . $e->getMessage(), $context);
                     return 1;
                 }
             } else {
-                $commandOutput = 'No permission to write on the file';
-                $this->err('Error configuring tahoe node: ' . $commandOutput);
+                $this->err('Error configuring tahoe node: No permission to write on the file', $context);
                 return 1;
             }
         } else {
-            $commandOutput = 'File not found. Make sure the client node exists and the path is correct.';
-            $this->err('Error configuring tahoe node:  ' . $commandOutput);
+            $this->err('Error configuring tahoe node:  File not found. Make sure the client node exists and the path is correct', $context);
             return 1;
         }
 
@@ -145,10 +141,10 @@ class ConfigureNodeCommand extends LoggingCommand
                 $status         = 0;
                 exec($command, $commandOutput, $status);
                 if (0 != $status) {
-                    $this->err('Error saving old aliases: ' . implode("\n", $commandOutput));
+                    $this->err('Error saving old aliases: ' . implode("\n", $commandOutput), $context);
                     return $status;
                 }
-                $this->info('Old aliases saved in ~/.tahoe/private/' . $newName);
+                $this->info('Old aliases saved in ~/.tahoe/private/' . $newName, $context);
                 //New file will be automatically created when a new alias is created
             }
         }
@@ -160,7 +156,7 @@ class ConfigureNodeCommand extends LoggingCommand
         exec($command, $commandOutput, $status);   
         if (0 != $status) {
             $errStart = count($commandOutput)-2;
-            $this->err('Error starting Tahoe node: ' . $commandOutput[$errStart]);
+            $this->err('Error starting Tahoe node: ' . $commandOutput[$errStart], $context);
             return $status;
         }
 
@@ -170,7 +166,7 @@ class ConfigureNodeCommand extends LoggingCommand
         $status = 0;
         exec($command, $commandOutput, $status);
         if (0 == $status) {
-            $this->info('New alias created [ elkarbackup: ]');
+            $this->info('New alias created [ elkarbackup: ]', $context);
         }
         
         //Check if tahoe is ready to work
@@ -179,8 +175,8 @@ class ConfigureNodeCommand extends LoggingCommand
         $status         = 0;
         exec($command, $commandOutput, $status);
         if (0 != $status) {
-            $this->err("Error connecting to the tahoe grid. Tahoe storage not ready to work.\n
-                Make sure the introducers furl is correct. Also the introducer node might be down or no storage nodes might be available.");
+            $this->err("Error connecting to the tahoe grid. Tahoe storage not ready to work.\nMake sure the introducers furl is correct. Also the introducer node might be down or no storage nodes might be available"
+                            , $context);
             return $status;
         }
         
