@@ -364,9 +364,12 @@ backupscriptconfig_help: |
 managebackups_help: |
  <h4>Host</h4>
  The host name or IP address of the NFS server. Leave empty for local file systems.
- <p>This application depends on autofs to mount the remote file systems. If autofs is not configured as expected this field will not be editable.
+ <p>This application depends on autofs to mount the remote file systems. If autofs is not configured as expected this field will not be editable.</p>
  <h4>Directory</h4>
  The full path in the local file system or the name of the NFS export. In any case it must start with '/'.
+ <h4>Tahoe storage</h4>
+ Check the box to enable a secondary Tahoe storage. If so, remember to set the tahoe configuration.
+ <p>This application depends on tahoe-lafs package. If Tahoe is not installed this box will be disabled.</p>
 script_help: |
  <h4>About the scripts</h4>
  The application invoques the script using the user for backups. The application sets the following enviroment variables before running any of the scripts:

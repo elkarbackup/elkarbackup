@@ -1,0 +1,34 @@
+{##
+ # @copyright 2012,2013 Binovo it Human Project, S.L.
+ # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ #}
+{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoElkarTahoe' %}
+
+{#
+{% block scripts %}
+    {{ parent() }}
+    {% javascripts '@BinovoElkarTahoeBundle/Resources/public/js/configurenode.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+#}
+
+{% block body %}
+    
+<meta http-equiv="refresh" content="{{ seconds }};{{ path('tahoeConfig') }}"/>
+<form class="form-horizontal" action="{{ path('tahoeConfig') }}" method="post" {{ form_enctype(form) }}>
+    <h3>{% trans %}Configure Tahoe storage{% endtrans %}</h3>
+    <div class="row">
+        <div class="col-md-offset-2">
+            {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
+            <div class="control-group">
+                {% trans %}configuring_help1{% endtrans %}
+                {{ seconds }}
+                {% trans %}configuring_help2{% endtrans %}
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
