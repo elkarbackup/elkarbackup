@@ -37,7 +37,10 @@ configurenode_help: |
  <h4>Introducer furl</h4>
  The url needed to get connected to the tahoe network.
  <h4>K-H-N parameters</h4>
- Optional. If left empty K=3, H=7 and N=10 will be set. Rule: 1 <= K <= H <= N
+ <p>Optional. If left empty K=3, H=7 and N=10 will be set. Rule: 1 <= K <= H <= N</p>
+ <p>K = shares needed</p>
+ <p>H = shares happy</p>
+ <p>N = shares total</p>
  <p>Data is erasure-coded into N shares distributed across at least H distinct storage servers so that it can be recovered from any K of these servers.</p>
  <p>Requiered space to store data in the grid given data size = S and supossing the backup successfully writes in N 'servers':</p>
  <p>requiered space = S*N/K</p>

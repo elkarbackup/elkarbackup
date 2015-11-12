@@ -1,0 +1,47 @@
+#tahoeConfigAction @Controller/DefaultController.php
+'Node nickname' : 'Nodoaren izena'
+'Introducer node furl' : 'Sartzailearen furl-a'
+'ERROR: Invalid introducer`s furl, try again' : 'ERROR: Nodo sartzailearen furl desegokia, berriro saiatu'
+'Warning: wrong KHN parameters' : 'Error: KHN balio desegokiak'
+'Tahoe storage is successfully configured' : 'Tahoe biltegia ondo konfiguratu dago'
+'ERROR: Tahoe storage is actually not configured properly or configured at all' : 'ERROR: Tahoe biltegia ez dago ondo konfiguratua'
+
+#configuring.html.twig @Resources/views/Default
+'Configure Tahoe storage' : 'Tahoe biltegia konfiguratu'
+#configurenode.html.twig @Resources/views/Default
+'Save' : 'Gorde'
+
+#menu @ElkarBackupBundle
+'Manage Tahoe storage' : 'Tahoe biltegia konfiguratu'
+
+#controller::manageBackupsAction @ElkarBackupBundle
+'Turn on Tahoe storage' : 'Tahoe biltegia aktibatu'
+'Warning: tahoe is not properly configured and will not work' : 'Warning: Tahoe biltegia ez dago ondo konfiguratua eta ez da ibiliko'
+
+
+#configuring.html.twig @Resources/views/Default
+configuring_help1: |
+ <h4>Elkarbackup Tahoe biltegia konfiguratzen ari da...</h4>
+ <br>
+ <p>Itxoin mesedez, gutxi gora behera
+configuring_help2: |
+ segundu beharko ditu.</p>
+ <p>Bukatzen duenean automatikoki Tahoe configurazio atalera itzuliko zaitu.</p>
+ <br>
+ <small>Orrialde hau ixteak EZ du configurazio prozesua etenduko.</small>
+
+#configurenode.html.twig @Resources/views/Default
+configurenode_help: |
+ <h4>Nodoaren izena</h4>
+ Hautazkoa. Balio lehenetsia 'elkarbackup_node'. Hutsuneak ez sartu.
+ <h4>Sartzailearen furl-a</h4>
+ Tahoe sarera konektatzeko behar den url bat.
+ <h4>K-H-N parametroak</h4>
+ <p>Hautazkoa. Balio lehenetsiak K=3, H=7 y N=10. Gogoratu: 1 <= K <= H <= N</p>
+ <p>K = shares needed</p>
+ <p>H = shares happy</p>
+ <p>N = shares total</p>
+ <p>Datuak N zatitan zatikatuko (erasure-coding) eta gutxienez H zerbitzari desberdinetan banatuko dira. Zerbitzari hauetako bakarrik K zerbitzaritik irakurtzea aski du datuak berreskuratzeko.</p>
+ <p>S tamainako datuak izanik eta suposatuz backup egiterakoan N zerbitzarieran idazten dela:</p>
+ <p>requiered space = S*N/K</p>
+ <p>zerbitzari bakoitzean: requiered space = S/K</p>
