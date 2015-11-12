@@ -60,7 +60,6 @@ class RenewLeasesCommand extends LoggingCommand
 
     protected function _getLastRenewDate()
     {
-
         if (file_exists(self::LAST_RENEW_FILE)) {
             $content = file_get_contents(self::LAST_RENEW_FILE);
             $startingTag = 'last-> renew ';
@@ -152,7 +151,6 @@ class RenewLeasesCommand extends LoggingCommand
             fwrite($file, $update . "\n");
             fclose($file);
         }
-
     }
 
 }
