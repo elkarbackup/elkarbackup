@@ -3,7 +3,7 @@
 'Introducer node furl' : 'Sartzailearen furl-a'
 'ERROR: Invalid introducer`s furl, try again' : 'ERROR: Nodo sartzailearen furl desegokia, berriro saiatu'
 'Warning: wrong KHN parameters' : 'Error: KHN balio desegokiak'
-'Tahoe storage is successfully configured' : 'Tahoe biltegia ondo konfiguratu dago'
+'Tahoe storage is successfully configured' : 'Tahoe biltegia ondo konfiguratua dago'
 'ERROR: Tahoe storage is actually not configured properly or configured at all' : 'ERROR: Tahoe biltegia ez dago ondo konfiguratua'
 
 #configuring.html.twig @Resources/views/Default

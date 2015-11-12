@@ -46,14 +46,14 @@ class RenewLeasesCommand extends LoggingCommand
         $status         = 0;
         exec($command, $commandOutput, $status);
         if (0 != $status) {
-            //$commandOutput[] may contain sensitive data
+            //$commandOutput[] may contain sensitive data when command crashes
             $this->err('Error trying to renew Tahoe leases', $context);
             return $status;
         }
+        $this->info('Tahoe leases have been renewed', $context);
 
         $this->_updateFile($commandOutput);
 
-        $this->info('Tahoe leases have been renewed', $context);
         return 0;        
     }
 
@@ -106,6 +106,7 @@ class RenewLeasesCommand extends LoggingCommand
 
     protected function _updateFile($commandOutput)
     {
+        $context = array('source' => 'RenewLeasesCommand');
 
         date_default_timezone_set('UTC');
         $newDate = date("Y-m-d H:i:s", time());
@@ -121,7 +122,7 @@ class RenewLeasesCommand extends LoggingCommand
             $beginPos=strpos($content, $startingTag)+strlen($startingTag);
             $endPos=strpos($content, $closingTag);
             $stopNewLine = false;
-            while ($beginPos<$endPos && $i<strlen($content)) {
+            while ($beginPos<$endPos && $beginPos<strlen($content)) {
                 $oldLine = $oldLine . $content[$beginPos];
                 if (!$stopNewLine) {
                     if ("\n"===$content[$beginPos]) {
