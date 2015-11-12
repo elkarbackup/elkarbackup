@@ -6,3 +6,6 @@ login_check:
     pattern:   /login_check
 logout:
     pattern: /logout
+binovo_elkar_tahoe:
+    resource: "@BinovoElkarTahoeBundle/Controller/"
+    type:     annotation
