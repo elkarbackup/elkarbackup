@@ -34,7 +34,7 @@ class ConfigureNodeCommand extends LoggingCommand
 
         //Node creation
         if (!is_dir('.tahoe/')) {
-            $command = $tahoeAlias . ' create-client 2>&1';
+            $command        = $tahoeAlias . ' create-client 2>&1';
             $commandOutput  = array();
             $status         = 0;
             exec($command, $commandOutput, $status);
@@ -136,7 +136,7 @@ class ConfigureNodeCommand extends LoggingCommand
                 if (is_writeable($nodeConfigFile)) {
                     file_put_contents($aliasesFile, 'introducer.furl = ' . $oldFurl . "\n", FILE_APPEND);
                 }
-                $command = 'mv ' . $aliasesFile . ' .tahoe/private/' . $newName . ' 2>&1';
+                $command        = 'mv ' . $aliasesFile . ' .tahoe/private/' . $newName . ' 2>&1';
                 $commandOutput  = array();
                 $status         = 0;
                 exec($command, $commandOutput, $status);
@@ -150,7 +150,7 @@ class ConfigureNodeCommand extends LoggingCommand
         }
 
         //Launch daemon - Node connexion
-        $command = $tahoeAlias . ' restart 2>&1'; //works even if it was not running
+        $command        = $tahoeAlias . ' restart 2>&1'; //works even if it was not running
         $commandOutput  = array();
         $status         = 0;
         exec($command, $commandOutput, $status);   
@@ -161,9 +161,9 @@ class ConfigureNodeCommand extends LoggingCommand
         }
 
         //Create elkarbackup directory in the tahoe grid
-        $command = $tahoeAlias . ' create-alias elkarbackup:';
+        $command        = $tahoeAlias . ' create-alias elkarbackup:';
         $commandOutput  = array();
-        $status = 0;
+        $status         = 0;
         exec($command, $commandOutput, $status);
         if (0 == $status) {
             $this->info('New alias created [ elkarbackup: ]', $context);
