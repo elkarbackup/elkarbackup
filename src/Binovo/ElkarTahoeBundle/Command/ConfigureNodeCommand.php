@@ -160,6 +160,17 @@ class ConfigureNodeCommand extends LoggingCommand
             return $status;
         }
 
+        //Set the access to the node for www-data
+        $elkarbackupNodeUrlFile = '.tahoe/node.url';
+        $wwwdataNodeUrlFile     = 'node.url';
+        if (file_exists($elkarbackupNodeUrlFile)) {
+            $content = file_get_contents($elkarbackupNodeUrlFile);
+            file_put_contents($wwwdataNodeUrlFile, $content);
+        } else {    //should never happen at this point
+            $this->err('Error: node.url file missing. Elkarbackup will not be able to access data stored at tahoe.', $context);
+            return 0;
+        }
+
         //Create elkarbackup directory in the tahoe grid
         $command        = $tahoeAlias . ' create-alias elkarbackup:';
         $commandOutput  = array();
