@@ -24,7 +24,7 @@ class DefaultController extends Controller
      */
     public function tahoeConfigAction(Request $request)
     {
-        $context = array('source' => 'DefaultController');
+        $context = array('source' => 'TahoeController');
 
         $t = $this->get('translator');
         $manager = $this->getDoctrine()->getManager();
@@ -66,7 +66,7 @@ class DefaultController extends Controller
                     $data[$key]=rtrim($data[$key]);
                 }
             } catch (Exception $e) {
-                $this->warn('Warning: the file could not be read. Default settings will be displayed', $context);
+                $this->get('BnvWebLogger')->warn('Warning: the file could not be read. Default settings will be displayed', $context);
             }
         }
 
@@ -233,6 +233,47 @@ class DefaultController extends Controller
 
         return $this->render('BinovoElkarTahoeBundle:Default:configurenode.html.twig',
                                     array('form' => $form->createView()));
+    }
+
+    /**
+     * @Route("/tahoe/restore", name="tahoeRestore")
+     * @Template()
+     */
+    public function tahoeRestoreAction(Request $request)
+    {
+
+        
+        $context = array('source' => 'TahoeController');
+
+        $t = $this->get('translator');
+        $tahoe = $this->container->get('Tahoe');
+        $logger = $this->get('BnvWebLogger');
+        
+        //check if tahoe is installed?
+
+        if (file_exists('/var/lib/elkarbackup/.tahoe/imReady.txt')) {
+            $backupDir = $this->container->getParameter('upload_dir'); //'backup_dir'
+            $logger->info('on my way: ' . $backupDir, $context);
+            $command        = 'tahoe -d /var/lib/elkarbackup/ cp -r elkarbackup:Backups/ ' . $backupDir . '/ 2>&1';
+            $commandOutput  = array();
+            $status         = 0;
+            exec($command, $commandOutput, $status);
+            $logger->info('on my way: ' . $command, $context);
+            if (0 != $status) {
+                $logger->err('Error restoring repository: ' . implode("\n", $commandOutput), $context);
+                $msg = 'Error restoring repository';
+            } else {
+                $logger->info('Repository restored from Tahoe storage: ' . implode("\n", $commandOutput), $context);
+                $msg = 'Repository restored from Tahoe storage';
+            }
+
+            //$msg = $t->trans($msg, array(), 'BinovoElkarTahoe');
+            $this->get('session')->getFlashBag()->add('tahoeConfiguration', $msg);
+        } else {
+            $logger->err('Error: Tahoe is not configured', $context);
+        }
+
+        return $this->redirect($this->generateUrl('tahoeConfig'));
     }
 
 }
