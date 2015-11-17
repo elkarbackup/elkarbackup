@@ -317,6 +317,7 @@ class DefaultController extends Controller
                     if($dirCount>0) {
                         $isDir=array();
 
+                        $retainsLevel = false;
                         for ($i=0; $i<$dirCount; $i++) {
                             //format: drwx <size> <date/time> <name in this directory>
                             //ex: dr-x - Nov 16 09:52 testbackup
@@ -331,7 +332,7 @@ class DefaultController extends Controller
                                 $size.=$commandOutput[$i][$j];
                                 $j++;
                             }
-                            if ('-'!=$size) {
+                            if ('-'!=$size) { //convert from bytes to units
                                 $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
                                 if($size>0) {
                                     $power = floor(log(intval($size), 1024));
@@ -355,14 +356,36 @@ class DefaultController extends Controller
                                 $name.=$commandOutput[$i][$j];
                                 $j++;
                             }
+                            if ('Archives' == $name) {
+                                $retainsLevel = true;
+                            }
                             $content[$i] = array($name, $size, $isDir);
                         }
-                        //when we are at retains level
-                            //remove archives wich will always be empty
-                            //sort list
-                                //1 Latest
-                                //2 Hourly
-                                //3 the rest are already sorted
+
+                        if ($retainsLevel) { //sort
+                            $aux = array();
+                            foreach ($content as $value) {
+                                switch ($value[0]) {
+                                    case 'Latest':
+                                        $latest = $value;
+                                        break;
+                                    case 'Hourly':
+                                        $hourly = $value;
+                                        break;
+                                    case 'Archives':
+                                        break;
+                                    default:
+                                        $aux[] = $value;
+                                        break;
+                                }
+                            }
+                            $content = array();
+                            $content[] = $latest;
+                            $content[] = $hourly;
+                            foreach ($aux as $value) {
+                                $content[] = $value;
+                            }
+                        }
                     }
                 }
 
