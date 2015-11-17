@@ -1,0 +1,67 @@
+{##
+ # @copyright 2012,2013 Binovo it Human Project, S.L.
+ # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ #}
+{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoTahoeBackup' %}
+
+{% block body %}
+
+    <p>
+        <h3>
+        {{ filePath ~ '/' }}
+        </h3>
+        <a href="{{ path('showJobTahoeBackup', {action: 'view' , file: 'elkarbackup:Backups'}) }}"><b>{% trans %}Back to root{% endtrans %}</b></a>
+    </p>
+    <p>
+        <table class="table table-condensed table-bordered table-striped">
+            <tr>
+                <th>{% trans %}Name{% endtrans %}</th>
+                <th>{% trans %}Actions{% endtrans %}</th>
+            </tr>
+            <tr>
+                <td>
+                    <a href="{{ path('showJobTahoeBackup', {action: 'view' , file: fatherDir}) }}">
+                       <span class="glyphicon glyphicon-folder-open"></span>
+                       &nbsp;<b>..</b></a>
+                </td>
+            </tr>
+            {% for file in content %}
+                {% if file.0 != "." %}
+     	              {% if filePath|length > 1 or ( file.0 != ".." and file.0 != ".") %}
+    		<tr>
+    		    <td>
+                {% if file.1 %}
+    		        <a href="{{ path('showJobTahoeBackup', {action: 'view' , file: filePath ~ '/' ~ file.0}) }}">
+    			        <span class="glyphicon glyphicon-folder-open"></span>&nbsp;{{ ' ' ~ file.0 }}
+                    </a>
+                {% else %}
+                    <span class="glyphicon glyphicon-file"></span>&nbsp;{{ file.0 }}
+                {% endif %}
+    		    </td>
+    		    <td>
+    		        {% if file.0 != ".." and file.0 != "." %}
+                    {% if file.1 %}
+                        <a href="{{ path('showJobTahoeBackup', {action: 'download' , file: filePath ~ '/' ~ file.0}) }}">
+                            <b>{% trans %}Download as .tgz{% endtrans %}</b>
+                        </a>
+                        {% if isZipInstalled %}
+                            &nbsp;|&nbsp;
+                            <a href="{{ path('showJobTahoeBackup', {action: 'downloadzip' , file: filePath ~ '/' ~ file.0}) }}">
+                                <b>{% trans %}Download as .zip{% endtrans %}</b>
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ path('showJobTahoeBackup', {action: 'download' , file: filePath ~ '/' ~ file.0}) }}">
+                            <b>{% trans %}Download{% endtrans %}</b>
+                        </a>
+                    {% endif %}
+                    {% endif %}
+    		    </td>
+    		</tr>
+    	              {% endif %}
+                {% endif %}
+            {% endfor %}
+        </table>
+    </p>
+{% endblock %}

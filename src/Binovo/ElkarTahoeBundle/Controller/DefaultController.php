@@ -24,7 +24,7 @@ class DefaultController extends Controller
      */
     public function tahoeConfigAction(Request $request)
     {
-        $context = array('source' => 'TahoeController');
+        $context = array('source' => 'TahoeController::tahoeConfig');
 
         $t = $this->get('translator');
         $manager = $this->getDoctrine()->getManager();
@@ -241,24 +241,18 @@ class DefaultController extends Controller
      */
     public function tahoeRestoreAction(Request $request)
     {
-
-        
-        $context = array('source' => 'TahoeController');
+        $context = array('source' => 'TahoeController::tahoeRestore');
 
         $t = $this->get('translator');
         $tahoe = $this->container->get('Tahoe');
         $logger = $this->get('BnvWebLogger');
-        
-        //check if tahoe is installed?
 
         if (file_exists('/var/lib/elkarbackup/.tahoe/imReady.txt')) {
             $backupDir = $this->container->getParameter('upload_dir'); //'backup_dir'
-            $logger->info('on my way: ' . $backupDir, $context);
             $command        = 'tahoe -d /var/lib/elkarbackup/ cp -r elkarbackup:Backups/ ' . $backupDir . '/ 2>&1';
             $commandOutput  = array();
             $status         = 0;
             exec($command, $commandOutput, $status);
-            $logger->info('on my way: ' . $command, $context);
             if (0 != $status) {
                 $logger->err('Error restoring repository: ' . implode("\n", $commandOutput), $context);
                 $msg = 'Error restoring repository';
@@ -275,5 +269,95 @@ class DefaultController extends Controller
 
         return $this->redirect($this->generateUrl('tahoeConfig'));
     }
+
+
+    /**
+     * @Route("/tahoe/backup/{action}/{file}", requirements={"action" = "view|download|downloadzip" , "file" = ".*"}, name="showJobTahoeBackup")
+     * @Method("GET")
+     */
+    public function showJobTahoeBackupAction(Request $request, $action, $file)
+    {
+        $context = array('source' => 'TahoeController::showJobTahoeBackup');
+
+        $tahoe = $this->container->get('Tahoe');
+        $logger = $this->get('BnvWebLogger');
+        $t = $this->get('translator');
+
+        if (file_exists('/var/lib/elkarbackup/.tahoe/imReady.txt')) {
+            $lenFile=strlen($file);
+            $lenRoot=strlen('elkarbackup:Backups');
+            if ($lenFile <= $lenRoot) {
+                $father = 'elkarbackup:Backups';
+            } else {
+                $i=$lenFile-1;
+                for (; $i>$lenRoot; $i--) {
+                    if ('/'==$file[$i]) {
+                        break;
+                    }
+                }
+                $father = '';
+                for (; $j<$i; $j++) {
+                    $father.=$file[$j];
+                }
+            }
+
+            if ('download' == $action) {
+
+            } elseif ('downloadzip' == $action) {
+
+            } else {
+                $command        = 'tahoe -d /var/lib/elkarbackup/ ls -l ' . $file . ' 2>&1';
+                $commandOutput  = array();
+                $status         = 0;
+                exec($command, $commandOutput, $status);
+                if (0 != $status) {
+                    $dirCount = 0;
+                    $content = array();
+                    $logger->info('hello 0', $context);
+                } else {
+                    $dirCount = count($commandOutput);
+                    $logger->info('hello count:' . $dirCount, $context);
+                    if($dirCount>0) {
+                        $isDir=array();
+                        for ($i=0; $i<$dirCount; $i++) {
+                            if ('d' == $commandOutput[$i][0]) {
+                                $isDir[$i] = true;
+                            } else {
+                                $isDir[$i] = false;
+                            }
+                        }
+                        $command        = 'tahoe -d /var/lib/elkarbackup/ ls ' . $file . ' 2>&1';
+                        $commandOutput  = array();
+                        $status         = 0;
+                        exec($command, $commandOutput, $status);
+                        $content = $commandOutput;
+
+                        for ($i=0; $i<$dirCount; $i++) {
+                            $content[$i] = array($content[$i], $isDir[$i]);
+                        }
+                    }
+                }
+
+                system('which zip', $cmdretval);
+                $isZipInstalled = !$cmdretval;
+
+                $this->info('Browse Tahoe repository -> ' . $file,
+                            array('link' => $this->generateUrl('showJobTahoeBackup', array('action'   => $action,
+                                                                                           'file'     => $file))));
+                $this->getDoctrine()->getManager()->flush();
+
+                return $this->render('BinovoElkarTahoeBundle:Default:tahoeDirectory.html.twig',
+                                         array('content'        => $content,
+                                               'filePath'       => $file,
+                                               'fatherDir'      => $father,
+                                               'isZipInstalled' => $isZipInstalled));
+            }
+
+        } else {
+            $logger->err('Error: Tahoe is not configured', $context);
+        }
+        return $this->redirect($this->generateUrl('tahoeConfig'));
+    }
+
 
 }
