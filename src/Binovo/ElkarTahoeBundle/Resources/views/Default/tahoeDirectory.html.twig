@@ -8,40 +8,43 @@
 {% block body %}
 
     <p>
-        <h3>
-        {{ filePath ~ '/' }}
-        </h3>
-        <a href="{{ path('showJobTahoeBackup', {action: 'view' , file: 'elkarbackup:Backups'}) }}"><b>{% trans %}Back to root{% endtrans %}</b></a>
+        <h3>{{ filePath ~ '/' }}</h3>
+        <a href="{{ path('showJobTahoeBackup', {action: 'view' , file: 'elkarbackup:Backups'}) }}">
+            <b>{% trans %}Back to root{% endtrans %}</b>
+        </a>
     </p>
     <p>
         <table class="table table-condensed table-bordered table-striped">
             <tr>
                 <th>{% trans %}Name{% endtrans %}</th>
+                <th>{% trans %}Size{% endtrans %}</th>
                 <th>{% trans %}Actions{% endtrans %}</th>
             </tr>
             <tr>
                 <td>
                     <a href="{{ path('showJobTahoeBackup', {action: 'view' , file: fatherDir}) }}">
                        <span class="glyphicon glyphicon-folder-open"></span>
-                       &nbsp;<b>..</b></a>
+                       <b>&nbsp;..</b>
+                    </a>
                 </td>
             </tr>
             {% for file in content %}
-                {% if file.0 != "." %}
-     	              {% if filePath|length > 1 or ( file.0 != ".." and file.0 != ".") %}
     		<tr>
     		    <td>
-                {% if file.1 %}
+                {% if file.2 %}
     		        <a href="{{ path('showJobTahoeBackup', {action: 'view' , file: filePath ~ '/' ~ file.0}) }}">
-    			        <span class="glyphicon glyphicon-folder-open"></span>&nbsp;{{ ' ' ~ file.0 }}
+    			        <span class="glyphicon glyphicon-folder-open"></span>
+                        <b>&nbsp;{{ file.0 }}</b>
                     </a>
                 {% else %}
                     <span class="glyphicon glyphicon-file"></span>&nbsp;{{ file.0 }}
                 {% endif %}
     		    </td>
+                <td>
+                    {{ file.1 }}
+                </td>
     		    <td>
-    		        {% if file.0 != ".." and file.0 != "." %}
-                    {% if file.1 %}
+                    {% if file.2 %}
                         <a href="{{ path('showJobTahoeBackup', {action: 'download' , file: filePath ~ '/' ~ file.0}) }}">
                             <b>{% trans %}Download as .tgz{% endtrans %}</b>
                         </a>
@@ -56,11 +59,8 @@
                             <b>{% trans %}Download{% endtrans %}</b>
                         </a>
                     {% endif %}
-                    {% endif %}
     		    </td>
     		</tr>
-    	              {% endif %}
-                {% endif %}
             {% endfor %}
         </table>
     </p>

@@ -306,42 +306,70 @@ class DefaultController extends Controller
             } elseif ('downloadzip' == $action) {
 
             } else {
+                $content = array();
                 $command        = 'tahoe -d /var/lib/elkarbackup/ ls -l ' . $file . ' 2>&1';
                 $commandOutput  = array();
                 $status         = 0;
                 exec($command, $commandOutput, $status);
-                if (0 != $status) {
-                    $dirCount = 0;
-                    $content = array();
-                    $logger->info('hello 0', $context);
-                } else {
+                if (0 == $status) {
                     $dirCount = count($commandOutput);
-                    $logger->info('hello count:' . $dirCount, $context);
+
                     if($dirCount>0) {
                         $isDir=array();
-                        for ($i=0; $i<$dirCount; $i++) {
-                            if ('d' == $commandOutput[$i][0]) {
-                                $isDir[$i] = true;
-                            } else {
-                                $isDir[$i] = false;
-                            }
-                        }
-                        $command        = 'tahoe -d /var/lib/elkarbackup/ ls ' . $file . ' 2>&1';
-                        $commandOutput  = array();
-                        $status         = 0;
-                        exec($command, $commandOutput, $status);
-                        $content = $commandOutput;
 
                         for ($i=0; $i<$dirCount; $i++) {
-                            $content[$i] = array($content[$i], $isDir[$i]);
+                            //format: drwx <size> <date/time> <name in this directory>
+                            //ex: dr-x - Nov 16 09:52 testbackup
+                            if ('d' == $commandOutput[$i][0]) {
+                                $isDir = true;
+                            } else {
+                                $isDir = false;
+                            }
+                            $j=5;
+                            $size='';
+                            while (' '!=$commandOutput[$i][$j]) {
+                                $size.=$commandOutput[$i][$j];
+                                $j++;
+                            }
+                            if ('-'!=$size) {
+                                $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+                                if($size>0) {
+                                    $power = floor(log(intval($size), 1024));
+                                } else {
+                                    $power = 0;
+                                }
+                                $size = number_format(intval($size) / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
+                            }
+                            $j++;
+                            $dateTime = '';
+                            while (':'!=$commandOutput[$i][$j]) {
+                                $dateTime.=$commandOutput[$i][$j];
+                                $j++;
+                            }
+                            $j+=4;
+                            $name = '';
+                            while(' '==$commandOutput[$i][$j] and $j<strlen($commandOutput[$i])) {
+                                $j++;
+                            }
+                            while ($j < strlen($commandOutput[$i])) {
+                                $name.=$commandOutput[$i][$j];
+                                $j++;
+                            }
+                            $content[$i] = array($name, $size, $isDir);
                         }
+                        //when we are at retains level
+                            //remove archives wich will always be empty
+                            //sort list
+                                //1 Latest
+                                //2 Hourly
+                                //3 the rest are already sorted
                     }
                 }
 
                 system('which zip', $cmdretval);
                 $isZipInstalled = !$cmdretval;
 
-                $this->info('Browse Tahoe repository -> ' . $file,
+                $logger->info('Browse Tahoe repository ',
                             array('link' => $this->generateUrl('showJobTahoeBackup', array('action'   => $action,
                                                                                            'file'     => $file))));
                 $this->getDoctrine()->getManager()->flush();
