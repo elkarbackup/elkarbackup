@@ -236,41 +236,6 @@ class DefaultController extends Controller
                                     array('form' => $form->createView()));
     }
 
-    /**
-     * @Route("/tahoe/restore", name="tahoeRestore")
-     * @Template()
-     */
-    public function tahoeRestoreAction(Request $request)
-    {
-        $context = array('source' => 'TahoeController::tahoeRestore');
-
-        $t = $this->get('translator');
-        $tahoe = $this->container->get('Tahoe');
-        $logger = $this->get('BnvWebLogger');
-
-        if (file_exists('/var/lib/elkarbackup/.tahoe/imReady.txt')) {
-            $backupDir = $this->container->getParameter('upload_dir'); //'backup_dir'
-            $command        = 'tahoe -d /var/lib/elkarbackup/ cp -r elkarbackup:Backups/ ' . $backupDir . '/ 2>&1';
-            $commandOutput  = array();
-            $status         = 0;
-            exec($command, $commandOutput, $status);
-            if (0 != $status) {
-                $logger->err('Error restoring repository: ' . implode("\n", $commandOutput), $context);
-                $msg = 'Error restoring repository';
-            } else {
-                $logger->info('Repository restored from Tahoe storage: ' . implode("\n", $commandOutput), $context);
-                $msg = 'Repository restored from Tahoe storage';
-            }
-
-            //$msg = $t->trans($msg, array(), 'BinovoElkarTahoe');
-            $this->get('session')->getFlashBag()->add('tahoeConfiguration', $msg);
-        } else {
-            $logger->err('Error: Tahoe is not configured', $context);
-        }
-
-        return $this->redirect($this->generateUrl('tahoeConfig'));
-    }
-
 
     /**
      * @Route("/tahoe/backup/{action}/{file}", requirements={"action" = "view|download|downloadzip" , "file" = ".*"}, name="showJobTahoeBackup")
@@ -294,7 +259,6 @@ class DefaultController extends Controller
             }
 
             if ('view' == $action) {
-
                 $content = array();
                 $command        = 'tahoe -d /var/lib/elkarbackup/ ls -l ' . $file . ' 2>&1';
                 $commandOutput  = array();
@@ -303,7 +267,7 @@ class DefaultController extends Controller
                 if (0 == $status) {
                     $dirCount = count($commandOutput);
 
-                    if($dirCount>0) {
+                    if ($dirCount>0) {
                         $isDir=array();
 
                         $retainsLevel = false;
@@ -323,7 +287,7 @@ class DefaultController extends Controller
                             }
                             if ('-'!=$size) { //convert from bytes to units
                                 $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
-                                if($size>0) {
+                                if ($size>0) {
                                     $power = floor(log(intval($size), 1024));
                                 } else {
                                     $power = 0;
@@ -338,7 +302,7 @@ class DefaultController extends Controller
                             }
                             $j+=4;
                             $name = '';
-                            while(' '==$commandOutput[$i][$j] and $j<strlen($commandOutput[$i])) {
+                            while (' '==$commandOutput[$i][$j] and $j<strlen($commandOutput[$i])) {
                                 $j++;
                             }
                             while ($j < strlen($commandOutput[$i])) {
@@ -392,7 +356,6 @@ class DefaultController extends Controller
                                                'fatherDir'      => $father,
                                                'isZipInstalled' => $isZipInstalled));
             } else {
-
                 if (0!=strcmp('elkarbackup:Backups', $file)) {
                     $filename = '';
                     $i = strlen($father)+1;
@@ -432,14 +395,14 @@ class DefaultController extends Controller
                     $headers = array('Content-Type' => 'application/x-gzip',
                                      'Content-Disposition' => sprintf('attachment; filename="%s.tar.gz"', basename($realPath)));
 
-                    $f = function() use ($realPath){
+                    $f = function() use ($realPath) {
                         $command = sprintf('cd "%s"; tar zc "%s"; rm -r "%s"', dirname($realPath), basename($realPath), dirname($realPath));
                         passthru($command);
                     };
                 } else { // ('downloadzip' == $action)
                     $headers = array('Content-Type'        => 'application/zip',
                                      'Content-Disposition' => sprintf('attachment; filename="%s.zip"', basename($realPath)));
-                    $f = function() use ($realPath){
+                    $f = function() use ($realPath) {
                         $command = sprintf('cd "%s"; zip -r - "%s"; rm -r "%s"', dirname($realPath), basename($realPath), dirname($realPath));
                         passthru($command);
                     };
