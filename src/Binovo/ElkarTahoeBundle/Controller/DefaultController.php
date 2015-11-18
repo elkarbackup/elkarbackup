@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Form\FormError;
 use Binovo\ElkarBackupBundle\Entity\Message;
 
@@ -289,23 +290,11 @@ class DefaultController extends Controller
             if ($lenFile <= $lenRoot) {
                 $father = 'elkarbackup:Backups';
             } else {
-                $i=$lenFile-1;
-                for (; $i>$lenRoot; $i--) {
-                    if ('/'==$file[$i]) {
-                        break;
-                    }
-                }
-                $father = '';
-                for (; $j<$i; $j++) {
-                    $father.=$file[$j];
-                }
+                $father = dirname($file);
             }
 
-            if ('download' == $action) {
+            if ('view' == $action) {
 
-            } elseif ('downloadzip' == $action) {
-
-            } else {
                 $content = array();
                 $command        = 'tahoe -d /var/lib/elkarbackup/ ls -l ' . $file . ' 2>&1';
                 $commandOutput  = array();
@@ -402,6 +391,64 @@ class DefaultController extends Controller
                                                'filePath'       => $file,
                                                'fatherDir'      => $father,
                                                'isZipInstalled' => $isZipInstalled));
+            } else {
+
+                if (0!=strcmp('elkarbackup:Backups', $file)) {
+                    $filename = '';
+                    $i = strlen($father)+1;
+                    for (; $i<strlen($file); $i++) {
+                        $filename.=$file[$i];
+                    }
+                } else {
+                    $filename = 'Backups';
+                }
+                $filename = str_replace(' ', '', $filename);
+                $realPath = '/tmp/elkarbackup/' . $filename;
+
+                if (false!=strpos($file, ' ')) {
+                    $dirName = dirname($file);
+                    $fileFixed = basename($file);
+                    $fileFixed = "'" . $fileFixed . "'";
+                    while (0!=strcmp('.', $dirName)) {
+                        $baseName = basename($dirName);
+                        $dirName = dirname($dirName);
+                        $baseName = "'" . $baseName . "'";
+                        $fileFixed = $baseName . '/' . $fileFixed;
+                    }
+                } else {
+                    $fileFixed = $file;
+                }
+
+                $command        = 'tahoe -d /var/lib/elkarbackup/ cp -r ' . $fileFixed . ' ' . $realPath . ' 2>&1';
+                $commandOutput  = array();
+                $status         = 0;
+                exec($command, $commandOutput, $status);
+                if (0 != $status) {
+                    $logger->err('Error: Tahoe cannot retrieve that directory from the grid - ' . $file, $context);
+                    return $this->redirect($this->generateUrl('showJobTahoeBackup', array('action' => 'view', 'file' => $father)));
+                }
+
+                if ('download' == $action) {
+                    $headers = array('Content-Type' => 'application/x-gzip',
+                                     'Content-Disposition' => sprintf('attachment; filename="%s.tar.gz"', basename($realPath)));
+
+                    $f = function() use ($realPath){
+                        $command = sprintf('cd "%s"; tar zc "%s"; rm -r "%s"', dirname($realPath), basename($realPath), dirname($realPath));
+                        passthru($command);
+                    };
+                } else { // ('downloadzip' == $action)
+                    $headers = array('Content-Type'        => 'application/zip',
+                                     'Content-Disposition' => sprintf('attachment; filename="%s.zip"', basename($realPath)));
+                    $f = function() use ($realPath){
+                        $command = sprintf('cd "%s"; zip -r - "%s"; rm -r "%s"', dirname($realPath), basename($realPath), dirname($realPath));
+                        passthru($command);
+                    };
+                }
+                $logger->info('Download backup directory ',
+                              array('link' => $this->generateUrl('showJobTahoeBackup', array('action' => $action, 'file' => $file))));
+                $this->getDoctrine()->getManager()->flush();
+
+                return new StreamedResponse($f, 200, $headers);
             }
 
         } else {
