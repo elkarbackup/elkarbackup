@@ -203,6 +203,9 @@
 'Job': 'Tarea'
 'Before': 'Antes'
 'After': 'Después'
+
+'Size' : 'Tamaño'
+'Back to root' : 'Volver a la raíz'
 policy_help: |
  <h4>Nombre</h4>
  Es el identificador de la política. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.

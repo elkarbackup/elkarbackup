@@ -34,7 +34,7 @@ class ConfigureNodeCommand extends LoggingCommand
 
         //Node creation
         if (!is_dir('.tahoe/')) {
-            $command = $tahoeAlias . ' create-client 2>&1';
+            $command        = $tahoeAlias . ' create-client 2>&1';
             $commandOutput  = array();
             $status         = 0;
             exec($command, $commandOutput, $status);
@@ -136,7 +136,7 @@ class ConfigureNodeCommand extends LoggingCommand
                 if (is_writeable($nodeConfigFile)) {
                     file_put_contents($aliasesFile, 'introducer.furl = ' . $oldFurl . "\n", FILE_APPEND);
                 }
-                $command = 'mv ' . $aliasesFile . ' .tahoe/private/' . $newName . ' 2>&1';
+                $command        = 'mv ' . $aliasesFile . ' .tahoe/private/' . $newName . ' 2>&1';
                 $commandOutput  = array();
                 $status         = 0;
                 exec($command, $commandOutput, $status);
@@ -150,7 +150,7 @@ class ConfigureNodeCommand extends LoggingCommand
         }
 
         //Launch daemon - Node connexion
-        $command = $tahoeAlias . ' restart 2>&1'; //works even if it was not running
+        $command        = $tahoeAlias . ' restart 2>&1'; //works even if it was not running
         $commandOutput  = array();
         $status         = 0;
         exec($command, $commandOutput, $status);   
@@ -160,10 +160,21 @@ class ConfigureNodeCommand extends LoggingCommand
             return $status;
         }
 
+        //Set the access to the node for www-data
+        $elkarbackupNodeUrlFile = '.tahoe/node.url';
+        $wwwdataNodeUrlFile     = 'node.url';
+        if (file_exists($elkarbackupNodeUrlFile)) {
+            $content = file_get_contents($elkarbackupNodeUrlFile);
+            file_put_contents($wwwdataNodeUrlFile, $content);
+        } else {    //should never happen at this point
+            $this->err('Error: node.url file missing. Elkarbackup will not be able to access data stored at tahoe.', $context);
+            return 1;
+        }
+
         //Create elkarbackup directory in the tahoe grid
-        $command = $tahoeAlias . ' create-alias elkarbackup:';
+        $command        = $tahoeAlias . ' create-alias elkarbackup:';
         $commandOutput  = array();
-        $status = 0;
+        $status         = 0;
         exec($command, $commandOutput, $status);
         if (0 == $status) {
             $this->info('New alias created [ elkarbackup: ]', $context);
@@ -183,6 +194,43 @@ class ConfigureNodeCommand extends LoggingCommand
         //Set: tahoe - ready (create file)
         $file = fopen($readyFile, 'w');
         fclose($file);
+
+        //Set the ready-only URI as elkarbackup-RO: alias for www-data
+        $elkarbackupAliasesFile = '.tahoe/private/aliases';
+        $wwwdataAliasesFile = 'private/aliases';
+        if (file_exists($elkarbackupAliasesFile)) {
+            $alias = 'elkarbackup: ';
+            $writecap = '';
+            $ending = '';
+            $content = file_get_contents($elkarbackupAliasesFile);
+            $i=strpos($content, $alias);
+            $i+=strlen($alias);
+            $colonCount = 0;
+            while ("\n"!=$content[$i]) {
+                $writecap.=$content[$i];
+                if (3==$colonCount) {
+                    $ending.=$content[$i];
+                } else {
+                    if (':'==$content[$i]) {
+                        $colonCount++;
+                    }
+                }
+                $i++;
+            }
+        } else { //should never happen at this point
+            $this->err('Error: aliases file missing. Elkarbackup will not be able to access data stored at tahoe.', $context);
+        }
+        $command        = $tahoeAlias . ' debug dump-cap ' . $writecap;
+        $commandOutput  = array();
+        $status         = 0;
+        exec($command, $commandOutput, $status);
+        if (0 == $status) {
+            $readkey = substr($commandOutput[3], strlen(' readkey: '));
+            $readcap = 'URI:DIR2-RO:' . $readkey . ':' . $ending;
+            file_put_contents($wwwdataAliasesFile, 'elkarbackup: ' . $readcap . "\n");
+        } else {
+            $this->err('Error: cannot obtain readcap. Elkarbackup will not be able to access data stored at tahoe.', $context);
+        }
   
         return 0;
     }

@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Form\FormError;
 use Binovo\ElkarBackupBundle\Entity\Message;
 
@@ -24,7 +25,7 @@ class DefaultController extends Controller
      */
     public function tahoeConfigAction(Request $request)
     {
-        $context = array('source' => 'DefaultController');
+        $context = array('source' => 'TahoeController::tahoeConfig');
 
         $t = $this->get('translator');
         $manager = $this->getDoctrine()->getManager();
@@ -66,7 +67,7 @@ class DefaultController extends Controller
                     $data[$key]=rtrim($data[$key]);
                 }
             } catch (Exception $e) {
-                $this->warn('Warning: the file could not be read. Default settings will be displayed', $context);
+                $this->get('BnvWebLogger')->warn('Warning: the file could not be read. Default settings will be displayed', $context);
             }
         }
 
@@ -231,8 +232,199 @@ class DefaultController extends Controller
         }
         $this->get('session')->getFlashBag()->add('tahoeConfiguration', $trans_msg);
 
+        $nodeUrl = file_get_contents('/var/lib/elkarbackup/node.url');
+        if (strlen($nodeUrl)<1) {
+            $nodeUrl = 'http://127.0.0.1:3456/'; //default
+        }
+
         return $this->render('BinovoElkarTahoeBundle:Default:configurenode.html.twig',
-                                    array('form' => $form->createView()));
+                                    array('form'        => $form->createView(),
+                                          'gridStatus'  => $nodeUrl));
     }
+
+
+    /**
+     * @Route("/tahoe/backup/{action}/{file}", requirements={"action" = "view|download|downloadzip" , "file" = ".*"}, name="showJobTahoeBackup")
+     * @Method("GET")
+     */
+    public function showJobTahoeBackupAction(Request $request, $action, $file)
+    {
+        $context = array('source' => 'TahoeController::showJobTahoeBackup');
+
+        $tahoe = $this->container->get('Tahoe');
+        $logger = $this->get('BnvWebLogger');
+        $t = $this->get('translator');
+
+        if (file_exists('/var/lib/elkarbackup/.tahoe/imReady.txt')) {
+            $lenFile=strlen($file);
+            $lenRoot=strlen('elkarbackup:Backups');
+            if ($lenFile <= $lenRoot) {
+                $father = 'elkarbackup:Backups';
+            } else {
+                $father = dirname($file);
+            }
+
+            if ('view' == $action) {
+                $content = array();
+                $command        = 'tahoe -d /var/lib/elkarbackup/ ls -l ' . $file . ' 2>&1';
+                $commandOutput  = array();
+                $status         = 0;
+                exec($command, $commandOutput, $status);
+                if (0 == $status) {
+                    $dirCount = count($commandOutput);
+
+                    if ($dirCount>0) {
+                        $isDir=array();
+
+                        $retainsLevel = false;
+                        for ($i=0; $i<$dirCount; $i++) {
+                            //format: drwx <size> <date/time> <name in this directory>
+                            //ex: dr-x - Nov 16 09:52 testbackup
+                            if ('d' == $commandOutput[$i][0]) {
+                                $isDir = true;
+                            } else {
+                                $isDir = false;
+                            }
+                            $j=5;
+                            $size='';
+                            while (' '!=$commandOutput[$i][$j]) {
+                                $size.=$commandOutput[$i][$j];
+                                $j++;
+                            }
+                            if ('-'!=$size) { //convert from bytes to units
+                                $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+                                if ($size>0) {
+                                    $power = floor(log(intval($size), 1024));
+                                } else {
+                                    $power = 0;
+                                }
+                                $size = number_format(intval($size) / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
+                            }
+                            $j++;
+                            $dateTime = '';
+                            while (':'!=$commandOutput[$i][$j]) {
+                                $dateTime.=$commandOutput[$i][$j];
+                                $j++;
+                            }
+                            $j+=4;
+                            $name = '';
+                            while (' '==$commandOutput[$i][$j] and $j<strlen($commandOutput[$i])) {
+                                $j++;
+                            }
+                            while ($j < strlen($commandOutput[$i])) {
+                                $name.=$commandOutput[$i][$j];
+                                $j++;
+                            }
+                            if ('Archives' == $name) {
+                                $retainsLevel = true;
+                            }
+                            $content[$i] = array($name, $size, $isDir);
+                        }
+
+                        if ($retainsLevel) { //sort
+                            $aux = array();
+                            foreach ($content as $value) {
+                                switch ($value[0]) {
+                                    case 'Latest':
+                                        $latest = $value;
+                                        break;
+                                    case 'Hourly':
+                                        $hourly = $value;
+                                        break;
+                                    case 'Archives':
+                                        break;
+                                    default:
+                                        $aux[] = $value;
+                                        break;
+                                }
+                            }
+                            $content = array();
+                            $content[] = $latest;
+                            $content[] = $hourly;
+                            foreach ($aux as $value) {
+                                $content[] = $value;
+                            }
+                        }
+                    }
+                }
+
+                system('which zip', $cmdretval);
+                $isZipInstalled = !$cmdretval;
+
+                $logger->info('Browse Tahoe repository ',
+                            array('link' => $this->generateUrl('showJobTahoeBackup', array('action'   => $action,
+                                                                                           'file'     => $file))));
+                $this->getDoctrine()->getManager()->flush();
+
+                return $this->render('BinovoElkarTahoeBundle:Default:tahoeDirectory.html.twig',
+                                         array('content'        => $content,
+                                               'filePath'       => $file,
+                                               'fatherDir'      => $father,
+                                               'isZipInstalled' => $isZipInstalled));
+            } else {
+                if (0!=strcmp('elkarbackup:Backups', $file)) {
+                    $filename = '';
+                    $i = strlen($father)+1;
+                    for (; $i<strlen($file); $i++) {
+                        $filename.=$file[$i];
+                    }
+                } else {
+                    $filename = 'Backups';
+                }
+                $filename = str_replace(' ', '', $filename);
+                $realPath = '/tmp/elkarbackup/' . $filename;
+
+                if (false!=strpos($file, ' ')) {
+                    $dirName = dirname($file);
+                    $fileFixed = basename($file);
+                    $fileFixed = "'" . $fileFixed . "'";
+                    while (0!=strcmp('.', $dirName)) {
+                        $baseName = basename($dirName);
+                        $dirName = dirname($dirName);
+                        $baseName = "'" . $baseName . "'";
+                        $fileFixed = $baseName . '/' . $fileFixed;
+                    }
+                } else {
+                    $fileFixed = $file;
+                }
+
+                $command        = 'tahoe -d /var/lib/elkarbackup/ cp -r ' . $fileFixed . ' ' . $realPath . ' 2>&1';
+                $commandOutput  = array();
+                $status         = 0;
+                exec($command, $commandOutput, $status);
+                if (0 != $status) {
+                    $logger->err('Error: Tahoe cannot retrieve that directory from the grid - ' . $file, $context);
+                    return $this->redirect($this->generateUrl('showJobTahoeBackup', array('action' => 'view', 'file' => $father)));
+                }
+
+                if ('download' == $action) {
+                    $headers = array('Content-Type' => 'application/x-gzip',
+                                     'Content-Disposition' => sprintf('attachment; filename="%s.tar.gz"', basename($realPath)));
+
+                    $f = function() use ($realPath) {
+                        $command = sprintf('cd "%s"; tar zc "%s"; rm -r "%s"', dirname($realPath), basename($realPath), dirname($realPath));
+                        passthru($command);
+                    };
+                } else { // ('downloadzip' == $action)
+                    $headers = array('Content-Type'        => 'application/zip',
+                                     'Content-Disposition' => sprintf('attachment; filename="%s.zip"', basename($realPath)));
+                    $f = function() use ($realPath) {
+                        $command = sprintf('cd "%s"; zip -r - "%s"; rm -r "%s"', dirname($realPath), basename($realPath), dirname($realPath));
+                        passthru($command);
+                    };
+                }
+                $logger->info('Download backup directory ',
+                              array('link' => $this->generateUrl('showJobTahoeBackup', array('action' => $action, 'file' => $file))));
+                $this->getDoctrine()->getManager()->flush();
+
+                return new StreamedResponse($f, 200, $headers);
+            }
+
+        } else {
+            $logger->err('Error: Tahoe is not configured', $context);
+        }
+        return $this->redirect($this->generateUrl('tahoeConfig'));
+    }
+
 
 }
