@@ -232,8 +232,14 @@ class DefaultController extends Controller
         }
         $this->get('session')->getFlashBag()->add('tahoeConfiguration', $trans_msg);
 
+        $nodeUrl = file_get_contents('/var/lib/elkarbackup/node.url');
+        if (strlen($nodeUrl)<1) {
+            $nodeUrl = 'http://127.0.0.1:3456/'; //default
+        }
+
         return $this->render('BinovoElkarTahoeBundle:Default:configurenode.html.twig',
-                                    array('form' => $form->createView()));
+                                    array('form'        => $form->createView(),
+                                          'gridStatus'  => $nodeUrl));
     }
 
 

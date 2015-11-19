@@ -19,7 +19,18 @@
 <form class="form-horizontal" action="{{ path('tahoeConfig') }}" method="post" {{ form_enctype(form) }}>
     <h3>{% trans %}Configure Tahoe storage{% endtrans %}</h3>
     <div class="row">
+        <div class="control-group">
+            <div class="controls">
+                <a class="pull-left" href="{{ path('showJobTahoeBackup', {action: 'view', file: 'elkarbackup:Backups'}) }}">
+                    <input class="btn btn-elkarbackup" type="button" value="{% trans %}Browse Tahoe repository{% endtrans %}"/>
+                </a>
+            </div>
+        </div>
+        <a class="pull-right" href="{{ gridStatus }}" target="_blank">{% trans %}Check Tahoe grid status{% endtrans %}</a>
+    </div>
+    <div class="row">
         <div class="col-md-6">
+            <br>
             {% for flashMessage in app.session.flashbag.get('tahoeConfiguration') %}
             <div class="controls help-block">
                 {{ flashMessage }}
@@ -34,8 +45,6 @@
             </div>
         </div>
         <div class="col-md-6">
-            <a class="pull-right" href="{{ path('showJobTahoeBackup', {action: 'view', file: 'elkarbackup:Backups'}) }}">Browse Tahoe repository</a>
-            <br>
             {% trans %}configurenode_help{% endtrans %}
         </div>
     </div>
