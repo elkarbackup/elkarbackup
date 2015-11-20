@@ -1087,7 +1087,8 @@ EOF;
             $data = array('host'      => '',
                           'directory' => $backupDir);  
         }
-        $tahoeInstalled = $this->container->get('Tahoe')->isInstalled();
+        $tahoe = $this->container->get('Tahoe');
+        $tahoeInstalled = $tahoe->isInstalled();
         $tahoeOn = $this->container->getParameter('tahoe_active');
         if(!$tahoeInstalled && $tahoeOn) {
             $tahoeOn = false;
@@ -1153,7 +1154,7 @@ EOF;
                                     array('form' => $form->createView()));
         }
 
-        if (!file_exists('/var/lib/elkarbackup/.tahoe/imReady.txt') and $data['tahoe_active']) {
+        if (!file_exists($tahoe->getReadyFile()) and $data['tahoe_active']) {
             $this->get('session')->getFlashBag()->add('manageParameters',
                                                       $t->trans('Warning: tahoe is not properly configured and will not work',
                                                                 array(),
@@ -1281,11 +1282,11 @@ EOF;
         if ($ok) {
             $this->info('Set Parameter %paramname%',
                         array('%paramname%' => $name),
-                        array('link' => $this->generateUrl('showPolicies')));
+                        array('link' => $this->generateUrl('manageParameters')));
         } else {
             $this->info('Set Parameter %paramname%',
                         array('%paramname%' => $name),
-                        array('link' => $this->generateUrl('showPolicies')));
+                        array('link' => $this->generateUrl('manageParameters')));
         }
 
         return $ok;

@@ -14,16 +14,22 @@ use \SplQueue;
 
 class TahoeBackup
 {
-    
-    const TAHOE_ALIAS = 'tahoe'; //tahoe bin file path
 
+    const NODE_DIR_NAME = '.tahoe/'; //default when 'tahoe create-node'
+    const POINTER_DIR = 'tahoe-client/';
+
+    const TAHOE_ALIAS = 'tahoe'; //tahoe bin file path
+    const READY_FILE = 'elkarbackupNodeReady';
+
+    protected $_nodeLocation;
     protected $_logger;
     protected $_context;
     protected $_queue;
 
 
-    public function __construct(Logger $log)
+    public function __construct(Logger $log, $home='/var/lib/elkarbackup/')
     {
+        $this->_nodeLocation = $home;
         $this->_logger = $log;
         $this->_context = array('source' => 'TahoeBackup');
         $this->_queue = new SplQueue();
@@ -64,7 +70,22 @@ class TahoeBackup
     }
 
 
-    protected function _getJobPath(Job $job) {
+    public function getBin()
+    {
+
+        return self::TAHOE_ALIAS;
+    }
+
+
+    public function getNodePath()
+    {
+
+        return $this->_nodeLocation . self::NODE_DIR_NAME;
+    }
+
+
+    protected function _getJobPath(Job $job)
+    {
 
         $paramsFilename = dirname(__FILE__) . '/../../../../app/config/parameters.yml';
         $paramsFile = file_get_contents(realpath($paramsFilename) );
@@ -93,12 +114,41 @@ class TahoeBackup
     }
 
 
-    protected function _getJobTahoePath(Job $job) {
+    protected function _getJobTahoePath(Job $job)
+    {
 
         $idClient = $job->getClient()->getId();
         $idJob    = $job->getId();
         
         return 'elkarbackup:Backups/' . sprintf('%04d', $idClient) . '/' . sprintf('%04d', $idJob) . '/';
+    }
+
+
+    public function getPointerToNode()
+    {
+
+        return $this->_nodeLocation . self::POINTER_DIR;
+    }
+
+
+    public function getReadyFile()
+    {
+
+        return $this->_nodeLocation . self::NODE_DIR_NAME . self::READY_FILE;
+    }
+
+
+    public function getRelativeNodePath()
+    {
+        //relative so 'elkarbackup' does not traverse directories with no permission
+        return self::NODE_DIR_NAME;
+    }
+
+
+    public function getRelativePointerToNode()
+    {
+
+        return self::POINTER_DIR;
     }
 
 
@@ -114,7 +164,8 @@ class TahoeBackup
     }
 
 
-    public function runAllQueuedJobs() {
+    public function runAllQueuedJobs()
+    {
 
         foreach ($this->_queue as $pair) {
             $this->_runJob($pair);
@@ -122,9 +173,10 @@ class TahoeBackup
     }
 
 
-    protected function _runJob(Pair $pair) {
+    protected function _runJob(Pair $pair)
+    {
 
-        if (!file_exists('.tahoe/imReady.txt')) {
+        if (!file_exists(self::READY_FILE)) {
             $this->_logger->err('Cannot perform backup on Tahoe storage: Tahoe configuration not properly set', $this->_context);
             return -1;
         }
@@ -233,5 +285,7 @@ class TahoeBackup
         }
         return true;
     }
+
+
 
 }

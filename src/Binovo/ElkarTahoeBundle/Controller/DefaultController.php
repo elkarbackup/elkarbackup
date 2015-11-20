@@ -48,7 +48,7 @@ class DefaultController extends Controller
         $data['shareshappy'] = 7;   //H
         $data['sharestotal'] = 10;  //N default values
 
-        $nodeConfigFile = '/var/lib/elkarbackup/.tahoe/tahoe.cfg';
+        $nodeConfigFile = $tahoe->getNodePath() . 'tahoe.cfg';
         if (file_exists($nodeConfigFile)) {
             try {
                 $content = file_get_contents($nodeConfigFile);
@@ -225,7 +225,7 @@ class DefaultController extends Controller
             }
         }
         
-        if (file_exists('/var/lib/elkarbackup/.tahoe/imReady.txt')) {
+        if (file_exists($tahoe->getReadyFile())) {
             $trans_msg = $t->trans('Tahoe storage is successfully configured', array(), 'BinovoElkarTahoe');
         } else {
             $trans_msg = $t->trans('ERROR: Tahoe storage is actually not configured properly or configured at all', array(), 'BinovoElkarTahoe');
@@ -255,7 +255,7 @@ class DefaultController extends Controller
         $logger = $this->get('BnvWebLogger');
         $t = $this->get('translator');
 
-        if (file_exists('/var/lib/elkarbackup/.tahoe/imReady.txt')) {
+        if (file_exists($tahoe->getReadyFile())) {
             $lenFile=strlen($file);
             $lenRoot=strlen('elkarbackup:Backups');
             if ($lenFile <= $lenRoot) {
@@ -264,9 +264,12 @@ class DefaultController extends Controller
                 $father = dirname($file);
             }
 
+            $tahoeAlias = $tahoe->getBin();
+            $pointerToNode = $tahoe->getPointerToNode();
+
             if ('view' == $action) {
                 $content = array();
-                $command        = 'tahoe -d /var/lib/elkarbackup/ ls -l ' . $file . ' 2>&1';
+                $command        = $tahoeAlias . ' -d ' . $pointerToNode . ' ls -l ' . $file . ' 2>&1';
                 $commandOutput  = array();
                 $status         = 0;
                 exec($command, $commandOutput, $status);
@@ -352,15 +355,15 @@ class DefaultController extends Controller
                 $isZipInstalled = !$cmdretval;
 
                 $logger->info('Browse Tahoe repository ',
-                            array('link' => $this->generateUrl('showJobTahoeBackup', array('action'   => $action,
-                                                                                           'file'     => $file))));
+                              array('link' => $this->generateUrl('showJobTahoeBackup', array('action'   => $action,
+                                                                                             'file'     => $file))));
                 $this->getDoctrine()->getManager()->flush();
 
                 return $this->render('BinovoElkarTahoeBundle:Default:tahoeDirectory.html.twig',
-                                         array('content'        => $content,
-                                               'filePath'       => $file,
-                                               'fatherDir'      => $father,
-                                               'isZipInstalled' => $isZipInstalled));
+                                      array('content'        => $content,
+                                            'filePath'       => $file,
+                                            'fatherDir'      => $father,
+                                            'isZipInstalled' => $isZipInstalled));
             } else {
                 if (0!=strcmp('elkarbackup:Backups', $file)) {
                     $filename = '';
@@ -388,7 +391,7 @@ class DefaultController extends Controller
                     $fileFixed = $file;
                 }
 
-                $command        = 'tahoe -d /var/lib/elkarbackup/ cp -r ' . $fileFixed . ' ' . $realPath . ' 2>&1';
+                $command        = $tahoeAlias . ' -d ' . $pointerToNode . ' cp -r ' . $fileFixed . ' ' . $realPath . ' 2>&1';
                 $commandOutput  = array();
                 $status         = 0;
                 exec($command, $commandOutput, $status);

@@ -15,7 +15,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RenewLeasesCommand extends LoggingCommand
 {
-    const LAST_RENEW_FILE = '.tahoe/elkarbackupRenew.txt';
+    const RENEW_LOG = 'elkarbackupRenew.log';
+    protected $_renewLog;
 
     protected function configure()
     {
@@ -27,10 +28,13 @@ class RenewLeasesCommand extends LoggingCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $context = array('source' => 'RenewLeasesCommand');
-        $tahoeAlias = 'tahoe';
 
-        if (!$this->_isTahoeReady()) {
-            if ($this->getContainer()->get('Tahoe')->isInstalled()){
+        $tahoe = $this->getContainer()->get('Tahoe');
+        $this->_renewLog = $tahoe->getRelativeNodePath() . self::RENEW_LOG;
+        $tahoeAlias = $tahoe->getBin();
+
+        if (!file_exists($tahoe->getReadyFile())) {
+            if ($tahoe->isInstalled()){
                 $when = $this->_getLastRenewDate();
                 if (null!=$when) {
                     $this->err('Warning: Tahoe storage is actually not configured properly or configured at all. Lease renewal not performed since [' . $when . ']', $context);
@@ -46,7 +50,7 @@ class RenewLeasesCommand extends LoggingCommand
         $status         = 0;
         exec($command, $commandOutput, $status);
         if (0 != $status) {
-            //$commandOutput[] may contain sensitive data when command crashes
+            //$commandOutput[] may contain sensitive data when command fails
             $this->err('Error trying to renew Tahoe leases', $context);
             return $status;
         }
@@ -60,8 +64,8 @@ class RenewLeasesCommand extends LoggingCommand
 
     protected function _getLastRenewDate()
     {
-        if (file_exists(self::LAST_RENEW_FILE)) {
-            $content = file_get_contents(self::LAST_RENEW_FILE);
+        if (file_exists($this->_renewLog)) {
+            $content = file_get_contents($this->_renewLog);
             $startingTag = 'last-> renew ';
             $date='';
             $i=strpos($content, $startingTag)+strlen($startingTag);
@@ -69,7 +73,6 @@ class RenewLeasesCommand extends LoggingCommand
                 $date.=$content[$i];
                 $i++;
             }
-            
 
             $rawDate = '';
             for ($i=0;$i<strlen($date);$i++) {
@@ -95,12 +98,6 @@ class RenewLeasesCommand extends LoggingCommand
     {
         return 'RenewLeasesCommand';
     }
-    
-
-    protected function _isTahoeReady() {
-
-        return file_exists('.tahoe/imReady.txt');
-    }
 
 
     protected function _updateFile($commandOutput)
@@ -114,8 +111,8 @@ class RenewLeasesCommand extends LoggingCommand
         $update = $startingTag . 'renew ' . $newDate . " (utc)\n";
         $update = $update . $commandOutput[0] . $closingTag;
 
-        if (file_exists(self::LAST_RENEW_FILE) && is_writable(self::LAST_RENEW_FILE)) {
-            $content = file_get_contents(self::LAST_RENEW_FILE);
+        if (file_exists($this->_renewLog) && is_writable($this->_renewLog)) {
+            $content = file_get_contents($this->_renewLog);
             $oldLine = '';
 
             $beginPos=strpos($content, $startingTag)+strlen($startingTag);
@@ -136,7 +133,7 @@ class RenewLeasesCommand extends LoggingCommand
 
             $content = str_replace($oldLine, $newLine, $content);
             try {
-                if (file_put_contents(self::LAST_RENEW_FILE, $content) > 0) {
+                if (file_put_contents($this->_renewLog, $content) > 0) {
                     $this->info('Renew date printed', $context);
                 } else {
                     $this->warn('Warning: renew log could not be updated', $context);
@@ -145,10 +142,10 @@ class RenewLeasesCommand extends LoggingCommand
                 $this->warn('Warning: renew log could not be updated: ' . $e->getMessage(), $context);
             }
         } else {
-            if (file_exists(self::LAST_RENEW_FILE)) {
-                unlink(self::LAST_RENEW_FILE);
+            if (file_exists($this->_renewLog)) {
+                unlink($this->_renewLog);
             }
-            $file = fopen(self::LAST_RENEW_FILE, "w");
+            $file = fopen($this->_renewLog, "w");
             fwrite($file, $update . "\n");
             fclose($file);
         }
