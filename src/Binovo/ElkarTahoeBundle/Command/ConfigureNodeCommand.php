@@ -23,6 +23,7 @@ class ConfigureNodeCommand extends LoggingCommand
             ->addArgument('s.H', InputArgument::OPTIONAL, '[client] Shares happy(H)')
             ->addArgument('s.N', InputArgument::OPTIONAL, '[client] Shares total(N)')
             ->addArgument('nname', InputArgument::OPTIONAL, '[node] Nodes nickname')
+            ->addArgument('storage', InputArgument::OPTIONAL, '[storage] Storage enabled')
             ->setDescription('Configures the Tahoe client node.');
     }
 
@@ -72,7 +73,12 @@ class ConfigureNodeCommand extends LoggingCommand
         if ( !($attr['shares.total'] = $input->getArgument('s.N')) ) {
             $attr['shares.total'] = 10;
         }
-
+        //[storage]
+        //only replace 1st appearance of 'enabled'
+        if ( !($attr['enabled'] = $input->getArgument('storage')) ) {
+            $attr['enabled'] = 'false';
+        }
+        
         if (file_exists($nodeConfigFile)) {
             if (is_writeable($nodeConfigFile) ) {
                 try {
@@ -103,9 +109,9 @@ class ConfigureNodeCommand extends LoggingCommand
                         if ('introducer.furl' == $key) {
                             $oldFurlLine = $oldLine;
                         }
-                        $content = str_replace($oldLine, $newLine, $content);
+                        //replace only first appearance
+                        $content = implode($newLine, explode($oldLine, $content, 2));
                     }
-
                     if (file_put_contents($nodeConfigFile, $content) > 0) {
                         $this->info('Node configuration set', $context);
                     } else {
@@ -162,7 +168,9 @@ class ConfigureNodeCommand extends LoggingCommand
             return $status;
         }
 
-        mkdir($wwwdataNodePath . 'private/', 0775, true);
+        if (!file_exists($wwwdataNodePath . 'private/')) {
+            mkdir($wwwdataNodePath . 'private/', 0775, true);
+        }
         //Set the access to the node for www-data
         $elkarbackupNodeUrlFile = $tahoeNodePath . 'node.url';
         $wwwdataNodeUrlFile     = $wwwdataNodePath . 'node.url';
@@ -223,8 +231,7 @@ class ConfigureNodeCommand extends LoggingCommand
         $status         = 0;
         exec($command, $commandOutput, $status);
         if (0 != $status) {
-            $this->err("Error connecting to the tahoe grid. Tahoe storage not ready to work.\nMake sure the introducers furl is correct. Also the introducer node might be down or no storage nodes might be available"
-                            , $context);
+            $this->err('Error connecting to the tahoe grid. Tahoe storage not ready to work.', $context);
             return $status;
         }
         

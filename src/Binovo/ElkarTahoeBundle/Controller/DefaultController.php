@@ -41,12 +41,7 @@ class DefaultController extends Controller
         $fields['sharesneeded']='shares.needed';
         $fields['shareshappy']='shares.happy';
         $fields['sharestotal']='shares.total';
-
-        $data['nickname'] = 'elkarbackup_node';
-        $data['introducerfurl'] = '';
-        $data['sharesneeded'] = 3;  //K
-        $data['shareshappy'] = 7;   //H
-        $data['sharestotal'] = 10;  //N default values
+        $fields['storageenabled'] = 'enabled';
 
         $nodeConfigFile = $tahoe->getNodePath() . 'tahoe.cfg';
         if (file_exists($nodeConfigFile)) {
@@ -66,9 +61,21 @@ class DefaultController extends Controller
                     }
                     $data[$key]=rtrim($data[$key]);
                 }
+                if ('true' == $data['storageenabled']) {
+                    $data['storageenabled'] = true;
+                } else {
+                    $data['storageenabled'] = false;
+                }
             } catch (Exception $e) {
                 $this->get('BnvWebLogger')->warn('Warning: the file could not be read. Default settings will be displayed', $context);
             }
+        } else {
+            $data['nickname'] = 'elkarbackup_node';
+            $data['introducerfurl'] = '';
+            $data['sharesneeded'] = 3;  //K
+            $data['shareshappy'] = 7;   //H
+            $data['sharestotal'] = 10;  //N default values
+            $data['storageenabled'] = false;
         }
 
         $formBuilder = $this->createFormBuilder($data);
@@ -84,7 +91,7 @@ class DefaultController extends Controller
                                                               'attr'     => array('class'   => 'form-control',
                                                                                   'style'   => 'width: 52px;',
                                                                                   'maxlength' => 3)));
-        $formBuilder->add('shareshappy'   , 'text' , array('required' => false,
+        $formBuilder->add('shareshappy'   , 'text'    , array('required' => false,
                                                               'label'    => 'H',
                                                               'attr'     => array('class'   => 'form-control',
                                                                                   'style'   => 'width: 52px;',
@@ -94,6 +101,8 @@ class DefaultController extends Controller
                                                               'attr'     => array('class'   => 'form-control',
                                                                                   'style'   => 'width: 52px;',
                                                                                   'maxlength' => 3)));
+        $formBuilder->add('storageenabled', 'checkbox', array('required' => false,
+                                                              'label'    => $t->trans('Enable storage', array(), 'BinovoElkarTahoe')));
         $form = $formBuilder->getForm();
 
 
@@ -198,14 +207,20 @@ class DefaultController extends Controller
 
 
             if (3 > $changes[0]) {
+                if ($data['storageenabled']) {
+                    $data['storageenabled'] = 'true';
+                } else {
+                    $data['storageenabled'] = 'false';
+                }
+
                 $msg = new Message('DefaultController', 'TickCommand',
                                      json_encode(array( 'command' => 'tahoe:config_node',
                                                         'i.furl' => $data['introducerfurl'],
                                                         's.K' => $data['sharesneeded'],
                                                         's.H' => $data['shareshappy'],
                                                         's.N' => $data['sharestotal'],
-                                                        'nname' => $data['nickname']
-                                                        )));
+                                                        'nname' => $data['nickname'],
+                                                        'storage' => $data['storageenabled'])));
                 $manager->persist($msg);
                 $manager->flush();
 
