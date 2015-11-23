@@ -131,10 +131,22 @@ class TahoeBackup
     }
 
 
+    public function getReadyCode()
+    {
+
+        $filePath = $this->_nodeLocation . self::NODE_DIR_NAME . self::READY_FILE;
+        if (!file_exists($filePath)) {
+            return '000';
+        } else {
+            return file_get_contents($filePath);
+        }
+    }
+
+
     public function getReadyFile()
     {
 
-        return $this->_nodeLocation . self::NODE_DIR_NAME . self::READY_FILE;
+        return self::NODE_DIR_NAME . self::READY_FILE;
     }
 
 
@@ -161,6 +173,37 @@ class TahoeBackup
             return $status;
         }
         return true;
+    }
+
+
+    public function isReady()
+    {   
+        $filePath = $this->_nodeLocation . self::NODE_DIR_NAME . self::READY_FILE;
+        if (!file_exists($filePath)) {
+            return false;
+        }
+        $content = file_get_contents($filePath);
+        $key = $content[0] . $content[1] . $content[2];
+        switch ($key) {
+            case '100':
+                //keep going
+            case '200':
+                //keep going
+            case 'URI':
+                return true;
+                break;
+            case '000':
+                //keep going
+            case '101':
+                //keep going
+            case '500':
+                return false;
+                break;
+            default: //should never happen
+                return false;
+                break;
+        }
+        return false;
     }
 
 

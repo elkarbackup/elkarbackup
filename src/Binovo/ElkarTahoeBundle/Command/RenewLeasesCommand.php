@@ -33,7 +33,7 @@ class RenewLeasesCommand extends LoggingCommand
         $this->_renewLog = $tahoe->getRelativeNodePath() . self::RENEW_LOG;
         $tahoeAlias = $tahoe->getBin();
 
-        if (!file_exists($tahoe->getReadyFile())) {
+        if (!$tahoe->isReady()) {
             if ($tahoe->isInstalled()){
                 $when = $this->_getLastRenewDate();
                 if (null!=$when) {

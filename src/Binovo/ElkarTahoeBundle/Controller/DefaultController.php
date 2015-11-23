@@ -225,12 +225,38 @@ class DefaultController extends Controller
             }
         }
         
-        if (file_exists($tahoe->getReadyFile())) {
-            $trans_msg = $t->trans('Tahoe storage is successfully configured', array(), 'BinovoElkarTahoe');
-        } else {
-            $trans_msg = $t->trans('ERROR: Tahoe storage is actually not configured properly or configured at all', array(), 'BinovoElkarTahoe');
+        $readyCode = $tahoe->getReadyCode();
+        $key = $readyCode[0] . $readyCode[1] . $readyCode[2];
+        $writecap = '';
+        switch ($key) {
+            case '000':
+                $trans_msg = $t->trans('Tahoe storage has never been configured', array(), 'BinovoElkarTahoe');
+                break;
+            case '100':
+                $trans_msg = $t->trans('Tahoe storage is configured', array(), 'BinovoElkarTahoe');
+                break;
+            case '500':
+                $trans_msg = $t->trans('ERROR: Tahoe storage configuration has failed', array(), 'BinovoElkarTahoe');
+                $form->addError(new FormError($trans_msg));
+                $this->_updateCode();
+                //keep going
+            case '101':
+                $trans_msg = $t->trans('Tahoe storage is NOT configured properly', array(), 'BinovoElkarTahoe');
+                break;
+            case 'URI':
+                $writecap = $readyCode;
+                //keep going
+            case '200':
+                $this->_updateCode();
+                $trans_msg = $t->trans('SUCCESS: Tahoe storage has successfully been configured', array(), 'BinovoElkarTahoe');
+                break;
+            default:
+                $this->_updateCode();
+                $trans_msg = $t->trans('ERROR: Tahoe storage is actually not configured properly or configured at all', array(), 'BinovoElkarTahoe');
+                break;
         }
         $this->get('session')->getFlashBag()->add('tahoeConfiguration', $trans_msg);
+
 
         $nodeUrl = file_get_contents('/var/lib/elkarbackup/node.url');
         if (strlen($nodeUrl)<1) {
@@ -239,7 +265,28 @@ class DefaultController extends Controller
 
         return $this->render('BinovoElkarTahoeBundle:Default:configurenode.html.twig',
                                     array('form'        => $form->createView(),
-                                          'gridStatus'  => $nodeUrl));
+                                          'gridStatus'  => $nodeUrl,
+                                          'newWritecap' => rtrim($writecap) ));
+    }
+
+
+    protected function _updateCode()
+    {
+        $context = array('source' => 'TahoeController:UpdateTahoeCode');
+        $logger = $this->get('BnvWebLogger');
+
+        $db = $this->getDoctrine();
+        $manager = $db->getManager();
+
+        try {
+            $msg = new Message('TahoeController', 'TickCommand',
+                               json_encode(array('command' => "tahoe:update_code")));
+            $manager->persist($msg);
+            $logger->info('Code update pending', $context);
+            $manager->flush();
+        } catch (Exception $e) {
+            $logger->err('Error: ' . $e->getMessage(), $context);
+        }
     }
 
 
@@ -255,7 +302,7 @@ class DefaultController extends Controller
         $logger = $this->get('BnvWebLogger');
         $t = $this->get('translator');
 
-        if (file_exists($tahoe->getReadyFile())) {
+        if ($tahoe->isReady()) {
             $lenFile=strlen($file);
             $lenRoot=strlen('elkarbackup:Backups');
             if ($lenFile <= $lenRoot) {

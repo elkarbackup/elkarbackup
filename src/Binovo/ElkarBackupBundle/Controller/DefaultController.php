@@ -1154,7 +1154,7 @@ EOF;
                                     array('form' => $form->createView()));
         }
 
-        if (!file_exists($tahoe->getReadyFile()) and $data['tahoe_active']) {
+        if (!$tahoe->isReady() and $data['tahoe_active']) {
             $this->get('session')->getFlashBag()->add('manageParameters',
                                                       $t->trans('Warning: tahoe is not properly configured and will not work',
                                                                 array(),

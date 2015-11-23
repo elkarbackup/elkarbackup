@@ -17,6 +17,17 @@
 {% block body %}
 
 <form class="form-horizontal" action="{{ path('tahoeConfig') }}" method="post" {{ form_enctype(form) }}>
+    {% if newWritecap is not empty %}
+        <div class="row text-center">
+            <h4>
+                {% trans %}You are now using a new writecap.&nbsp;{% endtrans %} 
+                <a href="javascript:void(0);" onclick={{ "javascript:alert('" ~ newWritecap ~ "');" }}>
+                    {% trans %}Back it up!{% endtrans %}
+                </a>
+            </h4>
+            <small>{% trans %}This message will only be shown once{% endtrans %}</small>
+        </div>
+    {% endif %}
     <h3>{% trans %}Configure Tahoe storage{% endtrans %}</h3>
     <div class="row">
         <div class="control-group">

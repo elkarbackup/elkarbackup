@@ -10,7 +10,6 @@ use \Exception;
 use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ConfigureNodeCommand extends LoggingCommand
@@ -49,11 +48,9 @@ class ConfigureNodeCommand extends LoggingCommand
             $this->info($commandOutput[0], $context);     
         }
 
-        //Set: tahoe - not ready (remove file)
+        //Set: tahoe - not ready
         $readyFile = $tahoe->getReadyFile();
-        if (file_exists($readyFile)) {
-            unlink($readyFile);
-        }
+        file_put_contents($readyFile, '500');
 
         //Node configuration
         $nodeConfigFile = $tahoeNodePath . 'tahoe.cfg';
@@ -177,34 +174,17 @@ class ConfigureNodeCommand extends LoggingCommand
             return 1;
         }
 
-        //Create elkarbackup directory in the tahoe grid
+        //Create elkarbackup directory in the tahoe grid (only works the 1st time or when furl changes)
         $command        = $tahoeAlias . ' create-alias elkarbackup:';
         $commandOutput  = array();
         $status         = 0;
         exec($command, $commandOutput, $status);
         if (0 == $status) {
             $this->info('New alias created [ elkarbackup: ]', $context);
-        }
-        
-        //Check if tahoe is ready to work
-        $command        = $tahoeAlias . ' ls elkarbackup:';
-        $commandOutput  = array();
-        $status         = 0;
-        exec($command, $commandOutput, $status);
-        if (0 != $status) {
-            $this->err("Error connecting to the tahoe grid. Tahoe storage not ready to work.\nMake sure the introducers furl is correct. Also the introducer node might be down or no storage nodes might be available"
-                            , $context);
-            return $status;
-        }
-        
-        //Set: tahoe - ready (create file)
-        $file = fopen($readyFile, 'w');
-        fclose($file);
 
-        //Set the ready-only URI as elkarbackup-RO: alias for www-data
-        $elkarbackupAliasesFile = $tahoeNodePath . 'private/aliases';
-        $wwwdataAliasesFile = $wwwdataNodePath . 'private/aliases';
-        if (file_exists($elkarbackupAliasesFile)) {
+            //Set the ready-only URI as elkarbackup: alias for www-data
+            $elkarbackupAliasesFile = $tahoeNodePath . 'private/aliases';
+            $wwwdataAliasesFile = $wwwdataNodePath . 'private/aliases';
             $alias = 'elkarbackup: ';
             $writecap = '';
             $ending = '';
@@ -223,6 +203,7 @@ class ConfigureNodeCommand extends LoggingCommand
                 }
                 $i++;
             }
+            file_put_contents($readyFile, $writecap);
             $command        = $tahoeAlias . ' debug dump-cap ' . $writecap;
             $commandOutput  = array();
             $status         = 0;
@@ -234,8 +215,23 @@ class ConfigureNodeCommand extends LoggingCommand
             } else {
                 $this->err('Error: cannot obtain readcap. Elkarbackup will not be able to access data stored at tahoe.', $context);
             }
-        } else { //should never happen at this point
-            $this->err('Error: aliases file missing. Elkarbackup will not be able to access data stored at tahoe.', $context);
+        }
+
+        //Check if tahoe is ready to work
+        $command        = $tahoeAlias . ' ls elkarbackup:';
+        $commandOutput  = array();
+        $status         = 0;
+        exec($command, $commandOutput, $status);
+        if (0 != $status) {
+            $this->err("Error connecting to the tahoe grid. Tahoe storage not ready to work.\nMake sure the introducers furl is correct. Also the introducer node might be down or no storage nodes might be available"
+                            , $context);
+            return $status;
+        }
+        
+        //Set: tahoe - ready
+        $content = file_get_contents($readyFile);
+        if(false==strstr($content, 'URI')){
+            file_put_contents($readyFile, '200');
         }
   
         return 0;
