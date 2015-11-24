@@ -10,6 +10,18 @@
 'Configure Tahoe storage' : 'Tahoe biltegia konfiguratu'
 #configurenode.html.twig @Resources/views/Default
 'Save' : 'Gorde'
+'You are now using a new writecap.' : 'Writecap berri bat sortu duzu.'
+'Back it up!' : 'Gorde ezazu!'
+'This message will only be shown once' : 'Mezu hau bakarrik behin agertuko da'
+'Browse Tahoe repository' : 'Tahoe biltegia ikusi'
+'Check Tahoe grid status' : 'Tahoe sarearen egoera ikusi'
+'Enable storage' : 'Enable storage'
+'Tahoe storage has never been configured' : 'Tahoe ez da oraindik inoiz konfiguratu'
+'Tahoe storage is configured' : 'Tahoe ondo konfiguratua dago'
+'ERROR: Tahoe storage configuration has failed' : 'ERROR: Tahoe konfigurazioak huts egin du'
+'Tahoe storage is NOT configured properly' : 'Tahoe EZ dago ondo configuratua'
+'SUCCESS: Tahoe storage has successfully been configured' : 'SUCCESS: Tahoe ondo konfiguratu da'
+'ERROR: Tahoe storage is actually not configured properly or configured at all' : 'ERROR: Tahoe EZ dago ondo configuratua'
 
 #menu @ElkarBackupBundle
 'Manage Tahoe storage' : 'Tahoe biltegia konfiguratu'
@@ -26,7 +38,7 @@ configuring_help1: |
  <p>Itxoin mesedez, gutxi gora behera
 configuring_help2: |
  segundu beharko ditu.</p>
- <p>Bukatzen duenean automatikoki Tahoe configurazio atalera itzuliko zaitu.</p>
+ <p>Bukatzen duenean automatikoki Tahoe configurazio atalera itzuliko da.</p>
  <br>
  <small>Orrialde hau ixteak EZ du configurazio prozesua etenduko.</small>
 
@@ -45,3 +57,5 @@ configurenode_help: |
  <p>S tamainako datuak izanik eta suposatuz backup egiterakoan N zerbitzarieran idazten dela:</p>
  <p>requiered space = S*N/K</p>
  <p>zerbitzari bakoitzean: requiered space = S/K</p>
+ <h4>Biltegi funtzioa</h4>
+ Nodoak bere zatiki guztiak hemen gordetzen ditu: 

@@ -10,6 +10,18 @@
 'Configure Tahoe storage' : 'Configure Tahoe storage'
 #configurenode.html.twig @Resources/views/Default
 'Save' : 'Save'
+'You are now using a new writecap.' : 'You are now using a new writecap.'
+'Back it up!' : 'Back it up!'
+'This message will only be shown once' : 'This message will only be shown once'
+'Browse Tahoe repository' : 'Browse Tahoe repository'
+'Check Tahoe grid status' : 'Check Tahoe grid status'
+'Enable storage' : 'Enable storage'
+'Tahoe storage has never been configured' : 'Tahoe storage has never been configured'
+'Tahoe storage is configured' : 'Tahoe storage is configured'
+'ERROR: Tahoe storage configuration has failed' : 'ERROR: Tahoe storage configuration has failed'
+'Tahoe storage is NOT configured properly' : 'Tahoe storage is NOT configured properly'
+'SUCCESS: Tahoe storage has successfully been configured' : 'SUCCESS: Tahoe storage has successfully been configured'
+'ERROR: Tahoe storage is actually not configured properly or configured at all' : 'ERROR: Tahoe storage is actually not configured properly or configured at all'
 
 #menu @ElkarBackupBundle
 'Manage Tahoe storage' : 'Manage Tahoe storage'
@@ -23,7 +35,7 @@
 configuring_help1: |
  <h4>Tahoe storage is being configured...</h4>
  <br>
- <p>Please wait, the process will take
+ <p>Please wait, the process will take around
 configuring_help2: |
  seconds.</p>
  <p>Once it is ready you will be automatically redirected back to the configuration page.</p>
@@ -44,3 +56,7 @@ configurenode_help: |
  <p>Data is erasure-coded into N shares distributed across at least H distinct storage servers so that it can be recovered from any K of these servers.</p>
  <p>Requiered space to store data in the grid given data size = S and supossing the backup successfully writes in N 'servers':</p>
  <p>requiered space = S*N/K</p>
+ <h4>Storage</h4>
+ Permits the node to store some of the shares uploaded to the grid.
+ <p>You can symlink it to whatever you want: you can keep the rest of the node's files in one place, and store all the shares somewhere else.
+ The server keeps all of its shares at

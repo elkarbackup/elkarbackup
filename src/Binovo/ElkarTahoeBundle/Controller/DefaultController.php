@@ -281,7 +281,8 @@ class DefaultController extends Controller
         return $this->render('BinovoElkarTahoeBundle:Default:configurenode.html.twig',
                                     array('form'        => $form->createView(),
                                           'gridStatus'  => $nodeUrl,
-                                          'newWritecap' => rtrim($writecap) ));
+                                          'newWritecap' => rtrim($writecap),
+                                          'nodeDir'     => $tahoe->getNodePath()));
     }
 
 

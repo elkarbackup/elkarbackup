@@ -20,7 +20,8 @@
     {% if newWritecap is not empty %}
         <div class="row text-center">
             <h4>
-                {% trans %}You are now using a new writecap.&nbsp;{% endtrans %} 
+                {% trans %}You are now using a new writecap.{% endtrans %}
+                &nbsp;
                 <a href="javascript:void(0);" onclick={{ "javascript:alert('" ~ newWritecap ~ "');" }}>
                     {% trans %}Back it up!{% endtrans %}
                 </a>
@@ -57,6 +58,7 @@
         </div>
         <div class="col-md-6">
             {% trans %}configurenode_help{% endtrans %}
+            {{ nodeDir ~ 'storage/shares/'}}</p>
         </div>
     </div>
 </form>

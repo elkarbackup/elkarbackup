@@ -10,6 +10,18 @@
 'Configure Tahoe storage' : 'Configurar almacenamiento Tahoe'
 #configurenode.html.twig @Resources/views/Default
 'Save' : 'Guardar'
+'You are now using a new writecap.' : 'Acaba de crear un nuevo writecap.'
+'Back it up!' : '¡Guardelo!'
+'This message will only be shown once' : 'Este mensaje sólo se mostrará una vez'
+'Browse Tahoe repository' : 'Respositorio Tahoe'
+'Check Tahoe grid status' : 'Comprobar el estado de la red Tahoe'
+'Enable storage' : 'Activar almacenamiento'
+'Tahoe storage has never been configured' : 'El almacenamiento Tahoe aún no ha sido configurado'
+'Tahoe storage is configured' : 'El almacenamiento Tahoe está configurado'
+'ERROR: Tahoe storage configuration has failed' : 'ERROR: La configuración de Tahoe ha fallado'
+'Tahoe storage is NOT configured properly' : 'Tahoe NO se ha podido configurar correctamente'
+'SUCCESS: Tahoe storage has successfully been configured' : 'SUCCESS: Tahoe se ha configurado correctamente'
+'ERROR: Tahoe storage is actually not configured properly or configured at all' : 'ERROR: Tahoe no se ha configurado, al menos no correctamente'
 
 #menu @ElkarBackupBundle
 'Manage Tahoe storage' : 'Configurar almacenamiento Tahoe'
@@ -44,3 +56,7 @@ configurenode_help: |
  <p>Los datos serán divididos (erasure-coding) en N porciones que se distribuirán entre al menos H 'servidores' diferentes de forma que los datos podrán recuperarse de tan sólo K servidores.</p>
  <p>Espacio requerido para almacenar en la red datos de tamaño = tam y suponiendo que el backup se almacena satisfactoriamente en los N servidores:</p>
  <p>espacio requerido = tam*N/K</p>
+ <h4>Activar almacenamiento en el nodo</h4>
+ Permite aportar parte del almacenamiento a la red Tahoe.
+ <p>Puede crear un enlace a cualquier ubicación dejando el resto de los archivos del nodo donde están y guardando las porciones (shares) en algún otro lugar.
+ El directorio donde se guardan las porciones es
