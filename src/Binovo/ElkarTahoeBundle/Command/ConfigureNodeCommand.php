@@ -31,7 +31,6 @@ class ConfigureNodeCommand extends LoggingCommand
     {
         $context = array('source' => 'ConfigureTahoeNodeCommand');
         $tahoe = $this->getContainer()->get('Tahoe');
-
         $tahoeAlias = $tahoe->getBin();
         $tahoeNodePath = $tahoe->getRelativeNodePath();
         $wwwdataNodePath = $tahoe->getRelativePointerToNode();
@@ -57,11 +56,11 @@ class ConfigureNodeCommand extends LoggingCommand
         $nodeConfigFile = $tahoeNodePath . 'tahoe.cfg';
 
         $attr = array();
-        // [node]
+                // [node]
         if ( !($attr['nickname'] = $input->getArgument('nname')) ) {
             $attr['nickname'] = 'elkarbackup_node';
         }
-        // [client]
+                // [client]
         $attr['introducer.furl'] = $input->getArgument('i.furl');
 
         if ( !($attr['shares.needed'] = $input->getArgument('s.K')) ) {
@@ -73,8 +72,8 @@ class ConfigureNodeCommand extends LoggingCommand
         if ( !($attr['shares.total'] = $input->getArgument('s.N')) ) {
             $attr['shares.total'] = 10;
         }
-        //[storage]
-        //only replace 1st appearance of 'enabled'
+                //[storage]
+                //remember to only replace 1st appearance of 'enabled'
         if ( !($attr['enabled'] = $input->getArgument('storage')) ) {
             $attr['enabled'] = 'false';
         }
@@ -137,7 +136,6 @@ class ConfigureNodeCommand extends LoggingCommand
             $aliasesDir = $tahoeNodePath . 'private/';
             $aliasesFile = $aliasesDir . 'aliases';
             if (file_exists($aliasesFile)) {
-
                 date_default_timezone_set("UTC");
                 $newName = date("Y-m-d_H:i:s", time());
                 $newName = 'old_aliases_' . $newName . 'Z'; //zulu time (utc)
@@ -237,10 +235,10 @@ class ConfigureNodeCommand extends LoggingCommand
         
         //Set: tahoe - ready
         $content = file_get_contents($readyFile);
-        if(false==strstr($content, 'URI')){
+        if (false==strstr($content, 'URI')){
             file_put_contents($readyFile, '200');
         }
-  
+
         return 0;
     }
 
@@ -248,5 +246,4 @@ class ConfigureNodeCommand extends LoggingCommand
     {
         return 'ConfigureTahoeNodeCommand';
     }
-
 }

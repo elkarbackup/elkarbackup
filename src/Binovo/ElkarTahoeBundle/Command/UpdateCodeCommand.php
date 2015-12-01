@@ -54,7 +54,6 @@ class UpdateCodeCommand extends LoggingCommand
                 file_put_contents($readyFile, '101');
             }
         }
-
     }
 
     protected function getNameForLogs()

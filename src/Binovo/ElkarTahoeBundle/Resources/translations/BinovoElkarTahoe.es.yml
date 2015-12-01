@@ -11,9 +11,9 @@
 #configurenode.html.twig @Resources/views/Default
 'Save' : 'Guardar'
 'You are now using a new writecap.' : 'Acaba de crear un nuevo writecap.'
-'Back it up!' : '¡Guardelo!'
+'Back it up!' : '¡Guárdelo!'
 'This message will only be shown once' : 'Este mensaje sólo se mostrará una vez'
-'Browse Tahoe repository' : 'Respositorio Tahoe'
+'Browse Tahoe repository' : 'Repositorio Tahoe'
 'Check Tahoe grid status' : 'Comprobar el estado de la red Tahoe'
 'Enable storage' : 'Activar almacenamiento'
 'Tahoe storage has never been configured' : 'El almacenamiento Tahoe aún no ha sido configurado'
@@ -28,7 +28,7 @@
 
 #controller::manageBackupsAction @ElkarBackupBundle
 'Turn on Tahoe storage' : 'Activar almacenamiento Tahoe'
-'Warning: tahoe is not properly configured and will not work' : 'Aviso: tahoe no está correctamente configurado y no funcionará'
+'Warning: tahoe is not properly configured and will not work' : 'Aviso: Tahoe no está correctamente configurado y no funcionará'
 
 
 #configuring.html.twig @Resources/views/Default
@@ -53,10 +53,10 @@ configurenode_help: |
  <p>K = shares needed</p>
  <p>H = shares happy</p>
  <p>N = shares total</p>
- <p>Los datos serán divididos (erasure-coding) en N porciones que se distribuirán entre al menos H 'servidores' diferentes de forma que los datos podrán recuperarse de tan sólo K servidores.</p>
- <p>Espacio requerido para almacenar en la red datos de tamaño = tam y suponiendo que el backup se almacena satisfactoriamente en los N servidores:</p>
- <p>espacio requerido = tam*N/K</p>
+ <p>Los datos serán divididos (erasure-coding) en N porciones que se distribuirán entre al menos H 'servidores' diferentes de forma que los datos podrán recuperarse con K o más servidores disponibles.</p>
+ <p>Espacio requerido para almacenar en la red datos de tamaño = tam:</p>
+ <p>espacio requerido = N*tam/K</p>
  <h4>Activar almacenamiento en el nodo</h4>
- Permite aportar parte del almacenamiento a la red Tahoe.
- <p>Puede crear un enlace a cualquier ubicación dejando el resto de los archivos del nodo donde están y guardando las porciones (shares) en algún otro lugar.
- El directorio donde se guardan las porciones es
+ <p>Al activar esta opción algunos datos se guardarán en el servidor de Elkarbackup.</p>
+ <p>Permite aportar parte de almacenamiento a la red Tahoe. Puede crear un enlace a cualquier ubicación dejando el resto de los archivos del nodo donde están y guardando las porciones (shares) en algún otro lugar.
+ El directorio donde se guardan las porciones es: </p><p>

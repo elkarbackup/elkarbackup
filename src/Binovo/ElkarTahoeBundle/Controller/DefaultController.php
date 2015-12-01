@@ -18,7 +18,6 @@ use Binovo\ElkarBackupBundle\Entity\Message;
 
 class DefaultController extends Controller
 {
-
     /**
      * @Route("/tahoe/config", name="tahoeConfig")
      * @Template()
@@ -105,9 +104,7 @@ class DefaultController extends Controller
                                                               'label'    => $t->trans('Enable storage', array(), 'BinovoElkarTahoe')));
         $form = $formBuilder->getForm();
 
-
         if ($request->isMethod('POST')) {
-
             foreach ($data as $key => $value) {
               $oldData[$key] = $value;
             }
@@ -205,7 +202,6 @@ class DefaultController extends Controller
                 $changes[0]=$changes[3];
             }
 
-
             if (3 > $changes[0]) {
                 if ($data['storageenabled']) {
                     $data['storageenabled'] = 'true';
@@ -272,7 +268,6 @@ class DefaultController extends Controller
         }
         $this->get('session')->getFlashBag()->add('tahoeConfiguration', $trans_msg);
 
-
         $nodeUrl = file_get_contents('/var/lib/elkarbackup/node.url');
         if (strlen($nodeUrl)<1) {
             $nodeUrl = 'http://127.0.0.1:3456/'; //default
@@ -285,15 +280,12 @@ class DefaultController extends Controller
                                           'nodeDir'     => $tahoe->getNodePath()));
     }
 
-
     protected function _updateCode()
     {
         $context = array('source' => 'TahoeController:UpdateTahoeCode');
         $logger = $this->get('BnvWebLogger');
-
         $db = $this->getDoctrine();
         $manager = $db->getManager();
-
         try {
             $msg = new Message('TahoeController', 'TickCommand',
                                json_encode(array('command' => "tahoe:update_code")));
@@ -305,7 +297,6 @@ class DefaultController extends Controller
         }
     }
 
-
     /**
      * @Route("/tahoe/backup/{action}/{file}", requirements={"action" = "view|download|downloadzip" , "file" = ".*"}, name="showJobTahoeBackup")
      * @Method("GET")
@@ -313,7 +304,6 @@ class DefaultController extends Controller
     public function showJobTahoeBackupAction(Request $request, $action, $file)
     {
         $context = array('source' => 'TahoeController::showJobTahoeBackup');
-
         $tahoe = $this->container->get('Tahoe');
         $logger = $this->get('BnvWebLogger');
         $t = $this->get('translator');
@@ -341,7 +331,6 @@ class DefaultController extends Controller
 
                     if ($dirCount>0) {
                         $isDir=array();
-
                         $retainsLevel = false;
                         for ($i=0; $i<$dirCount; $i++) {
                             //format: drwx <size> <date/time> <name in this directory>
@@ -421,7 +410,6 @@ class DefaultController extends Controller
                               array('link' => $this->generateUrl('showJobTahoeBackup', array('action'   => $action,
                                                                                              'file'     => $file))));
                 $this->getDoctrine()->getManager()->flush();
-
                 return $this->render('BinovoElkarTahoeBundle:Default:tahoeDirectory.html.twig',
                                       array('content'        => $content,
                                             'filePath'       => $file,
@@ -438,7 +426,8 @@ class DefaultController extends Controller
                     $filename = 'Backups';
                 }
                 $filename = str_replace(' ', '', $filename);
-                $realPath = '/tmp/elkarbackup/' . $filename;
+                $tmpDir = $this->container->getParameter('tmp_dir');
+                $realPath = $tmpDir . '/elkarbackup/' . $filename;
 
                 if (false!=strpos($file, ' ')) {
                     $dirName = dirname($file);
@@ -491,6 +480,4 @@ class DefaultController extends Controller
         }
         return $this->redirect($this->generateUrl('tahoeConfig'));
     }
-
-
 }

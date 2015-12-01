@@ -11,14 +11,12 @@ use Binovo\ElkarTahoeBundle\Utils\Pair;
 use Symfony\Bridge\Monolog\Logger;
 use \SplQueue;
 
-
 class TahoeBackup
 {
-
-    const NODE_DIR_NAME = '.tahoe/'; //default when 'tahoe create-node'
+    const NODE_DIR_NAME = '.tahoe/';    //default when 'tahoe create-node'
     const POINTER_DIR = 'tahoe-client/';
 
-    const TAHOE_ALIAS = 'tahoe'; //tahoe bin file path
+    const TAHOE_ALIAS = 'tahoe';    //tahoe bin file path
     const READY_FILE = 'elkarbackupNodeReady';
 
     protected $_nodeLocation;
@@ -26,16 +24,13 @@ class TahoeBackup
     protected $_context;
     protected $_queue;
 
-
-    public function __construct(Logger $log, $home='/var/lib/elkarbackup/')
+    public function __construct(Logger $log, $home='/var/lib/elkarbackup')
     {
-        $this->_nodeLocation = $home;
+        $this->_nodeLocation = $home . '/';
         $this->_logger = $log;
         $this->_context = array('source' => 'TahoeBackup');
         $this->_queue = new SplQueue();
     }
-
-
 
     public function enqueueJob(Job $job, $retain)
     {
@@ -43,14 +38,13 @@ class TahoeBackup
         $this->_queue->enqueue(new Pair($job, $retain));
     }
 
-
     protected function _fullRetain($path, $retention)
     {
         $command = self::TAHOE_ALIAS . ' ls ' . $path . ' 2>&1';
         $commandOutput  = array();
         $status         = 0;
         exec($command, $commandOutput, $status);
-        if (0 != $status) {
+        if (0!=$status) {
             $this->_logger->err('Cannot access to Tahoe storage [fullRetain_ls]: ' . implode("\n", $commandOutput), $this->_context);
             return $status;
         }
@@ -60,7 +54,7 @@ class TahoeBackup
             $commandOutput  = array();
             $status         = 0;
             exec($command, $commandOutput, $status);
-            if (0 != $status) {
+            if (0!=$status) {
                 $this->_logger->err('Cannot access to Tahoe storage [no_rot_unlink]: ' . implode("\n", $commandOutput), $this->_context);
                 return $status;
             }
@@ -69,27 +63,17 @@ class TahoeBackup
         return null;
     }
 
-
     public function getBin()
     {
-
         return self::TAHOE_ALIAS;
-    }
-
-
-    public function getNodePath()
-    {
-
-        return $this->_nodeLocation . self::NODE_DIR_NAME;
     }
 
 
     protected function _getJobPath(Job $job)
     {
-
         $paramsFilename = dirname(__FILE__) . '/../../../../app/config/parameters.yml';
         $paramsFile = file_get_contents(realpath($paramsFilename) );
-        if (false == $paramsFile) {
+        if (false==$paramsFile) {
             return false;
         }
 
@@ -113,27 +97,26 @@ class TahoeBackup
         return $value . '/' . sprintf('%04d', $idClient) . '/' . sprintf('%04d', $idJob) . '/';
     }
 
-
     protected function _getJobTahoePath(Job $job)
     {
-
         $idClient = $job->getClient()->getId();
         $idJob    = $job->getId();
         
         return 'elkarbackup:Backups/' . sprintf('%04d', $idClient) . '/' . sprintf('%04d', $idJob) . '/';
     }
 
+    public function getNodePath()
+    {
+        return $this->_nodeLocation . self::NODE_DIR_NAME;
+    }
 
     public function getPointerToNode()
     {
-
         return $this->_nodeLocation . self::POINTER_DIR;
     }
 
-
     public function getReadyCode()
     {
-
         $filePath = $this->_nodeLocation . self::NODE_DIR_NAME . self::READY_FILE;
         if (!file_exists($filePath)) {
             return '000';
@@ -142,13 +125,10 @@ class TahoeBackup
         }
     }
 
-
     public function getReadyFile()
     {
-
         return self::NODE_DIR_NAME . self::READY_FILE;
     }
-
 
     public function getRelativeNodePath()
     {
@@ -156,25 +136,21 @@ class TahoeBackup
         return self::NODE_DIR_NAME;
     }
 
-
     public function getRelativePointerToNode()
     {
-
         return self::POINTER_DIR;
     }
 
-
     public function isInstalled()
-    {   //doesent work after uninstalling
-
+    {
+        //does not work after uninstalling
         $command = 'dpkg-query -W tahoe-lafs';
         exec($command, $commandOutput, $status);
-        if (0 != $status) {
+        if (0!=$status) {
             return $status;
         }
         return true;
     }
-
 
     public function isReady()
     {   
@@ -206,19 +182,15 @@ class TahoeBackup
         return false;
     }
 
-
     public function runAllQueuedJobs()
     {
-
         foreach ($this->_queue as $pair) {
             $this->_runJob($pair);
         }
     }
 
-
     protected function _runJob(Pair $pair)
     {
-
         if (!file_exists(self::READY_FILE)) {
             $this->_logger->err('Cannot perform backup on Tahoe storage: Tahoe configuration not properly set', $this->_context);
             return -1;
@@ -233,13 +205,11 @@ class TahoeBackup
                 $retention = $r[1];
                 break;
             }
-        }
-        // $retention should always be greater than 0
-
+        } // $retention should always be greater than 0
+        
         if (!$job->getPolicy()->isRotation($retain)) { //no rotation
-
             $backupDir = $this->_getJobPath($job);
-            if (false == $backupDir) {
+            if (false==$backupDir) {
                 $this->_logger->err('Cannot perform backup on Tahoe storage [no_rot_getDir]: Cannot obtain source directory', $this->_context);
                 return 1;
             }
@@ -247,7 +217,7 @@ class TahoeBackup
 
             $command = self::TAHOE_ALIAS . ' backup ' . $backupDir . ' ' . $this->_getJobTahoePath($job) . ' 2>&1';
             exec($command, $commandOutput, $status);
-            if (0 != $status) {
+            if (0!=$status) {
                 $this->_logger->err('Cannot perform backup on Tahoe storage [no_rot_backup]: ' . implode("\n", $commandOutput), $this->_context);
                 return $status;
             }
@@ -256,66 +226,64 @@ class TahoeBackup
             $commandOutput  = array();
             $status         = 0;
             exec($command, $commandOutput, $status);
-            if (0 != $status) {
+            if (0!=$status) {
                 $this->_logger->err('Cannot access to Tahoe storage [no_rot_ls1]: ' . implode("\n", $commandOutput), $this->_context);
                 return $status;
             }
 
             $i = count($commandOutput);
-            //there should be only one but, just in case, we take the last one
+            //there should be only one but, just in case, take the last one
             $command = self::TAHOE_ALIAS . ' mv ' . $this->_getJobTahoePath($job) . 'Archives/' . $commandOutput[$i-1];
             $command .=                       ' ' . $this->_getJobTahoePath($job) . $retain . '/' . $commandOutput[$i-1] . ' 2>&1';
             $commandOutput  = array();
             $status         = 0;
             exec($command, $commandOutput, $status);
-            if (0 != $status) {
+            if (0!=$status) {
                 $this->_logger->err('Cannot access to Tahoe storage [no_rot_mv]: ' . implode("\n", $commandOutput), $this->_context);
                 return $status;
             }
 
             $path = $this->_getJobTahoePath($job) . $retain . '/';
             $result = $this->_fullRetain($path, $retention);
-            if (0 === $result) {
+            if (0===$result) {
                 $this->_logger->info($retain . ' was full: oldest item *deleted', $this->_context);
             } else {
-                if (null != $resutl) {
+                if (null!=$resutl) {
                     return $result;
                 }
             }
             $this->_logger->info('Tahoe backup done - ' . $retain, $this->_context);
 
         } else { //rotation
-
             $previousRetain = null;
             foreach ($retains as $r) {
                 if ($r[0]===$retain) {
                     break;
                 }
                 $previousRetain = $r[0];
-            }
-            // $previous should never be null if it's a rotation
+            } // $previous should never be null because it is a rotation
 
             $command = self::TAHOE_ALIAS . ' ls ' . $this->_getJobTahoePath($job) . $previousRetain . '/ 2>&1';
             $commandOutput  = array();
             $status         = 0;
             exec($command, $commandOutput, $status);
-            if (0 == $status && count($commandOutput) > 0) {
+            if (0==$status && count($commandOutput) > 0) {
                 $command = self::TAHOE_ALIAS . ' cp -r ' . $this->_getJobTahoePath($job) . $previousRetain  . '/' . $commandOutput[0];
                 $command .=                          ' ' . $this->_getJobTahoePath($job) . $retain          . '/' . $commandOutput[0] . ' 2>&1';
                 $commandOutput  = array();
                 $status         = 0;
                 exec($command, $commandOutput, $status);
-                if (0 != $status) {
+                if (0!=$status) {
                     $this->_logger->err('Cannot access to Tahoe storage [rot_cp]: ' . implode("\n", $commandOutput), $this->_context);
                     return $status;
                 }
 
                 $path = $this->_getJobTahoePath($job) . $retain . '/';
                 $result = $this->_fullRetain($path, $retention);
-                if (0 === $result) {
+                if (0===$result) {
                     $this->_logger->info($retain . ' was full: oldest item *deleted', $this->_context);
                 } else {
-                    if (null != $resutl) {
+                    if (null!=$resutl) {
                         return $result;
                     }
                 }
@@ -324,11 +292,7 @@ class TahoeBackup
                 $this->_logger->warn('Backup rotation was tried but no items were found in the previous retain level', $this->_context);
                 return $status;
             }
-
         }
         return true;
     }
-
-
-
 }

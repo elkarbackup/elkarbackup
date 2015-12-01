@@ -15,7 +15,7 @@
 'This message will only be shown once' : 'Mezu hau bakarrik behin agertuko da'
 'Browse Tahoe repository' : 'Tahoe biltegia ikusi'
 'Check Tahoe grid status' : 'Tahoe sarearen egoera ikusi'
-'Enable storage' : 'Enable storage'
+'Enable storage' : 'Biltegi funtzioa aktibatu'
 'Tahoe storage has never been configured' : 'Tahoe ez da oraindik inoiz konfiguratu'
 'Tahoe storage is configured' : 'Tahoe ondo konfiguratua dago'
 'ERROR: Tahoe storage configuration has failed' : 'ERROR: Tahoe konfigurazioak huts egin du'
@@ -54,8 +54,9 @@ configurenode_help: |
  <p>H = shares happy</p>
  <p>N = shares total</p>
  <p>Datuak N zatitan zatikatuko (erasure-coding) eta gutxienez H zerbitzari desberdinetan banatuko dira. Zerbitzari hauetako bakarrik K zerbitzaritik irakurtzea aski du datuak berreskuratzeko.</p>
- <p>S tamainako datuak izanik eta suposatuz backup egiterakoan N zerbitzarieran idazten dela:</p>
- <p>requiered space = S*N/K</p>
- <p>zerbitzari bakoitzean: requiered space = S/K</p>
+ <p>S tamainako datuak izanik:</p>
+ <p>total requiered space = N*S/K</p>
+ <p>zatiki bakoitza S/K tamainakoa izango da</p>
  <h4>Biltegi funtzioa</h4>
- Nodoak bere zatiki guztiak hemen gordetzen ditu: 
+ <p>Hau aktibatzerakoan zeinbait datu Elkarbackup zerbitzarian gordeko dira.</p>
+ <p>Nodoak bere zatiki guztiak hemen gordetzen ditu: </p><p>

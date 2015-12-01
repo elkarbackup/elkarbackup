@@ -1078,7 +1078,6 @@ EOF;
     {
         $t = $this->get('translator');
         $backupDir = $this->container->getParameter('backup_dir');
-
         $hostAndDir = array();
         if (preg_match('/^\/net\/([^\/]+)(\/.*)$/', $backupDir, $hostAndDir)) {
             $data = array('host'      => $hostAndDir[1],
@@ -1108,7 +1107,6 @@ EOF;
                                                             'label'    => $t->trans('Turn on Tahoe storage', array(), 'BinovoElkarTahoe'),
                                                             'disabled' => !$tahoeInstalled ));
         
-
         $result = null;
         $form = $formBuilder->getForm();
         if ($request->isMethod('POST')) {
@@ -1121,9 +1119,8 @@ EOF;
             }
             $ok = true;
             $result = $this->redirect($this->generateUrl('manageBackupsLocation'));
-
             if ($this->container->getParameter('backup_dir') != $backupDir) {
-                if ($this->setParameter('backup_dir', $backupDir)) {
+                if (!$this->setParameter('backup_dir', $backupDir)) {
                     $this->get('session')->getFlashBag()->add('manageParameters',
                                                               $t->trans('Parameters updated',
                                                                         array(),
@@ -1282,11 +1279,11 @@ EOF;
         if ($ok) {
             $this->info('Set Parameter %paramname%',
                         array('%paramname%' => $name),
-                        array('link' => $this->generateUrl('manageParameters')));
+                        array('link' => $this->generateUrl('showPolicies')));
         } else {
             $this->info('Set Parameter %paramname%',
                         array('%paramname%' => $name),
-                        array('link' => $this->generateUrl('manageParameters')));
+                        array('link' => $this->generateUrl('showPolicies')));
         }
 
         return $ok;
@@ -1594,8 +1591,4 @@ EOF;
         return $this->render('BinovoElkarBackupBundle:Default:users.html.twig',
                              array('pagination' => $pagination));
     }
-
-
-
-
 }

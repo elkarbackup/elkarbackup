@@ -244,7 +244,7 @@ abstract class BackupRunningCommand extends LoggingCommand
             $tahoeInstalled = $tahoe->isInstalled();
             $tahoeOn = $container->getParameter('tahoe_active');
             if($tahoeInstalled && $tahoeOn) {
-              $tahoe->enqueueJob($job, $retain);
+                $tahoe->enqueueJob($job, $retain);
             }
         }
         if (false === unlink($confFileName)) {

@@ -24,7 +24,7 @@
 'ERROR: Tahoe storage is actually not configured properly or configured at all' : 'ERROR: Tahoe storage is actually not configured properly or configured at all'
 
 #menu @ElkarBackupBundle
-'Manage Tahoe storage' : 'Manage Tahoe storage'
+'Manage Tahoe storage' : 'Configure Tahoe storage'
 
 #controller::manageBackupsAction @ElkarBackupBundle
 'Turn on Tahoe storage' : 'Turn on Tahoe storage'
@@ -56,7 +56,7 @@ configurenode_help: |
  <p>Data is erasure-coded into N shares distributed across at least H distinct storage servers so that it can be recovered from any K of these servers.</p>
  <p>Requiered space to store data in the grid given data size = S and supossing the backup successfully writes in N 'servers':</p>
  <p>requiered space = S*N/K</p>
- <h4>Storage</h4>
- Permits the node to store some of the shares uploaded to the grid.
- <p>You can symlink it to whatever you want: you can keep the rest of the node's files in one place, and store all the shares somewhere else.
- The server keeps all of its shares at
+ <h4>Enable storage</h4>
+ <p>When enabled data will be stored in the Elkarbackup server.</p>
+ <p>Allows the node to store some of the shares uploaded to the grid. You can symlink it to whatever you want: you can keep the rest of the node's files in one place, and store all the shares somewhere else.
+ The server keeps all of its shares at: </p><p>

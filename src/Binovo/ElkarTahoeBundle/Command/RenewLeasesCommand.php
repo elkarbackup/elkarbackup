@@ -28,7 +28,6 @@ class RenewLeasesCommand extends LoggingCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $context = array('source' => 'RenewLeasesCommand');
-
         $tahoe = $this->getContainer()->get('Tahoe');
         $this->_renewLog = $tahoe->getRelativeNodePath() . self::RENEW_LOG;
         $tahoeAlias = $tahoe->getBin();
@@ -61,7 +60,6 @@ class RenewLeasesCommand extends LoggingCommand
         return 0;        
     }
 
-
     protected function _getLastRenewDate()
     {
         if (file_exists($this->_renewLog)) {
@@ -93,12 +91,10 @@ class RenewLeasesCommand extends LoggingCommand
         return null;
     }
 
-
     protected function getNameForLogs()
     {
         return 'RenewLeasesCommand';
     }
-
 
     protected function _updateFile($commandOutput)
     {
@@ -150,5 +146,4 @@ class RenewLeasesCommand extends LoggingCommand
             fclose($file);
         }
     }
-
 }
