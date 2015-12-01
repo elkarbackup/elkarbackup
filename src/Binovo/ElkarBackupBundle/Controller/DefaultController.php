@@ -1107,7 +1107,7 @@ EOF;
             $ok = true;
             $result = $this->redirect($this->generateUrl('manageBackupsLocation'));
             if ($this->container->getParameter('backup_dir') != $backupDir) {
-                if (!$this->setParameter('backup_dir', $backupDir)) {
+                if ($this->setParameter('backup_dir', $backupDir)) {
                     $this->get('session')->getFlashBag()->add('manageParameters',
                                                               $t->trans('Parameters updated',
                                                                         array(),
