@@ -1084,7 +1084,7 @@ EOF;
                           'directory' => $hostAndDir[2]);
         } else {
             $data = array('host'      => '',
-                          'directory' => $backupDir);  
+                          'directory' => $backupDir);
         }
         $tahoe = $this->container->get('Tahoe');
         $tahoeInstalled = $tahoe->isInstalled();

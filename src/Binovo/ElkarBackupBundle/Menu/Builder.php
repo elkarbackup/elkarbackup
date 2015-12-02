@@ -159,7 +159,7 @@ class Builder extends ContainerAware
                             'children' => array(array('label'    => $t->trans('Logout', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'logout'),
                                                 array('label'    => $t->trans('Language', array(), 'BinovoElkarBackup'),
-                                                      'children' => $this->getLanguageMenuEntries() )))
+                                                      'children' => $this->getLanguageMenuEntries()))),
 
             );
         if ($this->container->get('Tahoe')->isInstalled()) {
