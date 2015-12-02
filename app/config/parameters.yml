@@ -24,4 +24,4 @@ parameters:
     url_prefix:
     disable_background: false
     tahoe_active: false
-    home: /var/lib/elkarbackup/
+    home: /var/lib/elkarbackup
