@@ -314,7 +314,7 @@ backupscriptconfig_help: |
 managebackups_help: |
  <h4>Host</h4>
  Nombre o dirección IP del servidor NFS. Para utilizar el sistema de ficheros local este campo debe estar vacio.
- <p>Esta aplicación tiene dependencias con el paquete autofs para montar el sistema de ficheros remoto. Si autofs no está correctamente configurado, este campo no será editable.
+ <p>Esta aplicación tiene dependencias con el paquete autofs para montar el sistema de ficheros remoto. Si autofs no está correctamente configurado, este campo no será editable.</p>
  <h4>Directorio</h4>
  Path completo del sistema de ficheros local, o nombre del export NFS. Siempre debe de comenzar con '/'. La aplicación guardará aquí todos los snapshots o copias que realiza, por lo que el usuario de sistema elkarbackup debe tener permisos de escritura.
 
