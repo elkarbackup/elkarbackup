@@ -53,7 +53,10 @@ class UpdateCodeCommand extends LoggingCommand
                 $this->info('Warning: cannot read the file', $context);
                 file_put_contents($readyFile, '101');
             }
+        } else {
+            return 1;
         }
+        return 0;
     }
 
     protected function getNameForLogs()

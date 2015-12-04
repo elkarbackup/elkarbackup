@@ -147,7 +147,7 @@ class TahoeBackup
         $command = 'dpkg-query -W tahoe-lafs';
         exec($command, $commandOutput, $status);
         if (0!=$status) {
-            return $status;
+            return false;
         }
         return true;
     }
@@ -193,7 +193,7 @@ class TahoeBackup
     {
         if (!file_exists(self::READY_FILE)) {
             $this->_logger->err('Cannot perform backup on Tahoe storage: Tahoe configuration not properly set', $this->_context);
-            return -1;
+            return false;
         }
 
         $job = $pair->getJob();
@@ -211,7 +211,7 @@ class TahoeBackup
             $backupDir = $this->_getJobPath($job);
             if (false==$backupDir) {
                 $this->_logger->err('Cannot perform backup on Tahoe storage [no_rot_getDir]: Cannot obtain source directory', $this->_context);
-                return 1;
+                return false;
             }
             $backupDir .= $retain . '.0';
 
@@ -219,7 +219,7 @@ class TahoeBackup
             exec($command, $commandOutput, $status);
             if (0!=$status) {
                 $this->_logger->err('Cannot perform backup on Tahoe storage [no_rot_backup]: ' . implode("\n", $commandOutput), $this->_context);
-                return $status;
+                return false;
             }
 
             $command = self::TAHOE_ALIAS . ' ls ' . $this->_getJobTahoePath($job) . 'Archives 2>&1';
@@ -228,7 +228,7 @@ class TahoeBackup
             exec($command, $commandOutput, $status);
             if (0!=$status) {
                 $this->_logger->err('Cannot access to Tahoe storage [no_rot_ls1]: ' . implode("\n", $commandOutput), $this->_context);
-                return $status;
+                return false;
             }
 
             $i = count($commandOutput);
@@ -240,7 +240,7 @@ class TahoeBackup
             exec($command, $commandOutput, $status);
             if (0!=$status) {
                 $this->_logger->err('Cannot access to Tahoe storage [no_rot_mv]: ' . implode("\n", $commandOutput), $this->_context);
-                return $status;
+                return false;
             }
 
             $path = $this->_getJobTahoePath($job) . $retain . '/';
@@ -248,8 +248,8 @@ class TahoeBackup
             if (0===$result) {
                 $this->_logger->info($retain . ' was full: oldest item *deleted', $this->_context);
             } else {
-                if (null!=$resutl) {
-                    return $result;
+                if (null!=$resutl) { //if $result == null, retain was not full
+                    return false; //some error happened (shown in the log)
                 }
             }
             $this->_logger->info('Tahoe backup done - ' . $retain, $this->_context);
@@ -275,7 +275,7 @@ class TahoeBackup
                 exec($command, $commandOutput, $status);
                 if (0!=$status) {
                     $this->_logger->err('Cannot access to Tahoe storage [rot_cp]: ' . implode("\n", $commandOutput), $this->_context);
-                    return $status;
+                    return false;
                 }
 
                 $path = $this->_getJobTahoePath($job) . $retain . '/';
@@ -283,14 +283,14 @@ class TahoeBackup
                 if (0===$result) {
                     $this->_logger->info($retain . ' was full: oldest item *deleted', $this->_context);
                 } else {
-                    if (null!=$resutl) {
-                        return $result;
+                    if (null!=$resutl) { //if $result == null, retain was not full
+                        return false; //some error happened (shown in the log)
                     }
                 }
                 $this->_logger->info('Tahoe backup done - ' . $retain . ' rotation', $this->_context);
             } else {
                 $this->_logger->warn('Backup rotation was tried but no items were found in the previous retain level', $this->_context);
-                return $status;
+                return false;
             }
         }
         return true;
