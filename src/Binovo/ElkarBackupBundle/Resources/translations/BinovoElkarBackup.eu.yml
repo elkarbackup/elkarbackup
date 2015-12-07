@@ -346,7 +346,7 @@ backupscriptconfig_help: |
 managebackups_help: |
  <h4>Host</h4>
  NFS zerbitzariaren host izena edo IP helbidea. Fitxategi sistema lokala erabiltzen denean, hutsik egon behar da.
- <p>Aplikazio honek autofs-kin dependentzia du urruneko fitxategi sistemak muntatzeko. autofs behar den bezala konfiguratuta ez badago eremu hau ez da editagarria izango.
+ <p>Aplikazio honek autofs-kin dependentzia du urruneko fitxategi sistemak muntatzeko. autofs behar den bezala konfiguratuta ez badago eremu hau ez da editagarria izango.</p>
  <h4>Karpeta</h4>
  Fitxategi sistema lokaleko path osoa edo NFS export-aren izena. Beti '/'-ekin hasi behar da.  Aplikazioak snapshot edo kopia guztiak karpeta honetan gordeko ditu. elkarbackup erabiltzaileak karpeta honetan idazteko baimenak izan beharko ditu.
  <h4>Tahoe biltegia</h4>
