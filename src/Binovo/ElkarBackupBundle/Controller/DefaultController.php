@@ -1091,7 +1091,7 @@ EOF;
         $tahoeOn = $this->container->getParameter('tahoe_active');
         if(!$tahoeInstalled && $tahoeOn) {
             $tahoeOn = false;
-            $this->setParameter('tahoe_active', 'false');
+            $this->setParameter('tahoe_active', 'false', 'manageBackupsLocation');
         }
         $data['tahoe_active'] = $tahoeOn;
 
@@ -1140,7 +1140,7 @@ EOF;
                 } else {
                   $strvalue = 'false';
                 }
-                if ($this->setParameter('tahoe_active', $strvalue)) {
+                if ($this->setParameter('tahoe_active', $strvalue, 'manageBackupsLocation')) {
                     $this->get('session')->getFlashBag()->add('manageParameters', $t->trans('Parameters updated',
                                                                                             array(),
                                                                                             'BinovoElkarBackup'));
