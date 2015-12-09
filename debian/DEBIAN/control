@@ -4,7 +4,7 @@ Section: admin
 Priority: optional
 Architecture: all
 Depends: acl, debconf, php5, php5-cli, rsnapshot, mysql-client, php5-mysql, sudo, apache2
-Suggests: autofs5, bzip2, zip, mysql-server
+Suggests: autofs5, bzip2, zip, mysql-server, tahoe-lafs
 Replaces: tknikabackups
 Maintainer: Xabi Ezpeleta <xezpeleta@gmail.com>
 Description: Web configurator for Rsnapshot

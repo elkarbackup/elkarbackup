@@ -141,11 +141,8 @@ sed -i "s#upload_dir:.*#upload_dir: $uploadsdir#" /etc/elkarbackup/parameters.ym
 sed -i -e "s#elkarbackupuser#$username#g" -e "s#\s*Cmnd_Alias\s*ELKARBACKUP_SCRIPTS.*#Cmnd_Alias ELKARBACKUP_SCRIPTS=$uploadsdir/*#" /etc/sudoers.d/elkarbackup
 chmod 0440 /etc/sudoers.d/elkarbackup
 
-tahoeautostart="/etc/default/tahoe-lafs"
-if ! grep -q "^AUTOSTART=\"../elkarbackup/.tahoe/\"" "$tahoeautostart"
-then
-    echo "AUTOSTART=\"../elkarbackup/.tahoe\"" >> "$tahoeautostart"
-fi
+update-rc.d elkarbackup-tahoe-lafs defaults
+service elkarbackup-tahoe-lafs start
 
 if [ "$1" = "configure" ]; then
     CONF="elkarbackup"

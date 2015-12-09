@@ -1,0 +1,90 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          elkarbackup-tahoe-lafs
+# Required-Start:    $network $remote_fs $syslog
+# Required-Stop:     $network $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Tahoe-LAFS node for ElkarBackup
+### END INIT INFO
+
+# Original initscript for tahoe-lafs
+# by bertagaz <bertagaz@ptitcanardnoir.org>
+# Heavily reviewed by Zooko O'Whielacronx <zookog@gmail.com>
+# and intrigeri <intrigeri@boum.org>.
+
+# Modified initscript for ElkarBackup
+# by Adrian Les <lesauz@gmail.com>
+
+set -e
+set -u
+
+. /lib/lsb/init-functions
+
+DAEMON="/usr/bin/tahoe"
+DESC="ElkarBackup using a Tahoe-LAFS secure filesystem. No parameters needed, works on a single node."
+CONFIG_DIR="/var/lib/tahoe-lafs"
+NODE_DIR="../elkarbackup/.tahoe"
+
+# Source defaults file; edit that file to configure this script.
+DAEMONARGS="--syslog"
+
+node_uid () {
+    local node_dir="$1"
+    stat -c %U "$CONFIG_DIR/${node_dir}"
+}
+
+_tahoe () {
+    local action="$1"
+    local node_name="$2"
+    local node_uid=$(node_uid "$node_name")
+
+    if [ "$node_uid" = "root" ]; then
+        log_failure_msg "${node_name} node directory shouldn't be owned by root!"
+        return 1
+    fi
+
+    case "$action" in
+        start|restart)
+            su -s "/bin/sh" \
+               -c "'$DAEMON' '$action' $DAEMONARGS '$CONFIG_DIR/${node_name}'" \
+               "$node_uid"
+        ;;
+        stop)
+            su -s "/bin/sh" \
+               -c "'$DAEMON' '$action' '$CONFIG_DIR/${node_name}'" \
+               "$node_uid"
+        ;;
+    esac
+}
+
+case "$1" in
+start|stop|restart)
+    command="$1"
+
+    log_daemon_msg "$DESC"
+    log_progress_msg "\n"
+
+    # check if the node exists
+    if [ -d "$CONFIG_DIR/$NODE_DIR" ]; then
+		# invoke command for ElkarBackup node
+		tahoe "$command" $NODE_DIR || STATUS="$?"
+    else
+		STATUS=0
+    fi
+    
+    log_end_msg $STATUS
+    ;;
+force-reload)
+    _tahoe restart $NODE_DIR || STATUS="$?"
+    ;;
+*)
+    echo "Usage: $0 {start|stop|restart|force-reload}" >&2
+    exit 1
+    ;;
+esac
+
+exit 0
+
+# vim:set ai sts=2 sw=2 tw=0:
