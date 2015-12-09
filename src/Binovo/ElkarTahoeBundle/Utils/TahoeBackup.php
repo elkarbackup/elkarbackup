@@ -143,10 +143,10 @@ class TahoeBackup
 
     public function isInstalled()
     {
-        //does not work after uninstalling
-        $command = 'dpkg-query -W tahoe-lafs';
+        $command = "dpkg-query -W -f='\${Status}\n' tahoe-lafs";
         exec($command, $commandOutput, $status);
-        if (0!=$status) {
+        $result = explode(' ', $commandOutput[0]);
+        if ('installed'!=$result[2]) {
             return false;
         }
         return true;
