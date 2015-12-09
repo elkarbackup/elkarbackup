@@ -172,6 +172,11 @@ class ConfigureNodeCommand extends LoggingCommand
         //Set the access to the node for www-data
         $elkarbackupNodeUrlFile = $tahoeNodePath . 'node.url';
         $wwwdataNodeUrlFile     = $wwwdataNodePath . 'node.url';
+        $i = 0;
+        do {
+            usleep(100000); //wait 0.1 sec
+            $i++;
+        } while (!file_exists($elkarbackupNodeUrlFile) and $i<10);
         if (file_exists($elkarbackupNodeUrlFile)) {
             $content = file_get_contents($elkarbackupNodeUrlFile);
             file_put_contents($wwwdataNodeUrlFile, $content);
