@@ -37,7 +37,7 @@ class ConfigureNodeCommand extends LoggingCommand
 
         //Node creation
         if (!is_dir($tahoeNodePath)) {
-            $command        = $tahoeAlias . ' create-client 2>&1';
+            $command        = $tahoeAlias . ' create-client --webport=tcp:3456:interface=0.0.0.0 2>&1';
             $commandOutput  = array();
             $status         = 0;
             exec($command, $commandOutput, $status);

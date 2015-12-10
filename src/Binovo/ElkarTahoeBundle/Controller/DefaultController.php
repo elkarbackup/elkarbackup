@@ -36,6 +36,7 @@ class DefaultController extends Controller
 
         //obtain data from the node's config file
         $fields['nickname']='nickname';
+        $fields['webport']='web.port';
         $fields['introducerfurl']='introducer.furl';
         $fields['sharesneeded']='shares.needed';
         $fields['shareshappy']='shares.happy';
@@ -70,6 +71,7 @@ class DefaultController extends Controller
             }
         } else {
             $data['nickname'] = 'elkarbackup_node';
+            $data['webport'] = 'tcp:3456:interface=127.0.0.1';
             $data['introducerfurl'] = '';
             $data['sharesneeded'] = 3;  //K
             $data['shareshappy'] = 7;   //H
@@ -268,10 +270,11 @@ class DefaultController extends Controller
         }
         $this->get('session')->getFlashBag()->add('tahoeConfiguration', $trans_msg);
 
-        $nodeUrl = file_get_contents('/var/lib/elkarbackup/node.url');
-        if (strlen($nodeUrl)<1) {
-            $nodeUrl = 'http://127.0.0.1:3456/'; //default
-        }
+        $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,strpos( $_SERVER["SERVER_PROTOCOL"],'/')));
+        $host = $_SERVER['SERVER_ADDR'];
+        $i = strpos($data['webport'], ':')+1;
+        $port = substr($data['webport'], $i, strpos($data['webport'], ':interface=')-$i);
+        $nodeUrl = $protocol . "://" . $host . ':' . $port;
 
         return $this->render('BinovoElkarTahoeBundle:Default:configurenode.html.twig',
                                     array('form'        => $form->createView(),
