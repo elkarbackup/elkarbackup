@@ -27,6 +27,9 @@ CONFIG_DIR="/var/lib/tahoe-lafs"
 DAEMONARGS="--syslog"
 AUTOSTART=""
 
+if [ "$(cat /usr/share/elkarbackup/app/config/parameters.yml | grep 'tahoe_active' | grep -c 'false')" -eq 1 ]; then
+    exit 0
+fi
 if [ -e /etc/default/elkarbackup-tahoe-lafs ]; then
     . /etc/default/elkarbackup-tahoe-lafs
 fi
@@ -85,7 +88,7 @@ start|stop|restart)
         else
             # invoke command only for nodes specified in $AUTOSTART
             for name in $AUTOSTART ; do
-                _tahoe "$command" "$name" || STATUS=0
+                _tahoe "$command" "$name" || STATUS="$?"
             done
         fi
     else

@@ -222,7 +222,7 @@ class DefaultController extends Controller
                 $manager->persist($msg);
                 $manager->flush();
 
-                $seconds = 65-date("s"); //1 min + 5sec delay
+                $seconds = 70-date("s"); //1 min + 10sec delay
                 return $this->render('BinovoElkarTahoeBundle:Default:configuring.html.twig',
                                      array( 'form' => $form->createView(),
                                             'seconds' => $seconds));
