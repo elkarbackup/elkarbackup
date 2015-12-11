@@ -45,7 +45,7 @@ class ConfigureNodeCommand extends LoggingCommand
                 $this->err('Error creating Tahoe node: ' . implode("\n", $commandOutput), $context);
                 return $status;
             }
-            $this->info($commandOutput[0], $context);     
+            $this->info($commandOutput[0], $context);
         }
 
         //Set: tahoe - not ready
@@ -77,7 +77,7 @@ class ConfigureNodeCommand extends LoggingCommand
         if ( !($attr['enabled'] = $input->getArgument('storage')) ) {
             $attr['enabled'] = 'false';
         }
-        
+
         if (file_exists($nodeConfigFile)) {
             if (is_writeable($nodeConfigFile) ) {
                 try {
@@ -90,10 +90,10 @@ class ConfigureNodeCommand extends LoggingCommand
                         $i=strpos($content, ($key . ' =') );
                         if ('introducer.furl' == $key) {
                             $j=$i+strlen('introducer.furl = ');
-                            $oldFurl = ''; 
-                        }                     
+                            $oldFurl = '';
+                        }
                         if ('#' == $content[$i-1]) {
-                            $i--;                      
+                            $i--;
                         }
                         for (;$i<strlen($content);$i++) {
                             if ("\n" == $content[$i]) {
@@ -159,7 +159,7 @@ class ConfigureNodeCommand extends LoggingCommand
         $command        = $tahoeAlias . ' restart 2>&1'; //works even if it was not running
         $commandOutput  = array();
         $status         = 0;
-        exec($command, $commandOutput, $status);   
+        exec($command, $commandOutput, $status);
         if (0 != $status) {
             $errStart = count($commandOutput)-2;
             $this->err('Error starting Tahoe node: ' . $commandOutput[$errStart], $context);
@@ -237,7 +237,7 @@ class ConfigureNodeCommand extends LoggingCommand
             $this->err('Error connecting to the tahoe grid. Tahoe storage not ready to work.', $context);
             return $status;
         }
-        
+
         //Set: tahoe - ready
         $content = file_get_contents($readyFile);
         if (false==strstr($content, 'URI')){

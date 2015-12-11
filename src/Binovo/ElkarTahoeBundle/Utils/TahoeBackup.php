@@ -101,7 +101,7 @@ class TahoeBackup
     {
         $idClient = $job->getClient()->getId();
         $idJob    = $job->getId();
-        
+
         return 'elkarbackup:Backups/' . sprintf('%04d', $idClient) . '/' . sprintf('%04d', $idJob) . '/';
     }
 
@@ -153,7 +153,7 @@ class TahoeBackup
     }
 
     public function isReady()
-    {   
+    {
         $filePath = $this->_nodeLocation . self::NODE_DIR_NAME . self::READY_FILE;
         if (!file_exists($filePath)) {
             return false;
@@ -191,7 +191,7 @@ class TahoeBackup
 
     protected function _runJob(Pair $pair)
     {
-        if (!file_exists(self::READY_FILE)) {
+        if (!file_exists(self::NODE_DIR_NAME . self::READY_FILE)) {
             $this->_logger->err('Cannot perform backup on Tahoe storage: Tahoe configuration not properly set', $this->_context);
             return false;
         }
@@ -206,7 +206,7 @@ class TahoeBackup
                 break;
             }
         } // $retention should always be greater than 0
-        
+
         if (!$job->getPolicy()->isRotation($retain)) { //no rotation
             $backupDir = $this->_getJobPath($job);
             if (false==$backupDir) {

@@ -44,7 +44,7 @@ class UpdateCodeCommand extends LoggingCommand
                         file_put_contents($readyFile, '100');
                         break;
                     default:
-                        //should never happen 
+                        //should never happen
                         file_put_contents($readyFile, '101');
                         break;
                 }

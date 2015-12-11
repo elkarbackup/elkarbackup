@@ -41,7 +41,7 @@ class RenewLeasesCommand extends LoggingCommand
                     $this->warn('Tahoe storage not configured', $context);
                 }
             }
-            return 1; 
+            return 1;
         }
 
         $command = $tahoeAlias . ' deep-check --add-lease elkarbackup: 2>&1';
@@ -57,7 +57,7 @@ class RenewLeasesCommand extends LoggingCommand
 
         $this->_updateFile($commandOutput);
 
-        return 0;        
+        return 0;
     }
 
     protected function _getLastRenewDate()

@@ -32,7 +32,7 @@ class DefaultController extends Controller
 
         if (!$tahoe->isInstalled()) { //it is supossed not to happend though
             return $this->redirect($this->generateUrl('manageBackupsLocation'));
-        } 
+        }
 
         //obtain data from the node's config file
         $fields['nickname']='nickname';
@@ -50,9 +50,9 @@ class DefaultController extends Controller
                 foreach ($fields as $key => $field) {
                     $data[$key]='';
                     $line = $field . ' = ';
-                    $i=strpos($content, $line);                    
+                    $i=strpos($content, $line);
                     if ('#' == $content[$i-1]) {
-                        break;                      
+                        break;
                     }
                     $i+=strlen($line);
                     while ("\n"!=$content[$i] and $i<strlen($content)) {
@@ -111,7 +111,7 @@ class DefaultController extends Controller
               $oldData[$key] = $value;
             }
 
-            $form->bind($request);   
+            $form->bind($request);
             $data = $form->getData();
 
             //0 = no change, 1 = change and ok, 2 = change but warning, 3 = change but error
@@ -237,7 +237,7 @@ class DefaultController extends Controller
                 $form->addError($error);
             }
         }
-        
+
         $readyCode = $tahoe->getReadyCode();
         $key = $readyCode[0] . $readyCode[1] . $readyCode[2];
         $writecap = '';
@@ -397,8 +397,12 @@ class DefaultController extends Controller
                                 }
                             }
                             $content = array();
-                            $content[] = $latest;
-                            $content[] = $hourly;
+                            if (isset($latest)) { //Should always be set
+                                $content[] = $latest;
+                            }
+                            if (isset($hourly)) { 
+                                $content[] = $hourly;
+                            }
                             foreach ($aux as $value) {
                                 $content[] = $value;
                             }
