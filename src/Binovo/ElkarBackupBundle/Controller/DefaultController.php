@@ -220,16 +220,28 @@ class DefaultController extends Controller
         }
 
         // Warning for Rsnapshot 1.3.1-4 in Debian Jessie
-        $rsnapshot_path = shell_exec(sprintf('which rsnapshot'));
         $rsnapshot_jessie_md5 = '7d9eb926a1c4d6fcbf81d939d9f400ea';
-        $rsnapshot_local_md5 = explode(' ', shell_exec(sprintf('md5sum %s', $rsnapshot_path)))[0];
-        $alert = '';
-	if ( $rsnapshot_jessie_md5 == $rsnapshot_local_md5 ) {
+        if (is_callable('shell_exec') && false === stripos(ini_get('disable_functions'), 'shell_exec')) {
+          $rsnapshot_path = shell_exec(sprintf('which rsnapshot'));
+          $sresult = explode(' ', shell_exec(sprintf('md5sum %s', $rsnapshot_path)));
+          if (is_array($sresult)) {
+            $rsnapshot_local_md5 = $sresult[0];
+          } else {
+            # PHP 5.3 or higher
+            $rsnapshot_local_md5 = $sresult;
+          }
+        } else {
+          $rsnapshot_local_md5 = "unknown";
+          syslog(LOG_INFO, 'Impossible to check rsnapshot version. More info: https://github.com/elkarbackup/elkarbackup/issues/88"');
+        }
+        if ( $rsnapshot_jessie_md5 == $rsnapshot_local_md5 ) {
           $alert = "WARNING! Change your Rsnapshot version <a href='https://github.com/elkarbackup/elkarbackup/wiki/JessieRsnapshotIssue'>More info</a>";
           syslog(LOG_INFO, 'Rsnapshot 1.3.1-4 not working with SSH args. Downgrade it or fix it. More info: https://github.com/elkarbackup/elkarbackup/issues/88"');
           $disable_background = True;
-        }
-	
+        } else {
+	  $alert = NULL;
+	}
+
         return $this->render('BinovoElkarBackupBundle:Default:login.html.twig', array(
                                  'last_username' => $session->get(SecurityContext::LAST_USERNAME),
                                  'error'         => $error,
@@ -287,18 +299,20 @@ class DefaultController extends Controller
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             try {
-                foreach ($jobsToDelete as $idJob => $job) {
-                    $client->getJobs()->removeElement($job);
-                    $em->remove($job);
-                    $msg = new Message('DefaultController', 'TickCommand',
-                                       json_encode(array('command' => "elkarbackup:delete_job_backups",
-                                                         'client'  => (int)$id,
-                                                         'job'     => $idJob)));
-                    $em->persist($msg);
-                    $this->info('Delete client %clientid%, job %jobid%',
-                                array('%clientid%' => $client->getId(),
-                                      '%jobid%' => $job->getId()),
-                                array('link' => $this->generateJobRoute($job->getId(), $client->getId())));
+                if (isset($jobsToDelete)){
+                    foreach ($jobsToDelete as $idJob => $job) {
+                        $client->getJobs()->removeElement($job);
+                        $em->remove($job);
+                        $msg = new Message('DefaultController', 'TickCommand',
+                                           json_encode(array('command' => "elkarbackup:delete_job_backups",
+                                                             'client'  => (int)$id,
+                                                             'job'     => $idJob)));
+                        $em->persist($msg);
+                        $this->info('Delete client %clientid%, job %jobid%',
+                                    array('%clientid%' => $client->getId(),
+                                          '%jobid%' => $job->getId()),
+                                    array('link' => $this->generateJobRoute($job->getId(), $client->getId())));
+                    }
                 }
                 $em->persist($client);
                 $this->info('Save client %clientid%',

@@ -11,10 +11,15 @@
 /composer.phar
 /vendor/
 /web/bundles/
-/web/js/*
+
+# Symfony2 personal gitignore #
+###############################
+/web/js/
 !/web/js/dojo-release
 !/web/js/dojo-release-*
 /web/css/
+/web/fonts/glyphicons-*
+/app/sessions/*
 
 # Makepackage #
 ###############

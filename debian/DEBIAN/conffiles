@@ -8,7 +8,9 @@
 /etc/elkarbackup/config_prod.yml
 /etc/elkarbackup/config_test.yml
 /etc/elkarbackup/parameters.yml
+/etc/elkarbackup/parameters.yml.dist
 /etc/elkarbackup/routing.yml
 /etc/elkarbackup/routing_dev.yml
 /etc/elkarbackup/security.yml
+/etc/elkarbackup/services.yml
 /etc/logrotate.d/elkarbackup

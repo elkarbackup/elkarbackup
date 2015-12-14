@@ -1,4 +1,4 @@
-# This file is auto-generated during the composer install
+# parameters.yml.dist is a template
 parameters:
     database_driver: pdo_mysql
     database_host: localhost
