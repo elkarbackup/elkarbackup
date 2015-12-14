@@ -53,10 +53,10 @@ ln -s  /etc/elkarbackup .debian/usr/share/elkarbackup/app/config
 # put copyright notices and changelog in its place
 mkdir -p .debian/usr/share/doc/elkarbackup
 # Copy changelog and copyright files
-#cp -a changelog changelog.Debian copyright .debian/usr/share/doc/elkarbackup
+cp -a debian/DEBIAN/changelog .debian/usr/share/doc/elkarbackup/changelog.Debian
 cp -a debian/DEBIAN/changelog debian/DEBIAN/copyright .debian/usr/share/doc/elkarbackup
 gzip -f --best .debian/usr/share/doc/elkarbackup/changelog
-#gzip -f --best .debian/usr/share/doc/elkarbackup/changelog.Debian
+gzip -f --best .debian/usr/share/doc/elkarbackup/changelog.Debian
 # ensure directory permissions are right
 find .debian -type d | xargs -I {} chmod 755 "{}"
 # set initial values for parametres
