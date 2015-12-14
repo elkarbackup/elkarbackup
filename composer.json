@@ -24,7 +24,8 @@
         "twig/extensions": "^1.3",
         "jms/security-extra-bundle": "^1.5",
         "jms/di-extra-bundle": "^1.6",
-        "twbs/bootstrap": "^3.3"
+        "twbs/bootstrap": "^3.3",
+        "symfony/debug": "2.7.*"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
