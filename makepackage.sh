@@ -55,7 +55,7 @@ cp -a changelog changelog.Debian copyright .debian/usr/share/doc/elkarbackup
 gzip -f --best .debian/usr/share/doc/elkarbackup/changelog
 gzip -f --best .debian/usr/share/doc/elkarbackup/changelog.Debian
 # ensure directory permissions are right
-find .debian -type d | xargs chmod 755
+find .debian -type d | xargs -I {} chmod 755 "{}"
 # set initial values for parametres
 sed -i 's#backup_dir:.*#backup_dir: /var/spool/elkarbackup/backups#'       .debian/etc/elkarbackup/parameters.yml
 sed -i 's#database_name:.*#database_name: elkarbackup#'                    .debian/etc/elkarbackup/parameters.yml
