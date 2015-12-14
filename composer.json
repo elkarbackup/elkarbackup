@@ -32,6 +32,8 @@
     },
     "scripts": {
         "post-install-cmd": [
+            "cp vendor/twbs/bootstrap/dist/css/bootstrap*.css web/css",
+            "cp vendor/twbs/bootstrap/dist/fonts/* web/fonts",
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
@@ -41,6 +43,7 @@
         ],
         "post-update-cmd": [
             "cp vendor/twbs/bootstrap/dist/css/bootstrap*.css web/css",
+            "cp vendor/twbs/bootstrap/dist/fonts/* web/fonts",
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
