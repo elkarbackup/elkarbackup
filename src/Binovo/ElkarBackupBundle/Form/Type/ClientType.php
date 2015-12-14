@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ClientType extends AbstractType
 {
@@ -18,12 +19,13 @@ class ClientType extends AbstractType
     {
         // Modify 'quota' value
         // User will see the quota in GB (fields.html.twig), but we will save it in KBs
-        $builder->addEventListener(FormEvents::BIND_CLIENT_DATA, function (FormEvent $event) {
-          $data = $event->getData();
-          if ($data['quota'] > 0) {
-            $quota = $data['quota'] * 1024 * 1024;
-            $data["quota"] = intval($quota);
-            $event->setData($data);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+          $client = $event->getData();
+          $form = $event->getForm();
+          if ($client->getQuota() > 0) {
+            $quota = $client->getQuota() * 1024 * 1024;
+            $client->setQuota($quota);
+            $event->setData($client);
           }
         }, 255);
 
@@ -66,12 +68,12 @@ class ClientType extends AbstractType
                                                             'label'        => $t->trans('Jobs', array(), 'BinovoElkarBackup')));
     }
 
-    public function getDefaultOptions(array $options)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return array(
-            'data_class' => 'Binovo\ElkarBackupBundle\Entity\Client',
-            'translator' => null,
-        );
+        $resolver->setDefaults(array(
+          'data_class' => 'Binovo\ElkarBackupBundle\Entity\Client',
+          'translator' => null,
+        ));
     }
 
     public function getName()

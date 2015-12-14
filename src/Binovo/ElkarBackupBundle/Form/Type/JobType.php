@@ -9,6 +9,7 @@ namespace Binovo\ElkarBackupBundle\Form\Type;
 use Binovo\ElkarBackupBundle\Entity\Job;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class JobType extends AbstractType
 {
@@ -82,12 +83,12 @@ class JobType extends AbstractType
                                                                 'required' => false));
     }
 
-    public function getDefaultOptions(array $options)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return array(
-            'data_class' => 'Binovo\ElkarBackupBundle\Entity\Job',
-            'translator' => null,
-        );
+        $resolver->setDefaults(array(
+          'data_class' => 'Binovo\ElkarBackupBundle\Entity\Job',
+          'translator' => null,
+        ));
     }
 
     public function getName()

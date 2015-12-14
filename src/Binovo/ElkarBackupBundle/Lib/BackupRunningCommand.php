@@ -102,7 +102,7 @@ abstract class BackupRunningCommand extends LoggingCommand
 
     protected function runJob(Job $job, $runnableRetains)
     {
-        $stats = [];
+        $stats[] = array();
         $warnings = False;
 
         $container = $this->getContainer();
