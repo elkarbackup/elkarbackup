@@ -36,7 +36,6 @@ rm -rf .debian/usr/share/elkarbackup/app/{cache,logs,sessions} .debian/usr/share
 # fix some files so that lintian doesn't complain (so much)
 find .debian -name "*.png" -o -name "*.gif" -o -name "*.php" -o -name "README" -o -name "*.md" -o -name "*.dist" -o -name "*.ini" -o -name "*.yml" -o -name "*.rst" -o -name "*.xml" -o -name "*.js"| xargs chmod a-x
 find .debian/usr/share/elkarbackup/web/js/dojo-release-1.8.1 -type f|xargs chmod a-x
-sed -i '1c#!/bin/bash' .debian/usr/share/elkarbackup/vendor/swiftmailer/swiftmailer/test-suite/lib/simpletest/packages/build_tarball.sh
 # ensure the packaged versions uses only the release environment
 rm .debian/usr/share/elkarbackup/web/app_dev.php
 rm .debian/usr/share/elkarbackup/web/.htaccess
