@@ -241,6 +241,7 @@ class DefaultController extends Controller
         } else {
 	  $alert = NULL;
 	}
+
         return $this->render('BinovoElkarBackupBundle:Default:login.html.twig', array(
                                  'last_username' => $session->get(SecurityContext::LAST_USERNAME),
                                  'error'         => $error,
@@ -1121,7 +1122,7 @@ EOF;
             $ok = true;
             $result = $this->redirect($this->generateUrl('manageBackupsLocation'));
             if ($this->container->getParameter('backup_dir') != $backupDir) {
-                if (!$this->setParameter('backup_dir', $backupDir)) {
+                if ($this->setParameter('backup_dir', $backupDir, 'manageBackupsLocation')) {
                     $this->get('session')->getFlashBag()->add('manageParameters',
                                                               $t->trans('Parameters updated',
                                                                         array(),
@@ -1203,18 +1204,18 @@ EOF;
                 $ok = true;
                 if ('password' == $params[$paramName]['type']) {
                     if (!empty($paramValue)) {
-                        $ok = $this->setParameter($paramName, $paramValue);
+                        $ok = $this->setParameter($paramName, $paramValue, 'manageParameters');
                     }
                 } elseif ('checkbox' == $params[$paramName]['type']) {
                     // Workaround to store value in boolean format
                     if (!empty($paramValue)) {
-                        $ok = $this->setParameter($paramName, 'true');
+                        $ok = $this->setParameter($paramName, 'true', 'manageParameters');
                     } else {
-                        $ok = $this->setParameter($paramName, 'false');
+                        $ok = $this->setParameter($paramName, 'false', 'manageParameters');
                     }
                 } else {
                     if ($paramValue != $this->container->getParameter($paramName)) {
-                        $ok = $this->setParameter($paramName, $paramValue);
+                        $ok = $this->setParameter($paramName, $paramValue, 'manageParameters');
                     }
                 }
                 if (!$ok) {
@@ -1246,7 +1247,7 @@ EOF;
     /**
      * Sets the value of a filed in the parameters.yml file to the given value
      */
-    public function setParameter($name, $value)
+    public function setParameter($name, $value, $from)
     {
         $paramsFilename = dirname(__FILE__) . '/../../../../app/config/parameters.yml';
         $paramsFile = file_get_contents($paramsFilename);
@@ -1258,11 +1259,11 @@ EOF;
         if ($ok) {
             $this->info('Set Parameter %paramname%',
                         array('%paramname%' => $name),
-                        array('link' => $this->generateUrl('showPolicies')));
+                        array('link' => $this->generateUrl($from)));
         } else {
-            $this->info('Set Parameter %paramname%',
+            $this->info('Warning: Parameter %paramname% not set',
                         array('%paramname%' => $name),
-                        array('link' => $this->generateUrl('showPolicies')));
+                        array('link' => $this->generateUrl($from)));
         }
 
         return $ok;
