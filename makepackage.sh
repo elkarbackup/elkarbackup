@@ -34,7 +34,7 @@ find .debian/usr/share/elkarbackup/web/js/dojo-release-1.8.1 -name "*.uncompress
 find .debian -name ".git*" -o -name "*~" -o -name "*#*"| xargs rm -rf
 rm -rf .debian/usr/share/elkarbackup/app/{cache,logs,sessions} .debian/usr/share/elkarbackup/backups .debian/usr/share/elkarbackup/debian
 # fix some files so that lintian doesn't complain (so much)
-rm -fR usr/share/elkarbackup/vendor/twbs/bootstrap/docs/*
+rm -fR .debian/usr/share/elkarbackup/vendor/twbs/bootstrap/docs/*
 find .debian -name "*.png" -o -name "*.gif" -o -name "*.php" -o -name "README" -o -name "*.md" -o -name "*.dist" -o -name "*.ini" -o -name "*.yml" -o -name "*.rst" -o -name "*.xml" -o -name "*.js"| xargs chmod a-x
 find .debian/usr/share/elkarbackup/web/js/dojo-release-1.8.1 -type f|xargs chmod a-x
 # ensure the packaged versions uses only the release environment
