@@ -1089,7 +1089,7 @@ EOF;
         $tahoe = $this->container->get('Tahoe');
         $tahoeInstalled = $tahoe->isInstalled();
         $tahoeOn = $this->container->getParameter('tahoe_active');
-        if(!$tahoeInstalled && $tahoeOn) {
+        if (!$tahoeInstalled && $tahoeOn) {
             $tahoeOn = false;
             $this->setParameter('tahoe_active', 'false', 'manageBackupsLocation');
         }

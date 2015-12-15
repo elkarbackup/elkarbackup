@@ -176,7 +176,7 @@ class ConfigureNodeCommand extends LoggingCommand
         do {
             usleep(100000); //wait 0.1 sec
             $i++;
-        } while (!file_exists($elkarbackupNodeUrlFile) and $i<10);
+        } while (!file_exists($elkarbackupNodeUrlFile) and $i<30);
         if (file_exists($elkarbackupNodeUrlFile)) {
             $content = file_get_contents($elkarbackupNodeUrlFile);
             file_put_contents($wwwdataNodeUrlFile, $content);
@@ -238,7 +238,7 @@ class ConfigureNodeCommand extends LoggingCommand
             return $status;
         }
 
-        //Set: tahoe - ready
+        //Set: tahoe is ready
         $content = file_get_contents($readyFile);
         if (false==strstr($content, 'URI')){
             file_put_contents($readyFile, '200');

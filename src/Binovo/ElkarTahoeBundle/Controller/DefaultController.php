@@ -30,7 +30,7 @@ class DefaultController extends Controller
         $manager = $this->getDoctrine()->getManager();
         $tahoe = $this->container->get('Tahoe');
 
-        if (!$tahoe->isInstalled()) { //it is supossed not to happend though
+        if (!$tahoe->isInstalled()) { //it is supossed not to happen though
             return $this->redirect($this->generateUrl('manageBackupsLocation'));
         }
 
@@ -189,7 +189,6 @@ class DefaultController extends Controller
                   $data['shareshappy'] = $data['sharestotal'] - $data['sharesneeded'];
                   if ($data['shareshappy'] < $data['sharesneeded']) {
                       $data['shareshappy'] = $data['shareshappy'] + 1;  //I trust servers' disponibility
-                      //$data['shareshappy'] = $data['sharestotal'];    //I trust no-one (I should also use smaller K)
                   }
               }
             }

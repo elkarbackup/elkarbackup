@@ -132,7 +132,7 @@ class TahoeBackup
 
     public function getRelativeNodePath()
     {
-        //relative so 'elkarbackup' does not traverse directories with no permission
+        //relative so 'elkarbackup' does not traverse directories without permission
         return self::NODE_DIR_NAME;
     }
 

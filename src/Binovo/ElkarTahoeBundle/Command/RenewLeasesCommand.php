@@ -49,7 +49,6 @@ class RenewLeasesCommand extends LoggingCommand
         $status         = 0;
         exec($command, $commandOutput, $status);
         if (0 != $status) {
-            //$commandOutput[] may contain sensitive data when command fails
             $this->err('Error trying to renew Tahoe leases', $context);
             return $status;
         }
