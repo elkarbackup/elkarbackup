@@ -71,8 +71,8 @@ sed -i 's#tmp_dir:.*#tmp_dir: /tmp#'                                       .debi
 sed -i 's#upload_dir:.*#upload_dir: /var/spool/elkarbackup/uploads#'       .debian/etc/elkarbackup/parameters.yml
 # ensure config files have the right permissions
 chmod 0440 .debian/etc/sudoers.d/elkarbackup
-chmod 0644 .debian/DEBIAN/conffiles .debian/DEBIAN/templates .debian/etc/cron.d/elkarbackup
-chmod 0755 .debian/DEBIAN/config .debian/DEBIAN/postinst .debian/DEBIAN/postrm .debian/DEBIAN/preinst
+chmod 0644 .debian/DEBIAN/conffiles .debian/DEBIAN/templates .debian/etc/cron.d/elkarbackup .debian/etc/default/elkarbackup-tahoe-lafs
+chmod 0755 .debian/DEBIAN/config .debian/DEBIAN/postinst .debian/DEBIAN/postrm .debian/DEBIAN/preinst .debian/etc/init.d/elkarbackup-tahoe-lafs
 
 
 # use prod environment in console by default

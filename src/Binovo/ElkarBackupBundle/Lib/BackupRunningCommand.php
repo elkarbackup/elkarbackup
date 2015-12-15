@@ -238,6 +238,14 @@ abstract class BackupRunningCommand extends LoggingCommand
                     }
                 }
             }
+
+            //tahoe backup
+            $tahoe = $container->get('Tahoe');
+            $tahoeInstalled = $tahoe->isInstalled();
+            $tahoeOn = $container->getParameter('tahoe_active');
+            if ($tahoeInstalled && $tahoeOn) {
+                $tahoe->enqueueJob($job, $retain);
+            }
         }
         if (false === unlink($confFileName)) {
             $this->warn('Error unlinking config file %filename%.',

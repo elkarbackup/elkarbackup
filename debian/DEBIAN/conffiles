@@ -12,3 +12,5 @@
 /etc/elkarbackup/routing_dev.yml
 /etc/elkarbackup/security.yml
 /etc/logrotate.d/elkarbackup
+/etc/init.d/elkarbackup-tahoe-lafs
+/etc/default/elkarbackup-tahoe-lafs

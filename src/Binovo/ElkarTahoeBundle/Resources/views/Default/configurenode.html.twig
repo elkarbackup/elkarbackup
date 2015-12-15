@@ -1,0 +1,65 @@
+{##
+ # @copyright 2012,2013 Binovo it Human Project, S.L.
+ # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ #}
+{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoElkarTahoe' %}
+
+{#
+{% block scripts %}
+    {{ parent() }}
+    {% javascripts '@BinovoElkarTahoeBundle/Resources/public/js/configurenode.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+#}
+
+{% block body %}
+
+<form class="form-horizontal" action="{{ path('tahoeConfig') }}" method="post" {{ form_enctype(form) }}>
+    {% if newWritecap is not empty %}
+        <div class="row text-center">
+            <h4>
+                {% trans %}You are now using a new writecap.{% endtrans %}
+                <a href="javascript:void(0);" onclick={{ "javascript:alert('" ~ newWritecap ~ "');" }}>
+                    {% trans %}Back it up!{% endtrans %}
+                </a>
+            </h4>
+            <small>{% trans %}This message will only be shown once{% endtrans %}</small>
+        </div>
+    {% endif %}
+    <h3>{% trans %}Configure Tahoe storage{% endtrans %}</h3>
+    <div class="row">
+        <div class="control-group">
+            <div class="controls">
+                <a class="pull-left" href="{{ path('showJobTahoeBackup', {action: 'view', file: 'elkarbackup:Backups'}) }}">
+                    <input class="btn btn-elkarbackup" type="button" value="{% trans %}Browse Tahoe repository{% endtrans %}"/>
+                </a>
+            </div>
+        </div>
+        <a class="pull-right" href="{{ gridStatus }}" target="_blank">{% trans %}Check Tahoe grid status{% endtrans %}</a>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <br>
+            {% for flashMessage in app.session.flashbag.get('tahoeConfiguration') %}
+            <div class="controls help-block">
+                {{ flashMessage }}
+            </div>
+            {% endfor %}
+            {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
+            {{ form_widget(form) }}
+            <div class="control-group">
+                <div class="controls">
+                    <input class="btn btn-elkarbackup pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            {% trans %}configurenode_help{% endtrans %}
+            {{ nodeDir ~ 'storage/shares/'}}</p>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

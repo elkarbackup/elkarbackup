@@ -32,3 +32,5 @@ if [ "$1" = "remove" ]; then
     fi
     db_purge
 fi
+
+update-rc.d elkarbackup-tahoe-lafs remove

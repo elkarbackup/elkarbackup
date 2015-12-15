@@ -1,0 +1,62 @@
+#tahoeConfigAction @Controller/DefaultController.php
+'Node nickname' : 'Nombre del nodo'
+'Introducer node furl' : 'Furl del nodo introductor'
+'ERROR: Invalid introducer`s furl, try again' : 'ERROR: Furl del nodo introductor inválida, inténtelo de nuevo'
+'Warning: wrong KHN parameters' : 'Aviso: valores inválidos para KHN'
+'Tahoe storage is successfully configured' : 'Almacenamiento Tahoe configurado correctamente'
+'ERROR: Tahoe storage is actually not configured properly or configured at all' : 'ERROR: Almacenamiento Tahoe no configurado correctamente'
+
+#configuring.html.twig @Resources/views/Default
+'Configure Tahoe storage' : 'Configurar almacenamiento Tahoe'
+#configurenode.html.twig @Resources/views/Default
+'Save' : 'Guardar'
+'You are now using a new writecap.' : 'Acaba de crear un nuevo writecap.'
+'Back it up!' : '¡Guárdelo!'
+'This message will only be shown once' : 'Este mensaje sólo se mostrará una vez'
+'Browse Tahoe repository' : 'Repositorio Tahoe'
+'Check Tahoe grid status' : 'Comprobar el estado de la red Tahoe'
+'Enable storage' : 'Activar almacenamiento'
+'Tahoe storage has never been configured' : 'El almacenamiento Tahoe aún no ha sido configurado'
+'Tahoe storage is configured' : 'El almacenamiento Tahoe está configurado'
+'ERROR: Tahoe storage configuration has failed' : 'ERROR: La configuración de Tahoe ha fallado'
+'Tahoe storage is NOT configured properly' : 'Tahoe NO se ha podido configurar correctamente'
+'SUCCESS: Tahoe storage has successfully been configured' : 'SUCCESS: Tahoe se ha configurado correctamente'
+'ERROR: Tahoe storage is actually not configured properly or configured at all' : 'ERROR: Tahoe no se ha configurado, al menos no correctamente'
+
+#menu @ElkarBackupBundle
+'Manage Tahoe storage' : 'Configurar almacenamiento Tahoe'
+
+#controller::manageBackupsAction @ElkarBackupBundle
+'Turn on Tahoe storage' : 'Activar almacenamiento Tahoe'
+'Warning: tahoe is not properly configured and will not work' : 'Aviso: Tahoe no está correctamente configurado y no funcionará'
+
+
+#configuring.html.twig @Resources/views/Default
+configuring_help1: |
+ <h4>El almacenamiento Tahoe se está configurando...</h4>
+ <br>
+ <p>Tenga paciencia, el proceso tardará aproximadamente
+configuring_help2: |
+ segundos.</p>
+ <p>Cuando termine se le redirigirá automáticamente a la página de configuración.</p>
+ <br>
+ <small>Abandonar esta página NO abortará el proceso de configuración</small>
+
+#configurenode.html.twig @Resources/views/Default
+configurenode_help: |
+ <h4>Nombre del nodo</h4>
+ Opcional. Valor por defecto 'elkarbackup_node'. No introduzca espacios en blanco.
+ <h4>Furl del nodo introductor</h4>
+ Dirección del nodo introductor necesaria para conectarse a la red Tahoe.
+ <h4>Parámetros K-H-N</h4>
+ <p>Opcional. Valores por defecto K=3, H=7 y N=10. Importante: 1 <= K <= H <= N</p>
+ <p>K = shares needed</p>
+ <p>H = shares happy</p>
+ <p>N = shares total</p>
+ <p>Los datos serán divididos (erasure-coding) en N porciones que se distribuirán entre al menos H 'servidores' diferentes de forma que los datos podrán recuperarse con K o más servidores disponibles.</p>
+ <p>Espacio requerido para almacenar en la red datos de tamaño = tam:</p>
+ <p>espacio requerido = N*tam/K</p>
+ <h4>Activar almacenamiento en el nodo</h4>
+ <p>Al activar esta opción algunos datos se guardarán en el servidor de Elkarbackup.</p>
+ <p>Permite aportar parte de almacenamiento a la red Tahoe. Puede crear un enlace a cualquier ubicación dejando el resto de los archivos del nodo donde están y guardando las porciones (shares) en algún otro lugar.
+ El directorio donde se guardan las porciones es: </p><p>

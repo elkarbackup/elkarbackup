@@ -1087,6 +1087,15 @@ EOF;
             $data = array('host'      => '',
                           'directory' => $backupDir);
         }
+        $tahoe = $this->container->get('Tahoe');
+        $tahoeInstalled = $tahoe->isInstalled();
+        $tahoeOn = $this->container->getParameter('tahoe_active');
+        if (!$tahoeInstalled && $tahoeOn) {
+            $tahoeOn = false;
+            $this->setParameter('tahoe_active', 'false', 'manageBackupsLocation');
+        }
+        $data['tahoe_active'] = $tahoeOn;
+
         $formBuilder = $this->createFormBuilder($data);
         $formBuilder->add('host'      , 'text'  , array('required' => false,
                                                         'label'    => $t->trans('Host', array(), 'BinovoElkarBackup'),
@@ -1095,6 +1104,10 @@ EOF;
         $formBuilder->add('directory' , 'text'  , array('required' => false,
                                                         'label'    => $t->trans('Directory', array(), 'BinovoElkarBackup'),
                                                         'attr'     => array('class' => 'form-control')));
+        $formBuilder->add('tahoe_active', 'checkbox', array('required' => false,
+                                                            'label'    => $t->trans('Turn on Tahoe storage', array(), 'BinovoElkarTahoe'),
+                                                            'disabled' => !$tahoeInstalled ));
+        
         $result = null;
         $form = $formBuilder->getForm();
         if ($request->isMethod('POST')) {
@@ -1122,10 +1135,32 @@ EOF;
                                             array('form' => $form->createView()));
                 }
             }
+            if ($data['tahoe_active'] != $tahoeOn) {
+                if ($data['tahoe_active']) {
+                  $strvalue = 'true';
+                } else {
+                  $strvalue = 'false';
+                }
+                if ($this->setParameter('tahoe_active', $strvalue, 'manageBackupsLocation')) {
+                    $this->get('session')->getFlashBag()->add('manageParameters', $t->trans('Parameters updated',
+                                                                                            array(),
+                                                                                            'BinovoElkarBackup'));
+                }
+            }
         } else {
             $result = $this->render('BinovoElkarBackupBundle:Default:backupslocation.html.twig',
                                     array('form' => $form->createView()));
         }
+
+        if (!$tahoe->isReady() and $data['tahoe_active']) {
+            $this->get('session')->getFlashBag()->add('manageParameters',
+                                                      $t->trans('Warning: tahoe is not properly configured and will not work',
+                                                                array(),
+                                                                'BinovoElkarTahoe'));
+            $result = $this->render('BinovoElkarBackupBundle:Default:backupslocation.html.twig',
+                                    array('form' => $form->createView()));
+        }
+
         $this->getDoctrine()->getManager()->flush();
         $this->clearCache();
 

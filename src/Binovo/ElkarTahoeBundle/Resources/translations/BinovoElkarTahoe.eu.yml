@@ -1,0 +1,62 @@
+#tahoeConfigAction @Controller/DefaultController.php
+'Node nickname' : 'Nodoaren izena'
+'Introducer node furl' : 'Sartzailearen furl-a'
+'ERROR: Invalid introducer`s furl, try again' : 'ERROR: Nodo sartzailearen furl desegokia, berriro saiatu'
+'Warning: wrong KHN parameters' : 'Error: KHN balio desegokiak'
+'Tahoe storage is successfully configured' : 'Tahoe biltegia ondo konfiguratua dago'
+'ERROR: Tahoe storage is actually not configured properly or configured at all' : 'ERROR: Tahoe biltegia ez dago ondo konfiguratua'
+
+#configuring.html.twig @Resources/views/Default
+'Configure Tahoe storage' : 'Tahoe biltegia konfiguratu'
+#configurenode.html.twig @Resources/views/Default
+'Save' : 'Gorde'
+'You are now using a new writecap.' : 'Writecap berri bat sortu duzu.'
+'Back it up!' : 'Gorde ezazu!'
+'This message will only be shown once' : 'Mezu hau bakarrik behin agertuko da'
+'Browse Tahoe repository' : 'Tahoe biltegia ikusi'
+'Check Tahoe grid status' : 'Tahoe sarearen egoera ikusi'
+'Enable storage' : 'Biltegi funtzioa aktibatu'
+'Tahoe storage has never been configured' : 'Tahoe ez da oraindik inoiz konfiguratu'
+'Tahoe storage is configured' : 'Tahoe ondo konfiguratua dago'
+'ERROR: Tahoe storage configuration has failed' : 'ERROR: Tahoe konfigurazioak huts egin du'
+'Tahoe storage is NOT configured properly' : 'Tahoe EZ dago ondo configuratua'
+'SUCCESS: Tahoe storage has successfully been configured' : 'SUCCESS: Tahoe ondo konfiguratu da'
+'ERROR: Tahoe storage is actually not configured properly or configured at all' : 'ERROR: Tahoe EZ dago ondo configuratua'
+
+#menu @ElkarBackupBundle
+'Manage Tahoe storage' : 'Tahoe biltegia konfiguratu'
+
+#controller::manageBackupsAction @ElkarBackupBundle
+'Turn on Tahoe storage' : 'Tahoe biltegia aktibatu'
+'Warning: tahoe is not properly configured and will not work' : 'Warning: Tahoe biltegia ez dago ondo konfiguratua eta ez da ibiliko'
+
+
+#configuring.html.twig @Resources/views/Default
+configuring_help1: |
+ <h4>Elkarbackup Tahoe biltegia konfiguratzen ari da...</h4>
+ <br>
+ <p>Itxoin mesedez, gutxi gora behera
+configuring_help2: |
+ segundu beharko ditu.</p>
+ <p>Bukatzen duenean automatikoki Tahoe configurazio atalera itzuliko da.</p>
+ <br>
+ <small>Orrialde hau ixteak EZ du configurazio prozesua etenduko.</small>
+
+#configurenode.html.twig @Resources/views/Default
+configurenode_help: |
+ <h4>Nodoaren izena</h4>
+ Hautazkoa. Balio lehenetsia 'elkarbackup_node'. Hutsuneak ez sartu.
+ <h4>Sartzailearen furl-a</h4>
+ Tahoe sarera konektatzeko behar den url bat.
+ <h4>K-H-N parametroak</h4>
+ <p>Hautazkoa. Balio lehenetsiak K=3, H=7 y N=10. Gogoratu: 1 <= K <= H <= N</p>
+ <p>K = shares needed</p>
+ <p>H = shares happy</p>
+ <p>N = shares total</p>
+ <p>Datuak N zatitan zatikatuko (erasure-coding) eta gutxienez H zerbitzari desberdinetan banatuko dira. Zerbitzari hauetako bakarrik K zerbitzaritik irakurtzea aski du datuak berreskuratzeko.</p>
+ <p>S tamainako datuak izanik:</p>
+ <p>total requiered space = N*S/K</p>
+ <p>zatiki bakoitza S/K tamainakoa izango da</p>
+ <h4>Biltegi funtzioa</h4>
+ <p>Hau aktibatzerakoan zeinbait datu Elkarbackup zerbitzarian gordeko dira.</p>
+ <p>Nodoak bere zatiki guztiak hemen gordetzen ditu: </p><p>

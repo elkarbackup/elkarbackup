@@ -162,6 +162,10 @@ class Builder extends ContainerAware
                                                       'children' => $this->getLanguageMenuEntries()))),
 
             );
+        if ($this->container->get('Tahoe')->isInstalled()) {
+            $menu[4]['children'][] = array('label'    => $t->trans('Manage Tahoe storage', array(), 'BinovoElkarTahoe'),
+                                                      'route'    => 'tahoeConfig');
+        }
 
         return $this->generateMenuBar($factory, $menu);
     }

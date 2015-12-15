@@ -1,1 +1,2 @@
 * * * * *		www-data	/usr/share/elkarbackup/app/console elkarbackup:tick
+0 0 * * 1		www-data	/usr/share/elkarbackup/app/console tahoe:renew_leases

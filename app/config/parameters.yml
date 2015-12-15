@@ -23,3 +23,5 @@ parameters:
     pagination_lines_per_page: 20
     url_prefix:
     disable_background: false
+    tahoe_active: false
+    home: /var/lib/elkarbackup
