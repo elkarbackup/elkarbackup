@@ -8,6 +8,7 @@ namespace Binovo\ElkarBackupBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AuthorizedKeyType extends AbstractType
 {
@@ -27,11 +28,11 @@ class AuthorizedKeyType extends AbstractType
 
     }
 
-    public function getDefaultOptions(array $options)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return array(
-            'translator' => $this->translator,
-        );
+        $resolver->setDefaults(array(
+          'translator' => $this->translator,
+        ));
     }
 
     public function getName()

@@ -3,9 +3,9 @@ binovo_elkar_backups:
     type:     annotation
     prefix:   /
 login_check:
-    pattern:   /login_check
+    path:   /login_check
 logout:
-    pattern: /logout
+    path: /logout
 binovo_elkar_tahoe:
     resource: "@BinovoElkarTahoeBundle/Controller/"
     type:     annotation

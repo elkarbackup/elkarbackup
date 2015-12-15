@@ -1,4 +1,4 @@
-# This file is auto-generated during the composer install
+# parameters.yml.dist is a template
 parameters:
     database_driver: pdo_mysql
     database_host: localhost
@@ -23,6 +23,6 @@ parameters:
     pagination_lines_per_page: 20
     url_prefix: null
     disable_background: false
+    mailer_from: null
     tahoe_active: false
     home: /var/lib/elkarbackup
-    mailer_from: null
