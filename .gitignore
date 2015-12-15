@@ -17,7 +17,7 @@
 /web/js/
 !/web/js/dojo-release
 !/web/js/dojo-release-*
-/web/css/
+/web/css/*
 /web/fonts/glyphicons-*
 /app/sessions/*
 
