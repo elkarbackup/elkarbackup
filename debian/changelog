@@ -1,5 +1,8 @@
-elkarbackup (1.2.0-Pre-Alpha) UNRELEASED; urgency=medium
+elkarbackup (1.2.0-Pre-Alpha2) UNRELEASED; urgency=medium
 
-  * New Symfony 1.7 
+  * New Symfony 1.8 LTS (until Nov. 2018)
+  * Feature: Tahoe storage support
+  * Bugfix: logger shows wrong message (fixes #114)
+  * Bugfix: missing html tag (fixes #113)
 
- -- Xabi Ezpeleta <xezpeleta@gmail.com>  Mon, 14 Dec 2015 21:38:32 +0000
+ -- Xabi Ezpeleta <xezpeleta@gmail.com>  Tue, 15 Dec 2015 22:33:12 +0000
