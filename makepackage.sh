@@ -34,9 +34,9 @@ find .debian/usr/share/elkarbackup/web/js/dojo-release-1.8.1 -name "*.uncompress
 find .debian -name ".git*" -o -name "*~" -o -name "*#*"| xargs rm -rf
 rm -rf .debian/usr/share/elkarbackup/app/{cache,logs,sessions} .debian/usr/share/elkarbackup/backups .debian/usr/share/elkarbackup/debian
 # fix some files so that lintian doesn't complain (so much)
+rm -fR .debian/usr/share/elkarbackup/vendor/twbs/bootstrap/docs/*
 find .debian -name "*.png" -o -name "*.gif" -o -name "*.php" -o -name "README" -o -name "*.md" -o -name "*.dist" -o -name "*.ini" -o -name "*.yml" -o -name "*.rst" -o -name "*.xml" -o -name "*.js"| xargs chmod a-x
 find .debian/usr/share/elkarbackup/web/js/dojo-release-1.8.1 -type f|xargs chmod a-x
-sed -i '1c#!/bin/bash' .debian/usr/share/elkarbackup/vendor/swiftmailer/swiftmailer/test-suite/lib/simpletest/packages/build_tarball.sh
 # ensure the packaged versions uses only the release environment
 rm .debian/usr/share/elkarbackup/web/app_dev.php
 rm .debian/usr/share/elkarbackup/web/.htaccess
@@ -52,11 +52,13 @@ mv .debian/usr/share/elkarbackup/app/config .debian/etc/elkarbackup
 ln -s  /etc/elkarbackup .debian/usr/share/elkarbackup/app/config
 # put copyright notices and changelog in its place
 mkdir -p .debian/usr/share/doc/elkarbackup
-cp -a changelog changelog.Debian copyright .debian/usr/share/doc/elkarbackup
+# Copy changelog and copyright files
+cp -a debian/DEBIAN/changelog .debian/usr/share/doc/elkarbackup/changelog.Debian
+cp -a debian/DEBIAN/changelog debian/DEBIAN/copyright .debian/usr/share/doc/elkarbackup
 gzip -f --best .debian/usr/share/doc/elkarbackup/changelog
 gzip -f --best .debian/usr/share/doc/elkarbackup/changelog.Debian
 # ensure directory permissions are right
-find .debian -type d | xargs chmod 755
+find .debian -type d | xargs -I {} chmod 755 "{}"
 # set initial values for parametres
 sed -i 's#backup_dir:.*#backup_dir: /var/spool/elkarbackup/backups#'       .debian/etc/elkarbackup/parameters.yml
 sed -i 's#database_name:.*#database_name: elkarbackup#'                    .debian/etc/elkarbackup/parameters.yml

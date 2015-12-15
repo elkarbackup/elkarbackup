@@ -8,6 +8,7 @@ namespace Binovo\ElkarBackupBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PolicyType extends AbstractType
 {
@@ -55,12 +56,12 @@ class PolicyType extends AbstractType
             ;
     }
 
-    public function getDefaultOptions(array $options)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return array(
-            'data_class' => 'Binovo\ElkarBackupBundle\Entity\Policy',
-            'translator' => null,
-        );
+        $resolver->setDefaults(array(
+          'data_class' => 'Binovo\ElkarBackupBundle\Entity\Policy',
+          'translator' => null,
+        ));
     }
 
     public function getName()

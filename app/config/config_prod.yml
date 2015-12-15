@@ -1,6 +1,12 @@
 imports:
     - { resource: config.yml }
 
+#framework:
+#    validation:
+#        cache: validator.mapping.cache.apc
+#    serializer:
+#        cache: serializer.mapping.cache.apc
+
 #doctrine:
 #    orm:
 #        metadata_cache_driver: apc
@@ -15,5 +21,7 @@ monolog:
             handler:      nested
         nested:
             type:  stream
-            path:  %kernel.logs_dir%/%kernel.environment%.log
+            path:  "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
+        console:
+            type:  console

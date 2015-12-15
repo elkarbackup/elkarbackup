@@ -19,4 +19,4 @@ sudo setfacl -dR -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/c
 sudo setfacl  -R -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/logs
 sudo setfacl -dR -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/logs
 
-composer install
+composer install --no-interaction
