@@ -1,3 +1,12 @@
+## Upcoming (1.2.0)
+Features:
+  - Tahoe storage support (by @adrianles)
+  - New Symfony 1.8 LTS (until Nov. 2018)
+
+Bugfixes:
+  - Missing html tag (fixes #113)
+  - Logger shows wrong message (fixes #114)
+
 ## 1.1.5 (2015/10/14)
 Bugfixes:
   - Exclude not working (#95)
