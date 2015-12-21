@@ -581,6 +581,10 @@ class DefaultController extends Controller
      */
     public function showJobBackupAction(Request $request, $idClient, $idJob, $action, $path)
     {
+	if($this->checkPermissions($idClient)==False){
+                return $this->redirect($this->generateUrl('showClients'));
+        }
+
         $t = $this->get('translator');
         $repository = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Job');
