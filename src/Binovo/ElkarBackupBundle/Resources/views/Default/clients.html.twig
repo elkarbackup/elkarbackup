@@ -79,6 +79,10 @@
                         onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: client.id}) }}'">
                         <span class="glyphicon glyphicon-plus"></span> {% trans %}Add job{% endtrans %}
                     </button>
+            <form class="cloneClient inline-block" action="{{ path('cloneClient', {idClient: client.id}) }}" method="POST">
+              <button data-bnv-message="{% trans with {'%name%': client.name } %}Really clone client  %name%? {% endtrans %}" class="btn btn-elkarbackup btn-pull-right cloneNow" type="button"><span class="glyphicon glyphicon-copy"></span> {% trans %}Clone{% endtrans %}</button>
+            </form>
+
         {% endif %}
         </td>
     </tr>
