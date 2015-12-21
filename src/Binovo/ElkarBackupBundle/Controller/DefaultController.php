@@ -1651,5 +1651,70 @@ protected function checkPermissions($idClient, $idJob = null){
         }
 
 
+    /**
+     * @Route("/client/clone/{id}", requirements={"id" = "\d+"}, defaults={"id" = "-1"}, name="cloneClient")
+     * @Method("GET")
+     * @Template()
+     */
+    public function cloneClientAction(Request $request, $id)
+    {
+        $t = $this->get('translator');
+
+        $idoriginal = $id;
+
+	if (null == $id) {
+                throw $this->createNotFoundException($t->trans('Unable to find Client entity:', array(), 'BinovoElkarBackup') . $id);
+            }
+
+        $length = 10;
+        $randomString = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
+
+	try {
+	// CLONE CLIENT
+
+        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+        $client = $repository->find($idoriginal);
+	if (null == $client) {
+                throw $this->createNotFoundException($t->trans('Unable to find Client entity:', array(), 'BinovoElkarBackup') . $client);
+            }
+
+        $new = clone $client;
+                                $new->setName($randomString);
+                                $newem = $this->getDoctrine()->getManager();
+                                $newem->persist($new);
+                                $newem->flush();
+        $idnew = $new->getId();
+	
+	// CLONE JOBS
+
+            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
+            $jobs = $repository->findBy(array('client' => $idoriginal));
+
+        	foreach($jobs as $job) {
+                	$repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+                	$client = $repository->find($idnew);
+
+                	$newjob = clone $job;
+                	$newjob->setClient($client);
+                	$newem = $this->getDoctrine()->getManager();
+                	$newem->persist($newjob);
+                	$newem->flush();
+
+        	}
+
+	} catch (Exception $e) {
+
+	$this->get('session')->getFlashBag()->add('clone',
+                                                          $t->trans('Unable to clone your client: %extrainfo%',
+                                                                    array('%extrainfo%' => $e->getMessage()),
+                                                                    'BinovoElkarBackup'));
+
+	}
+            return $this->redirect($this->generateUrl('showClients'));
+
+		//        return new Response('Guay');
+
+    }
+
 
 }
