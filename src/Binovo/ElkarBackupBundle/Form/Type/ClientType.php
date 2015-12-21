@@ -63,6 +63,10 @@ class ClientType extends AbstractType
                                                             'property' => 'name'))
                 ->add('isActive'      , 'checkbox'  , array('label'    => $t->trans('Is active', array(), 'BinovoElkarBackup'),
                                                             'required' => false))
+                ->add('owner'         , 'entity'    , array('label'    => $t->trans('Owner', array(), 'BinovoElkarBackup'),
+                                                                'property' => 'username',
+                                                                'attr'     => array('class'    => 'form-control'),
+                                                                'class'    => 'BinovoElkarBackupBundle:User'))
                 ->add('jobs'          , 'collection', array('type'         => new JobShortType(),
                                                             'allow_delete' => true,
                                                             'label'        => $t->trans('Jobs', array(), 'BinovoElkarBackup')));
