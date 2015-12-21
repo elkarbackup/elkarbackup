@@ -1652,18 +1652,18 @@ protected function checkPermissions($idClient, $idJob = null){
 
 
     /**
-     * @Route("/client/clone/{id}", requirements={"id" = "\d+"}, defaults={"id" = "-1"}, name="cloneClient")
-     * @Method("GET")
+     * @Route("/client/clone/{idClient}", requirements={"idClient" = "\d+"}, defaults={"id" = "-1"}, name="cloneClient")
+     * @Method("POST")
      * @Template()
      */
-    public function cloneClientAction(Request $request, $id)
+    public function cloneClientAction(Request $request, $idClient)
     {
         $t = $this->get('translator');
 
-        $idoriginal = $id;
+        $idoriginal = $idClient;
 
-	if (null == $id) {
-                throw $this->createNotFoundException($t->trans('Unable to find Client entity:', array(), 'BinovoElkarBackup') . $id);
+	if (null == $idClient) {
+                throw $this->createNotFoundException($t->trans('Unable to find Client entity:', array(), 'BinovoElkarBackup') . $idClient);
             }
 
         $length = 10;
@@ -1710,7 +1710,13 @@ protected function checkPermissions($idClient, $idJob = null){
                                                                     'BinovoElkarBackup'));
 
 	}
-            return $this->redirect($this->generateUrl('showClients'));
+
+        $response = new Response($t->trans('Clone execution requested successfully', array(), 'BinovoElkarBackup'));
+        $response->headers->set('Content-Type', 'text/plain');
+
+        return $response;
+
+//            return $this->redirect($this->generateUrl('showClients'));
 
 		//        return new Response('Guay');
 
