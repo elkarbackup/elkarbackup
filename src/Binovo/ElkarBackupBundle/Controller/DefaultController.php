@@ -1621,4 +1621,21 @@ EOF;
         return $this->render('BinovoElkarBackupBundle:Default:users.html.twig',
                              array('pagination' => $pagination));
     }
+
+protected function checkPermissions($idClient, $idJob = null){
+
+        $repository = $this->getDoctrine()
+                        ->getRepository('BinovoElkarBackupBundle:Client');
+        $client = $repository->find($idClient);
+
+        if($client->getOwner() == $this->get('security.context')->getToken()->getUser() || $this->get('security.context')->isGranted('ROLE_ADMIN')){
+                        return True;
+                } else {
+                        return False;
+                }
+
+        }
+
+
+
 }
