@@ -285,6 +285,9 @@ class DefaultController extends Controller
      */
     public function saveClientAction(Request $request, $id)
     {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $actualuserid = $user->getId();
+
         $t = $this->get('translator');
         if ("-1" === $id) {
             $client = new Client();
@@ -297,7 +300,8 @@ class DefaultController extends Controller
         $form = $this->createForm(new ClientType(), $client, array('translator' => $t));
         $form->bind($request);
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+	    $client = $form->getData();
+	    $em = $this->getDoctrine()->getManager();
             try {
                 if (isset($jobsToDelete)){
                     foreach ($jobsToDelete as $idJob => $job) {
@@ -314,7 +318,10 @@ class DefaultController extends Controller
                                     array('link' => $this->generateJobRoute($job->getId(), $client->getId())));
                     }
                 }
-                $em->persist($client);
+		if ($client->getOwner() == null) {
+                	$client->setOwner($this->get('security.context')->getToken()->getUser());
+            	}
+	        $em->persist($client);
                 $this->info('Save client %clientid%',
                         array('%clientid%' => $client->getId()),
                             array('link' => $this->generateClientRoute($client->getId()))
