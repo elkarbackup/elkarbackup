@@ -397,8 +397,13 @@ class DefaultController extends Controller
             $job->setClient($client);
             $job->setOwner($this->get('security.context')->getToken()->getUser());
         } else {
-            $job = $this->getDoctrine()
-                ->getRepository('BinovoElkarBackupBundle:Job')->find($idJob);
+	    $access = $this->checkPermissions($idClient, $idJob);
+                if($access == True){
+                	$job = $this->getDoctrine()
+                                ->getRepository('BinovoElkarBackupBundle:Job')->find($idJob);
+
+                } else {return $this->redirect($this->generateUrl('showClients'));}
+
         }
         $form = $this->createForm(new JobType(), $job, array('translator' => $this->get('translator')));
         $this->info('View client %clientid%, job %jobid%',
@@ -541,9 +546,9 @@ class DefaultController extends Controller
         $form->bind($request);
         if ($form->isValid()) {
             $job = $form->getData();
-            if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) { // only allow chown to admin
-                $job->setOwner($storedOwner);
-            }
+//            if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) { // only allow chown to admin
+//                $job->setOwner($storedOwner);
+//            }
             if ($job->getOwner() == null) {
                 $job->setOwner($this->get('security.context')->getToken()->getUser());
             }
