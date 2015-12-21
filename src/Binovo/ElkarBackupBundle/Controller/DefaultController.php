@@ -841,13 +841,21 @@ class DefaultController extends Controller
      */
     public function showClientsAction(Request $request)
     {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $actualuserid = $user->getId();
+
         $fsDiskUsage = (int)round($this->getFsUsed( Globals::getBackupDir() ) * 100 / $this->getFsSize( Globals::getBackupDir() ), 0, PHP_ROUND_HALF_UP);
 
         $repository = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Client');
-        $query = $repository->createQueryBuilder('c')
-            ->addOrderBy('c.id', 'ASC')
-            ->getQuery();
+        $query = $repository->createQueryBuilder('c')->addOrderBy('c.id', 'ASC');
+        if($actualuserid <> 1 ){
+            $query->where('c.owner = ?1'); //adding users and roles
+            $query->setParameter(1, $actualuserid);
+        }
+            $query->getQuery();
+
+
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
