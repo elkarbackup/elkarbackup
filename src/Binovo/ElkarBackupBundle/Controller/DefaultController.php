@@ -260,6 +260,11 @@ class DefaultController extends Controller
         if ('new' === $id) {
             $client = new Client();
         } else {
+	    $access = $this->checkPermissions($id);
+                if ($access == False) {
+	                return $this->redirect($this->generateUrl('showClients'));
+                }
+
             $repository = $this->getDoctrine()
                 ->getRepository('BinovoElkarBackupBundle:Client');
             $client = $repository->find($id);
