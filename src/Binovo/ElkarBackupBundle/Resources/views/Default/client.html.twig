@@ -44,6 +44,9 @@
             {{ form_row(form.isActive) }}
             {{ form_row(form.preScripts) }}
             {{ form_row(form.postScripts) }}
+            {% if is_granted('ROLE_ADMIN') %}
+                {{ form_row(form.owner) }}
+            {% endif %}
 
             <div class="control-group">
               <div class="controls control-row">

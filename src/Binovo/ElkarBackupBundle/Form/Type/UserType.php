@@ -32,6 +32,18 @@ $builder->add('username'    , 'text'    , array('label' => $t->trans('Name'     
                                                         'attr'  => array('class'    => 'form-control')))
         ->add('isActive'    , 'checkbox', array('label' => $t->trans('Is active', array(), 'BinovoElkarBackup'),
                                                         'required' => false))
+        ->add('roles'      , 'collection', array('type' => 'choice',
+                                             //'label' => 'Profile type',
+                                             //'attr' => array('class' => 'form-control'),
+                                             'options' => array(
+                                                'expanded' => false,
+                                                'choices' => array(
+                                                        'ROLE_ADMIN' => 'Admin',
+                                                        'ROLE_USER' => 'User',
+                                                ),
+                                             ),
+                                          ))
+
 
 	->add('newPassword', 'repeated', array('type' => 'password',
 			     'options' => array('attr' => array('class' => 'password-field form-control')),

@@ -77,6 +77,13 @@ class Client
     protected $logEntry = null;
 
     /**
+     * @ORM\ManyToOne(targetEntity="User")
+     */
+    protected $owner;
+
+
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -360,5 +367,29 @@ class Client
     public function getPreScripts()
     {
         return $this->preScripts;
+    }
+
+    /**
+     * Set owner
+     *
+     * @param \Binovo\ElkarBackupBundle\Entity\User $owner
+     *
+     * @return Client
+     */
+    public function setOwner(\Binovo\ElkarBackupBundle\Entity\User $owner = null)
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * Get owner
+     *
+     * @return \Binovo\ElkarBackupBundle\Entity\User
+     */
+    public function getOwner()
+    {
+        return $this->owner;
     }
 }

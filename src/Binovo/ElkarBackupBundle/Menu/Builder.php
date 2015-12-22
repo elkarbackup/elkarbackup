@@ -119,6 +119,11 @@ class Builder extends ContainerAware
      */
     public function mainMenu(FactoryInterface $factory, array $options)
     {
+
+	$doctrine = $this->container->get('doctrine');
+		$em = $doctrine->getManager();
+	if($this->container->get('security.context')->isGranted('ROLE_ADMIN')){
+
         $t = $this->container->get('translator');
         $menu = array(array('label'    => $t->trans('Jobs', array(), 'BinovoElkarBackup'),
                             'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoElkarBackup'),
@@ -165,8 +170,42 @@ class Builder extends ContainerAware
         if ($this->container->get('Tahoe')->isInstalled()) {
             $menu[4]['children'][] = array('label'    => $t->trans('Manage Tahoe storage', array(), 'BinovoElkarTahoe'),
                                                       'route'    => 'tahoeConfig');
-        }
+        	}
+	} else {
 
+		$t = $this->container->get('translator');
+        $menu = array(array('label'    => $t->trans('Jobs', array(), 'BinovoElkarBackup'),
+                            'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoElkarBackup'),
+                                                      'route'    => 'showClients'),
+                                                array('label'    => $t->trans('Add client', array(), 'BinovoElkarBackup'),
+                                                      'route'    => 'editClient',
+                                                      'routeParameters' => array('id' => 'new')),
+                                                array('label'    => $t->trans('Sort jobs', array(), 'BinovoElkarBackup'),
+                                                      'route'    => 'sortJobs'))),
+                      array('label'    => $t->trans('Policies', array(), 'BinovoElkarBackup'),
+                            'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoElkarBackup'),
+                                                      'route'    => 'showPolicies'),
+                                                array('label'    => $t->trans('Add', array(), 'BinovoElkarBackup'),
+                                                      'route'    => 'editPolicy',
+                                                      'routeParameters' => array('id' => 'new')))),
+                      array('label'    => $t->trans('Scripts', array(), 'BinovoElkarBackup'),
+                            'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoElkarBackup'),
+                                                      'route'    => 'showScripts'),
+                                                array('label'    => $t->trans('Add', array(), 'BinovoElkarBackup'),
+                                                      'route'    => 'editScript',
+                                                      'routeParameters' => array('id' => 'new')))),
+                      array('label'    => $t->trans('Logs', array(), 'BinovoElkarBackup'),
+                            'children' => array(array('label'    => $t->trans('Show Logs', array(), 'BinovoElkarBackup'),
+                                                      'route'    => 'showLogs'))),
+                      array('label'    => $t->trans('Session', array(), 'BinovoElkarBackup'),
+                            'children' => array(array('label'    => $t->trans('Logout', array(), 'BinovoElkarBackup'),
+                                                      'route'    => 'logout'),
+                                                array('label'    => $t->trans('Language', array(), 'BinovoElkarBackup'),
+                                                      'children' => $this->getLanguageMenuEntries()))),
+
+            );
+
+	 }
         return $this->generateMenuBar($factory, $menu);
     }
 

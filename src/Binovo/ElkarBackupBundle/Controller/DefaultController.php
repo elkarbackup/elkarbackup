@@ -260,6 +260,11 @@ class DefaultController extends Controller
         if ('new' === $id) {
             $client = new Client();
         } else {
+	    $access = $this->checkPermissions($id);
+                if ($access == False) {
+	                return $this->redirect($this->generateUrl('showClients'));
+                }
+
             $repository = $this->getDoctrine()
                 ->getRepository('BinovoElkarBackupBundle:Client');
             $client = $repository->find($id);
@@ -285,6 +290,9 @@ class DefaultController extends Controller
      */
     public function saveClientAction(Request $request, $id)
     {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $actualuserid = $user->getId();
+
         $t = $this->get('translator');
         if ("-1" === $id) {
             $client = new Client();
@@ -297,7 +305,8 @@ class DefaultController extends Controller
         $form = $this->createForm(new ClientType(), $client, array('translator' => $t));
         $form->bind($request);
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+	    $client = $form->getData();
+	    $em = $this->getDoctrine()->getManager();
             try {
                 if (isset($jobsToDelete)){
                     foreach ($jobsToDelete as $idJob => $job) {
@@ -314,7 +323,10 @@ class DefaultController extends Controller
                                     array('link' => $this->generateJobRoute($job->getId(), $client->getId())));
                     }
                 }
-                $em->persist($client);
+		if ($client->getOwner() == null) {
+                	$client->setOwner($this->get('security.context')->getToken()->getUser());
+            	}
+	        $em->persist($client);
                 $this->info('Save client %clientid%',
                         array('%clientid%' => $client->getId()),
                             array('link' => $this->generateClientRoute($client->getId()))
@@ -385,8 +397,13 @@ class DefaultController extends Controller
             $job->setClient($client);
             $job->setOwner($this->get('security.context')->getToken()->getUser());
         } else {
-            $job = $this->getDoctrine()
-                ->getRepository('BinovoElkarBackupBundle:Job')->find($idJob);
+	    $access = $this->checkPermissions($idClient, $idJob);
+                if($access == True){
+                	$job = $this->getDoctrine()
+                                ->getRepository('BinovoElkarBackupBundle:Job')->find($idJob);
+
+                } else {return $this->redirect($this->generateUrl('showClients'));}
+
         }
         $form = $this->createForm(new JobType(), $job, array('translator' => $this->get('translator')));
         $this->info('View client %clientid%, job %jobid%',
@@ -529,9 +546,9 @@ class DefaultController extends Controller
         $form->bind($request);
         if ($form->isValid()) {
             $job = $form->getData();
-            if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) { // only allow chown to admin
-                $job->setOwner($storedOwner);
-            }
+//            if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) { // only allow chown to admin
+//                $job->setOwner($storedOwner);
+//            }
             if ($job->getOwner() == null) {
                 $job->setOwner($this->get('security.context')->getToken()->getUser());
             }
@@ -564,6 +581,10 @@ class DefaultController extends Controller
      */
     public function showJobBackupAction(Request $request, $idClient, $idJob, $action, $path)
     {
+	if($this->checkPermissions($idClient)==False){
+                return $this->redirect($this->generateUrl('showClients'));
+        }
+
         $t = $this->get('translator');
         $repository = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Job');
@@ -834,13 +855,21 @@ class DefaultController extends Controller
      */
     public function showClientsAction(Request $request)
     {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $actualuserid = $user->getId();
+
         $fsDiskUsage = (int)round($this->getFsUsed( Globals::getBackupDir() ) * 100 / $this->getFsSize( Globals::getBackupDir() ), 0, PHP_ROUND_HALF_UP);
 
         $repository = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Client');
-        $query = $repository->createQueryBuilder('c')
-            ->addOrderBy('c.id', 'ASC')
-            ->getQuery();
+        $query = $repository->createQueryBuilder('c')->addOrderBy('c.id', 'ASC');
+        if($actualuserid <> 1 ){
+            $query->where('c.owner = ?1'); //adding users and roles
+            $query->setParameter(1, $actualuserid);
+        }
+            $query->getQuery();
+
+
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
@@ -1606,4 +1635,21 @@ EOF;
         return $this->render('BinovoElkarBackupBundle:Default:users.html.twig',
                              array('pagination' => $pagination));
     }
+
+protected function checkPermissions($idClient, $idJob = null){
+
+        $repository = $this->getDoctrine()
+                        ->getRepository('BinovoElkarBackupBundle:Client');
+        $client = $repository->find($idClient);
+
+        if($client->getOwner() == $this->get('security.context')->getToken()->getUser() || $this->get('security.context')->isGranted('ROLE_ADMIN')){
+                        return True;
+                } else {
+                        return False;
+                }
+
+        }
+
+
+
 }
