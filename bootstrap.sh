@@ -14,9 +14,11 @@ fi
 
 mkdir -p app/cache
 mkdir -p app/logs
+mkdir -p app/sessions
 sudo setfacl  -R -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/cache
 sudo setfacl -dR -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/cache
 sudo setfacl  -R -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/logs
 sudo setfacl -dR -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/logs
-
+sudo setfacl  -R -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/sessions
+sudo setfacl -dR -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/sessions
 composer install --no-interaction
