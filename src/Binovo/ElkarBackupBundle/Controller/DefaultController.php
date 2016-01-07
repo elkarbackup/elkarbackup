@@ -1722,5 +1722,14 @@ protected function checkPermissions($idClient, $idJob = null){
 
     }
 
+    /**
+     * @Route("/config/preferences", name="managePreferences")
+     * @Template()
+     */
+    public function managePreferencesAction(Request $request)
+    {
+        return $this->redirect($this->generateUrl('showUsers'));
+    }
+
 
 }
