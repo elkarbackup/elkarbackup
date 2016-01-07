@@ -1,5 +1,9 @@
 ## Upcoming (1.2.0)
 Features:
+  - Advanced client configuration and custom SSH args (fixes #87)
+  - Client clonation feature (fixes #10)
+  - Users with limited access (fixes #32)
+  - HTTPS access enabled by default (fixes #98)
   - Tahoe storage support (by @adrianles)
   - New Symfony 1.8 LTS (until Nov. 2018)
 
