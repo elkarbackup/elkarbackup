@@ -41,5 +41,33 @@
                                  return false;
                              }
                           });
+
+                           dojo.query('.cloneNow')
+                            .on('click',
+                           function (e){
+                             var msg;
+                             msg = dojo.getAttr(e.target, 'data-bnv-message');
+                             if (confirm(msg)) {
+                               var args = {
+                                 form: e.target.form,
+                                 handleAs: 'text',
+                                 load: function(data) {
+                                   dojo.place('<div class="controls help-block alert alert-success">' + data + '</div>', dojo.byId('legend'), 'after');
+                                 },
+                                 error: function(data) {
+                                   dojo.place('<div class="controls help-block alert alert-danger">' + data + '</div>', dojo.byId('legend'), 'after');
+                                 }
+                               };
+                               console.log(args);
+                               dojo.xhrPost(args);
+                             } else {
+                                 e.preventDefault();
+                                 return false;
+                             }
+                          });
+
+
+
+
           });
 });
