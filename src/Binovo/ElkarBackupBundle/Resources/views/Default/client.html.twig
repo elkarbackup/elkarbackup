@@ -47,6 +47,10 @@
             {% if is_granted('ROLE_ADMIN') %}
                 {{ form_row(form.owner) }}
             {% endif %}
+	<div id="tp" class="client-advanced-section" data-dojo-type="dijit/TitlePane" data-dojo-props="title: 'Advanced:'">
+	    {{ form_row(form.sshArgs) }}
+        </div>
+
 
             <div class="control-group">
               <div class="controls control-row">
