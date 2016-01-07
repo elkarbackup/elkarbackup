@@ -81,6 +81,13 @@ class Client
      */
     protected $owner;
 
+    /**
+     * Rsnapshot ssh_args parameter
+     *
+     * @ORM\Column(type="string",length=255, nullable=true)
+     */
+    protected $sshArgs;
+
 
 
     /**
@@ -391,5 +398,29 @@ class Client
     public function getOwner()
     {
         return $this->owner;
+    }
+
+    /**
+     * Set sshArgs
+     *
+     * @param string $sshArgs
+     *
+     * @return Client
+     */
+    public function setSshArgs($sshArgs = null)
+    {
+        $this->sshArgs = $sshArgs;
+
+        return $this;
+    }
+
+    /**
+     * Get sshArgs
+     *
+     * @return string
+     */
+    public function getSshArgs()
+    {
+        return $this->sshArgs;
     }
 }

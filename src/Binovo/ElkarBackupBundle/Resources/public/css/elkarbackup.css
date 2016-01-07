@@ -621,3 +621,18 @@ CLIENTS-TASKS
 {
 display:none;
 }
+
+
+.client-advanced-section{
+  margin-bottom: 10px !important;  
+}
+
+.dijitTitlePaneTitleActive{
+  background-color: #2D3F50 !important;
+  border-color: #759DC0 !important;
+}
+
+.dijitTitlePaneTitleHover{
+  background-color: #3B5269 !important;
+  border-color: #759DC0 !important;
+}
