@@ -4,6 +4,9 @@ elkarbackup (1.2.0-Pre-Alpha3) UNRELEASED; urgency=medium
   * Maintenance: New Symfony 1.8 LTS (until Nov. 2018)
   * Feature: Tahoe storage support
   * Feature: HTTPS access enabled by default (fixes #98)
+  * Feature: Users with limited access (fixes #32)
+  * Feature: Client clonation feature (fixes #10)
+  * Feature: Advanced client configuration and custom SSH args (fixes #87)
   * Bugfix: logger shows wrong message (fixes #114)
   * Bugfix: missing html tag (fixes #113)
 
