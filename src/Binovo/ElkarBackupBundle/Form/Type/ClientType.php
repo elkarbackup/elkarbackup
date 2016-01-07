@@ -67,8 +67,9 @@ class ClientType extends AbstractType
                                                                 'property' => 'username',
                                                                 'attr'     => array('class'    => 'form-control'),
                                                                 'class'    => 'BinovoElkarBackupBundle:User'))
-                ->add('sshArgs'	      , 'text'      , array('label' => $t->trans('SSH args', array(), 'BinovoElkarBackup'),
-                                                            'attr'  => array('class'     => 'form-control advanced-form-item')))
+                ->add('sshArgs'	      , 'text'      , array('label'    => $t->trans('SSH args', array(), 'BinovoElkarBackup'),
+                                                            'attr'     => array('class'     => 'form-control advanced-form-item'),
+                                                            'required' => false))
                 ->add('jobs'          , 'collection', array('type'         => new JobShortType(),
                                                             'allow_delete' => true,
                                                             'label'        => $t->trans('Jobs', array(), 'BinovoElkarBackup')));
