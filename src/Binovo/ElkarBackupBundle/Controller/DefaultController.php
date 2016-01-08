@@ -1150,7 +1150,7 @@ EOF;
         $formBuilder->add('tahoe_active', 'checkbox', array('required' => false,
                                                             'label'    => $t->trans('Turn on Tahoe storage', array(), 'BinovoElkarTahoe'),
                                                             'disabled' => !$tahoeInstalled ));
-        
+
         $result = null;
         $form = $formBuilder->getForm();
         if ($request->isMethod('POST')) {
@@ -1684,7 +1684,7 @@ protected function checkPermissions($idClient, $idJob = null){
                                 $newem->persist($new);
                                 $newem->flush();
         $idnew = $new->getId();
-	
+
 	// CLONE JOBS
 
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
@@ -1728,7 +1728,33 @@ protected function checkPermissions($idClient, $idJob = null){
      */
     public function managePreferencesAction(Request $request)
     {
-        return $this->redirect($this->generateUrl('showUsers'));
+        //return $this->redirect($this->generateUrl('showUsers'));
+        $t = $this->get('translator');
+        /*
+        $preferences = array('database_host'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('MySQL host'            , array(), 'BinovoElkarBackup')),
+                        'database_port'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('MySQL port'            , array(), 'BinovoElkarBackup')),
+                        'database_name'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('MySQL DB name'         , array(), 'BinovoElkarBackup')),
+                        'database_user'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('MySQL user'            , array(), 'BinovoElkarBackup')),
+                       );
+        */
+        $result = null;
+        $defaultData = array();
+        $formBuilder = $this->createFormBuilder($defaultData);
+        $form = $formBuilder->getForm();
+
+        if ($request->isMethod('POST')) {
+          $form->bind($request);
+          $data = $form->getData();
+          $allOk = true;
+          $result = $this->redirect($this->generateUrl('manageParameters'));
+        } else {
+          $result = $this->render('BinovoElkarBackupBundle:Default:preferences.html.twig',
+                                array('form'            => $form->createView(),
+                                      'showKeyDownload' => file_exists($this->container->getParameter('public_key'))));
+          $this->getDoctrine()->getManager()->flush();
+          $this->clearCache();
+          return $result;
+        }
     }
 
 
