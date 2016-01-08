@@ -6,20 +6,19 @@ require(['dojo', 'dojo/parser', 'dijit/form/Button', 'dijit/MenuBar', 'dijit/Men
 function(dojo, parser, Button, MenuBar, MenuBarItem, PopuMenuBarItem, DropDownMenu, MenuItem, NodeList, ready, domClass, query, registry) {
     ready(function() {
               parser.parse().then(function(){
-                                      // Add icons to the menubar
-			              var menuBar = registry.byId('dijit_MenuBar_0');
-				      if (menuBar){
-				          console.log(menuBar);
-                                          lastItem = query('[role="menuitem"]:last-child')[0]; // Session
-                                          lastItem2 = query('[role="menuitem"]:nth-last-child(2)')[0]; // Config
-                                          dojo.setAttr(lastItem, 'innerHTML','');
-              			          dojo.setAttr(lastItem2, 'innerHTML','');
-                                          domClass.add(lastItem, 'glyphicon glyphicon-log-out');
-                                          domClass.add(lastItem2, 'glyphicon glyphicon-cog');
-                                      }
-				      
-                                      dojo.destroy('menuplaceholder');
-                                      dojo.setAttr(dojo.byId('menu'), 'style', '');
-                                 });
+                // Add icons to the menubar
+			          var menuBar = registry.byId('dijit_MenuBar_0');
+  				      if (menuBar){
+                    lastItem = query('[role="menuitem"]:last-child')[0]; // Session
+                    lastItem2 = query('[role="menuitem"]:nth-last-child(2)')[0]; // Config
+                    dojo.setAttr(lastItem, 'innerHTML','');
+    			          dojo.setAttr(lastItem2, 'innerHTML','');
+                    domClass.add(lastItem, 'glyphicon glyphicon-log-out');
+                    domClass.add(lastItem2, 'glyphicon glyphicon-cog');
+                }
+
+                dojo.destroy('menuplaceholder');
+                dojo.setAttr(dojo.byId('menu'), 'style', '');
+               });
           });
 });
