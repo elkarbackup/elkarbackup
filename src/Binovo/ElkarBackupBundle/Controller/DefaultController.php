@@ -1728,33 +1728,72 @@ protected function checkPermissions($idClient, $idJob = null){
      */
     public function managePreferencesAction(Request $request)
     {
-        //return $this->redirect($this->generateUrl('showUsers'));
+        $user = $this->get('security.context')->getToken()->getUser();
         $t = $this->get('translator');
-        /*
-        $preferences = array('database_host'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('MySQL host'            , array(), 'BinovoElkarBackup')),
-                        'database_port'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('MySQL port'            , array(), 'BinovoElkarBackup')),
-                        'database_name'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('MySQL DB name'         , array(), 'BinovoElkarBackup')),
-                        'database_user'             => array('type' => 'text'    , 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('MySQL user'            , array(), 'BinovoElkarBackup')),
-                       );
-        */
-        $result = null;
-        $defaultData = array();
-        $formBuilder = $this->createFormBuilder($defaultData);
-        $form = $formBuilder->getForm();
+        //echo $user->getLanguage();
 
-        if ($request->isMethod('POST')) {
-          $form->bind($request);
-          $data = $form->getData();
-          $allOk = true;
-          $result = $this->redirect($this->generateUrl('manageParameters'));
-        } else {
-          $result = $this->render('BinovoElkarBackupBundle:Default:preferences.html.twig',
-                                array('form'            => $form->createView(),
-                                      'showKeyDownload' => file_exists($this->container->getParameter('public_key'))));
-          $this->getDoctrine()->getManager()->flush();
-          $this->clearCache();
-          return $result;
+        $preferences = array( 'language'              => array('type' => 'text', 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Language', array(), 'BinovoElkarBackup')),
+                              'linesperpage'          => array('type' => 'text', 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Records per page', array(), 'BinovoElkarBackup')),
+                       );
+
+        $defaultData = array();
+        foreach ($params as $paramName => $formField) {
+           if ('password' != $formField['type']) {
+               //$defaultData[$paramName] = $this->container->getParameter($paramName);
+               $defaultData[$paramName] = $user->getLanguage();
+           }
         }
+        $formBuilder = $this->createFormBuilder($defaultData);
+        foreach ($params as $paramName => $formField) {
+           $formBuilder->add($paramName, $formField['type'], array_diff_key($formField, array('type' => true)));
+        }
+        $result = null;
+        $form = $formBuilder->getForm();
+        if ($request->isMethod('POST')) {
+           $form->bind($request);
+           $data = $form->getData();
+           $allOk = true;
+           foreach ($data as $paramName => $paramValue) {
+               $ok = true;
+               if ('password' == $params[$paramName]['type']) {
+                   if (!empty($paramValue)) {
+                       $ok = $this->setParameter($paramName, $paramValue, 'managePreferences');
+                   }
+               } elseif ('checkbox' == $params[$paramName]['type']) {
+                   // Workaround to store value in boolean format
+                   if (!empty($paramValue)) {
+                       $ok = $this->setParameter($paramName, 'true', 'managePreferences');
+                   } else {
+                       $ok = $this->setParameter($paramName, 'false', 'managePreferences');
+                   }
+               } else {
+                   if ($paramValue != $this->container->getParameter($paramName)) {
+                       $ok = $this->setParameter($paramName, $paramValue, 'managePreferences');
+                   }
+               }
+               if (!$ok) {
+                   $this->get('session')->getFlashBag()->add('managePreferences',
+                                                             $t->trans('Error saving preference "%param%"',
+                                                                       array('%param%' => $params[$paramName]['label']),
+                                                                       'BinovoElkarBackup'));
+                   $allOk = false;
+               }
+           }
+           if ($allOk) {
+               $this->get('session')->getFlashBag()->add('managePreferences',
+                                                         $t->trans('Preferences updated',
+                                                                   array(),
+                                                                   'BinovoElkarBackup'));
+           }
+           $result = $this->redirect($this->generateUrl('managePreferences'));
+        } else {
+           $result = $this->render('BinovoElkarBackupBundle:Default:preferences.html.twig',
+                                   array('form'            => $form->createView()));
+        }
+        $this->getDoctrine()->getManager()->flush();
+        $this->clearCache();
+
+        return $result;
     }
 
 
