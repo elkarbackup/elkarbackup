@@ -23,6 +23,7 @@ use Binovo\ElkarBackupBundle\Form\Type\JobType;
 use Binovo\ElkarBackupBundle\Form\Type\PolicyType;
 use Binovo\ElkarBackupBundle\Form\Type\ScriptType;
 use Binovo\ElkarBackupBundle\Form\Type\UserType;
+use Binovo\ElkarBackupBundle\Form\Type\PreferencesType;
 use Binovo\ElkarBackupBundle\Lib\Globals;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -154,9 +155,9 @@ class DefaultController extends Controller
         return $this->redirect($this->generateUrl('manageParameters'));
     }
 
-    public function trans($msg, $params = array(), $domain = 'BinovoElkarBackup')
+    public function trans($msg, $preferences = array(), $domain = 'BinovoElkarBackup')
     {
-        return $this->get('translator')->trans($msg, $params, $domain);
+        return $this->get('translator')->trans($msg, $preferences, $domain);
     }
 
     /**
@@ -1728,72 +1729,42 @@ protected function checkPermissions($idClient, $idJob = null){
      */
     public function managePreferencesAction(Request $request)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
         $t = $this->get('translator');
-        //echo $user->getLanguage();
+        // Get current user
+        $user = $this->get('security.context')->getToken()->getUser();
+        $form = $this->createForm(new PreferencesType(), $user, array('translator' => $t,
+                                                                      'validation_groups' => array('preferences')
+                                                                    ));
 
-        $preferences = array( 'language'              => array('type' => 'text', 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Language', array(), 'BinovoElkarBackup')),
-                              'linesperpage'          => array('type' => 'text', 'required' => false, 'attr' => array('class' => 'form-control'), 'label' => $t->trans('Records per page', array(), 'BinovoElkarBackup')),
-                       );
-
-        $defaultData = array();
-        foreach ($params as $paramName => $formField) {
-           if ('password' != $formField['type']) {
-               //$defaultData[$paramName] = $this->container->getParameter($paramName);
-               $defaultData[$paramName] = $user->getLanguage();
-           }
-        }
-        $formBuilder = $this->createFormBuilder($defaultData);
-        foreach ($params as $paramName => $formField) {
-           $formBuilder->add($paramName, $formField['type'], array_diff_key($formField, array('type' => true)));
-        }
-        $result = null;
-        $form = $formBuilder->getForm();
         if ($request->isMethod('POST')) {
-           $form->bind($request);
-           $data = $form->getData();
-           $allOk = true;
-           foreach ($data as $paramName => $paramValue) {
-               $ok = true;
-               if ('password' == $params[$paramName]['type']) {
-                   if (!empty($paramValue)) {
-                       $ok = $this->setParameter($paramName, $paramValue, 'managePreferences');
-                   }
-               } elseif ('checkbox' == $params[$paramName]['type']) {
-                   // Workaround to store value in boolean format
-                   if (!empty($paramValue)) {
-                       $ok = $this->setParameter($paramName, 'true', 'managePreferences');
-                   } else {
-                       $ok = $this->setParameter($paramName, 'false', 'managePreferences');
-                   }
-               } else {
-                   if ($paramValue != $this->container->getParameter($paramName)) {
-                       $ok = $this->setParameter($paramName, $paramValue, 'managePreferences');
-                   }
-               }
-               if (!$ok) {
-                   $this->get('session')->getFlashBag()->add('managePreferences',
-                                                             $t->trans('Error saving preference "%param%"',
-                                                                       array('%param%' => $params[$paramName]['label']),
-                                                                       'BinovoElkarBackup'));
-                   $allOk = false;
-               }
-           }
-           if ($allOk) {
-               $this->get('session')->getFlashBag()->add('managePreferences',
-                                                         $t->trans('Preferences updated',
-                                                                   array(),
-                                                                   'BinovoElkarBackup'));
-           }
-           $result = $this->redirect($this->generateUrl('managePreferences'));
-        } else {
-           $result = $this->render('BinovoElkarBackupBundle:Default:preferences.html.twig',
-                                   array('form'            => $form->createView()));
-        }
-        $this->getDoctrine()->getManager()->flush();
-        $this->clearCache();
+          if ($form->isValid()) {
+              $em = $this->getDoctrine()->getManager();
+              $em->persist($user);
+              $this->info('Save preferences for user %username%.',
+                          array('%username%' => $user->getUsername()),
+                          array('link' => $this->generateUserRoute($id)));
+              $em->flush();
 
-        return $result;
+              return $this->redirect($this->generateUrl('managePreferences'));
+          } else {
+              $validator = $this->get('validator');
+              $errors = $validator->validate($form, null, array('preferences'));
+              echo "aa".$form->isValid();
+              print_r($errors);
+              die();
+              return $this->render('BinovoElkarBackupBundle:Default:preferences.html.twig',
+                                   array('form' => $form->createView()));
+          }
+
+        } else {
+          $this->info('Manage preferences for user %username%.',
+                      array('%username%' => $user->getUsername()),
+                      array('link' => $this->generateUserRoute($id)));
+          $this->getDoctrine()->getManager()->flush();
+
+          return $this->render('BinovoElkarBackupBundle:Default:preferences.html.twig',
+                               array('form' => $form->createView()));
+        }
     }
 
 
