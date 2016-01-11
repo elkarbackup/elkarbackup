@@ -1747,9 +1747,6 @@ protected function checkPermissions($idClient, $idJob = null){
               $em->flush();
 
               $language = $form['language']->getData();
-              //$session = $request->getSession();
-              //$session->set('_locale', $language);
-              //$request->setLocale($language);
               $this->setLanguage($request, $language);
               return $this->redirect($this->generateUrl('managePreferences'));
 
