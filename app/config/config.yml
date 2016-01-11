@@ -109,12 +109,11 @@ services:
         class: Binovo\ElkarBackupBundle\Twig\Extension
         tags:
             - { name: 'twig.extension' }
-    kernel.listener.LocaleFromSessionListener:
-        class: Binovo\ElkarBackupBundle\Listener\LocaleFromSessionListener
-        calls:
-            - [setContainer,  [@service_container] ]
+    kernel.listener.LocaleListener:
+        class: Binovo\ElkarBackupBundle\Listener\LocaleListener
+        arguments: ['%kernel.default_locale%']
         tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+            - { name: kernel.event_subscriber }
     Tahoe:
         class: Binovo\ElkarTahoeBundle\Utils\TahoeBackup
         arguments: ["@BnvWebLogger", %home%]
