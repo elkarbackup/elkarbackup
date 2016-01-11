@@ -65,13 +65,13 @@ class User implements AdvancedUserInterface
      *    message = "Choose a valid language"
      * )
      */
-    private $language;
+    private $language = 'en';
 
     /**
       * @ORM\Column(type="integer")
       * @Assert\NotBlank(groups={"preferences"})
       */
-    private $linesperpage;
+    private $linesperpage = 20;
 
     public function __construct()
     {
