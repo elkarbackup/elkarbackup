@@ -875,7 +875,7 @@ class DefaultController extends Controller
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
-            $request->get('lines', $this->container->getParameter('pagination_lines_per_page'))
+            $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
         foreach ($pagination as $i => $client) {
             $client->setLogEntry($this->getLastLogForLink('%/client/' . $client->getId()));
@@ -907,7 +907,7 @@ class DefaultController extends Controller
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
-            $request->get('lines', $this->container->getParameter('pagination_lines_per_page'))
+            $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
             );
         $this->info('View scripts',
                     array(),
@@ -979,7 +979,7 @@ EOF;
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
-            $request->get('lines', $this->container->getParameter('pagination_lines_per_page'))
+            $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
             );
         $this->info('View logs',
                     array(),
@@ -1023,7 +1023,7 @@ EOF;
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
-            $request->get('lines', $this->container->getParameter('pagination_lines_per_page'))
+            $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
             );
         $this->info('View policies',
                     array(),
@@ -1626,7 +1626,7 @@ EOF;
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
-            $request->get('lines', $this->container->getParameter('pagination_lines_per_page'))
+            $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
             );
         $this->info('View users',
                     array(),
@@ -1759,6 +1759,17 @@ protected function checkPermissions($idClient, $idJob = null){
           return $this->render('BinovoElkarBackupBundle:Default:preferences.html.twig',
                                array('form' => $form->createView()));
         }
+    }
+
+    private function getUserPreference(Request $request, $param){
+        $response = null;
+        $user = $this->get('security.context')->getToken()->getUser();
+        if ($param == 'language'){
+            $response = $user->getLanguage();
+        } elseif ($param == 'linesperpage'){
+            $response = $user->getLinesperpage();
+        }
+        return $response;
     }
 
 
