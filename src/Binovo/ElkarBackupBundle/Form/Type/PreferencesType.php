@@ -26,7 +26,7 @@ class PreferencesType extends AbstractType
                                                           'choices' => $languages,
                                                           'choices_as_values' => true,
                                                           ))
-	              ->add('linesperpage', 'integer'   , array('label'   => $t->trans('Lines per page', array(), 'BinovoElkarBackup'),
+	              ->add('linesperpage', 'integer'   , array('label'   => $t->trans('Records per page', array(), 'BinovoElkarBackup'),
                                                           'attr'    => array('class'    => 'form-control')));
     }
 
