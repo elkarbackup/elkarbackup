@@ -155,9 +155,9 @@ class DefaultController extends Controller
         return $this->redirect($this->generateUrl('manageParameters'));
     }
 
-    public function trans($msg, $preferences = array(), $domain = 'BinovoElkarBackup')
+    public function trans($msg, $params = array(), $domain = 'BinovoElkarBackup')
     {
-        return $this->get('translator')->trans($msg, $preferences, $domain);
+        return $this->get('translator')->trans($msg, $params, $domain);
     }
 
     /**
