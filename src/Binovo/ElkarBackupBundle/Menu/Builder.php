@@ -162,11 +162,8 @@ class Builder extends ContainerAware
                                                       'route'    => 'manageBackupsLocation'),
                                                 array('label'    => $t->trans('Repository backup script', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'configureRepositoryBackupScript'))),
-                      array('label'     => $t->trans('Session', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Logout', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'logout'),
-                                                array('label'    => $t->trans('Language', array(), 'BinovoElkarBackup'),
-                                                      'children' => $this->getLanguageMenuEntries()))),
+                      array('label'     => $t->trans('Logout', array(), 'BinovoElkarBackup'),
+                            'route'     => 'logout')
 
             );
         if ($this->container->get('Tahoe')->isInstalled()) {
@@ -203,10 +200,7 @@ class Builder extends ContainerAware
                             'children' => array(array('label'    => $t->trans('Preferences', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'managePreferences'))),
                       array('label'    => $t->trans('Session', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Logout', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'logout'),
-                                                array('label'    => $t->trans('Language', array(), 'BinovoElkarBackup'),
-                                                      'children' => $this->getLanguageMenuEntries()))),
+                            'route'    => 'logout')
 
             );
 
