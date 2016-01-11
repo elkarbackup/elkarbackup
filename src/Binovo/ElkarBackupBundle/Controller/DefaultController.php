@@ -1737,24 +1737,18 @@ protected function checkPermissions($idClient, $idJob = null){
                                                                     ));
 
         if ($request->isMethod('POST')) {
-          if ($form->isValid()) {
+              $form->bind($request);
+              $data = $form->getData();
+              echo "Blabla:";
+              print_r($data);
               $em = $this->getDoctrine()->getManager();
-              $em->persist($user);
+              $em->persist($data);
               $this->info('Save preferences for user %username%.',
                           array('%username%' => $user->getUsername()),
                           array('link' => $this->generateUserRoute($id)));
               $em->flush();
 
               return $this->redirect($this->generateUrl('managePreferences'));
-          } else {
-              $validator = $this->get('validator');
-              $errors = $validator->validate($form, null, array('preferences'));
-              echo "aa".$form->isValid();
-              print_r($errors);
-              die();
-              return $this->render('BinovoElkarBackupBundle:Default:preferences.html.twig',
-                                   array('form' => $form->createView()));
-          }
 
         } else {
           $this->info('Manage preferences for user %username%.',
