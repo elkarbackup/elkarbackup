@@ -1739,8 +1739,10 @@ protected function checkPermissions($idClient, $idJob = null){
         if ($request->isMethod('POST')) {
               $form->bind($request);
               $data = $form->getData();
-              echo "Blabla:";
-              print_r($data);
+              //echo "Blabla:";
+              //print_r($form['language']->getData());
+              //echo $this->get('session')->get('_locale');
+              //$this->get('session')->set('_locale', $locale);
               $em = $this->getDoctrine()->getManager();
               $em->persist($data);
               $this->info('Save preferences for user %username%.',
@@ -1748,6 +1750,7 @@ protected function checkPermissions($idClient, $idJob = null){
                           array('link' => $this->generateUserRoute($id)));
               $em->flush();
 
+              $this->setLanguage($request, $form['language']->getData());
               return $this->redirect($this->generateUrl('managePreferences'));
 
         } else {
