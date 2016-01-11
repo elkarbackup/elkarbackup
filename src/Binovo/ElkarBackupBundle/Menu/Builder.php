@@ -196,9 +196,8 @@ class Builder extends ContainerAware
                       array('label'    => $t->trans('Logs', array(), 'BinovoElkarBackup'),
                             'children' => array(array('label'    => $t->trans('Show Logs', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'showLogs'))),
-                      array('label'    => $t->trans('Config', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Preferences', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'managePreferences'))),
+                      array('label'    => $t->trans('Preferences', array(), 'BinovoElkarBackup'),
+                            'route'    => 'managePreferences'),
                       array('label'    => $t->trans('Session', array(), 'BinovoElkarBackup'),
                             'route'    => 'logout')
 
