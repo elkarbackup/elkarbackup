@@ -1777,4 +1777,47 @@ protected function checkPermissions($idClient, $idJob = null){
     }
 
 
+
+    /**
+    * @Route("/client/sshCopyKey", name="sshCopyKey")
+    * @Method("POST")
+    * @Template()
+    */
+
+   public function sshCopyKeyAction(Request $request)
+   {
+       $t = $this->get('translator');
+
+       $values = $request->request->all();
+       $uandh = $values["uandh"];
+       $pwd = $values["pwd"];
+       $port = $values["port"];
+       $uandh = explode( '@', $uandh );
+       $user =$uandh[0];
+       $host =$uandh[1];
+       $keyfile = $this->container->getParameter('public_key');
+       $thekey = file_get_contents($keyfile);
+
+       $remotestring = 'echo '.escapeshellarg($thekey).' >> '.'.ssh/authorized_keys';
+
+     try {
+
+             $profile = new Profile($host, $user, $pwd, $port);
+             $connection = new Connection($profile);
+             $connection->exec('mkdir .ssh');
+             $connection->exec($remotestring);
+
+     $this->get('session')->getFlashBag()->add('success','SSH key tranfered');
+     $response =  new Response('success');
+
+     } catch(Exception $e) {
+
+     $response = new Response('failed');
+     $this->get('session')->getFlashBag()->add('success','SSH key tranfered was wrong');
+
+     }
+
+     return $response;
+}
+
 }
