@@ -38,5 +38,10 @@ class LoginListener
         $username = $this->container->get('security.context')->getToken()->getUser()->getUsername();
         $msg = $trans->trans('User %username% logged in.', array('%username%' => $username), 'BinovoElkarBackup');
         $logger->info($msg, array('source' => 'Authentication'));
+
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $locale = $user->getLanguage();
+        $request = $event->getRequest();
+        $request->getSession()->set('_locale', $locale);
 	}
 }

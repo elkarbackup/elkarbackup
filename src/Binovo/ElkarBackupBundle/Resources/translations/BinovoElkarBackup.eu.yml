@@ -241,6 +241,8 @@
 
 'Size' : 'Tamaina'
 'Back to root' : 'Errora itzuli'
+'Preferences': 'Hobespenak'
+'Manage preferences': 'Kudeatu hobespenak'
 policy_help: |
  <h4>Izena</h4>
  Politikaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Politika bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
@@ -394,3 +396,10 @@ sort_jobs_help: |
  <h4>Lanak ordenatu</h4>
  Lanen exekuzio ordena aldatu dezakezu. Erabilgarria izan daiteke lan bat baina gehiago ordu berean programatuak dituzunean.
  <p>Arrastatu eta jaregin lanaren lehentasuna aldatzeko</p>
+preferences_help: |
+ <h4>Erabiltzaile hobespenen kudeaketa</h4>
+ Hemen aldatutako hobespenak ez diete gainontzeko erabiltzaileei eragingo
+ <h4>Hizkuntza</h4>
+ Aukeratu zure hizkuntza
+ <h4>Orrialdeko erregistro kopurua</h4>
+ Aukeratu orrialdeko erregistro kopurua: azalduko diren bezero/lan kopurua, erabiltzaile kopurua, edota log kopurua.

@@ -23,6 +23,7 @@ use Binovo\ElkarBackupBundle\Form\Type\JobType;
 use Binovo\ElkarBackupBundle\Form\Type\PolicyType;
 use Binovo\ElkarBackupBundle\Form\Type\ScriptType;
 use Binovo\ElkarBackupBundle\Form\Type\UserType;
+use Binovo\ElkarBackupBundle\Form\Type\PreferencesType;
 use Binovo\ElkarBackupBundle\Lib\Globals;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -874,7 +875,7 @@ class DefaultController extends Controller
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
-            $request->get('lines', $this->container->getParameter('pagination_lines_per_page'))
+            $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
         foreach ($pagination as $i => $client) {
             $client->setLogEntry($this->getLastLogForLink('%/client/' . $client->getId()));
@@ -906,7 +907,7 @@ class DefaultController extends Controller
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
-            $request->get('lines', $this->container->getParameter('pagination_lines_per_page'))
+            $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
             );
         $this->info('View scripts',
                     array(),
@@ -978,7 +979,7 @@ EOF;
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
-            $request->get('lines', $this->container->getParameter('pagination_lines_per_page'))
+            $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
             );
         $this->info('View logs',
                     array(),
@@ -1022,7 +1023,7 @@ EOF;
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
-            $request->get('lines', $this->container->getParameter('pagination_lines_per_page'))
+            $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
             );
         $this->info('View policies',
                     array(),
@@ -1150,7 +1151,7 @@ EOF;
         $formBuilder->add('tahoe_active', 'checkbox', array('required' => false,
                                                             'label'    => $t->trans('Turn on Tahoe storage', array(), 'BinovoElkarTahoe'),
                                                             'disabled' => !$tahoeInstalled ));
-        
+
         $result = null;
         $form = $formBuilder->getForm();
         if ($request->isMethod('POST')) {
@@ -1625,7 +1626,7 @@ EOF;
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
-            $request->get('lines', $this->container->getParameter('pagination_lines_per_page'))
+            $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
             );
         $this->info('View users',
                     array(),
@@ -1684,7 +1685,7 @@ protected function checkPermissions($idClient, $idJob = null){
                                 $newem->persist($new);
                                 $newem->flush();
         $idnew = $new->getId();
-	
+
 	// CLONE JOBS
 
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
@@ -1720,6 +1721,55 @@ protected function checkPermissions($idClient, $idJob = null){
 
 		//        return new Response('Guay');
 
+    }
+
+    /**
+     * @Route("/config/preferences", name="managePreferences")
+     * @Template()
+     */
+    public function managePreferencesAction(Request $request)
+    {
+        $t = $this->get('translator');
+        // Get current user
+        $user = $this->get('security.context')->getToken()->getUser();
+        $form = $this->createForm(new PreferencesType(), $user, array('translator' => $t,
+                                                                      'validation_groups' => array('preferences')
+                                                                    ));
+
+        if ($request->isMethod('POST')) {
+              $form->bind($request);
+              $data = $form->getData();
+              $em = $this->getDoctrine()->getManager();
+              $em->persist($data);
+              $this->info('Save preferences for user %username%.',
+                          array('%username%' => $user->getUsername()),
+                          array('link' => $this->generateUserRoute($id)));
+              $em->flush();
+
+              $language = $form['language']->getData();
+              $this->setLanguage($request, $language);
+              return $this->redirect($this->generateUrl('managePreferences'));
+
+        } else {
+          $this->info('Manage preferences for user %username%.',
+                      array('%username%' => $user->getUsername()),
+                      array('link' => $this->generateUserRoute($id)));
+          $this->getDoctrine()->getManager()->flush();
+
+          return $this->render('BinovoElkarBackupBundle:Default:preferences.html.twig',
+                               array('form' => $form->createView()));
+        }
+    }
+
+    private function getUserPreference(Request $request, $param){
+        $response = null;
+        $user = $this->get('security.context')->getToken()->getUser();
+        if ($param == 'language'){
+            $response = $user->getLanguage();
+        } elseif ($param == 'linesperpage'){
+            $response = $user->getLinesperpage();
+        }
+        return $response;
     }
 
 

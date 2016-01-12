@@ -66,10 +66,6 @@
 
                           <div class="form-group">
                               <div class="col-sm-8 nopadding language">
-                                  <p><span class="glyphicon glyphicon-flag"></span> Language:</p>
-                                  <p> · {% for aLocale in supportedLocales %}
-                                      <a href="{{path('setLocale', {locale: aLocale[0]})}}">{{ aLocale[1] }}</a> ·
-                                  {% endfor %}</p>
                               </div>
 
                               <div class="col-sm-4 nopadding">

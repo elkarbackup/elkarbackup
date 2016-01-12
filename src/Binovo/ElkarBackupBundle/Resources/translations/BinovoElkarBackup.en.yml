@@ -255,6 +255,8 @@
 'After': 'After'
 'Size' : 'Size'
 'Back to root' : 'Back to root'
+'Preferences': 'Preferences'
+'Manage preferences': 'Manage preferences'
 policy_help: |
  <h4>Name</h4>
  This is the identifier for the policy. It will show up in lists and combo boxes. The name must be unique among all policies, the application will complain if you try to use a name which is already in use.
@@ -413,3 +415,10 @@ sort_jobs_help: |
  <h4>Sorting jobs</h4>
  You can change job execution order. It's really usefull if you have multiple jobs scheduled at the same time.
  <p>You can order as you desire just drag&drop-ing</p>
+preferences_help: |
+ <h4>User preferences management</h4>
+ Anything you change here will not affect the other users.
+ <h4>Language</h4>
+ Select your prefered language
+ <h4>Records per page</h4>
+ Choose the number of lines you want to show per page
