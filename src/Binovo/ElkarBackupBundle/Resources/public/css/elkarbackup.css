@@ -624,7 +624,7 @@ display:none;
 
 
 .client-advanced-section{
-  margin-bottom: 10px !important;  
+  margin-bottom: 10px !important;
 }
 
 .dijitTitlePaneTitleActive{
@@ -635,4 +635,23 @@ display:none;
 .dijitTitlePaneTitleHover{
   background-color: #3B5269 !important;
   border-color: #759DC0 !important;
+}
+
+
+.dropdown-menu li:hover .sub-menu {
+    visibility: visible;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+
+/* para borrar tras arreglar*/
+
+.Config.dropdown.dropdown-toggle {
+    color: white !important;
+    top: 14px;
+}
+
+ul li.current a span, ul li.current i {
+    color: red !important;
 }
