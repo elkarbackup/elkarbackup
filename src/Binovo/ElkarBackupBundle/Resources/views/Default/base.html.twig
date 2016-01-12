@@ -35,9 +35,9 @@
                 <a href="{{path('showClients')}}"><img src="{{ asset('/img/elkarbackup.png') }}" alt="ElkarBackup" /></a>
             </div>
 
-		    <div class="navbar">
+		    <div class="navbar" role="navigation">
                 {% block menu %}
-                    {{ knp_menu_render('BinovoElkarBackupBundle:Builder:mainMenu') }}
+                    {{ knp_menu_render('BinovoElkarBackupBundle:Builder:mainMenu',{'allow_safe_labels': true})|raw }}
                 {% endblock %}
             </div>
         </div>
