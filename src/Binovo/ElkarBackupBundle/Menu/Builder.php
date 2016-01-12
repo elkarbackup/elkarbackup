@@ -104,6 +104,7 @@ class Builder extends ContainerAware
                                    array('route' => $itemDescription['route'],
                                          'routeParameters' => $itemDescription['routeParameters'],
                                          'attributes'      => array("data-dojo-type"  => "dijit/MenuItem",
+                                                                    'class' => 'menuButton',
                                                                     "data-dojo-props" => $this->generateOnClickHandler($itemDescription['route'], $itemDescription['routeParameters']))));
 
             }
@@ -126,13 +127,7 @@ class Builder extends ContainerAware
 
         $t = $this->container->get('translator');
         $menu = array(array('label'    => $t->trans('Jobs', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'showClients'),
-                                                array('label'    => $t->trans('Add client', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'editClient',
-                                                      'routeParameters' => array('id' => 'new')),
-                                                array('label'    => $t->trans('Sort jobs', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'sortJobs'))),
+                            'route'    => 'showClients'),
                       array('label'    => $t->trans('Policies', array(), 'BinovoElkarBackup'),
                             'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'showPolicies'),
