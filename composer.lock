@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a73935f0402602dfc8ad732044b06ffc",
-    "content-hash": "00d3b97918d0aa123b48c45fede665a2",
+    "hash": "d4edff79215405546aaf0380a4b7003a",
+    "content-hash": "cb953bf7563c5154e1e752003126ac6b",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -2056,6 +2056,34 @@
             ],
             "description": "A security checker for your composer.lock",
             "time": "2015-11-07 08:07:40"
+        },
+        {
+            "name": "steevanb/ssh2bundle",
+            "version": "2.0.0",
+            "target-dir": "steevanb/SSH2Bundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/steevanb/ssh2bundle.git",
+                "reference": "1ade211616b0256776e49dc17891aa1dbf9b98fe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/steevanb/ssh2bundle/zipball/1ade211616b0256776e49dc17891aa1dbf9b98fe",
+                "reference": "1ade211616b0256776e49dc17891aa1dbf9b98fe",
+                "shasum": ""
+            },
+            "type": "bundle",
+            "autoload": {
+                "psr-0": {
+                    "steevanb\\SSH2Bundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Use SSH2 PHP extension with Symfony2",
+            "time": "2015-06-01 19:40:53"
         },
         {
             "name": "swiftmailer/swiftmailer",
