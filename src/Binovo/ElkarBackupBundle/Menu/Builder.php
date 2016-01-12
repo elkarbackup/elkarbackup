@@ -216,32 +216,32 @@ class Builder extends ContainerAware
 
 		$t = $this->container->get('translator');
         $menu = array(array('label'    => $t->trans('Jobs', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'showClients'),
-                                                array('label'    => $t->trans('Add client', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'editClient',
-                                                      'routeParameters' => array('id' => 'new')),
-                                                array('label'    => $t->trans('Sort jobs', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'sortJobs'))),
+                            'route'    => 'showClients',
+                            'class'    => 'Clients',
+                            'icon'     => '<i class="glyphicon glyphicon-tent"></i><span class="nosesimeterlo">'.$t->trans('Jobs', array(), 'BinovoElkarBackup').'</span></a>'),
                       array('label'    => $t->trans('Policies', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'showPolicies'),
-                                                array('label'    => $t->trans('Add', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'editPolicy',
-                                                      'routeParameters' => array('id' => 'new')))),
+                            'route'    => 'showPolicies',
+                            'class'    => 'Policies',
+                            'icon'     => '<i class="glyphicon glyphicon-tent"></i><span class="nosesimeterlo">'.$t->trans('Policies', array(), 'BinovoElkarBackup').'</span></a>'),
                       array('label'    => $t->trans('Scripts', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'showScripts'),
-                                                array('label'    => $t->trans('Add', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'editScript',
-                                                      'routeParameters' => array('id' => 'new')))),
+                            'route'    => 'showScripts',
+                            'class'    => 'Scripts',
+                            'icon'     => '<i class="glyphicon glyphicon-flash"></i><span class="nosesimeterlo">'.$t->trans('Scripts', array(), 'BinovoElkarBackup').'</span></a>'),
+
                       array('label'    => $t->trans('Logs', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Show Logs', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'showLogs'))),
+                            'route'    => 'showLogs',
+                            'class'    => 'Logs',
+                            'icon'     => '<i class="glyphicon glyphicon-equalizer"></i><span class="nosesimeterlo">'.$t->trans('Logs', array(), 'BinovoElkarBackup').'</span></a>'),
+
                       array('label'    => $t->trans('Preferences', array(), 'BinovoElkarBackup'),
-                            'route'    => 'managePreferences'),
-                      array('label'    => $t->trans('Session', array(), 'BinovoElkarBackup'),
-                            'route'    => 'logout')
+                            'route'    => 'managePreferences',
+                            'class'    => 'Preferences',
+                            'icon'     => '<i class="glyphicon glyphicon-wrench"></i><span class="nosesimeterlo">'.$t->trans('Preferences', array(), 'BinovoElkarBackup').'</span></a>'),
+
+                      array('label'     => $t->trans('Logout', array(), 'BinovoElkarBackup'),
+                            'route'     => 'logout',
+                            'class'     => 'logout',
+                            'icon'      => '<i class="glyphicon glyphicon-log-out"></i><span class="nosesimeterlo">'.$t->trans('Logout', array(), 'BinovoElkarBackup').'</span></a>')
 
             );
 
