@@ -35,6 +35,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\SecurityContext;
+use steevanb\SSH2Bundle\Entity\Profile;
+use steevanb\SSH2Bundle\Entity\Connection;
+
+
 
 class DefaultController extends Controller
 {
