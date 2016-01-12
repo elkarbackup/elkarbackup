@@ -104,6 +104,7 @@ class Builder extends ContainerAware
                                    array('route' => $itemDescription['route'],
                                          'routeParameters' => $itemDescription['routeParameters'],
                                          'attributes'      => array("data-dojo-type"  => "dijit/MenuItem",
+                                                                    'class' => 'menuButton',
                                                                     "data-dojo-props" => $this->generateOnClickHandler($itemDescription['route'], $itemDescription['routeParameters']))));
 
             }
@@ -126,13 +127,7 @@ class Builder extends ContainerAware
 
         $t = $this->container->get('translator');
         $menu = array(array('label'    => $t->trans('Jobs', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'showClients'),
-                                                array('label'    => $t->trans('Add client', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'editClient',
-                                                      'routeParameters' => array('id' => 'new')),
-                                                array('label'    => $t->trans('Sort jobs', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'sortJobs'))),
+                            'route'    => 'showClients'),
                       array('label'    => $t->trans('Policies', array(), 'BinovoElkarBackup'),
                             'children' => array(array('label'    => $t->trans('Show', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'showPolicies'),
@@ -150,21 +145,20 @@ class Builder extends ContainerAware
                                                       'route'    => 'showUsers'),
                                                 array('label'    => $t->trans('Change password', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'changePassword'))),
-                      array('label'    => $t->trans('Config', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Manage parameters', array(), 'BinovoElkarBackup'),
+                      array('label'    => $t->trans('Logs', array(), 'BinovoElkarBackup'),
+                            'children' => array(array('label'    => $t->trans('Show Logs', array(), 'BinovoElkarBackup'),
+                                                      'route'    => 'showLogs'))),
+                      array('label'     => $t->trans('Config', array(), 'BinovoElkarBackup'),
+                            'children' => array(array('label'    => $t->trans('Preferences', array(), 'BinovoElkarBackup'),
+                                                      'route'    => 'managePreferences'),
+                                                array('label'    => $t->trans('Manage parameters', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'manageParameters'),
                                                 array('label'    => $t->trans('Manage backups location', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'manageBackupsLocation'),
                                                 array('label'    => $t->trans('Repository backup script', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'configureRepositoryBackupScript'))),
-                      array('label'    => $t->trans('Logs', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Show Logs', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'showLogs'))),
-                      array('label'    => $t->trans('Session', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Logout', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'logout'),
-                                                array('label'    => $t->trans('Language', array(), 'BinovoElkarBackup'),
-                                                      'children' => $this->getLanguageMenuEntries()))),
+                      array('label'     => $t->trans('Logout', array(), 'BinovoElkarBackup'),
+                            'route'     => 'logout')
 
             );
         if ($this->container->get('Tahoe')->isInstalled()) {
@@ -197,11 +191,10 @@ class Builder extends ContainerAware
                       array('label'    => $t->trans('Logs', array(), 'BinovoElkarBackup'),
                             'children' => array(array('label'    => $t->trans('Show Logs', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'showLogs'))),
+                      array('label'    => $t->trans('Preferences', array(), 'BinovoElkarBackup'),
+                            'route'    => 'managePreferences'),
                       array('label'    => $t->trans('Session', array(), 'BinovoElkarBackup'),
-                            'children' => array(array('label'    => $t->trans('Logout', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'logout'),
-                                                array('label'    => $t->trans('Language', array(), 'BinovoElkarBackup'),
-                                                      'children' => $this->getLanguageMenuEntries()))),
+                            'route'    => 'logout')
 
             );
 

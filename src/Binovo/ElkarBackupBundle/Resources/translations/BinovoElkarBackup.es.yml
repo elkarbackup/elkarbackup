@@ -206,6 +206,8 @@
 
 'Size' : 'Tamaño'
 'Back to root' : 'Volver a la raíz'
+'Preferences': 'Preferencias'
+'Manage preferences': 'Gestionar preferencias'
 policy_help: |
  <h4>Nombre</h4>
  Es el identificador de la política. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.
@@ -365,3 +367,10 @@ sort_jobs_help: |
  <h4>Ordenar tareas</h4>
  Puedes cambiar el orden de ejecución de las tareas. Es útil a la hora de priorizar tareas programadas a la misma hora.
  <p>Arrastra y suelta para cambiar el orden</p>
+preferences_help: |
+  <h4>Gestión de preferencias de usuario</h4>
+  Los cambios realizados aquí no afectarán al resto de usuarios
+  <h4>Idioma</h4>
+  Selecciona tu idioma preferido
+  <h4>Records per page</h4>
+  Selecciona el número de registros por página

@@ -57,6 +57,22 @@ class User implements AdvancedUserInterface
      */
     private $roles;
 
+    /**
+     * @ORM\Column(type="string", length=25)
+     * @Assert\Language(groups={"preferences"})
+     * @Assert\Choice(
+     *    choices = { "en", "eu", "es" },
+     *    message = "Choose a valid language"
+     * )
+     */
+    private $language = 'en';
+
+    /**
+      * @ORM\Column(type="integer")
+      * @Assert\NotBlank(groups={"preferences"})
+      */
+    private $linesperpage = 20;
+
     public function __construct()
     {
         $this->isActive = true;
@@ -230,5 +246,51 @@ class User implements AdvancedUserInterface
         $this->password = $password;
 
         return $this;
+    }
+
+    /**
+     * Set language
+     *
+     * @param string $language
+     * @return User
+     */
+    public function setLanguage($language)
+    {
+        $this->language = $language;
+
+        return $this;
+    }
+
+    /**
+     * Get language
+     *
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+    /**
+     * Set linesperpage
+     *
+     * @param integer $linesperpage
+     * @return User
+     */
+    public function setLinesperpage($linesperpage)
+    {
+        $this->linesperpage = $linesperpage;
+
+        return $this;
+    }
+
+    /**
+     * Get linesperpage
+     *
+     * @return integer
+     */
+    public function getLinesperpage()
+    {
+        return $this->linesperpage;
     }
 }
