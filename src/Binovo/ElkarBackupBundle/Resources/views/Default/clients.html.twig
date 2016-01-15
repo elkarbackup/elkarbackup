@@ -15,7 +15,7 @@
 {% block body %}
 
 <div class="row">
-    <div class="jumbotron">
+    <div class="">
 
         <h3>{% trans %}Disk usage{% endtrans %}</h3>
 
@@ -43,8 +43,30 @@
 <div class="row">
     <div class="col-md-12">
 
+<h3 id="legend">{% trans %}Jobs{% endtrans %}</h3>
 
-<h3 id="legend">{% trans %}Jobs{% endtrans %}<a href="{{ path('sortJobs') }}"><span class="glyphicon glyphicon-cog pull-right" title="{% trans %}Sort jobs{% endtrans %}"></span></a><a href="{{ path('editClient', {id: 'new'}) }}"><span class="glyphicon glyphicon-plus btn-add-client pull-right" title="{% trans %}Add client{% endtrans %}"></span></a></h3>
+<div class="pull-right" style="padding-bottom: 10px;">
+  <div class="btn-group" role="group" aria-label="...">
+    <button class="btn btn-default" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">
+      <span class="glyphicon glyphicon-plus"></span> {% trans %}Add client{% endtrans %}
+    </button>
+  <button class="btn btn-default" action="#">{% trans %}Sort jobs{% endtrans %}</button>
+
+  <div class="btn-group" role="group">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Actions
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+      <li><a href="#">{% trans %}Run{% endtrans %}</a></li>
+      <li class="disabled"><a href="#">{% trans %}Abort{% endtrans %}</a></li>
+      <li role="separator" class="divider"></li>
+      <li><a href="#">{% trans %}Delete{% endtrans %}</a></li>
+    </ul>
+  </div>
+  </div>
+</div>
+
 
 {% for flashMessage in app.session.flashbag.get('clients') %}
     <div class="controls help-block">
@@ -54,6 +76,8 @@
 <table class="table table-condensed table-hover">
     <tr>
         {# sorting of properties based on query components #}
+        <th><input class="select-toggle-check" type="checkbox"</input></th>
+        <th></th>
         <th>{% trans %}Id{% endtrans %}</th>
         <th>{% trans %}Name{% endtrans %}</th>
         <th style="text-align: center">{% trans %}Disk usage{% endtrans %}</th>
@@ -65,16 +89,21 @@
     {# table body #}
     {% for client in pagination %}
 <tr class="client-row client-{{client.id}} {% if client.isActive == false %}disabled{% endif %}">
-        <td class="vert-align" onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'"><a href="{{ path('editClient', {id: client.id}) }}"><span class="client-icon"></span> {{ client.id }}</a></td>
-        <td class="vert-align" onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'"><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
+        <td><input class="select-toggle-check" type="checkbox" value="client{{client.id}}"</input></td>
+        <td><span class="client-icon"></span></td>
+        <td class="vert-align"><a href="{{ path('editClient', {id: client.id}) }}"> {{ client.id }}</a></td>
+        <td class="vert-align"><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
         <td class="vert-align" style="text-align:center{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{% if client.diskUsage / 1024 > 1024 %} {{ (client.diskUsage / 1024 / 1024 ) | number_format(1) }} GB{% else %} {{ (client.diskUsage / 1024) | number_format(0)}} MB{% endif %}{% if client.quota > 0 %} ({{ (client.diskUsage / client.quota * 100) | number_format(0)}}%){% endif %}</td>
       <td class="vert-align {% if (client.logEntry.levelName)|default('') == 'ERROR'%}alert alert-danger{% endif %}"> <a href="logs?filter[gte][l.level]=0&filter[eq][l.source]=&filter[like][l.link]=%2Fclient%2F{{ client.id }}"> {{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ client.logEntry.message|default('')|slice(0, 50) }}{% if client.logEntry.message|default('')|length > 50 %}[...]{% endif %}</a></td>
         <td class="vert-align" >{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
         <td class="actions vert-align">
+          <!--
             <form data-bnv-message="{% trans with {'%name%': client.name } %}Really delete client %name%? This will remove all related jobs and backups.{% endtrans %}" class="delete-client" action="{{ path('deleteClient', {id: client.id}) }}" method="POST" style="display:inline">
                 <button class="btn btn-default btn-danger" type="submit" value=" {% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span> </button>
             </form>
+          -->
 	{% if client.isActive %}
+    <!--
                 <button type="button" class="btn btn-elkarbackup"
                         onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: client.id}) }}'">
                         <span class="glyphicon glyphicon-plus"></span> {% trans %}Add job{% endtrans %}
@@ -82,18 +111,49 @@
             <form class="cloneClient inline-block" action="{{ path('cloneClient', {idClient: client.id}) }}" method="POST">
               <button data-bnv-message="{% trans with {'%name%': client.name } %}Really clone client  %name%? {% endtrans %}" class="btn btn-elkarbackup btn-pull-right cloneNow" type="button"><span class="glyphicon glyphicon-copy"></span> {% trans %}Clone{% endtrans %}</button>
             </form>
+    -->
+      <div class="btn-group" role="group" aria-label="Actions">
+
+          <button type="button" class="btn btn-default"
+            onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'">
+            <span class="glyphicon glyphicon-edit"></span> <!--{% trans %}Edit client{% endtrans %}-->
+          </button>
+
+          <button type="button" class="btn btn-default"
+            onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: client.id}) }}'">
+            <span class="glyphicon glyphicon-plus"></span> <!--{% trans %}Add job{% endtrans %}-->
+          </button>
+
+          <div class="btn-group" role="group">
+            <button id="btnGroupDrop1" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button">
+              {% trans %}More{% endtrans %}
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+              <!--<li><a href="#">{% trans %}Copy SSH id{% endtrans %}</a></li>-->
+              <li><a href="#">{% trans %}Test connection{% endtrans %}</a></li>
+              <li><a href="#" onclick="postRequest('{{ path('cloneClient', {idClient: client.id}) }}');" class="clone">{% trans %}Clone client{% endtrans %}</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a href="#" onclick="postRequest('{{ path('deleteClient', {id: client.id}) }}');" class="danger">{% trans %}Delete{% endtrans %}</a></li>
+            </ul>
+          </div>
+
+      </div>
 
         {% endif %}
         </td>
     </tr>
         {% for job in client.jobs %}
     <tr class="job-row client-{{client.id}}-job-{{job.id}} {% if (job.isActive == false) or (client.isActive == false) %}disabled{% endif %}">
-        <td class="vert-align" onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'"><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}"><span class="glyphicon glyphicon-folder-open"></span> {{ client.id }}.{{ job.id }}</a></td>
-        <td class="vert-align" onclick="document.location.href='{{ path('editJob', {idClient: client.id, idJob:job.id}) }}'"><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.name ~ "/" ~ job.name }}</a></td>
+        <td><input class="select-toggle-check" type="checkbox" value="job{{client.job}}"</input></td>
+        <td><span class="glyphicon glyphicon-folder-open"></span></td>
+        <td class="vert-align"><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
+        <td class="vert-align"><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.name ~ "/" ~ job.name }}</a></td>
         <td class="vert-align" style="text-align:center;">{% if job.diskUsage / 1024 > 1024 %}{{ (job.diskUsage / 1024 / 1024) | number_format(1) }} GB{% else%} {{ (job.diskUsage / 1024) | number_format(0)}} MB{% endif %}</td>
         <td class="vert-align {% if (job.logEntry.levelName)|default('') == 'ERROR'%}alert alert-danger{% elseif (job.logEntry.levelName)|default('') == 'WARNING'%}alert alert-warning{% endif %}"> <a href="logs?filter[gte][l.level]=0&filter[eq][l.source]=&filter[like][l.link]=%2Fclient%2F{{ client.id }}%2Fjob%2F{{ job.id }}"> {{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} {{ job.logEntry.message|default('')|slice(0, 50) }}{% if job.logEntry.message|default('')|length > 50 %}[...]{% endif %}</a></td>
         <td class="vert-align">{% if job.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
         <td class="vert-align actions">
+          <!--
             <form data-bnv-message="{% trans with {'%name%': job.client.name ~ "/" ~ job.name} %}Really delete job %name%? This will remove all related backups.{% endtrans %}" class="delete-job" action="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" method="POST" style="display:inline">
 		          <button class="btn btn-default btn-danger" type="submit" value=" {% trans %}Delete{% endtrans %}" /><span class="glyphicon glyphicon-trash"></span> </button>
             </form>
@@ -108,6 +168,35 @@
             <form class="runNowForm inline-block" action="{{ path('runJob', {idJob: job.id, idClient: client.id}) }}" method="POST">
               <button data-bnv-message="{% trans with {'%name%': job.name } %}Really run now job %name%? {% endtrans %}" class="btn btn-elkarbackup btn-pull-right runNow" type="button"><span class="glyphicon glyphicon-repeat"></span> {% trans %}Run now{% endtrans %}</button>
             </form>
+          -->
+
+          <div class="btn-group" role="group" aria-label="Actions">
+
+              <button type="button" class="btn btn-default"
+                onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: client.id}) }}'">
+                <span class="glyphicon glyphicon-edit"></span> <!--{% trans %}Edit job{% endtrans %}-->
+              </button>
+
+              <button type="button" class="btn btn-default {% if not job.hasBackups %}disabled{% endif %}" id="btnRestore{{ client.id }}{{ job.id }}"
+                {% if job.hasBackups %}onclick="document.location.href='{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}'" {% endif %}>
+                <span class="glyphicon glyphicon-cloud-download"></span><!-- {% trans %}Restore{% endtrans %}-->
+              </button>
+
+              <div class="btn-group" role="group">
+                <button id="btnGroupDrop1" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button">
+                  {% trans %}More{% endtrans %}
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                  <li><a href="#" onclick="postRequest('{{ path('runJob', {idJob: job.id, idClient: client.id}) }}');">{% trans %}Run now{% endtrans %}</a></li>
+                  <li clas="disabled"><a href="#">{% trans %}Abort job{% endtrans %}</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li><a href="#" onclick="postRequest('{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}')" class="danger">{% trans %}Delete{% endtrans %}</a></li>
+                </ul>
+              </div>
+
+          </div>
+
         </td>
     </tr>
         {% endfor %}
@@ -115,9 +204,27 @@
 </table>
 
 
-<button type="button" class="btn pull-right btn-elkarbackup" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">
-  <span class="glyphicon glyphicon-plus"></span> {% trans %}Add client{% endtrans %}
-</button>
+<div class="pull-right" style="padding-bottom: 10px;">
+  <div class="btn-group" role="group" aria-label="...">
+    <button class="btn btn-default" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">
+      <span class="glyphicon glyphicon-plus"></span> {% trans %}Add client{% endtrans %}
+    </button>
+  <button class="btn btn-default" action="#">{% trans %}Sort jobs{% endtrans %}</button>
+
+  <div class="btn-group dropup" role="group">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Actions
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+      <li><a href="#">{% trans %}Run{% endtrans %}</a></li>
+      <li class="disabled"><a href="#">{% trans %}Abort{% endtrans %}</a></li>
+      <li role="separator" class="divider"></li>
+      <li><a href="#">{% trans %}Delete{% endtrans %}</a></li>
+    </ul>
+  </div>
+  </div>
+</div>
 
 <div class="navigation binovo-pagination">
     {{ knp_pagination_render(pagination)|raw }}
