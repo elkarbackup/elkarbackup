@@ -19,6 +19,7 @@
 !/web/js/dojo-release-*
 /web/css/*
 !/web/css/.gitkeep
+!/web/js/bootstrap/.gitkeep
 /web/fonts/glyphicons-*
 /app/sessions/*
 
