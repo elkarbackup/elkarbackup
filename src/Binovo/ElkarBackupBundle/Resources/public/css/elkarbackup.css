@@ -644,14 +644,79 @@ display:none;
 
 .dropdown:hover .dropdown-menu {
     display: block;
-
-/* para borrar tras arreglar*/
-
-.Config.dropdown.dropdown-toggle {
-    color: white !important;
-    top: 14px;
 }
 
-ul li.current a span, ul li.current i {
-    color: red !important;
-}
+
+
+/* New menu design */
+/*
+ * Currently importing from http://www.christiangr.es/elkarbackup.css in the base.html.twig
+ * Copy that content here when it's ready
+ */
+
+ /*
+ @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,100,300italic,400italic,700,700italic);
+ */
+
+ #top .navbar li a, #top .navbar li {
+     font-family: 'Roboto', sans-serif !important;
+     font-weight: 300 !important;
+ }
+
+ #top .navbar li a:hover {
+     background: #3b5269 none repeat scroll 0 0;
+ }
+
+ #top .navbar li a {
+     border-left: 1px solid #22303d;
+     border-right: 1px solid #364c61;
+     color: #fff;
+     font-size: 18px;
+     font-weight: normal !important;
+     padding: 29px 20px 30px 20px;
+ }
+
+ #top .navbar li:first-child a {
+     border-left: 0px solid #22303d;
+ }
+ #top .navbar li:last-child a {
+     border-right: 0px solid #22303d;
+ }
+
+ .Config.dropdown.dropdown-toggle > span {
+     display: inline-block;
+     color: #fff;
+     font-size: 18px;
+     padding: 27px 20px 26px;
+     border-left: 1px solid #22303d;
+     border-right: 1px solid #364c61;
+ }
+
+ .Config.dropdown.dropdown-toggle > span:hover {
+     background: #3b5269 none repeat scroll 0 0;
+ }
+
+ .dropdown-menu.sub-menu.menu_level_1 li a {
+     padding: 10px !important;
+     font-size: 16px !important;
+     border-bottom: 1px solid #22303d;
+     border-top: 1px solid #364c61;
+ }
+
+ .dropdown-menu.sub-menu.menu_level_1 li:first-child a {
+     border-top: 0px solid #364c61;
+ }
+
+ .dropdown-menu.sub-menu.menu_level_1 li:last-child a {
+     border-bottom: 0px solid #364c61;
+ }
+
+ .dropdown-menu.sub-menu.menu_level_1 {
+     background: #2d3f50 none repeat scroll 0 0;
+     left: auto !important;
+     right: 0;
+ }
+
+ #top .navbar li i.glyphicon {
+     margin-right: 7px;
+ }
