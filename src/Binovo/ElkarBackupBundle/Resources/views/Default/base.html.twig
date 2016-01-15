@@ -19,7 +19,10 @@
         {% endstylesheets %}
 
         {% block scripts %}
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script type="text/javascript" src="{{ asset('js/dojo-release/dojo/dojo.js') }}" data-dojo-config="async: true"></script>
+        <script type="text/javascript" src="{{ asset('js/bootstrap/dropdown.js') }}" ></script>
             {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/base.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
             {% endjavascripts %}
