@@ -37,6 +37,14 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\SecurityContext;
 use steevanb\SSH2Bundle\Entity\Profile;
 use steevanb\SSH2Bundle\Entity\Connection;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Binovo\ElkarBackupBundle\Normalizer\ClientNormalizer;
+use Binovo\ElkarBackupBundle\Normalizer\JobNormalizer;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 
 
 
@@ -881,6 +889,7 @@ class DefaultController extends Controller
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
+
         foreach ($pagination as $i => $client) {
             $client->setLogEntry($this->getLastLogForLink('%/client/' . $client->getId()));
             foreach ($client->getJobs() as $job) {
@@ -893,7 +902,8 @@ class DefaultController extends Controller
         $this->getDoctrine()->getManager()->flush();
 
         return $this->render('BinovoElkarBackupBundle:Default:clients.html.twig',
-                             array('pagination' => $pagination, 'fsDiskUsage' => $fsDiskUsage));
+                             array('pagination' => $pagination,
+                                   'fsDiskUsage' => $fsDiskUsage));
     }
 
     /**
@@ -1664,67 +1674,86 @@ protected function checkPermissions($idClient, $idJob = null){
     public function cloneClientAction(Request $request, $idClient)
     {
         $t = $this->get('translator');
-
         $idoriginal = $idClient;
+        if (null == $idClient) {
+          throw $this->createNotFoundException($t->trans('Unable to find Client entity:', array(), 'BinovoElkarBackup') . $idClient);
+        }
 
-	if (null == $idClient) {
-                throw $this->createNotFoundException($t->trans('Unable to find Client entity:', array(), 'BinovoElkarBackup') . $idClient);
-            }
-
-        $length = 10;
-        $randomString = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
-
-	try {
-	// CLONE CLIENT
-
-        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
-        $client = $repository->find($idoriginal);
-	if (null == $client) {
+        $clientrow = array();
+	      try {
+    	      // CLONE CLIENT
+            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+            $client = $repository->find($idoriginal);
+    	      if (null == $client) {
                 throw $this->createNotFoundException($t->trans('Unable to find Client entity:', array(), 'BinovoElkarBackup') . $client);
             }
 
-        $new = clone $client;
-                                $new->setName($randomString);
-                                $newem = $this->getDoctrine()->getManager();
-                                $newem->persist($new);
-                                $newem->flush();
-        $idnew = $new->getId();
+            $newname = $client->getName()."-cloned1";
+            while ($repository->findOneByName($newname)){
+                $newname++;
+            }
 
-	// CLONE JOBS
+            $new = clone $client;
+            $new->setName($newname);
+            $newem = $this->getDoctrine()->getManager();
+            $newem->persist($new);
+            $newem->flush();
+            $newem->detach($new);
+
+            $idnew = $new->getId();
+
+
+
+	          // CLONE JOBS
 
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
             $jobs = $repository->findBy(array('client' => $idoriginal));
 
-        	foreach($jobs as $job) {
-                	$repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
-                	$client = $repository->find($idnew);
 
-                	$newjob = clone $job;
-                	$newjob->setClient($client);
-                	$newem = $this->getDoctrine()->getManager();
-                	$newem->persist($newjob);
-                	$newem->flush();
+          	foreach($jobs as $job) {
+                $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+              	$client = $repository->find($idnew);
 
-        	}
+              	$newjob = clone $job;
+              	$newjob->setClient($client);
+              	$newem = $this->getDoctrine()->getManager();
+              	$newem->persist($newjob);
+              	$newem->flush();
+                $newem->detach($newjob);
+          	}
 
-	} catch (Exception $e) {
-
-	$this->get('session')->getFlashBag()->add('clone',
+	      } catch (Exception $e) {
+	           $this->get('session')->getFlashBag()->add('clone',
                                                           $t->trans('Unable to clone your client: %extrainfo%',
                                                                     array('%extrainfo%' => $e->getMessage()),
                                                                     'BinovoElkarBackup'));
+	      }
 
-	}
+        //$response = new Response($t->trans('Client cloned successfully', array(), 'BinovoElkarBackup'));
+        //$response->headers->set('Content-Type', 'text/plain');
 
-        $response = new Response($t->trans('Clone execution requested successfully', array(), 'BinovoElkarBackup'));
-        $response->headers->set('Content-Type', 'text/plain');
+        // Custom normalizer
+        //$normalizers[] = new ClientNormalizer();
+        //$normalizer = new ObjectNormalizer();
+        $normalizer = new GetSetMethodNormalizer();
+        $normalizer->setCircularReferenceHandler(function ($object) {
+          return $object->getId();
+        });
+        $normalizers[] = $normalizer;
+        $encoders[] = new JsonEncoder();
+        $encoders[] = new XmlEncoder();
+        $serializer = new Serializer($normalizers, $encoders);
 
+        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+        $client = $repository->find($idnew);
+        //syslog(LOG_ERR, "Obtaining first job: ".$client->getJobs()[0]->getId());
+        syslog(LOG_ERR, "Serializing object: ".$client->getName());
+        $json = $serializer->serialize($client, 'json');
+        syslog(LOG_ERR, "Output: ".print_r($json, TRUE));
+        $response = new JsonResponse(array('msg'    => $t->trans('Client cloned successfully', array(), 'BinovoElkarBackup'),
+                                           'action' => 'callbackClonedClient',
+                                           'data'   =>  array($json)));
         return $response;
-
-//            return $this->redirect($this->generateUrl('showClients'));
-
-		//        return new Response('Guay');
-
     }
 
     /**
