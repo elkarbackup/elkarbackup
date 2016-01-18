@@ -257,6 +257,12 @@
 'Back to root' : 'Back to root'
 'Preferences': 'Preferences'
 'Manage preferences': 'Manage preferences'
+'Actions': 'Actions'
+'Abort': 'Abort'
+'More': 'More'
+'Clone': 'Clone'
+'Abort job': 'Abort job'
+'Test connection': 'Test'
 policy_help: |
  <h4>Name</h4>
  This is the identifier for the policy. It will show up in lists and combo boxes. The name must be unique among all policies, the application will complain if you try to use a name which is already in use.

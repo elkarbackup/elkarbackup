@@ -208,6 +208,12 @@
 'Back to root' : 'Volver a la raíz'
 'Preferences': 'Preferencias'
 'Manage preferences': 'Gestionar preferencias'
+'Actions': 'Acciones'
+'Abort': 'Abortar'
+'More': 'Más'
+'Clone': 'Clonar'
+'Abort job': 'Abortar tarea'
+'Test connection': 'Comprobar'
 policy_help: |
  <h4>Nombre</h4>
  Es el identificador de la política. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.

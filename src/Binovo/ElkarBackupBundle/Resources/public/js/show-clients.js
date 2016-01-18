@@ -17,7 +17,7 @@ function errorMsg(msg){
   // Remove previous messages
   $("div.alert").remove();
   // Print new message
-  $("#legend").after('<div class="controls help-block alert alert-error fade in"><a title="close" aria-label="close" data-dismiss="alert" class="close" href="#">×</a>' + msg + '</div>');
+  $("#legend").after('<div class="controls help-block alert alert-danger fade in"><a title="close" aria-label="close" data-dismiss="alert" class="close" href="#">×</a>' + msg + '</div>');
 }
 
 function addClientRow(client){
@@ -162,13 +162,16 @@ function runClient(clientid){
 
 function runSelected(){
   var error = false;
+  if($('input:checkbox:checked').not('#checkAll').length == 0){
+    error = "Nothing to run. Did you select any job/client?";
+  }
   $('input:checkbox:checked').not('#checkall').each(function(){
     tr = $(this).parents(':eq(1)');
     if (tr.hasClass('client-row')){
       // Client-row
       clientid = tr.find('a[eb-action="runClient"]').attr('eb-clientid');
       runClient(clientid);
-      // This will add the class "queued" to all the rows
+      // This will add the class "queued" to the rows
     } else {
       // Job-row
       path = tr.find('a[eb-action="runJob"]').attr('eb-path');
@@ -183,13 +186,17 @@ function runSelected(){
     }
   });
   if (error){
-    errorMsg('Error queueing jobs');
+    errorMsg('Error queueing jobs: '+error);
   } else {
-    okMsg('Jobs queued successfully');
+    okMsg('Job(s) queued successfully');
   }
 };
 
 function deleteSelected(){
+  var error = false;
+  if($('input:checkbox:checked').not('#checkAll').length == 0){
+    error = "Nothing to delete. Did you select any item?";
+  }
   $('input:checkbox:checked').not('#checkall').each(function(){
     tr = $(this).parents(':eq(1)');
     if (tr.hasClass('client-row')){
@@ -210,8 +217,13 @@ function deleteSelected(){
         console.log('Job was already deleted');
       }
     }
+  });
+  if (error){
+    errorMsg('Error deleting: '+error);
+  } else {
+    okMsg('Items deleted successfully');
   }
-)};
+};
 
 
 function cloneClient(path, clientId){
