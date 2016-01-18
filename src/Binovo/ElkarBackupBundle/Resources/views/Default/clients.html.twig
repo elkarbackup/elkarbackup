@@ -47,10 +47,10 @@
 
 <div class="pull-right" style="padding-bottom: 10px;">
   <div class="btn-group" role="group" aria-label="...">
-    <button class="btn btn-default" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">
+    <button class="btn btn-default" action="#" eb-action="addClient" eb-path="{{ path('editClient', {id: 'new'}) }}">
       <span class="glyphicon glyphicon-plus"></span> {% trans %}Add client{% endtrans %}
     </button>
-  <button class="btn btn-default" action="#" onclick="document.location.href='{{ path('sortJobs') }}'">{% trans %}Sort jobs{% endtrans %}</button>
+  <button class="btn btn-default" action="#" eb-action="sortJobs" eb-path="{{ path('sortJobs') }}">{% trans %}Sort jobs{% endtrans %}</button>
 
   <div class="btn-group" role="group">
     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -59,9 +59,9 @@
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
       <li><a href="#" eb-action="runSelected">{% trans %}Run{% endtrans %}</a></li>
-      <li class="disabled"><a href="#">{% trans %}Abort{% endtrans %}</a></li>
+      <li class="disabled"><a href="#" eb-action="runSelected">{% trans %}Abort{% endtrans %}</a></li>
       <li role="separator" class="divider"></li>
-      <li><a href="#" eb-action="deleteSelected" >{% trans %}Delete{% endtrans %}</a></li>
+      <li><a href="#" eb-action="deleteSelected">{% trans %}Delete{% endtrans %}</a></li>
     </ul>
   </div>
   </div>
@@ -114,8 +114,9 @@
           </button>
           <ul class="dropdown-menu dropright" aria-labelledby="btnGroupDrop1">
             <!--<li><a href="#">{% trans %}Copy SSH id{% endtrans %}</a></li>-->
-            <li><a href="#">{% trans %}Test connection{% endtrans %}</a></li>
+            <li><a href="#" eb-action="runClient" eb-clientid="{{client.id}}">{% trans %}Run Client{% endtrans %}</a></li>
             <li><a href="#" eb-action="cloneClient" eb-path="{{ path('cloneClient', {idClient: client.id}) }}" eb-clientid="{{client.id}}">{% trans %}Clone client{% endtrans %}</a></li>
+            <li class="disabled"><a href="#">{% trans %}Test connection{% endtrans %}</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="#" eb-action="deleteClient" eb-path="{{ path('deleteClient', {id: client.id}) }}" eb-clientid="{{client.id}}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
           </ul>
@@ -152,7 +153,7 @@
           </button>
           <ul class="dropdown-menu dropright" aria-labelledby="btnGroupDrop1">
             <li><a href="#" eb-action="runJob" eb-path="{{ path('runJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}">{% trans %}Run now{% endtrans %}</a></li>
-            <li clas="disabled"><a href="#">{% trans %}Abort job{% endtrans %}</a></li>
+            <li class="disabled"><a href="#" eb-action="abortJob" eb-path="" eb-jobid="{{job.id}}">{% trans %}Abort job{% endtrans %}</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="#" eb-action="deleteJob" eb-path="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" eb-clientid="{{client.id}}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
           </ul>
@@ -169,10 +170,10 @@
 
 <div class="pull-right" style="padding-bottom: 10px;">
   <div class="btn-group" role="group" aria-label="...">
-    <button class="btn btn-default" onclick="document.location.href='{{ path('editClient', {id: 'new'}) }}'">
+    <button class="btn btn-default" action="#" eb-action="addClient" eb-path="{{ path('editClient', {id: 'new'}) }}">
       <span class="glyphicon glyphicon-plus"></span> {% trans %}Add client{% endtrans %}
     </button>
-  <button class="btn btn-default" action="#" onclick="document.location.href='{{ path('sortJobs') }}'">{% trans %}Sort jobs{% endtrans %}</button>
+  <button class="btn btn-default" action="#" eb-action="sortJobs" eb-path="{{ path('sortJobs') }}">{% trans %}Sort jobs{% endtrans %}</button>
 
   <div class="btn-group dropup" role="group">
     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -180,10 +181,10 @@
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-      <li><a href="#">{% trans %}Run{% endtrans %}</a></li>
-      <li class="disabled"><a href="#">{% trans %}Abort{% endtrans %}</a></li>
+      <li><a href="#" eb-action="runSelected">{% trans %}Run{% endtrans %}</a></li>
+      <li class="disabled" eb-action="abortSelected"><a href="#">{% trans %}Abort{% endtrans %}</a></li>
       <li role="separator" class="divider"></li>
-      <li><a href="#">{% trans %}Delete{% endtrans %}</a></li>
+      <li><a href="#" eb-action="deleteSelected">{% trans %}Delete{% endtrans %}</a></li>
     </ul>
   </div>
   </div>

@@ -43,6 +43,8 @@ function addClientRow(client){
     clone.find(':button[eb-action="addJob"]').attr('eb-path', '/client/'+c.id+'/job/new');
     clone.find(':button[eb-action="addJob"]').attr('eb-clientid', c.id);
     //    cloneClient a
+    clone.find('a[eb-action="runClient"]').attr('eb-clientid', c.id);
+    //    cloneClient a
     clone.find('a[eb-action="cloneClient"]').attr('eb-path', '/client/clone/'+c.id);
     clone.find('a[eb-action="cloneClient"]').attr('eb-clientid', c.id);
     //    deleteClient a
@@ -84,6 +86,9 @@ function addJobRow(job, client){
     //    runJob a
     clone.find('a[eb-action="runJob"]').attr('eb-path', '/client/'+c.id+'/job/'+j.id+'/run');
     clone.find('a[eb-action="runJob"]').attr('eb-jobid', j.id);
+    //    abortJob a
+    clone.find('a[eb-action="abortJob"]').attr('eb-path', '');
+    clone.find('a[eb-action="abortJob"]').attr('eb-jobid', j.id);
     //    deleteJob a
     clone.find('a[eb-action="deleteJob"]').attr('eb-path', '/client/'+c.id+'/job/'+j.id+'/delete');
     clone.find('a[eb-action="deleteJob"]').attr('eb-jobid', j.id);
@@ -138,6 +143,52 @@ function deleteClient(path, id){
   }
 };
 
+function runClient(clientid){
+  if (clientid){
+    $('tr.client-'+clientid).each(function(){
+      // Jobs
+      path = $(this).find('a[eb-action="runJob"]').attr('eb-path');
+      jobid = $(this).find('a[eb-action="runJob"]').attr('eb-jobid');
+      if (path && jobid){
+        runJob(path, jobid);
+      }
+      $(this).addClass('queued');
+    });
+    return true;
+  } else {
+    return false;
+  }
+};
+
+function runSelected(){
+  var error = false;
+  $('input:checkbox:checked').not('#checkall').each(function(){
+    tr = $(this).parents(':eq(1)');
+    if (tr.hasClass('client-row')){
+      // Client-row
+      clientid = tr.find('a[eb-action="runClient"]').attr('eb-clientid');
+      runClient(clientid);
+      // This will add the class "queued" to all the rows
+    } else {
+      // Job-row
+      path = tr.find('a[eb-action="runJob"]').attr('eb-path');
+      jobid = tr.find('a[eb-action="runJob"]').attr('eb-jobid');
+      if (tr.hasClass('queued')){
+        // Job is already queued
+        console.log('Job already queued');
+      } else {
+        // Job available
+        r = runJob(path, jobid);
+      }
+    }
+  });
+  if (error){
+    errorMsg('Error queueing jobs');
+  } else {
+    okMsg('Jobs queued successfully');
+  }
+};
+
 function deleteSelected(){
   $('input:checkbox:checked').not('#checkall').each(function(){
     tr = $(this).parents(':eq(1)');
@@ -156,7 +207,7 @@ function deleteSelected(){
         // His father is alive
         deleteJob(path, jobId);
       } else {
-        console.log('Client was already deleted');
+        console.log('Job was already deleted');
       }
     }
   }
@@ -170,7 +221,7 @@ function cloneClient(path, clientId){
 function runJob(path, id){
   if (path && id){
     r = postRequest(path);
-    $('tr.job-'+id).addClass('queued');
+    $('tr#job-'+id).addClass('queued');
     return true;
   } else {
     return false;
@@ -226,6 +277,13 @@ function editClient(path, id) {
   }
 };
 
+function addClient(path){
+  if (path){
+    window.location.href = path;
+    return true;
+  }
+}
+
 $(document).ready(function(){
 
       // Checkbox select/deselect all option
@@ -256,6 +314,9 @@ $(document).ready(function(){
           case 'cloneClient':
             r = cloneClient(path, clientid);
             break;
+          case 'runClient':
+            r = runClient(clientid);
+            break;
           case 'addJob':
             r = addJob(path,clientid);
             // Will be redirected
@@ -280,7 +341,7 @@ $(document).ready(function(){
             // Will be redirected
             break;
           case 'runSelected':
-            alert('Not enabled');
+            r = runSelected();
             break;
           case 'deleteSelected':
             r = deleteSelected();
