@@ -297,6 +297,13 @@ function addClient(path){
   }
 }
 
+function sortJobs(path){
+  if (path){
+    window.location.href = path;
+    return true;
+  }
+}
+
 $(document).ready(function(){
 
       // Checkbox select/deselect all option
@@ -314,6 +321,9 @@ $(document).ready(function(){
         var jobid = $(this).attr("eb-jobid");
 
         switch(action){
+          case 'sortJobs':
+            r = sortJobs(path);
+            break;
           case 'addClient':
             r = addClient(path);
             break;
