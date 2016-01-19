@@ -322,15 +322,15 @@ function sortJobs(path){
 //
 require(['dojo/ready','js/moment/moment.min.js'],
 function(ready, moment){
+  // Change logentry date to friendly date
+  $('td.logentry').each(function(){
+    logdate = $(this).find('a');
+    if (logdate.html().length > 2){
+      flogdate = moment(logdate.html(), "YYYY-MM-DD hh:mm:ss").fromNow();
+      logdate.html(flogdate);
+    }
+  })
   ready(function(){
-    // Change logentry date to friendly date
-    $('td.logentry').each(function(){
-      logdate = $(this).find('a');
-      if (logdate.html().length > 2){
-        flogdate = moment(logdate.html(), "YYYY-MM-DD hh:mm:ss").fromNow();
-        logdate.html(flogdate);
-      }
-    })
   });
 });
 
