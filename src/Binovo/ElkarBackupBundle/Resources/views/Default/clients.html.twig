@@ -93,20 +93,20 @@
 <tr id="client-{{client.id}}" class="client-row client-{{client.id}} {% if client.isActive == false %}disabled{% endif %}">
   <td><input class="select-toggle-check" type="checkbox" value="client{{client.id}}"</input></td>
   <td><span class="client-icon"></span></td>
-  <td class="vert-align id"><a href="{{ path('editClient', {id: client.id}) }}"> {{ client.id }}</a></td>
-  <td class="vert-align name"><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
+  <td class="vert-align id"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" href="{{ path('editClient', {id: client.id}) }}"> {{ client.id }}</a></td>
+  <td class="vert-align name"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
   <td class="vert-align diskusage" style="text-align:center{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{% if client.diskUsage / 1024 > 1024 %} {{ (client.diskUsage / 1024 / 1024 ) | number_format(1) }} GB{% else %} {{ (client.diskUsage / 1024) | number_format(0)}} MB{% endif %}{% if client.quota > 0 %} ({{ (client.diskUsage / client.quota * 100) | number_format(0)}}%){% endif %}</td>
-  <td class="vert-align logentry"> <a href="logs?filter[gte][l.level]=0&filter[eq][l.source]=&filter[like][l.link]=%2Fclient%2F{{ client.id }}"> {{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} </a></td>
+  <td class="vert-align logentry"> <a data-toggle="tooltip" data-placement="top" title="{{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }}" href="logs?filter[gte][l.level]=0&filter[eq][l.source]=&filter[like][l.link]=%2Fclient%2F{{ client.id }}"> {{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} </a></td>
   <td class="vert-align status"><span class="label {% if (client.logEntry.levelName)|default('') == 'ERROR'%}label-danger{% else %}label-success{% endif %}">{{ client.logEntry.message|default('')|slice(0, 50) }}{% if client.logEntry.message|default('')|length > 50 %}[...]{% endif %}</span></td>
   <td class="vert-align isactive">{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
   <td class="actions vert-align">
 
     <div class="btn-group" role="group" aria-label="Actions">
-        <button type="button" class="btn btn-default" href="#" eb-action="editClient" eb-path="{{ path('editClient', {id: client.id}) }}" eb-clientid="{{client.id}}">
-          <span class="glyphicon glyphicon-pencil"></span> <!--{% trans %}Edit client{% endtrans %}-->
+        <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" class="btn btn-default" href="#" eb-action="editClient" eb-path="{{ path('editClient', {id: client.id}) }}" eb-clientid="{{client.id}}">
+          <span class="glyphicon glyphicon-pencil"></span>
         </button>
-        <button type="button" class="btn btn-default" href="#" eb-action="addJob" eb-path="{{ path('editJob', {idJob: 'new', idClient: client.id}) }}" eb-clientid="{{client.id}}">
-          <span class="glyphicon glyphicon-plus"></span> <!--{% trans %}Add job{% endtrans %}-->
+        <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Add job{% endtrans %}" class="btn btn-default" href="#" eb-action="addJob" eb-path="{{ path('editJob', {idJob: 'new', idClient: client.id}) }}" eb-clientid="{{client.id}}">
+          <span class="glyphicon glyphicon-plus"></span>
         </button>
         <div class="btn-group" role="group">
           <button id="btnGroupDrop1" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button">
@@ -133,20 +133,20 @@
 <tr id="job-{{job.id}}" class="job-row client-{{client.id}} job-{{job.id}} {% if (job.isActive == false) or (client.isActive == false) %}disabled{% endif %}">
   <td><input class="select-toggle-check" type="checkbox" value="job{{client.job}}"</input></td>
   <td><span class="glyphicon glyphicon-folder-open"></span></td>
-  <td class="vert-align id"><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
-  <td class="vert-align name"><a href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.name ~ "/" ~ job.name }}</a></td>
+  <td class="vert-align id"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
+  <td class="vert-align name"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.name ~ "/" ~ job.name }}</a></td>
   <td class="vert-align diskusage" style="text-align:center;">{% if job.diskUsage / 1024 > 1024 %}{{ (job.diskUsage / 1024 / 1024) | number_format(1) }} GB{% else%} {{ (job.diskUsage / 1024) | number_format(0)}} MB{% endif %}</td>
-  <td class="vert-align logentry"> <a href="logs?filter[gte][l.level]=0&filter[eq][l.source]=&filter[like][l.link]=%2Fclient%2F{{ client.id }}%2Fjob%2F{{ job.id }}"> {{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }}</a></td>
+  <td class="vert-align logentry"> <a data-toggle="tooltip" data-placement="top" title="{{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }}" href="logs?filter[gte][l.level]=0&filter[eq][l.source]=&filter[like][l.link]=%2Fclient%2F{{ client.id }}%2Fjob%2F{{ job.id }}"> {{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }}</a></td>
   <td class="vert-align status"><span class="label {% if (job.logEntry.levelName)|default('') == 'ERROR'%}label-danger{% elseif (job.logEntry.levelName)|default('') == 'WARNING'%}label-warning{% else %}label-success{% endif %}">{{ job.logEntry.message|default('')|slice(0, 50) }}{% if job.logEntry.message|default('')|length > 50 %}[...]{% endif %}</span></td>
   <td class="vert-align isactive">{% if job.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
   <td class="vert-align actions">
 
     <div class="btn-group" role="group" aria-label="Actions">
-        <button type="button" class="btn btn-default" href="#" eb-action="editJob" eb-path="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}">
-          <span class="glyphicon glyphicon-pencil"></span> <!--{% trans %}Edit job{% endtrans %}-->
+        <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" class="btn btn-default" href="#" eb-action="editJob" eb-path="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}">
+          <span class="glyphicon glyphicon-pencil"></span>
         </button>
-        <button type="button" class="btn btn-default {% if not job.hasBackups %}disabled{% endif %}" href="#" {% if job.hasBackups %}eb-action="showJobBackup"{% endif %} eb-path="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" id="btnRestore{{ client.id }}{{ job.id }}">
-          <span class="glyphicon glyphicon-cloud-download"></span><!-- {% trans %}Restore{% endtrans %}-->
+        <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Restore{% endtrans %}" class="btn btn-default {% if not job.hasBackups %}disabled{% endif %}" href="#" {% if job.hasBackups %}eb-action="showJobBackup"{% endif %} eb-path="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" id="btnRestore{{ client.id }}{{ job.id }}">
+          <span class="glyphicon glyphicon-cloud-download"></span>
         </button>
         <div class="btn-group" role="group">
           <button id="btnGroupDrop1" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button">
