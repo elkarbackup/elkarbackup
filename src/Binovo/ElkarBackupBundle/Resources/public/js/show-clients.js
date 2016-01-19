@@ -3,6 +3,8 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
+// Ask confirmation before delete clients/jobs
+var paranoidmode = true;
 
 function okMsg(msg){
   // Remove previous messages
@@ -130,29 +132,57 @@ function callbackClonedClient(data){
   }
 }
 
-function deleteJob(path, id){
-  if (path && id){
-    r = postRequest(path);
-    // If r is ok
-    // Delete job row
-    jobtr = $('tr.job-'+id).remove();
-    // Show feedback message
-    okMsg('Job deleted succesfully');
+function deleteJob(path, id, confirmed){
+  if (paranoidmode && !confirmed){
+    // Modal preparation
+    button = $("#deleteModal").find(":button[eb-action]");
+    button.attr('eb-action', 'deleteJob');
+    button.attr('eb-path', path);
+    button.attr('eb-jobid', id);
+    button.attr('eb-action-confirmed', 'true');
+    // Show modal
+    $("#deleteModal").modal('show');
   } else {
-    return false;
+    if (path && id){
+      // Hide modal
+      $("#deleteModal").modal('hide');
+      // Delete job
+      r = postRequest(path);
+      // If r is ok
+      // Delete job row
+      jobtr = $('tr.job-'+id).remove();
+      // Show feedback message
+      okMsg('Job deleted succesfully');
+    } else {
+      return false;
+    }
   }
 };
 
-function deleteClient(path, id){
-  if (path && id){
-    r = postRequest(path);
-    // If r is ok
-    // Delete all rows related to the client
-    $('tr.client-'+id).remove();
-    // Show feedback message
-    okMsg('Client deleted successfully');
+function deleteClient(path, id, confirmed){
+  if (paranoidmode && !confirmed){
+    // Modal preparation
+    button = $("#deleteModal").find(":button[eb-action]");
+    button.attr('eb-action', 'deleteClient');
+    button.attr('eb-path', path);
+    button.attr('eb-clientid', id);
+    button.attr('eb-action-confirmed', 'true');
+    // Show modal
+    $("#deleteModal").modal('show');
   } else {
-    return false;
+    if (path && id){
+      // Hide modal
+      $("#deleteModal").modal('hide');
+      // Delete client
+      r = postRequest(path);
+      // If r is ok
+      // Delete all rows related to the client
+      $('tr.client-'+id).remove();
+      // Show feedback message
+      okMsg('Client deleted successfully');
+    } else {
+      return false;
+    }
   }
 };
 
@@ -344,11 +374,12 @@ $(document).ready(function(){
       //
       // Listeners, they work even for the dynamically created buttons
       //
-      $("#jobs-container").on("click", ":button[eb-action], a[eb-action]", function(){
+      $("#jobs-container, #deleteModal").on("click", ":button[eb-action], a[eb-action]", function(e){
         var action = $(this).attr("eb-action");
         var path = $(this).attr("eb-path");
         var clientid = $(this).attr("eb-clientid");
         var jobid = $(this).attr("eb-jobid");
+        var confirmed = $(this).attr("eb-action-confirmed");
 
         switch(action){
           case 'sortJobs':
@@ -362,7 +393,8 @@ $(document).ready(function(){
             // Will be redirected
             break;
           case 'deleteClient':
-            r = deleteClient(path, clientid);
+            // Dangerous: ask confirmation
+            r = deleteClient(path, clientid, confirmed);
             break;
           case 'cloneClient':
             r = cloneClient(path, clientid);
@@ -379,7 +411,8 @@ $(document).ready(function(){
             // Will be redirected
             break;
           case 'deleteJob':
-            r = deleteJob(path, jobid);
+            // Dangerous: ask confirmation
+            r = deleteJob(path, jobid, confirmed);
             break;
           case 'runJob':
             if (runJob(path, jobid)){
@@ -397,7 +430,7 @@ $(document).ready(function(){
             r = runSelected();
             break;
           case 'deleteSelected':
-            r = deleteSelected();
+            r = deleteSelected(confirmed);
             break;
           default:
             console.log('Action not enabled');
