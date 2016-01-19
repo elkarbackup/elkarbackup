@@ -83,6 +83,7 @@ function addJobRow(job, client){
     //    showJobBackup button
     clone.find(':button[eb-action="showJobBackup"]').attr('eb-path', '/client/'+c.id+'/job/'+j.id+'/backup/view');
     clone.find(':button[eb-action="showJobBackup"]').attr('eb-jobid', j.id);
+    clone.find(':button[eb-action="showJobBackup"]').addClass('disabled');
     //    runJob a
     clone.find('a[eb-action="runJob"]').attr('eb-path', '/client/'+c.id+'/job/'+j.id+'/run');
     clone.find('a[eb-action="runJob"]').attr('eb-jobid', j.id);
