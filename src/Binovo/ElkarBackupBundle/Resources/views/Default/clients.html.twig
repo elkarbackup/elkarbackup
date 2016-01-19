@@ -103,7 +103,7 @@
 
     <div class="btn-group" role="group" aria-label="Actions">
         <button type="button" class="btn btn-default" href="#" eb-action="editClient" eb-path="{{ path('editClient', {id: client.id}) }}" eb-clientid="{{client.id}}">
-          <span class="glyphicon glyphicon-edit"></span> <!--{% trans %}Edit client{% endtrans %}-->
+          <span class="glyphicon glyphicon-pencil"></span> <!--{% trans %}Edit client{% endtrans %}-->
         </button>
         <button type="button" class="btn btn-default" href="#" eb-action="addJob" eb-path="{{ path('editJob', {idJob: 'new', idClient: client.id}) }}" eb-clientid="{{client.id}}">
           <span class="glyphicon glyphicon-plus"></span> <!--{% trans %}Add job{% endtrans %}-->
@@ -143,7 +143,7 @@
 
     <div class="btn-group" role="group" aria-label="Actions">
         <button type="button" class="btn btn-default" href="#" eb-action="editJob" eb-path="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}">
-          <span class="glyphicon glyphicon-edit"></span> <!--{% trans %}Edit job{% endtrans %}-->
+          <span class="glyphicon glyphicon-pencil"></span> <!--{% trans %}Edit job{% endtrans %}-->
         </button>
         <button type="button" class="btn btn-default {% if not job.hasBackups %}disabled{% endif %}" href="#" {% if job.hasBackups %}eb-action="showJobBackup"{% endif %} eb-path="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" id="btnRestore{{ client.id }}{{ job.id }}">
           <span class="glyphicon glyphicon-cloud-download"></span><!-- {% trans %}Restore{% endtrans %}-->
