@@ -117,7 +117,7 @@
             <li><a href="#" eb-action="cloneClient" eb-path="{{ path('cloneClient', {idClient: client.id}) }}" eb-clientid="{{client.id}}">{% trans %}Clone{% endtrans %}</a></li>
             <li class="disabled"><a href="#">{% trans %}Test connection{% endtrans %}</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#" eb-action="deleteClient" eb-path="{{ path('deleteClient', {id: client.id}) }}" eb-clientid="{{client.id}}" eb-message="{% trans with {'%name%': client.name} %}Really delete client %name%? This will remove all related jobs and backups{% endtrans %}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
+            <li><a href="#" eb-action="deleteClient" eb-path="{{ path('deleteClient', {id: client.id}) }}" eb-clientid="{{client.id}}" eb-message="{{ 'Really delete client <strong>%name%</strong>? <br><br>This will remove all related jobs and backups' | trans({'%name%': client.name}) | raw }}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
           </ul>
         </div>
     </div>
@@ -154,7 +154,7 @@
             <li><a href="#" eb-action="runJob" eb-path="{{ path('runJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}">{% trans %}Run now{% endtrans %}</a></li>
             <li class="disabled"><a href="#" eb-action="abortJob" eb-path="" eb-jobid="{{job.id}}">{% trans %}Abort{% endtrans %}</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#" eb-action="deleteJob" eb-path="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" eb-clientid="{{client.id}}" eb-message="{% trans with {'%name%': job.name} %}Really delete job %name%? This will remove all related backups{% endtrans %}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
+            <li><a href="#" eb-action="deleteJob" eb-path="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" eb-clientid="{{client.id}}" eb-message="{{ 'Really delete job <strong>%name%</strong>?<br><br>This will remove all related backups' | trans({'%name%': job.name}) | raw }}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
           </ul>
         </div>
     </div>
@@ -214,7 +214,7 @@ MODALS
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" action="#" eb-action="" eb-path="" eb-jobid="" eb-clientid="" eb-action-confirmed="">Delete</button>
+        <button type="button" class="btn btn-danger" action="#" eb-action="" eb-path="" eb-jobid="" eb-clientid="" eb-action-confirmed="">Delete</button>
       </div>
     </div>
   </div>
