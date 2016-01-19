@@ -35,7 +35,7 @@
         "post-install-cmd": [
             "cp vendor/twbs/bootstrap/dist/css/bootstrap*.css web/css",
             "cp vendor/twbs/bootstrap/dist/fonts/* web/fonts",
-            "cp vendor/twbs/bootstrap/js/dropdown.js web/js/bootstrap/dropdown.js",
+            "cp vendor/twbs/bootstrap/dist/js/bootstrap.min.js web/js/bootstrap/bootstrap.min.js",
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
@@ -46,7 +46,7 @@
         "post-update-cmd": [
             "cp vendor/twbs/bootstrap/dist/css/bootstrap*.css web/css",
             "cp vendor/twbs/bootstrap/dist/fonts/* web/fonts",
-            "cp vendor/twbs/bootstrap/js/dropdown.js web/js/bootstrap/dropdown.js",
+            "cp vendor/twbs/bootstrap/dist/js/bootstrap.min.js web/js/bootstrap/bootstrap.min.js",
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
