@@ -19,7 +19,9 @@ function errorMsg(msg){
   // Remove previous messages
   $("div.alert").remove();
   // Print new message
-  $("#legend").after('<div class="controls help-block alert alert-danger fade in"><a title="close" aria-label="close" data-dismiss="alert" class="close" href="#">×</a>' + msg + '</div>');
+  $("#legend").after('<div class="controls help-block alert alert-danger fade in" role="alert">' +
+      '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+      '<span aria-hidden="true">&times;</span></button>' + msg + '</div>');
 }
 
 function addClientRow(client){
