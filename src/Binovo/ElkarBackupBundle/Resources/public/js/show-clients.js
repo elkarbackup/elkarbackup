@@ -239,36 +239,48 @@ function runSelected(){
   }
 };
 
-function deleteSelected(){
-  var error = false;
-  if($('input:checkbox:checked').not('#checkAll').length == 0){
-    error = "Nothing to delete. Did you select any item?";
-  }
-  $('input:checkbox:checked').not('#checkall').each(function(){
-    tr = $(this).parents(':eq(1)');
-    if (tr.hasClass('client-row')){
-      // Client-row
-      path = tr.find('a[eb-action="deleteClient"]').attr('eb-path');
-      clientId = tr.find('a[eb-action="deleteClient"]').attr('eb-clientid');
-      deleteClient(path, clientId);
-    } else {
-      // Job-row
-      path = tr.find('a[eb-action="deleteJob"]').attr('eb-path');
-      jobId = tr.find('a[eb-action="deleteJob"]').attr('eb-jobid');
-      clientid = tr.find('a[eb-action="deleteJob"]').attr('eb-clientid');
-      parentrow = $('#client-'+clientid);
-      if (parentrow.length > 0){
-        // His father is alive
-        deleteJob(path, jobId);
-      } else {
-        console.log('Job was already deleted');
-      }
-    }
-  });
-  if (error){
-    errorMsg('Error deleting: '+error);
+function deleteSelected(confirmed){
+  if (paranoidmode && !confirmed){
+    // Modal preparation
+    question = $("#deleteModal").find("span.modal-message");
+    button = $("#deleteModal").find(":button[eb-action]");
+    question.html('Do you really want to delete all the selected clients and jobs?');
+    button.attr('eb-action', 'deleteSelected');
+    button.attr('eb-action-confirmed', 'true');
+    // Show modal
+    $("#deleteModal").modal('show');
   } else {
-    okMsg('Items deleted successfully');
+    $("#deleteModal").modal('hide');
+    var error = false;
+    if($('input:checkbox:checked').not('#checkAll').length == 0){
+      error = "Nothing to delete. Did you select any item?";
+    }
+    $('input:checkbox:checked').not('#checkall').each(function(){
+      tr = $(this).parents(':eq(1)');
+      if (tr.hasClass('client-row')){
+        // Client-row
+        path = tr.find('a[eb-action="deleteClient"]').attr('eb-path');
+        clientId = tr.find('a[eb-action="deleteClient"]').attr('eb-clientid');
+        deleteClient(path, clientId, null, confirmed=true);
+      } else {
+        // Job-row
+        path = tr.find('a[eb-action="deleteJob"]').attr('eb-path');
+        jobId = tr.find('a[eb-action="deleteJob"]').attr('eb-jobid');
+        clientid = tr.find('a[eb-action="deleteJob"]').attr('eb-clientid');
+        parentrow = $('#client-'+clientid);
+        if (parentrow.length > 0){
+          // His father is alive
+          deleteJob(path, jobId, null, confirmed=true);
+        } else {
+          console.log('Job was already deleted');
+        }
+      }
+    });
+    if (error){
+      errorMsg('Error deleting: '+error);
+    } else {
+      okMsg('Items deleted successfully');
+    }
   }
 };
 
