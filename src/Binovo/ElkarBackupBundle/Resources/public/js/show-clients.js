@@ -294,12 +294,21 @@ function cloneClient(path, clientId){
 function runJob(path, id){
   if (path && id){
     r = postRequest(path);
-    $('tr#job-'+id).addClass('queued');
+    $('tr#job-'+id).find('td.status').html('<span class="label label-success">QUEUED</span>');
     return true;
   } else {
     return false;
   }
 };
+
+function abortJob(path, id){
+  if (path && id){
+    r = postRequest(path);
+    $('tr#job-'+id).addClass('aborting');
+    okMsg('Aborting job. Take a look to the log');
+  }
+}
+
 
 function postRequest(url, params) {
   $.ajax({
@@ -440,6 +449,9 @@ $(document).ready(function(){
             } else {
               errorMsg('Error running job');
             }
+            break;
+          case 'abortJob':
+            r = abortJob(path, jobid);
             break;
           case 'showJobBackup':
             r = showJobBackup(path,jobid);

@@ -152,7 +152,7 @@
           </button>
           <ul class="dropdown-menu dropright" aria-labelledby="btnGroupDrop1">
             <li><a href="#" eb-action="runJob" eb-path="{{ path('runJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}">{% trans %}Run now{% endtrans %}</a></li>
-            <li class="disabled"><a href="#" eb-action="abortJob" eb-path="" eb-jobid="{{job.id}}">{% trans %}Abort{% endtrans %}</a></li>
+            <li><a href="#" eb-action="abortJob" eb-path="{{ path('abortJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}">{% trans %}Abort{% endtrans %}</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="#" eb-action="deleteJob" eb-path="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" eb-clientid="{{client.id}}" eb-message="{{ 'Really delete job <strong>%name%</strong>?<br><br>This will remove all related backups' | trans({'%name%': job.name}) | raw }}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
           </ul>

@@ -452,6 +452,31 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/client/{idClient}/job/{idJob}/abort", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="abortJob")
+     * @Method("POST")
+     * @Template()
+     */
+    public function runAbortAction(Request $request, $idClient, $idJob)
+    {
+        $t = $this->get('translator');
+        $em = $this->getDoctrine()->getManager();
+        $msg = new Message('DefaultController', 'TickCommand',
+                           json_encode(array('command' => 'elkarbackup:stop_job',
+                                             'client'  => $idClient,
+                                             'job'     => $idJob)));
+
+        $context = array('link'   => $this->generateJobRoute($idJob, $idClient),
+                         'source' => Globals::STATUS_REPORT);
+        $this->info('ABORTING', array(), $context);
+        $em->persist($msg);
+        $em->flush();
+        $response = new Response($t->trans('Job aborted successfully', array(), 'BinovoElkarBackup'));
+        $response->headers->set('Content-Type', 'text/plain');
+
+        return $response;
+    }
+
+    /**
      * @Route("/client/{idClient}/job/{idJob}/config", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="showJobConfig")
      * @Method("GET")
      * @Template()
