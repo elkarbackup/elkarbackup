@@ -19,9 +19,11 @@
         {% endstylesheets %}
 
         {% block scripts %}
-        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <!-- jQuery -->
+        <script type="text/javascript" src="{{ asset('js/jquery/jquery-1.12.0.min.js')}}"></script>
+        <!-- Dojo -->
         <script type="text/javascript" src="{{ asset('js/dojo-release/dojo/dojo.js') }}" data-dojo-config="async: true"></script>
+        <!-- Bootstrap and Elkarbackup js -->
         <script type="text/javascript" src="{{ asset('js/bootstrap/bootstrap.min.js') }}" ></script>
             {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/base.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
