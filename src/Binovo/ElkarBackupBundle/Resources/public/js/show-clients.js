@@ -304,8 +304,24 @@ function sortJobs(path){
   }
 }
 
-$(document).ready(function(){
 
+//
+// I need to put this section to use moment.js
+//
+require(['dojo/ready','js/moment/moment.min.js'],
+function(ready, moment){
+  ready(function(){
+    // Change logentry date to friendly date
+    $('td.logentry').each(function(){
+      logdate = $(this).find('a');
+      flogdate = moment(logdate.html(), "YYYY-MM-DD hh:mm:ss").fromNow();
+      logdate.html(flogdate);
+    })
+  });
+});
+
+
+$(document).ready(function(){
       // Checkbox select/deselect all option
       $('#checkAll').click(function(){
         $('input:checkbox').not(this).prop('checked', this.checked);

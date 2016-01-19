@@ -7,7 +7,6 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('js/moment/moment.min.js')}}"></script>
     {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/show-clients.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
