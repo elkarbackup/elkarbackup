@@ -132,10 +132,12 @@ function callbackClonedClient(data){
   }
 }
 
-function deleteJob(path, id, confirmed){
+function deleteJob(path, id, msg, confirmed){
   if (paranoidmode && !confirmed){
     // Modal preparation
+    question = $("#deleteModal").find("span.modal-message");
     button = $("#deleteModal").find(":button[eb-action]");
+    question.html(msg);
     button.attr('eb-action', 'deleteJob');
     button.attr('eb-path', path);
     button.attr('eb-jobid', id);
@@ -159,10 +161,12 @@ function deleteJob(path, id, confirmed){
   }
 };
 
-function deleteClient(path, id, confirmed){
+function deleteClient(path, id, msg, confirmed){
   if (paranoidmode && !confirmed){
     // Modal preparation
+    question = $("#deleteModal").find("span.modal-message");
     button = $("#deleteModal").find(":button[eb-action]");
+    question.html(msg);
     button.attr('eb-action', 'deleteClient');
     button.attr('eb-path', path);
     button.attr('eb-clientid', id);
@@ -379,6 +383,7 @@ $(document).ready(function(){
         var path = $(this).attr("eb-path");
         var clientid = $(this).attr("eb-clientid");
         var jobid = $(this).attr("eb-jobid");
+        var message = $(this).attr("eb-message");
         var confirmed = $(this).attr("eb-action-confirmed");
 
         switch(action){
@@ -394,7 +399,7 @@ $(document).ready(function(){
             break;
           case 'deleteClient':
             // Dangerous: ask confirmation
-            r = deleteClient(path, clientid, confirmed);
+            r = deleteClient(path, clientid, message, confirmed);
             break;
           case 'cloneClient':
             r = cloneClient(path, clientid);
@@ -412,7 +417,7 @@ $(document).ready(function(){
             break;
           case 'deleteJob':
             // Dangerous: ask confirmation
-            r = deleteJob(path, jobid, confirmed);
+            r = deleteJob(path, jobid, message, confirmed);
             break;
           case 'runJob':
             if (runJob(path, jobid)){

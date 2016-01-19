@@ -120,7 +120,7 @@
             <li><a href="#" {% if client.isActive %}eb-action="disableClient"{% else %}eb-action="enableClient"{% endif %} eb-path="" eb-clientid="{{client.id}}">{% if client.isActive %}{% trans %}Disable{% endtrans %}{% else %}Enable{% endif %}</a></li>
             <li class="disabled"><a href="#">{% trans %}Test connection{% endtrans %}</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#" eb-action="deleteClient" eb-path="{{ path('deleteClient', {id: client.id}) }}" eb-clientid="{{client.id}}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
+            <li><a href="#" eb-action="deleteClient" eb-path="{{ path('deleteClient', {id: client.id}) }}" eb-clientid="{{client.id}}" eb-message="{% trans with {'%name%': client.name} %}Really delete client %name%? This will remove all related jobs and backups{% endtrans %}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
           </ul>
         </div>
     </div>
@@ -158,7 +158,7 @@
             <li class="disabled"><a href="#" eb-action="abortJob" eb-path="" eb-jobid="{{job.id}}">{% trans %}Abort{% endtrans %}</a></li>
             <li><a href="#" {% if job.isActive %}eb-action="disableJob"{% else %}eb-action="enableJob"{% endif %} eb-path="" eb-clientid="{{client.id}}" eb-jobid="{{job.id}}">{% if job.isActive %}{% trans %}Disable{% endtrans %}{% else %}Enable{% endif %}</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#" eb-action="deleteJob" eb-path="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" eb-clientid="{{client.id}}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
+            <li><a href="#" eb-action="deleteJob" eb-path="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" eb-clientid="{{client.id}}" eb-message="{% trans with {'%name%': job.name} %}Really delete job %name%? This will remove all related backups{% endtrans %}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
           </ul>
         </div>
     </div>
@@ -206,13 +206,13 @@ MODALS
 -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal">
   <div class="modal-dialog" role="document">
-    <div class="modal-content panel-warning">
+    <div class="modal-content panel-danger">
       <div class="modal-header panel-heading">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">Danger zone!</h4>
       </div>
       <div class="modal-body">
-        <span>blablabla</span>
+        <span class="modal-message">message</span>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
