@@ -38,8 +38,6 @@ use Symfony\Component\Security\Core\SecurityContext;
 use steevanb\SSH2Bundle\Entity\Profile;
 use steevanb\SSH2Bundle\Entity\Connection;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Binovo\ElkarBackupBundle\Normalizer\ClientNormalizer;
-use Binovo\ElkarBackupBundle\Normalizer\JobNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
