@@ -40,6 +40,11 @@ azul hover cabecera:
   src: local('Roboto'), local('Roboto-Regular'), url('../fonts/Roboto-Regular.woff2') format('woff2');
 }
 
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: local('Glyphicons Halflings'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2');
+}
+
 
 
 /* ||| ZONA DEL LOGIN
@@ -755,3 +760,20 @@ display:none;
     vertical-align: center;
     width: 0;
 }
+
+/*
+ * Collapsable panels (with arrows)
+ */
+ .panel-collapsable-title a {
+
+ }
+
+ .panel-collapsable-heading a:after {
+     font-family:'Glyphicons Halflings';
+     content:"\e114";
+     float: right;
+     color: grey;
+ }
+ .panel-collapsable-heading a.collapsed:after {
+     content:"\e080";
+ }
