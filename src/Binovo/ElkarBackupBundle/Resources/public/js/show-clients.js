@@ -33,7 +33,13 @@ function addClientRow(client){
     clone.find('td.name').html('<a href="/client/'+c.id+'">'+c.name+'</a>');
     clone.find('td.diskusage').html('0 MB');
     clone.find('td.logentry').html('');
-    clone.find('td.isactive').html('Active');
+    clone.find('td.status').html('');
+    if (client.isActive){
+      clone.find('td.isactive').html('Active');
+    } else {
+      clone.find('td.isactive').html('Inactive');
+      clone.addClass('disabled');
+    }
 
     // Action buttons, custom attributes
     //    editClient button
@@ -74,7 +80,13 @@ function addJobRow(job, client){
     clone.find('td.name').html('<a href="/client/'+j.id+'">'+c.name+'/'+j.name+'</a>');
     clone.find('td.diskusage').html('0 MB');
     clone.find('td.logentry').html('');
-    clone.find('td.isactive').html('Active');
+    clone.find('td.status').html('');
+    if (job.isActive){
+      clone.find('td.isactive').html('Active');
+    } else {
+      clone.find('td.isactive').html('Inactive');
+      clone.addClass('disabled');
+    }
 
     // Action buttons, custom attributes
     //    editJob button
@@ -314,8 +326,10 @@ function(ready, moment){
     // Change logentry date to friendly date
     $('td.logentry').each(function(){
       logdate = $(this).find('a');
-      flogdate = moment(logdate.html(), "YYYY-MM-DD hh:mm:ss").fromNow();
-      logdate.html(flogdate);
+      if (logdate.html().length > 2){
+        flogdate = moment(logdate.html(), "YYYY-MM-DD hh:mm:ss").fromNow();
+        logdate.html(flogdate);
+      }
     })
   });
 });
