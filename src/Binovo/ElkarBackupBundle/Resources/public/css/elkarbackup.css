@@ -735,6 +735,10 @@ display:none;
      margin-right: 7px;
  }
 
+ #footer {
+     padding: 40px;
+ }
+
 /* Drop to the right for More menu */
 
 .dropright {
