@@ -250,11 +250,13 @@ tr.job-row td:first-child span {
     margin-right: 3px;
 }
 
+/*
 table tr.disabled:hover td:nth-child(-n+7),
 table tr.disabled td:nth-child(-n+7){
   background: #ebebeb !important;
   opacity: .4;
 }
+*/
 
 /* |||  RESET
 */
