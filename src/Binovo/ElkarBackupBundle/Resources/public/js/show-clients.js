@@ -294,7 +294,7 @@ function cloneClient(path, clientId){
 function runJob(path, id){
   if (path && id){
     r = postRequest(path);
-    $('tr#job-'+id).find('td.status').html('<span class="label label-success">QUEUED</span>');
+    $('tr#job-'+id).find('td.status').html('<span class="label label-info">QUEUED</span>');
     return true;
   } else {
     return false;
