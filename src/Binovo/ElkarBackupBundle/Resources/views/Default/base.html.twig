@@ -19,7 +19,12 @@
         {% endstylesheets %}
 
         {% block scripts %}
+        <!-- jQuery -->
+        <script type="text/javascript" src="{{ asset('js/jquery/jquery-1.12.0.min.js')}}"></script>
+        <!-- Dojo -->
         <script type="text/javascript" src="{{ asset('js/dojo-release/dojo/dojo.js') }}" data-dojo-config="async: true"></script>
+        <!-- Bootstrap and Elkarbackup js -->
+        <script type="text/javascript" src="{{ asset('js/bootstrap/bootstrap.min.js') }}" ></script>
             {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/base.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
             {% endjavascripts %}
@@ -35,9 +40,9 @@
                 <a href="{{path('showClients')}}"><img src="{{ asset('/img/elkarbackup.png') }}" alt="ElkarBackup" /></a>
             </div>
 
-		    <div class="navbar">
+		    <div class="navbar" role="navigation">
                 {% block menu %}
-                    {{ knp_menu_render('BinovoElkarBackupBundle:Builder:mainMenu') }}
+                    {{ knp_menu_render('BinovoElkarBackupBundle:Builder:mainMenu',{'allow_safe_labels': true})|raw }}
                 {% endblock %}
             </div>
         </div>

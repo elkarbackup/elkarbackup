@@ -25,7 +25,8 @@
         "jms/security-extra-bundle": "^1.5",
         "jms/di-extra-bundle": "^1.6",
         "twbs/bootstrap": "^3.3",
-        "symfony/debug": "2.8.*"
+        "symfony/debug": "2.8.*",
+        "steevanb/ssh2bundle": "2.0.*"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
@@ -34,6 +35,7 @@
         "post-install-cmd": [
             "cp vendor/twbs/bootstrap/dist/css/bootstrap*.css web/css",
             "cp vendor/twbs/bootstrap/dist/fonts/* web/fonts",
+            "cp vendor/twbs/bootstrap/dist/js/bootstrap.min.js web/js/bootstrap/bootstrap.min.js",
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
@@ -44,6 +46,7 @@
         "post-update-cmd": [
             "cp vendor/twbs/bootstrap/dist/css/bootstrap*.css web/css",
             "cp vendor/twbs/bootstrap/dist/fonts/* web/fonts",
+            "cp vendor/twbs/bootstrap/dist/js/bootstrap.min.js web/js/bootstrap/bootstrap.min.js",
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",

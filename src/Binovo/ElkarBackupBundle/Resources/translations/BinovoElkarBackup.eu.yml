@@ -243,6 +243,12 @@
 'Back to root' : 'Errora itzuli'
 'Preferences': 'Hobespenak'
 'Manage preferences': 'Kudeatu hobespenak'
+'Actions': 'Ekintzak'
+'Abort': 'Gelditu'
+'More': 'Gehiago'
+'Clone': 'Klonatu'
+'Abort job': 'Utzi lana'
+'Test connection': 'Probatu'
 policy_help: |
  <h4>Izena</h4>
  Politikaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Politika bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.

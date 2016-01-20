@@ -22,6 +22,10 @@ security:
         login:
             pattern:  ^/login$
             security: false
+        
+        publickey:
+            pattern: ^/config/publickey/get$
+            security: false
 
         secured_area:
             pattern:    ^/
@@ -34,6 +38,8 @@ security:
 
     access_control:
         - { path: ^/login                        , roles: IS_AUTHENTICATED_ANONYMOUSLY}
+        - { path: ^/config/publickey/get         , roles: IS_AUTHENTICATED_ANONYMOUSLY}
+        - { path: ^/token                        , roles: IS_AUTHENTICATED_ANONYMOUSLY}
         - { path: ^/user                         , roles: ROLE_ADMIN}
         - { path: ^/users                        , roles: ROLE_ADMIN}
         - { path: ^/config/params                , roles: ROLE_ADMIN}

@@ -24,6 +24,7 @@ class AppKernel extends Kernel
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+            new steevanb\SSH2Bundle\SSH2Bundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

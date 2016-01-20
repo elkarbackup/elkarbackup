@@ -12,6 +12,13 @@ then
     curl http://download.dojotoolkit.org/release-1.8.1/dojo-release-1.8.1.tar.gz | (cd web/js; tar zx)
 fi
 
+if [ ! -d web/js/jquery ]
+then
+    echo "Download and install jquery 1.12.0"
+    mkdir web/js/jquery
+    curl -o web/js/jquery/jquery-1.12.0.min.js http://code.jquery.com/jquery-1.12.0.min.js
+fi
+
 mkdir -p app/cache
 mkdir -p app/logs
 mkdir -p app/sessions
