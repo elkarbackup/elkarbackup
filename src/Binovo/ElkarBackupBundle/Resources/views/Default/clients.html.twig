@@ -43,9 +43,9 @@
 <div class="row">
     <div class="col-md-12" id="jobs-container">
 
-<h3 id="legend">{% trans %}Jobs{% endtrans %}</h3>
 
-<div class="pull-right" style="padding-bottom: 10px;">
+<!-- top action buttons -->
+<div class="top-action-buttons pull-right" style="padding-bottom: 10px;">
   <div class="btn-group" role="group" aria-label="...">
     <button class="btn btn-default" action="#" eb-action="addClient" eb-path="{{ path('editClient', {id: 'new'}) }}">
       <span class="glyphicon glyphicon-plus"></span> {% trans %}Add client{% endtrans %}
@@ -66,6 +66,8 @@
   </div>
   </div>
 </div>
+
+<h3 id="legend">{% trans %}Jobs{% endtrans %}</h3>
 
 
 {% for flashMessage in app.session.flashbag.get('clients') %}
