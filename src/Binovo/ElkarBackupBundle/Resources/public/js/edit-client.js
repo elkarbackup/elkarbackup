@@ -1,4 +1,4 @@
-require(['dojo', 'dojo/ready', 'dojox/form/CheckedMultiSelect', 'dijit/TitlePane', 'dojo/parser' ],
+require(['dojo', 'dojo/ready', 'dijit/TitlePane', 'dojo/parser' ],
 function(dojo, ready, TitlePane, dom){
      ready(function() {
 
