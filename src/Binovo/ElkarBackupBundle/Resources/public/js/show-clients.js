@@ -6,24 +6,6 @@
 // Ask confirmation before delete clients/jobs
 var paranoidmode = true;
 
-function okMsg(msg){
-  // Remove previous messages
-  $("div.alert").remove();
-  // Print new message
-  $("#legend").after('<div class="controls help-block alert alert-success fade in" role="alert">' +
-      '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-      '<span aria-hidden="true">&times;</span></button>' + msg + '</div>');
-}
-
-function errorMsg(msg){
-  // Remove previous messages
-  $("div.alert").remove();
-  // Print new message
-  $("#legend").after('<div class="controls help-block alert alert-danger fade in" role="alert">' +
-      '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-      '<span aria-hidden="true">&times;</span></button>' + msg + '</div>');
-}
-
 function addClientRow(client){
   var c = client;
   if (c.id){
