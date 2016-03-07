@@ -935,6 +935,7 @@ class DefaultController extends Controller
      */
     public function showScriptsAction(Request $request)
     {
+
         $repository = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Script');
         $query = $repository->createQueryBuilder('c')
@@ -1739,6 +1740,7 @@ protected function checkPermissions($idClient, $idJob = null){
 
               	$newjob = clone $job;
               	$newjob->setClient($client);
+                $newjob->setDiskUsage(0);
               	$newem = $this->getDoctrine()->getManager();
               	$newem->persist($newjob);
               	$newem->flush();
