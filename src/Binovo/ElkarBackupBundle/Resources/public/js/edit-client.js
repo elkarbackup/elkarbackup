@@ -2,7 +2,7 @@
  * @copyright 2012,2013 Binovo it Human Project, S.L.
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
-require(['dojo', 'dojo/ready', 'dojox/form/CheckedMultiSelect', 'dijit/TitlePane', 'dojo/parser', 'dijit/Dialog' ],
+require(['dojo', 'dojo/ready', 'dijit/TitlePane', 'dojo/parser', 'dijit/Dialog' ],
 function(dojo, ready, TitlePane, dom){
     ready(function() {
               dojo.query('.delete-job')
