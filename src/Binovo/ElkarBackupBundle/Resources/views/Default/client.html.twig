@@ -21,7 +21,6 @@
   <div class="btn-group inline" {% if not form.vars.value.id %}id="btnAddJobDisabled"{% endif %}>
     <button type="button" class="btn btn-default btn-pull-right" {% if not form.vars.value.id %}disabled="true"{% endif %} onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: form.vars.value.id}) }}'"> <span class="glyphicon glyphicon-plus"></span> {% trans %}Add job{% endtrans %}</button>
   </div>
-   <button type="button" class="btn btn-default" {% if not form.vars.value.id %}disabled="true"{% endif %} onclick="dijit.byId('dialog1').show()"><span class="glyphicon glyphicon-record"></span> SSH copy id</button>
 </div>
 
 <form class="form-horizontal" action="{{ path('saveClient', {id: form.vars.value.id}) }}" method="POST" {{ form_enctype(form) }}>
@@ -73,23 +72,6 @@
         </div>
     </div>
 </form>
-
-<div id="dialog1" dojoType="dijit.Dialog" title="SSH copy id">
- <form class="sshcopykey" action="sshCopyKey" id="myform">
-  <div class="form-group">
-    <label for="uandh">{% trans %}Username and Host:{% endtrans %}</label>
-    <input name="uandh" type="text" class="form-control" id="uandh" value="{{form.vars.value.url}}" readonly="readonly">
-    <label for="port">{% trans %}Port{% endtrans %}</Label>
-    <input name="port" type="text" class="form-control" id="port" value="22">
-  </div>
-  <div class="form-group">
-    <label for="pwd">{% trans %}Password:{% endtrans %}</label>
-    <input name="pwd" type="password" class="form-control" id="pwd">
-  </div>
-<button type="submit" data-dojo-type="dijit/form/Button" id="submitButton">{% trans %}Copy it!{% endtrans %}</button>
-</form>
-<div id="response"></div>
-</div>
 
 
 {% endblock %}
