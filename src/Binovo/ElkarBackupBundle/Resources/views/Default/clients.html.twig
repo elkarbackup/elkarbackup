@@ -15,8 +15,60 @@
 {% block body %}
 
 <div class="row">
-    <div class="">
+  <div class="row" style="margin-top: 30px;">
+    <div class="col-md-9"></div>
+    <div class="col-md-3">
 
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse1">Health indicator</a>
+          </h4>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse">
+      <!--
+        <div class="panel-body">
+          <label class="label label-success">12 OK</label>
+          <label class="label label-danger">1 ERROR</label>
+          <label class="label label-default">2 INAC</label>
+          <label class="label label-info">1 RUN</label>
+        </div>
+      -->
+        <div class="panel-body">
+
+          <div class="progress">
+          {% if fsDiskUsage <= 20 %}
+              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
+              	{{ fsDiskUsage }}%
+              </div>
+          {% elseif fsDiskUsage <= 60 %}
+              <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
+              	{{ fsDiskUsage }}%
+            </div>
+          {% elseif fsDiskUsage <= 90 %}
+              <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
+              	{{ fsDiskUsage }}%
+            </div>
+          {% elseif fsDiskUsage > 90 %}
+              <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
+              	{{ fsDiskUsage }}%
+            </div>
+          {% endif %}
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    </div>
+  </div>
+
+  <!--
+    <div class="diskusagebar">
         <h3>{% trans %}Disk usage{% endtrans %}</h3>
 
         <div class="progress">
@@ -39,6 +91,8 @@
         {% endif %}
         </div>
     </div>
+  -->
+
 </div>
 <div class="row">
     <div class="col-md-12" id="jobs-container">
