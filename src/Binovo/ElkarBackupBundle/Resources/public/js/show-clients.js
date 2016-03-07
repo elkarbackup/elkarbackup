@@ -282,11 +282,30 @@ function runJob(path, id){
   }
 };
 
-function abortJob(path, id){
-  if (path && id){
-    r = postRequest(path);
-    $('tr#job-'+id).addClass('aborting');
-    okMsg('Aborting job. Take a look to the log');
+function abortJob(path, id, msg, confirmed){
+  if (!confirmed){
+    // Modal preparation
+    question = $("#abortModal").find("span.modal-message");
+    button = $("#abortModal").find(":button[eb-action]");
+    question.html(msg);
+    button.attr('eb-action', 'abortJob');
+    button.attr('eb-path', path);
+    button.attr('eb-jobid', id);
+    button.attr('eb-action-confirmed', 'true');
+    // Show modal
+    $("#abortModal").modal('show');
+  } else {
+    if (path && id){
+      // Hide modal
+      $("#abortModal").modal('hide');
+      // Abort job
+      r = postRequest(path);
+      // Update job status
+      $('tr#job-'+id).addClass('aborting');
+      $('tr#job-'+id).find('td.status').html('<span class="label label-success">ABORTING</span>');
+      // Show feedback message
+      okMsg('Aborting job. Take a look to the log');
+    }
   }
 }
 
@@ -360,7 +379,7 @@ $(document).ready(function(){
       //
       // Listeners, they work even for the dynamically created buttons
       //
-      $("#jobs-container, #deleteModal").on("click", ":button[eb-action], a[eb-action]", function(e){
+      $("#jobs-container, #deleteModal, #abortModal").on("click", ":button[eb-action], a[eb-action]", function(e){
         var action = $(this).attr("eb-action");
         var path = $(this).attr("eb-path");
         var clientid = $(this).attr("eb-clientid");
@@ -410,7 +429,7 @@ $(document).ready(function(){
             }
             break;
           case 'abortJob':
-            r = abortJob(path, jobid);
+            r = abortJob(path, jobid, message, confirmed);
             break;
           case 'showJobBackup':
             r = showJobBackup(path,jobid);
