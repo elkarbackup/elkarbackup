@@ -41,10 +41,9 @@ class ClientType extends AbstractType
                 ->add('quota'         , 'integer'   , array('label' => $t->trans('Quota', array(), 'BinovoElkarBackup'),
                                                             'attr'  => array('class'    => 'form-control','min' => '-1', 'step' => 'any')))
                 ->add('preScripts'    , 'entity'    , array('label' => $t->trans('Pre script', array(), 'BinovoElkarBackup'),
-                                                            'attr'     => array('class' => 'multiselect autoheight form-control'),
+                                                            'attr'     => array('class' => 'autoheight form-control','data-dojo-type' => 'dojox.form.CheckedMultiSelect'),
                                                             'required' => false,
                                                             'multiple' => true,
-                                                            'expanded' => true,
                                                             'class'    => 'BinovoElkarBackupBundle:Script',
                                                             'query_builder' => function($er) {
                                                                 return $er->createQueryBuilder('s')
@@ -52,10 +51,9 @@ class ClientType extends AbstractType
                                                             },
                                                             'property' => 'name'))
                 ->add('postScripts'   , 'entity'    , array('label' => $t->trans('Post script', array(), 'BinovoElkarBackup'),
-                                                            'attr'     => array('class' => 'multiselect autoheight form-control'),
+                                                            'attr'     => array('class' => 'autoheight form-control','data-dojo-type' => 'dojox.form.CheckedMultiSelect'),
                                                             'required' => false,
                                                             'multiple' => true,
-                                                            'expanded' => true,
                                                             'class'    => 'BinovoElkarBackupBundle:Script',
                                                             'query_builder' => function($er) {
                                                                 return $er->createQueryBuilder('s')
