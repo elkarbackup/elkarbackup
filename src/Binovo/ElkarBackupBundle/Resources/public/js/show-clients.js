@@ -268,7 +268,6 @@ function deleteSelected(confirmed){
   }
 };
 
-
 function cloneClient(path, clientId){
   postRequest(path);
 };
@@ -290,28 +289,6 @@ function abortJob(path, id){
     okMsg('Aborting job. Take a look to the log');
   }
 }
-
-
-function postRequest(url, params) {
-  $.ajax({
-    type: "POST",
-    url: url,
-    data: params,
-    success: function(response) {
-      if (response.msg){
-        okMsg(response.msg);
-
-        if (response.action){
-          if (response.data){
-            // Call to callback
-            window[response.action].apply(null, response.data);
-          }
-        }
-      }
-    }
-  });
-};
-
 
 function showJobBackup(path, id) {
   if (path){
