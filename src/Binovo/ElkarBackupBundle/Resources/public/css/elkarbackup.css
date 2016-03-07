@@ -160,7 +160,7 @@ body {
 
 h3, .h3 {
     font-size: 27px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     padding: 10px 0 5px 10px;
     border-bottom: 1px dotted #ccc;
 }
@@ -537,6 +537,10 @@ SORT JOBS
 /*
 CLIENTS-TASKS
 */
+
+.table {
+  margin-bottom: 10px;
+}
 
 .table tbody>tr>td.vert-align
 {

@@ -6,24 +6,6 @@
 // Ask confirmation before delete clients/jobs
 var paranoidmode = true;
 
-function okMsg(msg){
-  // Remove previous messages
-  $("div.alert").remove();
-  // Print new message
-  $("#legend").after('<div class="controls help-block alert alert-success fade in" role="alert">' +
-      '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-      '<span aria-hidden="true">&times;</span></button>' + msg + '</div>');
-}
-
-function errorMsg(msg){
-  // Remove previous messages
-  $("div.alert").remove();
-  // Print new message
-  $("#legend").after('<div class="controls help-block alert alert-danger fade in" role="alert">' +
-      '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-      '<span aria-hidden="true">&times;</span></button>' + msg + '</div>');
-}
-
 function addClientRow(client){
   var c = client;
   if (c.id){
@@ -286,7 +268,6 @@ function deleteSelected(confirmed){
   }
 };
 
-
 function cloneClient(path, clientId){
   postRequest(path);
 };
@@ -301,35 +282,32 @@ function runJob(path, id){
   }
 };
 
-function abortJob(path, id){
-  if (path && id){
-    r = postRequest(path);
-    $('tr#job-'+id).addClass('aborting');
-    okMsg('Aborting job. Take a look to the log');
+function abortJob(path, id, msg, confirmed){
+  if (!confirmed){
+    // Modal preparation
+    question = $("#abortModal").find("span.modal-message");
+    button = $("#abortModal").find(":button[eb-action]");
+    question.html(msg);
+    button.attr('eb-action', 'abortJob');
+    button.attr('eb-path', path);
+    button.attr('eb-jobid', id);
+    button.attr('eb-action-confirmed', 'true');
+    // Show modal
+    $("#abortModal").modal('show');
+  } else {
+    if (path && id){
+      // Hide modal
+      $("#abortModal").modal('hide');
+      // Abort job
+      r = postRequest(path);
+      // Update job status
+      $('tr#job-'+id).addClass('aborting');
+      $('tr#job-'+id).find('td.status').html('<span class="label label-success">ABORTING</span>');
+      // Show feedback message
+      okMsg('Aborting job. Take a look to the log');
+    }
   }
 }
-
-
-function postRequest(url, params) {
-  $.ajax({
-    type: "POST",
-    url: url,
-    data: params,
-    success: function(response) {
-      if (response.msg){
-        okMsg(response.msg);
-
-        if (response.action){
-          if (response.data){
-            // Call to callback
-            window[response.action].apply(null, response.data);
-          }
-        }
-      }
-    }
-  });
-};
-
 
 function showJobBackup(path, id) {
   if (path){
@@ -401,7 +379,7 @@ $(document).ready(function(){
       //
       // Listeners, they work even for the dynamically created buttons
       //
-      $("#jobs-container, #deleteModal").on("click", ":button[eb-action], a[eb-action]", function(e){
+      $("#jobs-container, #deleteModal, #abortModal").on("click", ":button[eb-action], a[eb-action]", function(e){
         var action = $(this).attr("eb-action");
         var path = $(this).attr("eb-path");
         var clientid = $(this).attr("eb-clientid");
@@ -451,7 +429,7 @@ $(document).ready(function(){
             }
             break;
           case 'abortJob':
-            r = abortJob(path, jobid);
+            r = abortJob(path, jobid, message, confirmed);
             break;
           case 'showJobBackup':
             r = showJobBackup(path,jobid);
