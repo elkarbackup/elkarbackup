@@ -177,6 +177,11 @@ class DefaultController extends Controller
      */
     public function deleteClientAction(Request $request, $id)
     {
+       $access = $this->checkPermissions($id);
+                if ($access == False) {
+	                return $this->redirect($this->generateUrl('showClients'));
+        }
+
         $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Client');
@@ -368,6 +373,11 @@ class DefaultController extends Controller
      */
     public function deleteJobAction(Request $request, $idClient, $idJob)
     {
+       $access = $this->checkPermissions($idClient);
+                if ($access == False) {
+	                return $this->redirect($this->generateUrl('showClients'));
+                }
+
         $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Job');
@@ -754,6 +764,11 @@ class DefaultController extends Controller
      */
     public function editPolicyAction(Request $request, $id)
     {
+        if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+	       //only allow to admins to do this task
+         return $this->redirect($this->generateUrl('showClients'));
+            }
+
         $t = $this->get('translator');
         if ('new' === $id) {
             $policy = new Policy();
@@ -778,6 +793,11 @@ class DefaultController extends Controller
      */
     public function deletePolicyAction(Request $request, $id)
     {
+       if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+          //only allow to admins to do this task
+            return $this->redirect($this->generateUrl('showClients'));
+        }
+
         $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Policy');
@@ -836,14 +856,21 @@ class DefaultController extends Controller
      */
     public function sortJobsAction(Request $request)
     {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $actualuserid = $user->getId();
+
         $t = $this->get('translator');
         $repository = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Job');
-        $jobs = $repository->createQueryBuilder('j')
-                            ->innerJoin('j.client', 'c')
-                            ->where('j.isActive <> 0 AND c.isActive <> 0')
-                            ->orderBy('j.priority', 'ASC')
-                            ->getQuery()->getResult();
+
+        $query = $repository->createQueryBuilder('j')->innerJoin('j.client','c')->addOrderBy('j.priority', 'ASC');
+        if($actualuserid <> 1 ){
+                $query->where('j.isActive <> 0 AND c.isActive <> 0 AND c.owner = ?1'); //adding users and roles
+                $query->setParameter(1, $actualuserid);
+            }
+        $jobs = $query->getQuery()->getResult();;
+
+
         $formBuilder = $this->createFormBuilder(array('jobs' => $jobs));
         $formBuilder->add('jobs', 'collection',
                           array('type' => new JobForSortType()));
@@ -1436,6 +1463,11 @@ EOF;
      */
     public function deleteScriptAction(Request $request, $id)
     {
+        if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+	         //only allow to admins to do this task
+        return $this->redirect($this->generateUrl('showClients'));
+          }
+
         $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Script');
@@ -1489,6 +1521,11 @@ EOF;
      */
     public function editScriptAction(Request $request, $id)
     {
+        if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+	         //only allow to admins to do this task
+        return $this->redirect($this->generateUrl('showClients'));
+            }
+
         $t = $this->get('translator');
         if ('new' === $id) {
             $script = new Script();

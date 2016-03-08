@@ -28,7 +28,10 @@
         {# sorting of properties based on query components #}
         <th class="ids">{% trans %}Id{% endtrans %}</th>
         <th>{% trans %}Name{% endtrans %}</th>
+        {% if is_granted('ROLE_ADMIN') %}
         <th>{% trans %}Actions{% endtrans %}</th>
+        {% endif %}
+
     </tr>
 
     {# table body #}
@@ -36,6 +39,7 @@
     <tr>
         <td class="ids"><a href="{{ path('editPolicy', {id: policy.id}) }}">{{ policy.id }}</a></td>
         <td>{{ policy.name }}</td>
+        {% if is_granted('ROLE_ADMIN') %}
         <td class="actions">
               <form action="{{ path('editPolicy', {id: policy.id}) }}" style="display:inline">
                 <button class="btn btn-elkarbackup" type="submit"><span class="glyphicon glyphicon-pencil"></span> {% trans %}Edit{% endtrans %} </button>
@@ -43,13 +47,15 @@
               <form data-bnv-message="{% trans with {'%name%': policy.name} %}Really delete policy %name%?{% endtrans %}" class="delete-policy" action="{{ path('deletePolicy', {id: policy.id}) }}" method="POST" style="display:inline">
                 <button class="btn btn-default btn-danger" type="submit"><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %} </button>
               </form>
-
         </td>
+        {% endif %}
+
     </tr>
     {% endfor %}
 </table>
-
+{% if is_granted('ROLE_ADMIN') %}
 <button class="btn btn-elkarbackup pull-right" type="button" onclick="document.location.href='{{ path('editPolicy', {id: 'new'}) }}'"><span class="glyphicon glyphicon-plus"></span> {% trans %}New{% endtrans %}</button>
+{% endif %}
 
 {# display navigation #}
 <div class="navigation binovo-pagination">

@@ -30,7 +30,10 @@
         <th>{% trans %}Id{% endtrans %}</th>
         <th>{% trans %}Name{% endtrans %}</th>
         <th>{% trans %}Description{% endtrans %}</th>
-        <th>{% trans %}Actions{% endtrans %}</th>
+        {% if is_granted('ROLE_ADMIN') %}
+          <th>{% trans %}Actions{% endtrans %}</th>
+        {% endif %}
+
     </tr>
 
     {# table body #}
@@ -39,7 +42,12 @@
         <td onclick="document.location.href='{{ path('editScript', {id: script.id}) }}'" class="ids"><a href="{{ path('editScript', {id: script.id}) }}">{{ script.id }}</a></td>
         <td>{{ script.name }}</td>
         <td>{{ script.description }}</td>
+        {% if is_granted('ROLE_ADMIN') %}
+
         <td class="actions" style="width:20%; text-align: center">
+
+
+
           <form action="{{ path('editScript', {id: script.id}) }}" style="display:inline">
             <button class="btn btn-elkarbackup" type="submit"><span class="glyphicon glyphicon-pencil"></span> {% trans %}Edit{% endtrans %} </button>
           </form>
@@ -52,11 +60,16 @@
             </div>
           </form>
         </td>
+        {% endif %}
+
     </tr>
     {% endfor %}
 </table>
+{% if is_granted('ROLE_ADMIN') %}
 
 <button class="btn btn-elkarbackup pull-right" type="button" onclick="document.location.href='{{ path('editScript', {id: 'new'}) }}'"><span class="glyphicon glyphicon-plus"></span>  {% trans %}New{% endtrans %}</button>
+
+{% endif %}
 
 {# display navigation #}
 <div class="navigation binovo-pagination">
