@@ -36,7 +36,11 @@ function postRequest(url, params) {
      data: params,
      success: function(response) {
        if (response.msg){
-         okMsg(response.msg);
+         if (response.error){
+           errorMsg(response.msg);
+         } else {
+           okMsg(response.msg);
+         }
 
          if (response.action){
            if (response.data){
