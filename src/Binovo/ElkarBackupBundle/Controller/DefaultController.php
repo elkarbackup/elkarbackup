@@ -444,6 +444,12 @@ class DefaultController extends Controller
     public function runJobAction(Request $request, $idClient, $idJob)
     {
         $t = $this->get('translator');
+        $job = $this->getDoctrine()
+            ->getRepository('BinovoElkarBackupBundle:Job')->find($idJob);
+        if (null == $job) {
+            throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
+        }
+
         $em = $this->getDoctrine()->getManager();
         $msg = new Message('DefaultController', 'TickCommand',
                            json_encode(array('command' => 'elkarbackup:run_job',
@@ -452,7 +458,9 @@ class DefaultController extends Controller
 
         $context = array('link'   => $this->generateJobRoute($idJob, $idClient),
                          'source' => Globals::STATUS_REPORT);
-        $this->info('QUEUED', array(), $context);
+        $status = 'QUEUED';
+        $job->setStatus($status);
+        $this->info($status, array(), $context);
         $em->persist($msg);
         $em->flush();
         $response = new Response($t->trans('Job execution requested successfully', array(), 'BinovoElkarBackup'));
@@ -469,19 +477,41 @@ class DefaultController extends Controller
     public function runAbortAction(Request $request, $idClient, $idJob)
     {
         $t = $this->get('translator');
-        $em = $this->getDoctrine()->getManager();
-        $msg = new Message('DefaultController', 'TickCommand',
-                           json_encode(array('command' => 'elkarbackup:stop_job',
-                                             'client'  => $idClient,
-                                             'job'     => $idJob)));
 
-        $context = array('link'   => $this->generateJobRoute($idJob, $idClient),
-                         'source' => Globals::STATUS_REPORT);
-        $this->info('ABORTING', array(), $context);
-        $em->persist($msg);
-        $em->flush();
-        $response = new Response($t->trans('Job aborted successfully', array(), 'BinovoElkarBackup'));
-        $response->headers->set('Content-Type', 'text/plain');
+        $job = $this->getDoctrine()
+            ->getRepository('BinovoElkarBackupBundle:Job')->find($idJob);
+        if (null == $job) {
+            throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
+        }
+
+        if ($job->isRunning()){
+            $em = $this->getDoctrine()->getManager();
+            $msg = new Message('DefaultController', 'TickCommand',
+                               json_encode(array('command' => 'elkarbackup:stop_job',
+                                                 'client'  => $idClient,
+                                                 'job'     => $idJob)));
+
+            $context = array('link'   => $this->generateJobRoute($idJob, $idClient),
+                             'source' => Globals::STATUS_REPORT);
+            $job->setStatus('ABORTING');
+            $this->info('ABORTING', array(), $context);
+            $em->persist($msg);
+            $em->flush();
+            //$response = new Response($t->trans('Job aborted successfully', array(), 'BinovoElkarBackup'));
+            //$response->headers->set('Content-Type', 'text/plain');
+            $response = new JsonResponse(array('error'  =>  false,
+                                               'msg'    => $t->trans('Job stop requested: aborting job', array(), 'BinovoElkarBackup'),
+                                               'action' => 'callbackJobAborting',
+                                               'data'   =>  $idJob));
+            return $response;
+
+        } else {
+            //$response = new Response($t->trans('Job not running', array(), 'BinovoElkarBackup'));
+            //$response->headers->set('Content-Type', 'text/plain');
+            $response = new JsonResponse(array('error'  => true,
+                                               'msg'    => $t->trans('Cannot abort job: not running', array(), 'BinovoElkarBackup')));
+            return $response;
+        }
 
         return $response;
     }
