@@ -136,6 +136,12 @@ class Job
     protected $logEntry = null;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     * Job status: running, queued, failed, aborting, aborted
+     */
+    protected $status = null;
+
+    /**
      * Returns the full path of the snapshot directory
      */
     public function getSnapshotRoot()
@@ -652,5 +658,43 @@ class Job
         }
 	*/
 	return $this->client->getSshArgs();
+    }
+
+    /**
+     * Set status
+     *
+     * @param string $status
+     *
+     * @return Job
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * isRunning returns True if job is running
+     *
+     * @return boolean
+     */
+    public function isRunning()
+    {
+        if ('RUNNING' == $this->status){
+          return true;
+        } else {
+          return false;
+        }
     }
 }
