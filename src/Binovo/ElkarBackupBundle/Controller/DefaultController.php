@@ -502,7 +502,7 @@ class DefaultController extends Controller
             $response = new JsonResponse(array('error'  =>  false,
                                                'msg'    => $t->trans('Job stop requested: aborting job', array(), 'BinovoElkarBackup'),
                                                'action' => 'callbackJobAborting',
-                                               'data'   =>  $idJob));
+                                               'data'   =>  array($idJob)));
             return $response;
 
         } else {
