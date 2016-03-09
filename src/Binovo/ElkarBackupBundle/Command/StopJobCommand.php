@@ -70,6 +70,7 @@
      } else {
        $this->warn('Cannot abort job backup: not running', array(), $context);
      }
+     return true;
    }
 
    protected function getNameForLogs()
