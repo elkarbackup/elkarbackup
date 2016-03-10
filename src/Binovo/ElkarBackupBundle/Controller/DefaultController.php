@@ -533,10 +533,11 @@ class DefaultController extends Controller
         if (null == $job || $job->getClient()->getId() != $idClient) {
             throw $this->createNotFoundException($t->trans('Unable to find Job entity: ', array(), 'BinovoElkarBackup') . $idClient . " " . $idJob);
         }
+        $client = $job->getClient();
         $tmpDir = $this->container->getParameter('tmp_dir');
-        $sshArgs = $job->getSshArgs();
-        $rsyncShortArgs = $job->getRsyncShortArgs();
-        $rsyncLongArgs = $job->getRsyncLongArgs();
+        $sshArgs = $client->getSshArgs();
+        $rsyncShortArgs = $client->getRsyncShortArgs();
+        $rsyncLongArgs = $client->getRsyncLongArgs();
         $url = $job->getUrl();
         $idJob = $job->getId();
         $policy = $job->getPolicy();
