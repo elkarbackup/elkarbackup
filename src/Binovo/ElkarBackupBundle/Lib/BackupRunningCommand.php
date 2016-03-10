@@ -113,6 +113,7 @@ abstract class BackupRunningCommand extends LoggingCommand
         $engine     = $container->get('templating');
 
         $idClient = $job->getClient()->getId();
+        $client   = $job->getClient();
         $idJob    = $job->getId();
         $url      = $job->getUrl();
         $retains  = $job->getPolicy()->getRetains();
@@ -149,9 +150,9 @@ abstract class BackupRunningCommand extends LoggingCommand
                                          'syncFirst'           => $syncFirst,
                                          'url'                 => $url,
                                          'useLocalPermissions' => $job->getUseLocalPermissions(),
-                                         'sshArgs'             => $job->getSshArgs(),
-                                         'rsyncShortArgs'      => $job->getRsyncShortArgs(),
-                                         'rsyncLongArgs'       => $job->getRsyncLongArgs()));
+                                         'sshArgs'             => $client->getSshArgs(),
+                                         'rsyncShortArgs'      => $client->getRsyncShortArgs(),
+                                         'rsyncLongArgs'       => $client->getRsyncLongArgs()));
         $confFileName = sprintf("%s/rsnapshot.%s_%s.cfg", $tmpDir, $idClient, $idJob);
         $fd = fopen($confFileName, 'w');
         if (false === $fd) {
