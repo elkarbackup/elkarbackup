@@ -80,7 +80,11 @@ class JobType extends AbstractType
                                                                 'class'    => 'BinovoElkarBackupBundle:Script',
                                                                 'property' => 'name'))
                 ->add('isActive'            , 'checkbox', array('label'    => $t->trans('Is active', array(), 'BinovoElkarBackup'),
-                                                                'required' => false));
+                                                                'required' => false))
+                ->add('token'               , 'text'    , array('label' => $t->trans('Token', array(), 'BinovoElkarBackup'),
+                                                                'read_only' => true,
+                                                                'required'  => false,
+                                                                'attr'  => array('class'    => 'form-control')));
     }
 
     public function configureOptions(OptionsResolver $resolver)
