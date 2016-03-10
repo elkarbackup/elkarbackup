@@ -142,6 +142,12 @@ class Job
     protected $status = null;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     * Security token for remote management
+     */
+    protected $token = null;
+
+    /**
      * Returns the full path of the snapshot directory
      */
     public function getSnapshotRoot()
@@ -696,5 +702,29 @@ class Job
         } else {
           return false;
         }
+    }
+
+    /**
+     * Set token
+     *
+     * @param string $token
+     *
+     * @return Job
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * Get token
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
     }
 }
