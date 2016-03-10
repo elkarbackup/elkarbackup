@@ -649,24 +649,6 @@ class Job
     }
 
     /**
-     * Get sshArgs
-     *
-     * @return string
-     */
-    public function getSshArgs()
-    {
-	// Do not allow ssh_args in the URL
-	/*
-        $clientUrl = $this->client->getUrl();
-        if (strpos($clientUrl, 'ssh_args') !== false) {
-          $args = explode("ssh_args=", $clientUrl)[1];
-          return $args;
-        }
-	*/
-	return $this->client->getSshArgs();
-    }
-
-    /**
      * Set status
      *
      * @param string $status
@@ -727,4 +709,5 @@ class Job
     {
         return $this->token;
     }
+
 }
