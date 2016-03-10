@@ -484,21 +484,26 @@ class DefaultController extends Controller
             throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
         }
 
-        if ($job->isRunning()){
+        if ($job->getStatus() == 'RUNNING' or $job->getStatus() == 'QUEUED'){
             $em = $this->getDoctrine()->getManager();
             $msg = new Message('DefaultController', 'TickCommand',
                                json_encode(array('command' => 'elkarbackup:stop_job',
                                                  'client'  => $idClient,
                                                  'job'     => $idJob)));
 
+            if ($job->getStatus() == "RUNNING"){
+                // Job is running, next TickCommand will kill the process
+                $newstatus = "ABORTING";
+            } else {
+                // Job is queued, next TickCommand will ignore it
+                $newstatus = "ABORTED";
+            }
             $context = array('link'   => $this->generateJobRoute($idJob, $idClient),
                              'source' => Globals::STATUS_REPORT);
-            $job->setStatus('ABORTING');
-            $this->info('ABORTING', array(), $context);
+            $job->setStatus($newstatus);
+            $this->info($newstatus, array(), $context);
             $em->persist($msg);
             $em->flush();
-            //$response = new Response($t->trans('Job aborted successfully', array(), 'BinovoElkarBackup'));
-            //$response->headers->set('Content-Type', 'text/plain');
             $response = new JsonResponse(array('error'  =>  false,
                                                'msg'    => $t->trans('Job stop requested: aborting job', array(), 'BinovoElkarBackup'),
                                                'action' => 'callbackJobAborting',
@@ -506,8 +511,6 @@ class DefaultController extends Controller
             return $response;
 
         } else {
-            //$response = new Response($t->trans('Job not running', array(), 'BinovoElkarBackup'));
-            //$response->headers->set('Content-Type', 'text/plain');
             $response = new JsonResponse(array('error'  => true,
                                                'msg'    => $t->trans('Cannot abort job: not running', array(), 'BinovoElkarBackup')));
             return $response;
