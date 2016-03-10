@@ -72,6 +72,12 @@ class ClientType extends AbstractType
                 ->add('sshArgs'	      , 'text'      , array('label'    => $t->trans('SSH args', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class'     => 'form-control advanced-form-item'),
                                                             'required' => false))
+                ->add('rsyncShortArgs', 'text'      , array('label'    => $t->trans('Rsync short args', array(), 'BinovoElkarBackup'),
+                                                            'attr'     => array('class'     => 'form-control advanced-form-item'),
+                                                            'required' => false))
+                ->add('rsyncLongArgs'	, 'text'      , array('label'    => $t->trans('Rsync long args', array(), 'BinovoElkarBackup'),
+                                                            'attr'     => array('class'     => 'form-control advanced-form-item'),
+                                                            'required' => false))
                 ->add('jobs'          , 'collection', array('type'         => new JobShortType(),
                                                             'allow_delete' => true,
                                                             'label'        => $t->trans('Jobs', array(), 'BinovoElkarBackup')));

@@ -135,10 +135,15 @@ lockfile	{{tmp}}/rsnapshot.{{idClient}}_{{idJob}}.pid
 
 # Default rsync args. All rsync commands have at least these options set.
 #
-#rsync_short_args	-a
+#rsync_short_args -a
+{% if rsyncShortArgs %}
+rsync_short_args -a {{rsyncShortArgs}}
+{% endif %}
 #rsync_long_args	--delete --numeric-ids --relative --delete-excluded
 {% if useLocalPermissions %}
-rsync_long_args	--delete --numeric-ids --relative --delete-excluded --chmod=Fug=rwX,Dug=rwx,Fo=r,Do=rx
+rsync_long_args	--delete --numeric-ids --relative --delete-excluded --chmod=Fug=rwX,Dug=rwx,Fo=r,Do=rx {{rsyncLongArgs}}
+{% else %}
+rsync_long_args	--delete --numeric-ids --relative --delete-excluded {{rsyncLongArgs}}
 {% endif %}
 
 # ssh has no args passed by default, but you can specify some here.

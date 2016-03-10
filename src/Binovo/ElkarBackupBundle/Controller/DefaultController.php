@@ -535,6 +535,8 @@ class DefaultController extends Controller
         }
         $tmpDir = $this->container->getParameter('tmp_dir');
         $sshArgs = $job->getSshArgs();
+        $rsyncShortArgs = $job->getRsyncShortArgs();
+        $rsyncLongArgs = $job->getRsyncLongArgs();
         $url = $job->getUrl();
         $idJob = $job->getId();
         $policy = $job->getPolicy();
@@ -595,7 +597,9 @@ class DefaultController extends Controller
                                    'syncFirst'           => $syncFirst,
                                    'url'                 => $url,
                                    'useLocalPermissions' => $job->getUseLocalPermissions(),
-                                   'sshArgs'             => $sshArgs),
+                                   'sshArgs'             => $sshArgs,
+                                   'rsyncShortArgs'      => $rsyncShortArgs,
+                                   'rsyncLongArgs'       => $rsyncLongArgs),
                              $response);
     }
 
