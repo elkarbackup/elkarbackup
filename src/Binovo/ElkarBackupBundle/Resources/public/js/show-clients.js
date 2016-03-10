@@ -319,11 +319,8 @@ function abortJob(path, id, msg, confirmed){
       $("#abortModal").modal('hide');
       // Abort job
       r = postRequest(path);
-      // Update job status
-      //$('tr#job-'+id).addClass('aborting');
-      //$('tr#job-'+id).find('td.status').html('<span class="label label-success">ABORTING</span>');
-      // Show feedback message
-      //okMsg('Aborting job. Take a look to the log');
+      // Callback will be executed
+      // if abortJob is done
     }
   }
 }
@@ -405,6 +402,7 @@ $(document).ready(function(){
         var jobid = $(this).attr("eb-jobid");
         var message = $(this).attr("eb-message");
         var confirmed = $(this).attr("eb-action-confirmed");
+        var disabled = $(this).parent().hasClass('disabled');
 
         switch(action){
           case 'sortJobs':
@@ -440,15 +438,19 @@ $(document).ready(function(){
             r = deleteJob(path, jobid, message, confirmed);
             break;
           case 'runJob':
-            if (runJob(path, jobid)){
-              // msg should be received from controller (translated)
-              okMsg('Job queued successfully. It will start running in less than a minute!');
-            } else {
-              errorMsg('Error running job');
+            if (!disabled){
+              if (runJob(path, jobid)){
+                // msg should be received from controller (translated)
+                okMsg('Job queued successfully. It will start running in less than a minute!');
+              } else {
+                errorMsg('Error running job');
+              }
             }
             break;
           case 'abortJob':
-            r = abortJob(path, jobid, message, confirmed);
+            if (!disabled) {
+              r = abortJob(path, jobid, message, confirmed);
+            }
             break;
           case 'showJobBackup':
             r = showJobBackup(path,jobid);
