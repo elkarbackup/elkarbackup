@@ -38,6 +38,7 @@ class TickCommand extends BackupRunningCommand
             //last but not least, backup @tahoe
             $this->getContainer()->get('Tahoe')->runAllQueuedJobs();
         } catch (Exception $e) {
+            echo "-----ERROR: " . $e;
             $this->err('Exception running queued commands: %exceptionmsg%', array('%exceptionmsg%' => $e->getMessage()));
             $this->getContainer()->get('doctrine')->getManager()->flush();
             $allOk = false;
@@ -123,18 +124,37 @@ EOF;
             $manager->flush();
             $commandAndParams = json_decode($commandText, true);
             if (is_array($commandAndParams) && isset($commandAndParams['command'])) {
-                try {
-                    $command = $this->getApplication()->find($commandAndParams['command']);
-                    $input = new ArrayInput($commandAndParams);
-                    $status = $command->run($input, $output);
-                    if (0 == $status) {
-                        $this->info('Command success: ' . $commandText);
-                    } else {
-                        $this->err('Command failure: ' . $commandText);
+                $aborted = false;
+                if ($commandAndParams['command'] == 'elkarbackup:run_job') {
+                    // Check if run_job command has been aborted by user
+                    $idJob = $commandAndParams['job'];
+                    $container = $this->getContainer();
+                    $repository2 = $container->get('doctrine')->getRepository('BinovoElkarBackupBundle:Job');
+                    $job = $repository2->find($idJob);
+                    if (null == $job) {
+                        throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
                     }
-                } catch (Exception $e) {
-                    $this->err('Exception %exceptionmsg% running command %command%: ', array('%exceptionmsg%' => $e->getMessage(), '%command%' => $commandText));
+                    if ($job->getStatus() == 'ABORTED'){
+                        $aborted = true;
+                        $this->info('Command aborted by user: ' . $commandText);
+                    }
                 }
+
+                if (!$aborted) {
+                    try {
+                        $command = $this->getApplication()->find($commandAndParams['command']);
+                        $input = new ArrayInput($commandAndParams);
+                        $status = $command->run($input, $output);
+                        if (0 == $status) {
+                            $this->info('Command success: ' . $commandText);
+                        } else {
+                            $this->err('Command failure: ' . $commandText);
+                        }
+                    } catch (Exception $e) {
+                        $this->err('Exception %exceptionmsg% running command %command%: ', array('%exceptionmsg%' => $e->getMessage(), '%command%' => $commandText));
+                    }
+                }
+
             } else {
                 $this->err('Malformed command: ' . $commandText);
             }
