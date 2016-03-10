@@ -396,6 +396,7 @@ abstract class BackupRunningCommand extends LoggingCommand
             }
             $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
             $this->info('QUEUED', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
+            $job->setStatus('QUEUED');
         }
         $manager->flush();
         $storageLoadLevel = 0;
@@ -411,6 +412,7 @@ abstract class BackupRunningCommand extends LoggingCommand
             case self::RUN_JOB:
                 $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
                 $this->info('RUNNING', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
+                $job->setStatus('RUNNING');
                 $manager->flush();
                 if ($job->getClient() == $lastClient) {
                     $retains = $policyIdToRetains[$job->getPolicy()->getId()];
@@ -427,15 +429,18 @@ abstract class BackupRunningCommand extends LoggingCommand
                         // ERROR
                         $this->err('Client "%clientid%", Job "%jobid%" error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                         $this->err('FAIL', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
+                        $job->setStatus('FAIL');
                     } elseif (True === $jobstatus){
                         // OK
                         $this->info('Client "%clientid%", Job "%jobid%" ok.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                         $this->info('OK', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
+                        $job->setStatus('OK');
                     } else {
                         // WARNING
                         if (2 == $jobstatus){
                           $this->warn('Client "%clientid%", Job "%jobid%" ok with warnings.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                           $this->warn('WARNING', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
+                          $job->setStatus('WARNING');
                         }
                     }
                     $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
@@ -528,6 +533,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                     $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
                     $this->err('Client "%clientid%", Job "%jobid%" error. Client level error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     $this->err('FAIL', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
+                    $job->setStatus('FAIL');
                     $manager->flush();
                     $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
                     ++$i;

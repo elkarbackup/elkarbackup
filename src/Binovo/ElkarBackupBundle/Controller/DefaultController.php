@@ -177,6 +177,11 @@ class DefaultController extends Controller
      */
     public function deleteClientAction(Request $request, $id)
     {
+       $access = $this->checkPermissions($id);
+                if ($access == False) {
+	                return $this->redirect($this->generateUrl('showClients'));
+        }
+
         $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Client');
@@ -368,6 +373,11 @@ class DefaultController extends Controller
      */
     public function deleteJobAction(Request $request, $idClient, $idJob)
     {
+       $access = $this->checkPermissions($idClient);
+                if ($access == False) {
+	                return $this->redirect($this->generateUrl('showClients'));
+                }
+
         $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Job');
@@ -434,6 +444,12 @@ class DefaultController extends Controller
     public function runJobAction(Request $request, $idClient, $idJob)
     {
         $t = $this->get('translator');
+        $job = $this->getDoctrine()
+            ->getRepository('BinovoElkarBackupBundle:Job')->find($idJob);
+        if (null == $job) {
+            throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
+        }
+
         $em = $this->getDoctrine()->getManager();
         $msg = new Message('DefaultController', 'TickCommand',
                            json_encode(array('command' => 'elkarbackup:run_job',
@@ -442,7 +458,9 @@ class DefaultController extends Controller
 
         $context = array('link'   => $this->generateJobRoute($idJob, $idClient),
                          'source' => Globals::STATUS_REPORT);
-        $this->info('QUEUED', array(), $context);
+        $status = 'QUEUED';
+        $job->setStatus($status);
+        $this->info($status, array(), $context);
         $em->persist($msg);
         $em->flush();
         $response = new Response($t->trans('Job execution requested successfully', array(), 'BinovoElkarBackup'));
@@ -459,19 +477,44 @@ class DefaultController extends Controller
     public function runAbortAction(Request $request, $idClient, $idJob)
     {
         $t = $this->get('translator');
-        $em = $this->getDoctrine()->getManager();
-        $msg = new Message('DefaultController', 'TickCommand',
-                           json_encode(array('command' => 'elkarbackup:stop_job',
-                                             'client'  => $idClient,
-                                             'job'     => $idJob)));
 
-        $context = array('link'   => $this->generateJobRoute($idJob, $idClient),
-                         'source' => Globals::STATUS_REPORT);
-        $this->info('ABORTING', array(), $context);
-        $em->persist($msg);
-        $em->flush();
-        $response = new Response($t->trans('Job aborted successfully', array(), 'BinovoElkarBackup'));
-        $response->headers->set('Content-Type', 'text/plain');
+        $job = $this->getDoctrine()
+            ->getRepository('BinovoElkarBackupBundle:Job')->find($idJob);
+        if (null == $job) {
+            throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
+        }
+
+        if ($job->getStatus() == 'RUNNING' or $job->getStatus() == 'QUEUED'){
+            $em = $this->getDoctrine()->getManager();
+            $msg = new Message('DefaultController', 'TickCommand',
+                               json_encode(array('command' => 'elkarbackup:stop_job',
+                                                 'client'  => $idClient,
+                                                 'job'     => $idJob)));
+
+            if ($job->getStatus() == "RUNNING"){
+                // Job is running, next TickCommand will kill the process
+                $newstatus = "ABORTING";
+            } else {
+                // Job is queued, next TickCommand will ignore it
+                $newstatus = "ABORTED";
+            }
+            $context = array('link'   => $this->generateJobRoute($idJob, $idClient),
+                             'source' => Globals::STATUS_REPORT);
+            $job->setStatus($newstatus);
+            $this->info($newstatus, array(), $context);
+            $em->persist($msg);
+            $em->flush();
+            $response = new JsonResponse(array('error'  =>  false,
+                                               'msg'    => $t->trans('Job stop requested: aborting job', array(), 'BinovoElkarBackup'),
+                                               'action' => 'callbackJobAborting',
+                                               'data'   =>  array($idJob)));
+            return $response;
+
+        } else {
+            $response = new JsonResponse(array('error'  => true,
+                                               'msg'    => $t->trans('Cannot abort job: not running', array(), 'BinovoElkarBackup')));
+            return $response;
+        }
 
         return $response;
     }
@@ -754,6 +797,11 @@ class DefaultController extends Controller
      */
     public function editPolicyAction(Request $request, $id)
     {
+        if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+	       //only allow to admins to do this task
+         return $this->redirect($this->generateUrl('showClients'));
+            }
+
         $t = $this->get('translator');
         if ('new' === $id) {
             $policy = new Policy();
@@ -778,6 +826,11 @@ class DefaultController extends Controller
      */
     public function deletePolicyAction(Request $request, $id)
     {
+       if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+          //only allow to admins to do this task
+            return $this->redirect($this->generateUrl('showClients'));
+        }
+
         $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Policy');
@@ -836,14 +889,21 @@ class DefaultController extends Controller
      */
     public function sortJobsAction(Request $request)
     {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $actualuserid = $user->getId();
+
         $t = $this->get('translator');
         $repository = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Job');
-        $jobs = $repository->createQueryBuilder('j')
-                            ->innerJoin('j.client', 'c')
-                            ->where('j.isActive <> 0 AND c.isActive <> 0')
-                            ->orderBy('j.priority', 'ASC')
-                            ->getQuery()->getResult();
+
+        $query = $repository->createQueryBuilder('j')->innerJoin('j.client','c')->addOrderBy('j.priority', 'ASC');
+        if($actualuserid <> 1 ){
+                $query->where('j.isActive <> 0 AND c.isActive <> 0 AND c.owner = ?1'); //adding users and roles
+                $query->setParameter(1, $actualuserid);
+            }
+        $jobs = $query->getQuery()->getResult();;
+
+
         $formBuilder = $this->createFormBuilder(array('jobs' => $jobs));
         $formBuilder->add('jobs', 'collection',
                           array('type' => new JobForSortType()));
@@ -1436,6 +1496,11 @@ EOF;
      */
     public function deleteScriptAction(Request $request, $id)
     {
+        if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+	         //only allow to admins to do this task
+        return $this->redirect($this->generateUrl('showClients'));
+          }
+
         $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Script');
@@ -1489,6 +1554,11 @@ EOF;
      */
     public function editScriptAction(Request $request, $id)
     {
+        if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+	         //only allow to admins to do this task
+        return $this->redirect($this->generateUrl('showClients'));
+            }
+
         $t = $this->get('translator');
         if ('new' === $id) {
             $script = new Script();

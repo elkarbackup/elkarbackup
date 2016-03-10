@@ -100,6 +100,17 @@ function addJobRow(job, client){
   }
 }
 
+function changeClientStatus(clientid, status){
+  id = clientid;
+  $('tr#client-'+id).addClass(status);
+  $('tr#client-'+id).find('td.status').html('<span class="label label-success">' + status + '</span>');
+}
+
+function changeJobStatus(jobid, status){
+  id = jobid;
+  $('tr#job-'+id).addClass(status);
+  $('tr#job-'+id).find('td.status').html('<span class="label label-success">' + status + '</span>');
+}
 
 /*
  * When cloneClient returns True from controller
@@ -114,6 +125,14 @@ function callbackClonedClient(data){
   } else {
     console.log('Error adding client row');
   }
+}
+
+/*
+ * When abortJob returns True from controller
+ * callbackJobAborted will be executed
+ */
+function callbackJobAborting(jobid){
+  changeJobStatus(jobid, 'ABORTING');
 }
 
 function deleteJob(path, id, msg, confirmed){
@@ -301,10 +320,10 @@ function abortJob(path, id, msg, confirmed){
       // Abort job
       r = postRequest(path);
       // Update job status
-      $('tr#job-'+id).addClass('aborting');
-      $('tr#job-'+id).find('td.status').html('<span class="label label-success">ABORTING</span>');
+      //$('tr#job-'+id).addClass('aborting');
+      //$('tr#job-'+id).find('td.status').html('<span class="label label-success">ABORTING</span>');
       // Show feedback message
-      okMsg('Aborting job. Take a look to the log');
+      //okMsg('Aborting job. Take a look to the log');
     }
   }
 }
