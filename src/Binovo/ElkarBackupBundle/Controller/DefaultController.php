@@ -446,19 +446,12 @@ class DefaultController extends Controller
         $t = $this->get('translator');
         $user = $this->get('security.context')->getToken();
         $trustable = false;
-
-/*
-        if ($request->getMethod() == 'POST') {
-          if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_ANONYMOUSLY')){
-            echo "Job $idJob - Token :";
-            echo $this->get('request')->request->get('token');
-          }
-        }
-        die();
-*/
-
-        // Anonymous access
-        if($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_ANONYMOUSLY')) {
+        
+        if($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')){
+          // Authenticated user
+          $trustable = true;
+        } else {
+          // Anonymous access
           $token = $this->get('request')->request->get('token');
           if ('' == $token) {
             $response = new JsonResponse(array('status'  => 'true',
@@ -481,9 +474,6 @@ class DefaultController extends Controller
                   return $response;
                 }
           }
-        } else {
-          // Authenticated user
-          $trustable = true;
         }
 
         if($trustable){
