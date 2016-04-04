@@ -137,7 +137,7 @@ lockfile	{{tmp}}/rsnapshot.{{idClient}}_{{idJob}}.pid
 #
 #rsync_short_args -a
 {% if rsyncShortArgs %}
-rsync_short_args  -a  {{rsyncShortArgs}}
+rsync_short_args	-a	{{rsyncShortArgs}}
 {% endif %}
 #rsync_long_args	--delete --numeric-ids --relative --delete-excluded
 {% if useLocalPermissions %}
