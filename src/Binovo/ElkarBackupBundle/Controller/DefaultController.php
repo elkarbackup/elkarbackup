@@ -444,6 +444,32 @@ class DefaultController extends Controller
     public function runJobAction(Request $request, $idClient, $idJob)
     {
         $t = $this->get('translator');
+        $user = $this->get('security.context')->getToken();
+
+// if(null == $user){
+        if(!$this->container->get('security.context')->isGranted('IS_AUTHENTICATED_ANONYMOUSLY')) {
+          $token = $request->request->get('token');
+              if ('' == $token) {
+                $response = new JsonResponse(array('status'  => 'true',
+                                                   'msg'    => $t->trans('You need to login or send a token', array(), 'BinovoElkarBackup')));
+                return $response;
+              } else {
+                $repository = $this->getDoctrine()
+                  ->getRepository('BinovoElkarBackupBundle:Job');
+                  $trustable = $repository->findOneBy(
+                    array('id' => $idJob, 'client_id' => $idClient, 'token' => $token));
+                    if($trustable == null){
+                      $response = new JsonResponse(array('status'  => 'true',
+                                                         'msg'    => $t->trans('You need to login or send properly values', array(), 'BinovoElkarBackup')));
+                      return $response;
+                    } else {
+                      $trustable = 'true';
+                    }
+              }
+      } else {$trustable = 'true';}
+
+        if($trustable == 'true'){
+
         $job = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Job')->find($idJob);
         if (null == $job) {
@@ -467,6 +493,8 @@ class DefaultController extends Controller
         $response->headers->set('Content-Type', 'text/plain');
 
         return $response;
+      }
+
     }
 
     /**
@@ -1854,6 +1882,25 @@ protected function checkPermissions($idClient, $idJob = null){
                                            'action' => 'callbackClonedClient',
                                            'data'   =>  array($json)));
         return $response;
+    }
+
+    /**
+     * @Route("/job/generate/token/", name="generateToken")
+     * @Method("POST")
+     * @Template()
+     */
+
+    public function generateTokenAction(Request $request)
+    {
+      $t = $this->get('translator');
+      $randtoken = md5(uniqid(rand(), true));
+
+
+      $response = new JsonResponse(array('token'  => $randtoken,
+                                         'msg'    => $t->trans('New Token have been generated', array(), 'BinovoElkarBackup')));
+      return $response;
+
+
     }
 
     /**
