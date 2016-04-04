@@ -19,7 +19,7 @@ class Version20160310174104 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE Client ADD rsyncShortArgs VARCHAR(255) DEFAULT NULL, ADD rsyncLongArgs VARCHAR(255) DEFAULT NULL');
-        $this->addSql('ALTER TABLE Job ADD token VARCHAR(255) NOT NULL');
+        $this->addSql('ALTER TABLE Job ADD token VARCHAR(255) DEFAULT NULL');
     }
 
     /**
