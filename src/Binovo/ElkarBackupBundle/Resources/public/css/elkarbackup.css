@@ -787,3 +787,13 @@ display:none;
  .panel-collapsable-heading a.collapsed:after {
      content:"\e080";
  }
+
+ /* boton generador token alineación */
+
+#generateToken, #removeToken {
+    margin-top: -15px !important;
+}
+
+.glyphicon:before {
+    margin-right: 5px;
+}
