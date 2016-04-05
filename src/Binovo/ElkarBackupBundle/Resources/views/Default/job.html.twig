@@ -66,6 +66,27 @@
                 {{ form_row(form.minNotificationLevel) }}
                 {{ form_row(form.preScripts) }}
                 {{ form_row(form.postScripts) }}
+                {{ form_row(form.policy) }}
+                {{ form_row(form.useLocalPermissions) }}
+                {{ form_row(form.exclude) }}
+                {{ form_row(form.include) }}
+                <div class="panel panel-default">
+                  <div class="panel-heading panel-collapsable-heading">
+                    <a class="collapsed" href="#viewadvanced" data-toggle="collapse" data-target="#viewadvanced">Advanced</a></div>
+                  <div id="viewadvanced" class="collapse panel-body">
+                    <div class="input-group">
+                    {{ form_row(form.token) }}
+                    <span class="input-group-btn input-append">
+
+                          <a class="btn btn-default" id="generateToken" href="{{ path('generateToken', {idJob: form.vars.value.id}) }}" eb-action="generateToken" eb-path="{{ path('generateToken') }}" eb-jobid="{{form.vars.value.id}}"><span class="glyphicon glyphicon-repeat"></span> {% trans %}Generate{% endtrans %}</a>
+                    </span>
+                    <span class="input-group-btn input-append">
+
+                          <a class="btn btn-default" id="removeToken" href="#" ><span class="glyphicon glyphicon-trash"></span></a>
+                    </span>
+                    </div>
+                  </div>
+                </div>
                 {{ form_rest(form) }}
             </div>
             <div class="control-group">

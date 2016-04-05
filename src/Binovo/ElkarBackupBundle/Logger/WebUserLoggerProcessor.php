@@ -39,16 +39,19 @@ class WebUserLoggerProcessor extends WebProcessor implements ContainerAwareInter
         if ($token) {
             $user = $token->getUser();
         }
+
         if ($user) {
-            $record['extra'] = array_merge(
-                $record['extra'],
-                array(
-                    'user'       => $user,
-                    'user_email' => $user->getEmail(),
-                    'user_id'    => $user->getId(),
-                    'user_name'  => $user->getUsername(),
-                    )
-                );
+            if (!is_string($user) && $user != "anon."){
+                $record['extra'] = array_merge(
+                    $record['extra'],
+                    array(
+                        'user'       => $user,
+                        'user_email' => $user->getEmail(),
+                        'user_id'    => $user->getId(),
+                        'user_name'  => $user->getUsername(),
+                        )
+                    );
+            }
         }
 
         return $record;

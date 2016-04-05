@@ -113,6 +113,7 @@ abstract class BackupRunningCommand extends LoggingCommand
         $engine     = $container->get('templating');
 
         $idClient = $job->getClient()->getId();
+        $client   = $job->getClient();
         $idJob    = $job->getId();
         $url      = $job->getUrl();
         $retains  = $job->getPolicy()->getRetains();
@@ -149,7 +150,9 @@ abstract class BackupRunningCommand extends LoggingCommand
                                          'syncFirst'           => $syncFirst,
                                          'url'                 => $url,
                                          'useLocalPermissions' => $job->getUseLocalPermissions(),
-                                         'sshArgs'             => $job->getSshArgs()));
+                                         'sshArgs'             => $client->getSshArgs(),
+                                         'rsyncShortArgs'      => $client->getRsyncShortArgs(),
+                                         'rsyncLongArgs'       => $client->getRsyncLongArgs()));
         $confFileName = sprintf("%s/rsnapshot.%s_%s.cfg", $tmpDir, $idClient, $idJob);
         $fd = fopen($confFileName, 'w');
         if (false === $fd) {
@@ -193,7 +196,7 @@ abstract class BackupRunningCommand extends LoggingCommand
             // run rsnapshot. sync first if needed
             $commands = array();
             if ($job->getPolicy()->mustSync($retain)) {
-                $commands[] = sprintf('"%s" -c "%s" sync 2>&1', $rsnapshot, $confFileName);
+                $commands[] = sprintf('"%s" -V -c "%s" sync 2>&1', $rsnapshot, $confFileName);
             }
             $commands[] = sprintf('"%s" -c "%s" %s 2>&1', $rsnapshot, $confFileName, $retain);
             foreach ($commands as $command) {
@@ -209,6 +212,21 @@ abstract class BackupRunningCommand extends LoggingCommand
                     $ok = false;
                     break;
                 } else {
+                    if ($commandOutput){
+                      $commandOutputString = implode("\n", $commandOutput);
+                      // Parse rsnapshot/rsync output stats
+                      preg_match('/^Number of files:(.*)$/m', $commandOutputString, $files_total);
+                      preg_match('/^Number of created files:(.*)$/m', $commandOutputString, $files_created);
+                      preg_match('/^Number of deleted files:(.*)$/m', $commandOutputString, $files_deleted);
+                      preg_match('/^Total transferred file size:(.*)$/m', $commandOutputString, $total_transferred);
+                      if (isset($files_total[1], $files_created[1], $files_deleted[1], $total_transferred[1])){
+                        $commandOutput = [];
+                        $commandOutput[] = "Number of files: ".$files_total[1];
+                        $commandOutput[] = "Number of created files: ".$files_created[1];
+                        $commandOutput[] = "Number of deleted files: ".$files_deleted[1];
+                        $commandOutput[] = "Total transferred file size: ".$total_transferred[1];
+                      }
+                    }
                     $this->info('Command %command% succeeded with output: %output%',
                                 array('%command%' => $command,
                                       '%output%'  => implode("\n", $commandOutput)),
@@ -216,13 +234,11 @@ abstract class BackupRunningCommand extends LoggingCommand
                 }
             }
             $job_endtime = time();
-            // get disk usage
-            $du_before = $job->getDiskUsage();
-            $this->info('Client "%clientid%", Job "%jobid%" du begin.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
-            $du = (int)shell_exec(sprintf("du -ks '%s' | sed 's/\t.*//'", $job->getSnapshotRoot()));
-            $job->setDiskUsage($du);
-            $this->info('Client "%clientid%", Job "%jobid%" du end.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
-            $job_run_size = $du - $du_before;
+            if (isset($total_transferred)){
+              $job_run_size = $total_transferred;
+            } else {
+              $job_run_size = 0;
+            }
 
             // post script execution if needed
             if ($mustRunScripts) {
@@ -445,12 +461,11 @@ abstract class BackupRunningCommand extends LoggingCommand
                     }
                     $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
 
-                    /* setDiskUsage() moved before job post-script execution (209) */
-                    //
-                    //$this->info('Client "%clientid%", Job "%jobid%" du begin.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
-                    //$du = (int)shell_exec(sprintf("du -ks '%s' | sed 's/\t.*//'", $job->getSnapshotRoot()));
-                    //$job->setDiskUsage($du);
-                    //$this->info('Client "%clientid%", Job "%jobid%" du end.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
+                    /* setDiskUsage() moved here again */
+                    $this->info('Client "%clientid%", Job "%jobid%" du begin.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
+                    $du = (int)shell_exec(sprintf("du -ks '%s' | sed 's/\t.*//'", $job->getSnapshotRoot()));
+                    $job->setDiskUsage($du);
+                    $this->info('Client "%clientid%", Job "%jobid%" du end.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
 
                     ++$i;
                 } else {

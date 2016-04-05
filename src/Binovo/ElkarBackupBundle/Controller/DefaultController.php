@@ -444,29 +444,66 @@ class DefaultController extends Controller
     public function runJobAction(Request $request, $idClient, $idJob)
     {
         $t = $this->get('translator');
-        $job = $this->getDoctrine()
-            ->getRepository('BinovoElkarBackupBundle:Job')->find($idJob);
-        if (null == $job) {
-            throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
+        $user = $this->get('security.context')->getToken();
+        $trustable = false;
+        
+        if($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')){
+          // Authenticated user
+          $trustable = true;
+        } else {
+          // Anonymous access
+          $token = $this->get('request')->request->get('token');
+          if ('' == $token) {
+            $response = new JsonResponse(array('status'  => 'true',
+                                               'msg'    => $t->trans('You need to login or send a token', array(), 'BinovoElkarBackup')));
+            return $response;
+          } else {
+            $repository = $this->getDoctrine()
+              ->getRepository('BinovoElkarBackupBundle:Job');
+              $job = $repository->findOneById($idJob);
+              if ($token == $job->getToken()){
+                  // Valid token
+                  $trustable = true;
+              } else {
+                  // Invalid token
+                  $trustable = false;
+              }
+                if (!$trustable){
+                  $response = new JsonResponse(array('status'  => 'true',
+                                                     'msg'    => $t->trans('You need to login or send properly values', array(), 'BinovoElkarBackup')));
+                  return $response;
+                }
+          }
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $msg = new Message('DefaultController', 'TickCommand',
-                           json_encode(array('command' => 'elkarbackup:run_job',
-                                             'client'  => $idClient,
-                                             'job'     => $idJob)));
+        if($trustable){
+          if (!$job){
+            $job = $this->getDoctrine()
+                ->getRepository('BinovoElkarBackupBundle:Job')->find($idJob);
+            if (null == $job) {
+                throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
+            }
+          }
 
-        $context = array('link'   => $this->generateJobRoute($idJob, $idClient),
-                         'source' => Globals::STATUS_REPORT);
-        $status = 'QUEUED';
-        $job->setStatus($status);
-        $this->info($status, array(), $context);
-        $em->persist($msg);
-        $em->flush();
-        $response = new Response($t->trans('Job execution requested successfully', array(), 'BinovoElkarBackup'));
-        $response->headers->set('Content-Type', 'text/plain');
+          $em = $this->getDoctrine()->getManager();
+          $msg = new Message('DefaultController', 'TickCommand',
+                             json_encode(array('command' => 'elkarbackup:run_job',
+                                               'client'  => $idClient,
+                                               'job'     => $idJob)));
 
-        return $response;
+          $context = array('link'   => $this->generateJobRoute($idJob, $idClient),
+                           'source' => Globals::STATUS_REPORT);
+          $status = 'QUEUED';
+          $job->setStatus($status);
+          $this->info($status, array(), $context);
+          $em->persist($msg);
+          $em->flush();
+          $response = new Response($t->trans('Job execution requested successfully', array(), 'BinovoElkarBackup'));
+          $response->headers->set('Content-Type', 'text/plain');
+
+          return $response;
+        }
+
     }
 
     /**
@@ -533,8 +570,11 @@ class DefaultController extends Controller
         if (null == $job || $job->getClient()->getId() != $idClient) {
             throw $this->createNotFoundException($t->trans('Unable to find Job entity: ', array(), 'BinovoElkarBackup') . $idClient . " " . $idJob);
         }
+        $client = $job->getClient();
         $tmpDir = $this->container->getParameter('tmp_dir');
-        $sshArgs = $job->getSshArgs();
+        $sshArgs = $client->getSshArgs();
+        $rsyncShortArgs = $client->getRsyncShortArgs();
+        $rsyncLongArgs = $client->getRsyncLongArgs();
         $url = $job->getUrl();
         $idJob = $job->getId();
         $policy = $job->getPolicy();
@@ -595,7 +635,9 @@ class DefaultController extends Controller
                                    'syncFirst'           => $syncFirst,
                                    'url'                 => $url,
                                    'useLocalPermissions' => $job->getUseLocalPermissions(),
-                                   'sshArgs'             => $sshArgs),
+                                   'sshArgs'             => $sshArgs,
+                                   'rsyncShortArgs'      => $rsyncShortArgs,
+                                   'rsyncLongArgs'       => $rsyncLongArgs),
                              $response);
     }
 
@@ -1849,6 +1891,25 @@ protected function checkPermissions($idClient, $idJob = null){
                                            'action' => 'callbackClonedClient',
                                            'data'   =>  array($json)));
         return $response;
+    }
+
+    /**
+     * @Route("/job/generate/token/", name="generateToken")
+     * @Method("POST")
+     * @Template()
+     */
+
+    public function generateTokenAction(Request $request)
+    {
+      $t = $this->get('translator');
+      $randtoken = md5(uniqid(rand(), true));
+
+
+      $response = new JsonResponse(array('token'  => $randtoken,
+                                         'msg'    => $t->trans('New Token have been generated', array(), 'BinovoElkarBackup')));
+      return $response;
+
+
     }
 
     /**

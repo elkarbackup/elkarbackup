@@ -27,8 +27,13 @@ security:
             pattern: ^/config/publickey/get$
             security: false
 
+        #runjob:
+        #    pattern: ^/client/[0-9]+/job/[0-9]+/run
+        #    security: false
+
         secured_area:
             pattern:    ^/
+            anonymous:  true
             form_login:
                 check_path: /login_check
                 login_path: /login
@@ -39,7 +44,8 @@ security:
     access_control:
         - { path: ^/login                        , roles: IS_AUTHENTICATED_ANONYMOUSLY}
         - { path: ^/config/publickey/get         , roles: IS_AUTHENTICATED_ANONYMOUSLY}
-        - { path: ^/token                        , roles: IS_AUTHENTICATED_ANONYMOUSLY}
+        - { path: ^/client/[0-9]+/job/[0-9]+/run , roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+        - { path: ^/client/[0-9]+/job/[0-9]+/run , roles: ROLE_USER}
         - { path: ^/user                         , roles: ROLE_ADMIN}
         - { path: ^/users                        , roles: ROLE_ADMIN}
         - { path: ^/config/params                , roles: ROLE_ADMIN}

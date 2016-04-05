@@ -50,4 +50,39 @@ if (runNowtrue == 'new'){
 	 	                   });
           });
 
+					$(document).ready(function(){
+						if(!$('#Job_token').val()){
+							$('#Job_token').addClass('alert-danger');
+						} else {
+							$('#Job_token').addClass('alert-success');
+						}
+
+						$('#generateToken').click(function(e){
+							e.preventDefault();
+							$('#Job_token').removeClass('alert-danger').addClass('alert-success');
+							var action = $(this).attr("eb-action");
+							var path = $(this).attr("eb-path");
+							var jobid = $(this).attr("eb-jobid");
+
+							$.ajax({
+					      type: "POST",
+					      url: path,
+					      success: function(response) {
+									$('#Job_token').val(response.token);
+								},
+								error: function() {
+
+								}
+							});
+
+						});
+						$('#removeToken').click(function(e){
+							e.preventDefault();
+							$('#Job_token').val("");
+							$('#Job_token').removeClass('alert-success').addClass('alert-danger');
+						});
+
+
+					});
+
 });

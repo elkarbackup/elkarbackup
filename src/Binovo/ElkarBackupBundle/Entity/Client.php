@@ -88,6 +88,20 @@ class Client
      */
     protected $sshArgs;
 
+    /**
+     * Rsnapshot rsync_short_args parameter
+     *
+     * @ORM\Column(type="string",length=255, nullable=true)
+     */
+    protected $rsyncShortArgs;
+
+    /**
+     * Rsnapshot rsync_long_args parameter
+     *
+     * @ORM\Column(type="string",length=255, nullable=true)
+     */
+    protected $rsyncLongArgs;
+
 
 
     /**
@@ -422,5 +436,53 @@ class Client
     public function getSshArgs()
     {
         return $this->sshArgs;
+    }
+
+    /**
+     * Set rsyncShortArgs
+     *
+     * @param string $rsyncShortArgs
+     *
+     * @return Client
+     */
+    public function setRsyncShortArgs($rsyncShortArgs = null)
+    {
+        $this->rsyncShortArgs = $rsyncShortArgs;
+
+        return $this;
+    }
+
+    /**
+     * Get rsyncShortArgs
+     *
+     * @return string
+     */
+    public function getRsyncShortArgs()
+    {
+        return $this->rsyncShortArgs;
+    }
+
+    /**
+     * Set rsyncLongArgs
+     *
+     * @param string $rsyncLongArgs
+     *
+     * @return Client
+     */
+    public function setRsyncLongArgs($rsyncLongArgs = null)
+    {
+        $this->rsyncLongArgs = $rsyncLongArgs;
+
+        return $this;
+    }
+
+    /**
+     * Get rsyncLongArgs
+     *
+     * @return string
+     */
+    public function getRsyncLongArgs()
+    {
+        return $this->rsyncLongArgs;
     }
 }
