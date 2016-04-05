@@ -1,13 +1,19 @@
-elkarbackup (1.2.0-Pre-Alpha3) UNRELEASED; urgency=medium
+elkarbackup (1.2.0-Beta1) UNRELEASED; urgency=medium
 
-  [ Xabi Ezpeleta ]
+  [ Xabi Ezpeleta / Antton Rodriguez ]
   * Maintenance: New Symfony 1.8 LTS (until Nov. 2018)
   * Feature: Tahoe storage support
   * Feature: HTTPS access enabled by default (fixes #98)
   * Feature: Users with limited access (fixes #32)
   * Feature: Client clonation feature (fixes #10)
   * Feature: Advanced client configuration and custom SSH args (fixes #87)
+  * Feature: Advanced client configuration, custom Rsync args (fixes #129)
+  * Feature: Advanced job configuration and token management (fixes #103)
+  * Feature: Added remote job execution (fixes #103)
+  * Feature: Added abort job button (fixes #28)
+  * Feature: Rsnapshot 1.4.2 support
+  * Bugfix: Job status running, du error (fixes #82)
   * Bugfix: logger shows wrong message (fixes #114)
   * Bugfix: missing html tag (fixes #113)
 
- --  <xezpeleta@gmail.com>  Thu, 17 Dec 2015 19:35:04 +0000
+ --  <>  Tue, 05 Apr 2016 16:01:10 +0000
