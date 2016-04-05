@@ -196,7 +196,7 @@ abstract class BackupRunningCommand extends LoggingCommand
             // run rsnapshot. sync first if needed
             $commands = array();
             if ($job->getPolicy()->mustSync($retain)) {
-                $commands[] = sprintf('"%s" -c "%s" sync 2>&1', $rsnapshot, $confFileName);
+                $commands[] = sprintf('"%s" -V -c "%s" sync 2>&1', $rsnapshot, $confFileName);
             }
             $commands[] = sprintf('"%s" -c "%s" %s 2>&1', $rsnapshot, $confFileName, $retain);
             foreach ($commands as $command) {
