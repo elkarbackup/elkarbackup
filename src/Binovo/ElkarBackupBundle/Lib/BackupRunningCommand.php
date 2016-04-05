@@ -234,7 +234,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                 }
             }
             $job_endtime = time();
-            if ($total_transferred){
+            if (isset($total_transferred)){
               $job_run_size = $total_transferred;
             } else {
               $job_run_size = 0;
