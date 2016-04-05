@@ -309,6 +309,14 @@ client_help: |
  If this check box is not marked, then no snapshots will be taken.
  <h4>Pre and post scripts</h4>
  Scripts to run before and after any job belonging to this clients. Think of opening VPN connections, setting up shared folders, etc. If multiple pre or post scripts are selected the order of execution is unspecified.
+ <h4>Owner</h4>
+ This user will be able to manage the client and its jobs. Only admin users can change the owner.
+ <h4>Advanced</h4>
+ <ul>
+ <li><b>SSH args</b>: custom SSH args. Example: -p2222 (will connect to SSH port TCP/2222)</li>
+ <li><b>Rsync short args</b>: Custom Rsync short args. Already included: -a</li>
+ <li><b>Rsync long args</b>: Custom Rsync long args. Example: --bwlimit=500 (will limit used bandwidth to 200kb/s). Already included: --delete --numeric-ids --relative --delete-excluded --stats</li>
+ </ul>
 client_job_help: |
  <h4>Jobs</h4>
  You can edit the most important parameters of a job belonging to this client right here. Don't forget to save your changes after doing the modifications.
@@ -344,15 +352,24 @@ job_help: |
  </ol>
  As you can see the application backs up all files by default, excluding only those which match an exclude pattern and do NOT match any include pattern.
  If and only if the include field is empty the application uses the include directives defined in the selected policy. The same can be said for the exclude field.
+ <h4>Advanced</h4>
+ <ul>
+  <li><b>Token</b>: Job's Token will be used to allow anonymous remote job executions. Delete the token if you want to disable this feature.</li>
+ </ul>
 user_help: |
  <h4>Name</h4>
  This is the identifier for the user. It will show up in lists and combo boxes. The name must be unique among all users, the application will complain if you try to use a name which is already in use.
- <h4>Password</h4>
- You can't read the password in this field, you can only use it to change it. If you put anything but the empty string in this field and save the password will be updated.
  <h4>Email</h4>
  The email is very important. All the notifications for the user will be sent to the email specified here.
  <h4>Is active</h4>
  If this check box is not marked the user will not be able to log in.
+ <h4>Role</h4>
+ <ul>
+  <li><b>Admin</b>: admin users will be able to change anything</li>
+  <li><b>User</b>: limited users can only manage their own clients and jobs. Caution: they are able to see other users activity logs</li>
+ </ul>
+ <h4>Password</h4>
+ You can't read the password in this field, you can only use it to change it. If you put anything but the empty string in this field and save the password will be updated.
 params_help: |
  <h4>MySQL configuration</h4>
  This parameters configure the connection to the DB. Be careful, if mess up with them the application will stop working.
