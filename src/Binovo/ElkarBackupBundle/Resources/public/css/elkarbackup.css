@@ -171,6 +171,10 @@ h3, .h3 {
     width: 30px;
 }
 
+#jobs-container .glyphicon {
+    color: #4c6987;
+}
+
 .nopadding {
    padding: 0 !important;
    margin: 0 !important;
@@ -554,6 +558,7 @@ CLIENTS-TASKS
 
 .navigation.binovo-pagination {
     text-align: center;
+    clear: both;
 }
 
 .binovo-pagination .pagination > span {
