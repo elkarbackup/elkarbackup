@@ -60,7 +60,6 @@
                 </div>
                 {{ form_row(form.description) }}
                 {{ form_row(form.isActive) }}
-                {{ form_row(form.owner, {read_only: not is_granted('ROLE_ADMIN')}) }}
                 {{ form_row(form.notificationsTo) }}
                 {{ form_row(form.notificationsEmail, {attr: {class: 'col-md-12'}}) }}
                 {{ form_row(form.minNotificationLevel) }}

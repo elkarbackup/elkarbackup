@@ -74,7 +74,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                     $recipients[] = $adminEmail;
                     break;
                 case Job::NOTIFY_TO_OWNER:
-                    $recipients[] = $job->getOwner()->getEmail();
+                    $recipients[] = $job->getClient()->getOwner()->getEmail();
                     break;
                 case Job::NOTIFY_TO_EMAIL:
                     $recipients[] = $job->getNotificationsEmail();
@@ -330,7 +330,7 @@ abstract class BackupRunningCommand extends LoggingCommand
             $errScriptOk      = 'Job "%entityid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%';
             $level            = 'JOB';
             $job_name         = $job->getName();
-            $owner_email      = $job->getOwner()->getEmail();
+            $owner_email      = $job->getClient()->getOwner()->getEmail();
             $recipient_list   = $job->getNotificationsEmail();
             $job_total_size   = $job->getDiskUsage();
             $client_starttime = 0;
