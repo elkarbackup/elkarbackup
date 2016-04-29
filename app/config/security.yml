@@ -22,7 +22,7 @@ security:
         login:
             pattern:  ^/login$
             security: false
-        
+
         publickey:
             pattern: ^/config/publickey/get$
             security: false
@@ -44,8 +44,7 @@ security:
     access_control:
         - { path: ^/login                        , roles: IS_AUTHENTICATED_ANONYMOUSLY}
         - { path: ^/config/publickey/get         , roles: IS_AUTHENTICATED_ANONYMOUSLY}
-        - { path: ^/client/[0-9]+/job/[0-9]+/run , roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
-        - { path: ^/client/[0-9]+/job/[0-9]+/run , roles: ROLE_USER}
+        - { path: ^/client/[0-9]+/job/[0-9]+/run , roles: IS_AUTHENTICATED_ANONYMOUSLY}
         - { path: ^/user                         , roles: ROLE_ADMIN}
         - { path: ^/users                        , roles: ROLE_ADMIN}
         - { path: ^/config/params                , roles: ROLE_ADMIN}

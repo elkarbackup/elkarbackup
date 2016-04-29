@@ -446,7 +446,7 @@ class DefaultController extends Controller
         $t = $this->get('translator');
         $user = $this->get('security.context')->getToken();
         $trustable = false;
-        
+
         if($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')){
           // Authenticated user
           $trustable = true;
@@ -462,17 +462,24 @@ class DefaultController extends Controller
               ->getRepository('BinovoElkarBackupBundle:Job');
               $job = $repository->findOneById($idJob);
               if ($token == $job->getToken()){
-                  // Valid token
-                  $trustable = true;
+                  // Valid token, but let's require HTTPS
+                  if ($this->getRequest()->isSecure()) {
+                    $trustable = true;
+                  } else {
+                    $response = new JsonResponse(array('status'  => 'false',
+                                                       'msg'    => $t->trans('Aborted: HTTPS required', array(), 'BinovoElkarBackup')));
+                    return $response;
+                  }
               } else {
                   // Invalid token
                   $trustable = false;
               }
-                if (!$trustable){
-                  $response = new JsonResponse(array('status'  => 'true',
-                                                     'msg'    => $t->trans('You need to login or send properly values', array(), 'BinovoElkarBackup')));
-                  return $response;
-                }
+
+              if (!$trustable){
+                $response = new JsonResponse(array('status'  => 'false',
+                                                   'msg'    => $t->trans('You need to login or send properly values', array(), 'BinovoElkarBackup')));
+                return $response;
+              }
           }
         }
 
@@ -500,6 +507,7 @@ class DefaultController extends Controller
           $em->flush();
           $response = new Response($t->trans('Job execution requested successfully', array(), 'BinovoElkarBackup'));
           $response->headers->set('Content-Type', 'text/plain');
+          // TODO: change the response from text plain to JSON
 
           return $response;
         }
