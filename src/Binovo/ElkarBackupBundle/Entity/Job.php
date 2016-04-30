@@ -71,11 +71,6 @@ class Job
     protected $minNotificationLevel = self::NOTIFICATION_LEVEL_ERROR;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     */
-    protected $owner;
-
-    /**
      * Include expressions
      * @ORM\Column(type="text", nullable=true)
      */
@@ -136,13 +131,13 @@ class Job
     protected $logEntry = null;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * Job status: running, queued, failed, aborting, aborted
      */
     protected $status = null;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      * Security token for remote management
      */
     protected $token = null;
@@ -393,29 +388,6 @@ class Job
     public function getIsActive()
     {
         return $this->isActive;
-    }
-
-    /**
-     * Set owner
-     *
-     * @param Binovo\ElkarBackupBundle\Entity\User $owner
-     * @return Job
-     */
-    public function setOwner(User $owner)
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
-
-    /**
-     * Get owner
-     *
-     * @return Binovo\ElkarBackupBundle\Entity\User
-     */
-    public function getOwner()
-    {
-        return $this->owner;
     }
 
 

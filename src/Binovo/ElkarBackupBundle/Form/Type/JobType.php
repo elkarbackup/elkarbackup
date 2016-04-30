@@ -34,17 +34,13 @@ class JobType extends AbstractType
                 ->add('include'             , 'textarea', array('label' => $t->trans('Include', array(), 'BinovoElkarBackup'),
                                                                 'required' => false,
                                                                 'attr' => array('class'    => 'form-control','rows' => '3')))
-                ->add('owner'               , 'entity'  , array('label'    => $t->trans('Owner', array(), 'BinovoElkarBackup'),
-                                                                'property' => 'username',
-                                                                'attr'     => array('class'    => 'form-control'),
-                                                                'class'    => 'BinovoElkarBackupBundle:User'))
                 ->add('path'                , 'text'    , array('label' => $t->trans('Path', array(), 'BinovoElkarBackup'),
                                                                 'attr'  => array('class'    => 'form-control')))
                 ->add('notificationsTo'     , 'choice'  , array('label'    => $t->trans('Send notices to', array(), 'BinovoElkarBackup'),
                                                                 'required' => false,
                                                                 'attr'     => array('class'    => 'form-control-no'),
                                                                 'choices'  => array(Job::NOTIFY_TO_ADMIN => $t->trans('Admin', array(), 'BinovoElkarBackup'),
-                                                                                    Job::NOTIFY_TO_OWNER => $t->trans('Owner', array(), 'BinovoElkarBackup'),
+                                                                                    Job::NOTIFY_TO_OWNER => $t->trans('Client owner', array(), 'BinovoElkarBackup'),
                                                                                     Job::NOTIFY_TO_EMAIL => $t->trans('Email', array(), 'BinovoElkarBackup')),
                                                                 'multiple' => true,
                                                                 'expanded' => true,))

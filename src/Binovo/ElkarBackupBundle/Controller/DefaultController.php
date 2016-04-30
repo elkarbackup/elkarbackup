@@ -416,15 +416,13 @@ class DefaultController extends Controller
                 throw $this->createNotFoundException($this->trans('Unable to find Client entity:') . $idClient);
             }
             $job->setClient($client);
-            $job->setOwner($this->get('security.context')->getToken()->getUser());
         } else {
-	    $access = $this->checkPermissions($idClient, $idJob);
-                if($access == True){
-                	$job = $this->getDoctrine()
-                                ->getRepository('BinovoElkarBackupBundle:Job')->find($idJob);
-
-                } else {return $this->redirect($this->generateUrl('showClients'));}
-
+	          $access = $this->checkPermissions($idClient, $idJob);
+            if($access == True){
+                $job = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job')->find($idJob);
+            } else {
+                return $this->redirect($this->generateUrl('showClients'));
+            }
         }
         $form = $this->createForm(new JobType(), $job, array('translator' => $this->get('translator')));
         $this->info('View client %clientid%, job %jobid%',
@@ -670,17 +668,10 @@ class DefaultController extends Controller
                 ->getRepository('BinovoElkarBackupBundle:Job');
             $job = $repository->find($idJob);
         }
-        $storedOwner = $job->getOwner();
         $form = $this->createForm(new JobType(), $job, array('translator' => $t));
         $form->bind($request);
         if ($form->isValid()) {
             $job = $form->getData();
-//            if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) { // only allow chown to admin
-//                $job->setOwner($storedOwner);
-//            }
-            if ($job->getOwner() == null) {
-                $job->setOwner($this->get('security.context')->getToken()->getUser());
-            }
             try {
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($job);
