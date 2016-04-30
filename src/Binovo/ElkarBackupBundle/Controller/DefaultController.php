@@ -938,10 +938,11 @@ class DefaultController extends Controller
             ->getRepository('BinovoElkarBackupBundle:Job');
 
         $query = $repository->createQueryBuilder('j')->innerJoin('j.client','c')->addOrderBy('j.priority', 'ASC');
-        if($actualuserid <> 1 ){
-                $query->where('j.isActive <> 0 AND c.isActive <> 0 AND c.owner = ?1'); //adding users and roles
-                $query->setParameter(1, $actualuserid);
-            }
+        if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            // Non-admin users only can sort their own jobs
+            $query->where('j.isActive <> 0 AND c.isActive <> 0 AND c.owner = ?1'); //adding users and roles
+            $query->setParameter(1, $actualuserid);
+        }
         $jobs = $query->getQuery()->getResult();;
 
 
@@ -1000,11 +1001,13 @@ class DefaultController extends Controller
         $repository = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Client');
         $query = $repository->createQueryBuilder('c')->addOrderBy('c.id', 'ASC');
-        if($actualuserid <> 1 ){
+
+        if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            // Limited view for non-admin users
             $query->where('c.owner = ?1'); //adding users and roles
             $query->setParameter(1, $actualuserid);
         }
-            $query->getQuery();
+        $query->getQuery();
 
 
         $paginator = $this->get('knp_paginator');
