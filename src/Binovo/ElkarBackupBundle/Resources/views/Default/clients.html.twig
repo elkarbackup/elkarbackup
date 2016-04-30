@@ -200,12 +200,6 @@
 
 
   {% for job in client.jobs %}
-    {# set jobstatus #}
-    {%  if job.logEntry.message|default('')|length > 50 %}
-      {% set jobstatus = job.logEntry.message|default('')|slice(0, 50) ~ '...' %}
-    {% else %}
-      {% set jobstatus = job.logEntry.message|default('')|slice(0, 50) %}
-    {% endif %}
 
 <tr id="job-{{job.id}}" class="job-row client-{{client.id}} job-{{job.id}} {% if (job.isActive == false) or (client.isActive == false) %}disabled{% endif %}">
   <td><input class="select-toggle-check" type="checkbox" value="job{{client.job}}"</input></td>
@@ -219,11 +213,11 @@
       {% if (job.logEntry.levelName)|default('') == 'ERROR'%}label-danger
       {% elseif (job.logEntry.levelName)|default('') == 'WARNING'%}label-warning
       {% else %}
-        {% if jobstatus == 'QUEUED' %}label-info
-        {% elseif jobstatus == 'RUNNING' %}label-primary
+        {% if job.status == 'QUEUED' %}label-info
+        {% elseif job.status == 'RUNNING' %}label-primary
         {% else %}label-success
         {% endif %}
-      {% endif %}">{{ jobstatus }}</span>
+      {% endif %}">{{ job.status }}</span>
     {% else %}label-default">INACTIVE</span>
     {% endif %}
   </td>
@@ -243,8 +237,8 @@
             <span class="caret-right"></span>
           </button>
           <ul class="dropdown-menu dropright" aria-labelledby="btnGroupDrop1">
-            <li {% if (jobstatus == 'RUNNING') or (jobstatus == 'QUEUED') %}class="disabled"{% endif %}><a href="#" eb-action="runJob" eb-path="{{ path('runJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}">{% trans %}Run now{% endtrans %}</a></li>
-            <li {% if (jobstatus != 'RUNNING') and (jobstatus != 'QUEUED') %}class="disabled"{% endif %}><a href="#" eb-action="abortJob" eb-path="{{ path('abortJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}" eb-message="{{ 'Job <strong>%name%</strong> is running. Do you really want to abort it ?' | trans({'%name%': job.name}) | raw }}" class="danger">{% trans %}Abort{% endtrans %}</a></li>
+            <li {% if (job.status == 'RUNNING') or (job.status == 'QUEUED') %}class="disabled"{% endif %}><a href="#" eb-action="runJob" eb-path="{{ path('runJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}">{% trans %}Run now{% endtrans %}</a></li>
+            <li {% if (job.status != 'RUNNING') and (job.status != 'QUEUED') %}class="disabled"{% endif %}><a href="#" eb-action="abortJob" eb-path="{{ path('abortJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}" eb-message="{{ 'Job <strong>%name%</strong> is running. Do you really want to abort it ?' | trans({'%name%': job.name}) | raw }}" class="danger">{% trans %}Abort{% endtrans %}</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="#" eb-action="deleteJob" eb-path="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" eb-clientid="{{client.id}}" eb-message="{{ 'Really delete job <strong>%name%</strong>?<br><br>This will remove all related backups' | trans({'%name%': job.name}) | raw }}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
           </ul>
