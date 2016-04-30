@@ -37,7 +37,7 @@
         <td>{% if user.isActive %}{% trans %}Yes{% endtrans%}{% else%}{% trans %}No{% endtrans%}{% endif %}</td>
         <td class="actions">
           <form action="{{ path('editUser', {id: user.id}) }}" style="display:inline">
-            <button class="btn btn-elkarbackup" type="submit"><span class="glyphicon glyphicon-pencil"></span> {% trans %}Edit{% endtrans %} </button>
+            <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-pencil"></span> {% trans %}Edit{% endtrans %} </button>
           </form>
           <form data-bnv-message="{% trans with {'%name%': user.username} %}Really delete user %name%?{% endtrans %}" class="delete-user" action="{{ path('deleteUser', {id: user.id}) }}" method="POST" style="display:inline">
             <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnDeleteUserDisabled'">
@@ -52,7 +52,7 @@
     {% endfor %}
 </table>
 
-<button class="btn pull-right btn-elkarbackup" type="button" onclick="document.location.href='{{ path('editUser', {id: 'new'}) }}'"> <span class="glyphicon glyphicon-plus"></span> {% trans %}New{% endtrans %} </button>
+<button class="btn pull-right btn-default" type="button" onclick="document.location.href='{{ path('editUser', {id: 'new'}) }}'"> <span class="glyphicon glyphicon-plus"></span> {% trans %}New{% endtrans %} </button>
 
 {# display navigation #}
 <div class="navigation binovo-pagination">
