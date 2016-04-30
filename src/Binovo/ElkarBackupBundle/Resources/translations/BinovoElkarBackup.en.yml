@@ -331,8 +331,6 @@ job_help: |
  Free text to describe the job. Put here whatever you might find useful.
  <h4>Is active</h4>
  If this check box is not marked, then no snapshots will be taken.
- <h4>Owner</h4>
- By default the user who created the job is the owner and the application will notify him of any problems (see send notices to and notify only). Only admin users can change the owner.
  <h4>Send notices to</h4>
  You can ask the application to notify one or several of the following people (by email) of any events. The application decides which events to notify based on the notify only settings. If you choose to notify an arbitrary email you will have to fill in that email address.
  <h4>Notify only</h4>
