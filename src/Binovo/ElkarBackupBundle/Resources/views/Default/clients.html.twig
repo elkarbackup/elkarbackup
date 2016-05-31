@@ -15,91 +15,43 @@
 {% block body %}
 
 <div class="row">
-  <div class="row" style="margin-top: 30px;">
-    <div class="col-md-9"></div>
-    <div class="col-md-3">
-
-    <div class="panel-group">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            <a data-toggle="collapse" href="#collapse1">Health indicator</a>
-          </h4>
-        </div>
-        <div id="collapse1" class="panel-collapse collapse">
-      <!--
-        <div class="panel-body">
-          <label class="label label-success">12 OK</label>
-          <label class="label label-danger">1 ERROR</label>
-          <label class="label label-default">2 INAC</label>
-          <label class="label label-info">1 RUN</label>
-        </div>
-      -->
-        <div class="panel-body">
-
-          <div class="progress">
-          {% if fsDiskUsage <= 20 %}
-              <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
-              	{{ fsDiskUsage }}%
-              </div>
-          {% elseif fsDiskUsage <= 60 %}
-              <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
-              	{{ fsDiskUsage }}%
-            </div>
-          {% elseif fsDiskUsage <= 90 %}
-              <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
-              	{{ fsDiskUsage }}%
-            </div>
-          {% elseif fsDiskUsage > 90 %}
-              <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
-              	{{ fsDiskUsage }}%
-            </div>
-          {% endif %}
-          </div>
-
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-    </div>
-  </div>
-
-  <!--
-    <div class="diskusagebar">
-        <h3>{% trans %}Disk usage{% endtrans %}</h3>
-
-        <div class="progress">
-        {% if fsDiskUsage <= 20 %}
-            <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
-            	{{ fsDiskUsage }}%
-            </div>
-        {% elseif fsDiskUsage <= 60 %}
-            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
-            	{{ fsDiskUsage }}%
-          </div>
-        {% elseif fsDiskUsage <= 90 %}
-            <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
-            	{{ fsDiskUsage }}%
-          </div>
-        {% elseif fsDiskUsage > 90 %}
-            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ fsDiskUsage }}%;">
-            	{{ fsDiskUsage }}%
-          </div>
-        {% endif %}
-        </div>
-    </div>
-  -->
-
-</div>
-<div class="row">
     <div class="col-md-12" id="jobs-container">
-
 
 <!-- top action buttons -->
 <div class="top-action-buttons pull-right" style="padding-bottom: 10px;">
+  <!-- Disk usage -->
+  {% if fsDiskUsage <= 80 %}
+    {% set discIconClass = "ico-success" %}
+    {% set discBarClass = "progress-bar-success" %}
+  {% elseif fsDiskUsage <= 90 %}
+    {% set discIconClass = "ico-warning" %}
+    {% set discBarClass = "progress-bar-warning" %}
+  {% elseif fsDiskUsage > 90 %}
+    {% set discIconClass = "ico-danger" %}
+    {% set discBarClass = "progress-bar-danger" %}
+  {% endif %}
+
+  <div id="disc-usage">
+    {% if fsDiskUsage <= 90 %}
+  	<img src="{{ asset('/img/disc-status.png') }}" alt="disc" />
+    {% else %}
+    <img src="{{ asset('/img/disc-status-danger.png') }}" alt="disc" />
+    {% endif %}
+  	<div id="usage-box">
+  		<div id="usage">
+        <div class="tooltip-arrow"></div>
+  			<div id="disc-status" class="{{ discIconClass }}"></div>
+  			<div id="disc-info">
+  				<h3><span>Usage</span> {{ fsDiskUsage }}%</h3>
+  				<div class="progress">
+  					<div class="progress-bar {{ discBarClass }}" role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width: 15%;">
+  					</div>
+  				</div>
+  			</div>
+  		</div>
+  	</div>
+  </div>
+  <!-- End disk usage-->
   <div class="btn-group" role="group" aria-label="...">
     <button class="btn btn-default" action="#" eb-action="addClient" eb-path="{{ path('editClient', {id: 'new'}) }}">
       <span class="glyphicon glyphicon-plus"></span> {% trans %}Add client{% endtrans %}
@@ -113,7 +65,6 @@
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
       <li><a href="#" eb-action="runSelected">{% trans %}Run now{% endtrans %}</a></li>
-      <li class="disabled"><a href="#" eb-action="abortSelected">{% trans %}Abort{% endtrans %}</a></li>
       <li role="separator" class="divider"></li>
       <li><a href="#" eb-action="deleteSelected">{% trans %}Delete{% endtrans %}</a></li>
     </ul>
@@ -129,7 +80,7 @@
         {{ flashMessage }}
     </div>
 {% endfor %}
-<table class="table table-condensed table-hover">
+<table id="clients" class="table table-condensed table-hover">
 <tr>
   {# sorting of properties based on query components #}
   <th><input id="checkAll" class="select-toggle-check" type="checkbox"</input></th>
@@ -139,7 +90,7 @@
   <th style="text-align: center">{% trans %}Disk usage{% endtrans %}</th>
   <th>{% trans %}Last log entry{% endtrans %}</th>
   <th>{% trans %}Status{% endtrans %}</th>
-  <th>{% trans %}Active{% endtrans %}</th>
+  <!--<th>{% trans %}Active{% endtrans %}</th>-->
   <th>{% trans %}Actions{% endtrans %}</th>
 </tr>
 
@@ -171,7 +122,7 @@
     {% else %}label-default">INACTIVE</span>
     {% endif %}
   </td>
-  <td class="vert-align isactive">{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
+  <!--<td class="vert-align isactive">{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>-->
   <td class="actions vert-align">
 
     <div class="btn-group" role="group" aria-label="Actions">
@@ -200,12 +151,6 @@
 
 
   {% for job in client.jobs %}
-    {# set jobstatus #}
-    {%  if job.logEntry.message|default('')|length > 50 %}
-      {% set jobstatus = job.logEntry.message|default('')|slice(0, 50) ~ '...' %}
-    {% else %}
-      {% set jobstatus = job.logEntry.message|default('')|slice(0, 50) %}
-    {% endif %}
 
 <tr id="job-{{job.id}}" class="job-row client-{{client.id}} job-{{job.id}} {% if (job.isActive == false) or (client.isActive == false) %}disabled{% endif %}">
   <td><input class="select-toggle-check" type="checkbox" value="job{{client.job}}"</input></td>
@@ -219,15 +164,15 @@
       {% if (job.logEntry.levelName)|default('') == 'ERROR'%}label-danger
       {% elseif (job.logEntry.levelName)|default('') == 'WARNING'%}label-warning
       {% else %}
-        {% if jobstatus == 'QUEUED' %}label-info
-        {% elseif jobstatus == 'RUNNING' %}label-primary
+        {% if job.status == 'QUEUED' %}label-info
+        {% elseif job.status == 'RUNNING' %}label-primary
         {% else %}label-success
         {% endif %}
-      {% endif %}">{{ jobstatus }}</span>
+      {% endif %}">{{ job.status }}</span>
     {% else %}label-default">INACTIVE</span>
     {% endif %}
   </td>
-  <td class="vert-align isactive">{% if job.isActive %}{% trans %}Active{% endtrans%}{% else %}{% trans %}Inactive{% endtrans%}{% endif %}</td>
+  <!--<td class="vert-align isactive">{% if job.isActive %}{% trans %}Active{% endtrans%}{% else %}{% trans %}Inactive{% endtrans%}{% endif %}</td>-->
   <td class="vert-align actions">
 
     <div class="btn-group" role="group" aria-label="Actions">
@@ -243,8 +188,8 @@
             <span class="caret-right"></span>
           </button>
           <ul class="dropdown-menu dropright" aria-labelledby="btnGroupDrop1">
-            <li {% if (jobstatus == 'RUNNING') or (jobstatus == 'QUEUED') %}class="disabled"{% endif %}><a href="#" eb-action="runJob" eb-path="{{ path('runJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}">{% trans %}Run now{% endtrans %}</a></li>
-            <li {% if (jobstatus != 'RUNNING') and (jobstatus != 'QUEUED') %}class="disabled"{% endif %}><a href="#" eb-action="abortJob" eb-path="{{ path('abortJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}" eb-message="{{ 'Job <strong>%name%</strong> is running. Do you really want to abort it ?' | trans({'%name%': job.name}) | raw }}" class="danger">{% trans %}Abort{% endtrans %}</a></li>
+            <li {% if (job.status == 'RUNNING') or (job.status == 'QUEUED') %}class="disabled"{% endif %}><a href="#" eb-action="runJob" eb-path="{{ path('runJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}">{% trans %}Run now{% endtrans %}</a></li>
+            <li {% if (job.status != 'RUNNING') and (job.status != 'QUEUED') %}class="disabled"{% endif %}><a href="#" eb-action="abortJob" eb-path="{{ path('abortJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}" eb-message="{{ 'Job <strong>%name%</strong> is running. Do you really want to abort it ?' | trans({'%name%': job.name}) | raw }}" class="danger">{% trans %}Abort{% endtrans %}</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="#" eb-action="deleteJob" eb-path="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" eb-clientid="{{client.id}}" eb-message="{{ 'Really delete job <strong>%name%</strong>?<br><br>This will remove all related backups' | trans({'%name%': job.name}) | raw }}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
           </ul>
@@ -273,8 +218,6 @@
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
       <li><a href="#" eb-action="runSelected">{% trans %}Run now{% endtrans %}</a></li>
-      <li><a href="#" eb-action="enableSelected">{% trans %}Enable / disable{% endtrans %}</a></li>
-      <li class="disabled" eb-action="abortSelected"><a href="#">{% trans %}Abort{% endtrans %}</a></li>
       <li role="separator" class="divider"></li>
       <li><a href="#" eb-action="deleteSelected">{% trans %}Delete{% endtrans %}</a></li>
     </ul>

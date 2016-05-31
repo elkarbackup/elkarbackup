@@ -15,7 +15,7 @@
 {% block body %}
 
 <div class="row">
-<div class="max10" >
+<div class="col-md-8 col-md-offset-2 text-centered">
 <h3>{% trans %}Policies{% endtrans %}</h3>
 
 {% for flashMessage in app.session.flashbag.get('showPolicies') %}
@@ -23,7 +23,7 @@
                 <p>{{ flashMessage }}</p>
             </div>
 {% endfor %}
-<table class="table table-condensed table-bordered table-striped">
+<table id="policies" class="table table-condensed table-bordered table-striped">
     <tr>
         {# sorting of properties based on query components #}
         <th class="ids">{% trans %}Id{% endtrans %}</th>
@@ -42,7 +42,7 @@
         {% if is_granted('ROLE_ADMIN') %}
         <td class="actions">
               <form action="{{ path('editPolicy', {id: policy.id}) }}" style="display:inline">
-                <button class="btn btn-elkarbackup" type="submit"><span class="glyphicon glyphicon-pencil"></span> {% trans %}Edit{% endtrans %} </button>
+                <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-pencil"></span> {% trans %}Edit{% endtrans %} </button>
               </form>
               <form data-bnv-message="{% trans with {'%name%': policy.name} %}Really delete policy %name%?{% endtrans %}" class="delete-policy" action="{{ path('deletePolicy', {id: policy.id}) }}" method="POST" style="display:inline">
                 <button class="btn btn-default btn-danger" type="submit"><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %} </button>
@@ -54,7 +54,7 @@
     {% endfor %}
 </table>
 {% if is_granted('ROLE_ADMIN') %}
-<button class="btn btn-elkarbackup pull-right" type="button" onclick="document.location.href='{{ path('editPolicy', {id: 'new'}) }}'"><span class="glyphicon glyphicon-plus"></span> {% trans %}New{% endtrans %}</button>
+<button class="btn btn-default pull-right" type="button" onclick="document.location.href='{{ path('editPolicy', {id: 'new'}) }}'"><span class="glyphicon glyphicon-plus"></span> {% trans %}New{% endtrans %}</button>
 {% endif %}
 
 {# display navigation #}

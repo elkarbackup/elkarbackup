@@ -12,7 +12,7 @@
           {% trans %}Script has not yet been saved{% endtrans %}
   </div>
   <div class="btn-group inline" {% if not form.vars.value.id %}id="btnDownloadScriptDisabled"{% endif %}>
-    <button class="btn btn-elkarbackup" {% if not form.vars.value.id %}disabled="true"{% endif %} onclick="window.location.href='{{path('downloadScript', {id: form.vars.value.id}) }}'"><span class="glyphicon glyphicon-download-alt"></span> {% trans %}Download{% endtrans %}</button>
+    <button class="btn btn-default" {% if not form.vars.value.id %}disabled="true"{% endif %} onclick="window.location.href='{{path('downloadScript', {id: form.vars.value.id}) }}'"><span class="glyphicon glyphicon-download-alt"></span> {% trans %}Download{% endtrans %}</button>
   </div>
 </div>
 <form class="form-horizontal" action="{{ path('saveScript', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
@@ -68,7 +68,7 @@
 
             <div class="control-group">
                 <div class="controls">
-                    <input class="btn btn-elkarbackup pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
+                    <input class="btn btn-default pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
                 </div>
             </div>
 
@@ -76,7 +76,7 @@
               <h3>{% trans %}Used by{% endtrans %}</h3>
                 <div class="controls col-md-12 col-xs-12">
 {% if form.vars.value.isUsed %}
-            
+
 <table class="table table-condensed text-center">
               <tr>
                 <th class="text-center">{% trans %}Client{% endtrans %}</th>
@@ -90,28 +90,28 @@
 
     {% for client in form.vars.value.postClients %}
                 <tr>
-		 <td><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>  
+		 <td><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
 		 <td> - </td>
 		 <td>{% trans %}After{% endtrans %}</td>
 		</tr>
     {% endfor %}
     {% for client in form.vars.value.preClients %}
                 <tr>
-		 <td><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>  
+		 <td><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
 		 <td> - </td>
 		 <td>{% trans %}Before{% endtrans %}</td>
 		</tr>
     {% endfor %}
     {% for job in form.vars.value.postJobs %}
                 <tr>
-		 <td>{{ job.client.name }}</td>  
+		 <td>{{ job.client.name }}</td>
 		 <td><a href="{{ path('editJob', {idClient: job.client.id, idJob: job.id}) }}">{{ job.name}}</a> </td>
 		 <td>{% trans %}After{% endtrans %}</td>
 		</tr>
     {% endfor %}
     {% for job in form.vars.value.preJobs %}
                 <tr>
-		 <td>{{ job.client.name }}</td>  
+		 <td>{{ job.client.name }}</td>
 		 <td><a href="{{ path('editJob', {idClient: job.client.id, idJob: job.id}) }}">{{ job.name}}</a> </td>
 		 <td>{% trans %}Before{% endtrans %}</td>
 		</tr>

@@ -28,7 +28,7 @@
         {% endblock %}
 
     </head>
-    <body class="login {%if not disable_background %} bg{{ random(2) }}{% else %} nobg{% endif %}">
+    <body class="login {%if not disable_background %} bg2{% else %} nobg{% endif %}">
 
                   <div class="container">
 
@@ -55,14 +55,13 @@
                               </div>
                           </div>
 
-
+                          {% if error %}
                           <div class="message">
-                              <p class="bg-warning">
-                                  {% if error %}
+                              <p class="alert alert-warning">
                                       {{ error.message }}
-                                  {% endif %}
                               </p>
                           </div>
+                          {% endif %}
 
                           <div class="form-group">
                               <div class="col-sm-8 nopadding language">
@@ -74,7 +73,7 @@
                           </div>
                           <div class="row">
                             <div class="version pull-right">
-                              <p>v1.2.0-Beta1</p>
+                              <p>v1.2.0-Beta2</p>
                             </div>
                           </div>
                       </form>

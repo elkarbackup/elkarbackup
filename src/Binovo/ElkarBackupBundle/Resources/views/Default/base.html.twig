@@ -34,17 +34,19 @@
     <body class="claro">
 
         <div id="top">
+          <div id="cont-top">
             <div class="logo">
                 {% block header %}
                 {% endblock %}
                 <a href="{{path('showClients')}}"><img src="{{ asset('/img/elkarbackup.png') }}" alt="ElkarBackup" /></a>
             </div>
 
-		    <div class="navbar" role="navigation">
+		        <div class="navbar" role="navigation">
                 {% block menu %}
                     {{ knp_menu_render('BinovoElkarBackupBundle:Builder:mainMenu',{'allow_safe_labels': true})|raw }}
                 {% endblock %}
             </div>
+          </div>
         </div>
 
         <div id="contenido" class="container">

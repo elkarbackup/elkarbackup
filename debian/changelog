@@ -1,4 +1,4 @@
-elkarbackup (1.2.0-Beta1) UNRELEASED; urgency=medium
+elkarbackup (1.2.0-Beta2) UNRELEASED; urgency=medium
 
   [ Xabi Ezpeleta / Antton Rodriguez ]
   * Maintenance: New Symfony 1.8 LTS (until Nov. 2018)
@@ -12,8 +12,12 @@ elkarbackup (1.2.0-Beta1) UNRELEASED; urgency=medium
   * Feature: Added remote job execution (fixes #103)
   * Feature: Added abort job button (fixes #28)
   * Feature: Rsnapshot 1.4.2 support
-  * Bugfix: Job status running, du error (fixes #82)
+  * Feature: Redesigned look by @ChristianGR (fixes #134)
+  * Bugfix: Job status running, du error (fixes #82, fixes #128)
   * Bugfix: logger shows wrong message (fixes #114)
   * Bugfix: missing html tag (fixes #113)
+  * Bugfix: Require HTTPS only for anonymous petitions (fixes #136)
+  * Bugfix: Remove "owner" field in Job edition form (fixes #139)
+  * Bugfix: Admin user cannot list existing clients (fixes #141)
 
- --  <>  Tue, 05 Apr 2016 16:01:10 +0000
+ --  <>  Tue, 31 May 2016 18:25:10 +0000
