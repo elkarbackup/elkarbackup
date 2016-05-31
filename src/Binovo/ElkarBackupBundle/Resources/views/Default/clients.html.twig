@@ -90,7 +90,7 @@
   <th style="text-align: center">{% trans %}Disk usage{% endtrans %}</th>
   <th>{% trans %}Last log entry{% endtrans %}</th>
   <th>{% trans %}Status{% endtrans %}</th>
-  <th>{% trans %}Active{% endtrans %}</th>
+  <!--<th>{% trans %}Active{% endtrans %}</th>-->
   <th>{% trans %}Actions{% endtrans %}</th>
 </tr>
 
@@ -122,7 +122,7 @@
     {% else %}label-default">INACTIVE</span>
     {% endif %}
   </td>
-  <td class="vert-align isactive">{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
+  <!--<td class="vert-align isactive">{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>-->
   <td class="actions vert-align">
 
     <div class="btn-group" role="group" aria-label="Actions">
@@ -172,7 +172,7 @@
     {% else %}label-default">INACTIVE</span>
     {% endif %}
   </td>
-  <td class="vert-align isactive">{% if job.isActive %}{% trans %}Active{% endtrans%}{% else %}{% trans %}Inactive{% endtrans%}{% endif %}</td>
+  <!--<td class="vert-align isactive">{% if job.isActive %}{% trans %}Active{% endtrans%}{% else %}{% trans %}Inactive{% endtrans%}{% endif %}</td>-->
   <td class="vert-align actions">
 
     <div class="btn-group" role="group" aria-label="Actions">

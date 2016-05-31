@@ -617,6 +617,10 @@ table#clients tr td {
   vertical-align: middle;
 }
 
+table#clients tr th:nth-child(7) {
+  width: 5%;
+}
+
 /*
 POLICIES
 */
