@@ -1855,6 +1855,7 @@ protected function checkPermissions($idClient, $idJob = null){
               	$newjob = clone $job;
               	$newjob->setClient($client);
                 $newjob->setDiskUsage(0);
+                $newjob->setStatus('');
               	$newem = $this->getDoctrine()->getManager();
               	$newem->persist($newjob);
               	$newem->flush();
