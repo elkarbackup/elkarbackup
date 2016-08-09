@@ -382,6 +382,7 @@ script_help: |
   <li>ELKARBACKUP_CLIENT_ENDTIME: bezeroaren kopia bukaera-ordua timestamp formatuan (post-client bakarrik)</li>
   <li>ELKARBACKUP_JOB_STARTTIME: lanaren kopia hasiera-ordua timestamp formatuan (post-job bakarrik)</li>
   <li>ELKARBACKUP_JOB_ENDTIME: lanaren kopia bukaera-ordua timestamp formatuan (post-job bakarrik)</li>
+  <li>ELKARBACKUP_SSH_ARGS: argumentos avanzados para la conexión por ssh</li>
  </ul>
  Bezero baten pre-script batek 0 ez den balioa bueltatzen badu, aplikazioak bertan behera utziko ditu bezero horren lanak. Lan mailako pre-script exekuzioak huts egitean, WARNING abisu bat sortuko da (backup lanak jarraituko du).
  <h4>Izena</h4>
