@@ -1,4 +1,8 @@
-## Upcoming (1.2.0)
+## Upcoming (1.2.1)
+Features:
+  - Scripts: new environment variable PR #155 (by @jocker-x)
+
+## 1.2.1 (2016/07/18)
 Features:
   - Advanced client configuration and custom SSH args (fixes #87)
   - Client clonation feature (fixes #10)
