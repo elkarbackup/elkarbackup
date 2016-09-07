@@ -416,6 +416,7 @@ script_help: |
   <li>ELKARBACKUP_CLIENT_ENDTIME: client backup end timestamp (only available in post-client)</li>
   <li>ELKARBACKUP_JOB_STARTTIME: job backup start timestamp (only available in post-job)</li>
   <li>ELKARBACKUP_JOB_ENDTIME: job backup end timestamp (only available in post-job)</li>
+  <li>ELKARBACKUP_SSH_ARGS: advanced arguments for ssh conection</li>
  </ul>
  If any pre client script returns an exit status other than 0 the application aborts the process and prevents jobs of the client from running. On the other hand, the application will trigger a warning alert if the exit status of the pre job script is other than 0 (backup execution will not be aborted).
  <h4>Name</h4>
