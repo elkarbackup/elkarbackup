@@ -72,7 +72,7 @@ class Policy
     }
 
     /**
-     * @Assert\True(message = "You forgot to specify hours during the day")
+     * @Assert\IsTrue(message = "You forgot to specify hours during the day")
      */
     public function isHourlyHoursValid()
     {
