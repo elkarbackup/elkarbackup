@@ -1,7 +1,6 @@
-elkarbackup (1.2.2) stable; urgency=medium
+elkarbackup (1.2.3) stable; urgency=medium
 
   [ Xabi Ezpeleta ]
-  * Feature: Scripts, new environment variable PR #155 (by @jocker-x)
-  * Bugfix: new Ubuntu 16.04 compatible deb package (fixes #150)
+  * Bugfix: Error 500 saving policy (fixes #161)
 
- --  <>  Sat, 17 Sep 2016 20:25:10 +0000
+ --  <>  Fri, 30 Sep 2016 14:20:10 +0000
