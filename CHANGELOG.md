@@ -1,6 +1,15 @@
-## Upcoming (1.2.1)
+## Upcoming
+
+## 1.2.3 (2016/09/30)
+Bugfixes:
+  - Error 500 saving policy (fixes #161)
+
+## 1.2.2 (2016/09/18)
 Features:
   - Scripts: new environment variable PR #155 (by @jocker-x)
+
+Bugfixes:
+  - New Ubuntu 16.04 compatible deb package (fixes #150)
 
 ## 1.2.1 (2016/07/18)
 Features:
