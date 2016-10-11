@@ -507,6 +507,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                                      '%du%'       => $client->getDiskUsage() / 1024),
                                $context);
                     $this->err('QUOTA EXCEEDED', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
+                    $job->setStatus('FAIL');
                     $state = self::QUOTA_EXCEEDED;
                 } else {
                     $state = self::RUN_JOB;
