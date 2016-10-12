@@ -38,7 +38,7 @@ class ClientType extends AbstractType
                 ->add('url'           , 'text'      , array('label'    => $t->trans('Url', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class' => 'form-control'),
                                                             'required' => false))
-                ->add('quota'         , 'integer'   , array('label' => $t->trans('Quota', array(), 'BinovoElkarBackup'),
+                ->add('quota'         , 'number'     , array('label' => $t->trans('Quota', array(), 'BinovoElkarBackup'),
                                                             'attr'  => array('class'    => 'form-control','min' => '-1', 'step' => 'any')))
                 ->add('preScripts'    , 'entity'    , array('label' => $t->trans('Pre script', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class' => 'multiselect autoheight form-control'),
