@@ -19,7 +19,7 @@ class ClientType extends AbstractType
     {
         // Modify 'quota' value
         // User will see the quota in GB (fields.html.twig), but we will save it in KBs
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
           $client = $event->getData();
           $form = $event->getForm();
           if ($client->getQuota() > 0) {
