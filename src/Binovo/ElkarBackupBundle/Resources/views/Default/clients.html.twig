@@ -116,6 +116,7 @@
       {% else %}
         {% if clientstatus == 'QUEUED' %}label-info
         {% elseif clientstatus == 'RUNNING' %}label-primary
+        {% elseif clientstatus == 'FAIL' %}label-danger
         {% else %}label-success
         {% endif %}
       {% endif %}">{{ clientstatus }}</span>
@@ -166,6 +167,7 @@
       {% else %}
         {% if job.status == 'QUEUED' %}label-info
         {% elseif job.status == 'RUNNING' %}label-primary
+        {% elseif job.status == 'FAIL' %}label-danger
         {% else %}label-success
         {% endif %}
       {% endif %}">{{ job.status }}</span>

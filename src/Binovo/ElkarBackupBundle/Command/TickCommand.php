@@ -151,7 +151,10 @@ EOF;
                             $this->err('Command failure: ' . $commandText);
                         }
                     } catch (Exception $e) {
-                        $this->err('Exception %exceptionmsg% running command %command%: ', array('%exceptionmsg%' => $e->getMessage(), '%command%' => $commandText));
+                        $idClient = $commandAndParams['client'];
+                        $context = array('link' => $this->generateJobRoute($idJob, $idClient));
+                        $this->err('Exception %exceptionmsg% running command %command%: ', array('%exceptionmsg%' => $e->getMessage(), '%command%' => $commandText), $context);
+                        $job->setStatus('FAIL');
                     }
                 }
 
