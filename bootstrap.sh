@@ -23,10 +23,16 @@ mkdir -p app/cache
 mkdir -p app/logs
 mkdir -p app/sessions
 
-setfacl  -R -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/cache
-setfacl -dR -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/cache
-setfacl  -R -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/logs
-setfacl -dR -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/logs
-setfacl  -R -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/sessions
-setfacl -dR -m u:www-data:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/sessions
+HTTPDUSER=`ps axo user,comm | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
+if [ -z "$HTTPDUSER" ];then
+    # Apache not running, use default username "$HTTPDUSER"
+    HTTPUSER="$HTTPDUSER"
+fi
+
+setfacl  -R -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/cache
+setfacl -dR -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/cache
+setfacl  -R -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/logs
+setfacl -dR -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/logs
+setfacl  -R -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/sessions
+setfacl -dR -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/sessions
 composer install --no-interaction
