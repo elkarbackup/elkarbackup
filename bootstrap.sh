@@ -26,7 +26,7 @@ mkdir -p app/sessions
 HTTPDUSER=`ps axo user,comm | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
 if [ -z "$HTTPDUSER" ];then
     # Apache not running, use default username "www-data"
-    HTTPUSER="www-data"
+    HTTPDUSER="www-data"
 fi
 
 setfacl  -R -m u:$HTTPDUSER:rwx -m u:elkarbackup:rwx -m u:$(id -un):rwx app/cache
