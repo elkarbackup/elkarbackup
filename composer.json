@@ -25,8 +25,7 @@
         "jms/security-extra-bundle": "^1.5",
         "jms/di-extra-bundle": "^1.6",
         "twbs/bootstrap": "^3.3",
-        "symfony/debug": "2.8.*",
-        "steevanb/ssh2bundle": "2.0.*"
+        "symfony/debug": "2.8.*"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
