@@ -143,16 +143,13 @@ class TahoeBackup
 
     public function isInstalled()
     {
-        $command = "dpkg-query -W -f='\${Status}\n' tahoe-lafs";
+        $command = "which tahoe";
         exec($command, $commandOutput, $status);
         if (0 != $status){
             return false;
+        } else {
+            return true;
         }
-        $result = explode(' ', $commandOutput[0]);
-        if ('installed'!=$result[2]) {
-            return false;
-        }
-        return true;
     }
 
     public function isReady()
