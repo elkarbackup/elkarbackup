@@ -1,4 +1,10 @@
 ## Upcoming
+Bugfixes:
+  - Exception Undefined offset running TickCommand (#165)
+  - Cient quota is saved wrong (#162)
+  - Upload directory changed in sudoers (#160)
+  - Jobs blocked in red-queued state in jobs list (#163)
+  - Backup job status running after an exception warning (#166)
 
 ## 1.2.3 (2016/09/30)
 Bugfixes:
