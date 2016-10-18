@@ -81,7 +81,7 @@ class Builder extends ContainerAware
     	  $menuBar->setChildrenAttribute('class', 'nav navbar-nav');
 
         foreach ($description as $itemDescription) {
-            if (is_array($itemDescription['children'])) {
+            if (isset($itemDescription['children']) && is_array($itemDescription['children'])) {
                 $menuBarItem = $menuBar->addChild($itemDescription['label'].'_withsubm',
                                                   array('extras'           => array('safe_label' => true),
                                                         'label'            => $itemDescription['icon'],
