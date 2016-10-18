@@ -92,6 +92,9 @@ class DefaultController extends Controller
     protected function isAutoFsAvailable()
     {
         $result = false;
+        if (!file_exists('/etc/auto.master')) {
+            return false;
+        }
         $file = fopen('/etc/auto.master', 'r');
         if (!$file) {
             return false;
