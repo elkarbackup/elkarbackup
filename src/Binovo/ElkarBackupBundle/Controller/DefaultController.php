@@ -1935,7 +1935,7 @@ protected function checkPermissions($idClient, $idJob = null){
               $em->persist($data);
               $this->info('Save preferences for user %username%.',
                           array('%username%' => $user->getUsername()),
-                          array('link' => $this->generateUserRoute($id)));
+                          array('link' => $this->generateUserRoute($user->getId())));
               $em->flush();
 
               $language = $form['language']->getData();
@@ -1945,7 +1945,7 @@ protected function checkPermissions($idClient, $idJob = null){
         } else {
           $this->info('Manage preferences for user %username%.',
                       array('%username%' => $user->getUsername()),
-                      array('link' => $this->generateUserRoute($id)));
+                      array('link' => $this->generateUserRoute($user->getId())));
           $this->getDoctrine()->getManager()->flush();
 
           return $this->render('BinovoElkarBackupBundle:Default:preferences.html.twig',
