@@ -1203,6 +1203,9 @@ EOF;
     public function readKeyFileAsCommentAndRest($filename)
     {
         $keys = array();
+        if (!file_exists($filename)) {
+            return $keys;
+        }
         foreach (explode("\n", file_get_contents($filename)) as $keyLine) {
             $matches = array();
             // the format of eacn non empty non comment line is "options keytype base64-encoded key comment" where key is one of ecdsa-sha2-nistp256, ecdsa-sha2-nistp384, ecdsa-sha2-nistp521, ssh-dss, ssh-rsa
