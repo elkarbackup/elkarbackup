@@ -1,5 +1,11 @@
 ## Upcoming
+
+## 1.2.4 (2016/10/18)
 Bugfixes:
+  - PHP Warning: file_get_contents(/var/lib/elkarbackup/.ssh/authorized_keys) (#170)
+  - PHP Warning: fopen(/etc/auto.master): failed to open stream (#169)
+  - PHP Notice: Undefined variable: id (#168)
+  - PHP Notice: Undefined index: children (#167)
   - Exception Undefined offset running TickCommand (#165)
   - Cient quota is saved wrong (#162)
   - Upload directory changed in sudoers (#160)
