@@ -485,7 +485,7 @@ class DefaultController extends Controller
         }
 
         if($trustable){
-          if (!$job){
+          if (!isset($job)){
             $job = $this->getDoctrine()
                 ->getRepository('BinovoElkarBackupBundle:Job')->find($idJob);
             if (null == $job) {
