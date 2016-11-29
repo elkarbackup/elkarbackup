@@ -3,8 +3,8 @@
 ## What is it?
 ElkarBackup is a free open-source backup solution based on RSync/RSnapshot
 
-<img src="http://www.elkarbackup.org/images/screenshots/eb-login.png" />
-<img src="http://www.elkarbackup.org/images/screenshots/eb-jobs.png" />
+<img src="http://elkarbackup.org/images/screenshots/eb-login.png" />
+<img src="http://elkarbackup.org/images/screenshots/eb-jobs.png" />
 
 ## Features
 - Centralized backups
