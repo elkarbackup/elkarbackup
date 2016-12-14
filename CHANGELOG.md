@@ -1,4 +1,7 @@
 ## Upcoming
+Bugfixes:
+  - Notifications: SMTP transport not working (#174)
+  - PHP Notice: Undefined variable: job (#172)
 
 ## 1.2.4 (2016/10/18)
 Bugfixes:
