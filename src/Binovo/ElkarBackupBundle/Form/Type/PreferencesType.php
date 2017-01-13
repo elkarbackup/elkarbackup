@@ -19,6 +19,7 @@ class PreferencesType extends AbstractType
           'English' => 'en',
           'Español' => 'es',
           'Basque'  => 'eu',
+	  'Deutsch'  => 'de',
         );
 
         $builder->add('language'    , 'choice'      , array('label'   => $t->trans('Language', array(), 'BinovoElkarBackup'),

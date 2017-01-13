@@ -61,7 +61,7 @@ class User implements AdvancedUserInterface
      * @ORM\Column(type="string", length=25)
      * @Assert\Language(groups={"preferences"})
      * @Assert\Choice(
-     *    choices = { "en", "eu", "es" },
+     *    choices = { "en", "eu", "es", "de" },
      *    message = "Choose a valid language"
      * )
      */
