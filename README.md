@@ -12,7 +12,7 @@ ElkarBackup is a free open-source backup solution based on RSync/RSnapshot
 - Backup Linux/Windows clients
 - Instant recovery!
 - Pre-scripts & Post-scripts
-- Multilanguage (English, Basque, Spanish)
+- Multilanguage (English, Basque, Spanish, German)
 
 ## Documentation
 * [Installation](https://github.com/elkarbackup/elkarbackup/wiki/Installation)
@@ -27,11 +27,6 @@ Do you need more?
 - [User Guide (Basque)](http://docs.elkarbackup.org/eu/index.html)
 - [User Guide (Spanish)](http://docs.elkarbackup.org/es/index.html)
 
-
-
-## Ready-to-use VM
-
-If you prefer, you can download [ready-to-use VM] (https://github.com/elkarbackup/elkarbackup/wiki/DownloadVirtualMachine) for your KVM/Proxmox/VMware virtualization server
 
 ## Mailing list
 
