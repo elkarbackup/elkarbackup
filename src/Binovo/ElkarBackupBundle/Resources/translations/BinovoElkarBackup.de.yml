@@ -1,0 +1,454 @@
+'A month': 'Ein Monat'
+'A year': 'Ein Jahr'
+'About': 'Über'
+'Actions': 'Aktionen'
+'active': 'aktiv'
+'Active': 'Aktiv'
+'Add job': 'Aufgabe hinzufügen'
+'Add key': 'Schlüssel hinzufügen'
+'Add': 'Hinzufügen'
+'Admin': 'Admin'
+'All messages': 'Alle Nachrichten'
+'All': 'Alle'
+'Authorized keys': 'Erlaubte Schlüssel'
+'Authorized_keys file (%filename%) updated.': 'Die Datei Authorized_keys (%filename%) wurde aktualisiert.'
+'Back to client': 'Zurück zum Gerät'
+'Back to job': 'Zurück zu den Aufgaben'
+'Backup script': 'Sicherungsskript'
+'Backup server login': 'Anmeldung Backup Server'
+'Backups dir': 'Sicherungsverzeichnis'
+'Backups': 'Sicherungen'
+'Browse': 'Durchsuchen'
+'Can not have the retention count of the first backup level set to 1, and have a second backup level': 'Die Anzahl der aufzubewahrenden Kopien in dieser Sicherungsebene darf nicht 1 sein, wenn es eine weitere Sicherungsstufe gibt. Wert erhöhen oder weitere Ebene entfernen.'
+'Change password': 'Passwort ändern'
+'Change': 'Ändern'
+'Client "%clientid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%': 'Gerät "%clientid%" %scripttype% Skript "%scriptname%" Ausführung fehlgeschlagen. Diagnosehinweis(e): %output%'
+'Client "%clientid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%': 'Gerät "%clientid%" %scripttype% Skript "%scriptname%" war erfolgreich. Ausgabe: %output%'
+'Client "%clientid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.': 'Gerät "%clientid%" %scripttype% Skript "%scriptname%" existiert, aber die Datei "%scriptfile%" fehlt.'
+'Client "%clientid%" at %loadLevel% of quota (%quota%MB).': 'Gerät "%clientid%" at %loadLevel% of quota (%quota%MB).'
+'Client "%clientid%" post script error.': 'Gerät "%clientid%" Postskript-Fehler.'
+'Client "%clientid%" post script error.': 'Gerät "%clientid%" Postskript-Fehler.'
+'Client "%clientid%" post script ok.': 'Gerät "%clientid%" Postskript ok.'
+'Client "%clientid%" post script ok.': 'Gerät "%clientid%" Postskript ok.'
+'Client "%clientid%" pre script failed. Aborting backup.': 'Gerät "%clientid%" Pre-Skript fehlgeschlagen. Sicherung (wird) abgebrochen.'
+'Client "%clientid%" pre script ok.': 'Gerät "%clientid%" Pre-Skript ok.'
+'Client "%clientid%" quota exceeded (quota: %quota%MB, disk usage: %du%MB).': 'Gerät "%clientid%" hat das Limit erreicht (Limit: %quota%MB, Auslastung Speicher: %du%MB).'
+'Client "%clientid%", Job "%jobid%" du begin.': 'Gerät "%clientid%", Aufgabe "%jobid%" du begin.'
+'Client "%clientid%", Job "%jobid%" du end.': 'Gerät "%clientid%", Aufgabe "%jobid%" du end.'
+'Client "%clientid%", Job "%jobid%" error.': 'Gerät "%clientid%", Aufgabe "%jobid%" Fehler.'
+'Client "%clientid%", Job "%jobid%" ok.': 'Gerät "%clientid%", Aufgabe "%jobid%" ok.'
+'Client %name% as post script': 'Gerät %name% als Postskript'
+'Client %name% as pre script': 'Gerät %name% als Pre-Skript'
+'Client': 'Gerät'
+'Clients': 'Geräte'
+'Command %command% failed. Diagnostic information follows: %output%': 'Befehl %command% fehlgeschlagen. Diagnosehinweis(e): %output%'
+'Command %command% succeeded with output: %output%': 'Befehl %command% erfolgreich mit Hinweis(en): %output%'
+'Command was unable to send the notification message: %exception%': 'Befehl konnte die Nachricht nicht senden: %exception%'
+'Comment': 'Kommentar'
+'Comment / Key': 'Kommentar / Schlüssel'
+'Config': 'Konfiguration'
+'Confirm new password': 'Neues Passwort bestätigen'
+'Currently not used': 'Derzeit nicht genutzt'
+'Daily backups activated, daily count can not be 0': 'Tägliche Sicherung ist aktiviert, Wert darf nicht 0 sein'
+'Daily': 'Täglich'
+'Day of month:': 'Tag im Monats:'
+'Day of month': 'Tag im Monat'
+'Day of week:': 'Wochentag:'
+'Day of week': 'Wochentag'
+'Day of year:': 'Tag im Jahr:'
+'Days of the week': 'Wochentage'
+'Delete client %clientid%, job %jobid%': 'Lösche Gerät %clientid%, Aufgabe %jobid%'
+'Delete script %scriptname%': 'Lösche Skript %scriptname%'
+'Delete': 'Löschen'
+'Description': 'Beschreibung'
+'Directory': 'Verzeichnis'
+'Disable background' : 'Hintergrund deaktivieren'
+'Disk usage': 'Auslastung Speicher'
+'Documentation will be available soon': 'Dokumentation bald verfügbar'
+'Download as .tgz': 'Herunterladen als .tgz'
+'Download as .zip': 'Herunterladen als .zip'
+'Download': 'Herunterladen'
+'During the day': 'Tagsüber'
+'Edit client': 'Gerät bearbeiten'
+'Edit Job': 'Aufgabe bearbeiten'
+'Edit policy': 'Regel bearbeiten'
+'Edit script': 'Skript bearbeiten'
+'Edit User': 'Benutzer bearbeiten'
+'Edit': 'Bearbeiten'
+'Email': 'Email'
+'Error closing config file %filename%.': 'Error closing config file %filename%.'
+'Error log for backup from job %joburl%': 'Error log for backup from job %joburl%'
+'Error opening config file %filename%. Aborting backup.': 'Fehler beim Öffnen der Konfiguration %filename%. Sicherung (wird) abgebrochen.'
+'Error saving parameter "%param%"': 'Fehler beim Speichern des Parameters "%param%"'
+'Error unlinking config file %filename%.': 'Error unlinking config file %filename%.'
+'Error updating authorized_keys file (%filename%)': 'Fehler beim aktualisieren der Schlüsseldatei (%filename%)'
+'Error writing to config file %filename%. Aborting backup.': 'Fehler beim Schreiben der Konfiguration %filename%. Sicherung wird abgebrochen.'
+'Errors and up': 'Fehler und höher'
+'Exclude': 'Ausschließen'
+'File': 'Datei'
+'Five years': 'Fünf Jahre'
+'Four years': 'Vier Jahre'
+'Friday': 'Freitag'
+'Help': 'Hilfe'
+'Home': 'Start'
+'Host': 'Host'
+'Hourly backups activated, hourly count can not be 0': 'Stündliche Sicherungen aktiviert, Wert darf nicht 0 sein'
+'Hourly': 'Stündlich'
+'Hours': 'Stunden'
+'Id': 'Id'
+'Inactive': 'Inaktiv'
+'Include': 'Einschließen'
+'Invalid time specified.': 'Ungültige Zeit definiert.'
+'Is active': 'Aktiv'
+'Job %jobid% has no policy': 'Für Aufgabe %jobid% wurde keine Regel festgelegt'
+'Job %name% as post script': 'Aufgabe %name% als Postskript'
+'Job %name% as pre script': 'Aufgabe %name% als Pre-Skript'
+'Job execution requested successfully': 'Ausführung der Aufgabe war erfolgreich'
+'Jobs prioritized': 'Aufgaben wurden priorisiert'
+'Jobs reordered': 'Aufgaben wurden neu bestellt '
+'Jobs': 'Aufgaben'
+'Key file updated. The update should be effective in less than 2 minutes.': 'Schlüsseldatei wurde aktualisiert. Die Aktualisierung dauert weniger als 2 Minuten.'
+'Key': 'Schlüssel'
+'Language': Language
+'language_de': Deutsch
+'language_en': English
+'language_es': Español
+'language_eu': Euskara
+'Last log entry': 'Letzter Log-Eintrag'
+'Level': 'Level'
+'Link': 'Link'
+'Login': 'Anmeldung'
+'Logout': 'Abmelden'
+'Logs': 'Logs'
+'Mailer from': 'Mailer Absendername'
+'Mailer host': 'Mailer Host'
+'Mailer password': 'Mailer Passwort'
+'Mailer transport': 'Mailer Transport'
+'Mailer user': 'Mailer Benutzer'
+'Make backups during the day': 'Sicherungen tagsüber einrichten'
+'Make daily backups': 'Tägliche Sicherungen einrichten'
+'Make weekly backups': 'Wöchentliche Sicherungen einrichten'
+'Make monthly backups': 'Monatliche Sicherungen einrichten'
+'Make yearly backups': 'Jährliche Sicherungen einrichten'
+'Manage backups location': 'Sicherungsorte verwalten'
+'Manage parameters': 'Parameter verwalten'
+'Message': 'Nachricht'
+'Missing job.': 'Aufgabe fehlt.'
+'Modification date': 'Änderungsdatum'
+'Monday': 'Montag'
+'Monthly backups activated, monthly count can not be 0': 'Monatliche Sicherung ist aktiviert, Wert darf nicht 0 sein'
+'Monthly': 'Monatlich'
+'MySQL DB name': 'MySQL Datenbankname'
+'MySQL host': 'MySQL host'
+'MySQL password': 'MySQL Passwort'
+'MySQL port': 'MySQL Port'
+'MySQL user': 'MySQL Benutzer'
+'Name': 'Name'
+'Never': 'Niemals'
+'New password': 'Neues Passwort'
+'New': 'Hinzufügen'
+'No keys defined': 'Keine Schlüssel definiert'
+'No script': 'Kein Skript'
+'No such job.': 'Keine solche Aufgabe vorhanden.'
+'None': 'Nichts'
+'Nothing to run.': 'Nichts zu starten.'
+'Notices and up': 'Notizen und höher'
+'Notify only': 'Nur informieren bei'
+'Number of copies to keep': 'Anzahl der aufzubewahrenden Kopien'
+'Object': 'Objekt'
+'Old password': 'Altes Passwort'
+'One day': 'Ein Tag'
+'One week': 'Eine Woche'
+'Owner': 'Eigentümer'
+'Parameters updated': 'Parameter wurden aktualisiert'
+'Password changed': 'Passwort geändert'
+'Password': 'Passwort'
+'Password:': 'Passwort:'
+'Passwords do not match': 'Passworte stimmen nicht überein'
+'Path not found:': 'Pfad nicht gefunden: '
+'Path': 'Pfad'
+'Policies': 'Regeln'
+'Policy %policyid% has no active retains': 'Regel %policyid% hat keine aktive Sicherung'
+'Policy': 'Regel'
+'Post script': 'Postskript'
+'Pre script': 'Pre-Skript'
+'Public key generation requested': 'Öffentlicher Schlüssel angefordert'
+'Public key': 'Öffentlicher Schlüssel'
+'Quota warning level': 'Limitierung Warnstufe'
+'Quota': 'Limit (GB)'
+'Really delete client %name%? This will remove all related jobs and backups': 'Gerät %name% wirklich löschen? Es werden alle dazugehörigen Aufgaben und Sicherungen entfernt.'
+'Really delete job %name%? This will remove all related backups': 'Aufgabe %name% wirklich löschen? Es werden alle dazugehörigen Sicherungen entfernt.'
+'Really delete policy %name%?': 'Regel %name% wirklich löschen?'
+'Really delete script %name%?': 'Skript %name% wirklich löschen?'
+'Records per page': 'Einträge pro Seite'
+'Remove logs older than' : 'Logs löschen, die älter sind als'
+'Removing the policy %name% failed. Check that it is not in use.': 'Entfernen der Regel %name% ist fehlgeschlagen. Prüfe, ob sie noch genutzt wird.'
+'Removing the script %name% failed. Check that it is not in use.': 'Entfernen des Skripts %name% ist fehlgeschlagen. Check that it is not in use.'
+'Repository backup script': 'Repository Backup Skript'
+'Restore': 'Wiederherstellen'
+'Retention policy': 'Aufbewahrungsrichtlinie'
+'Run now': 'Jetzt starten'
+'Running %command%': 'Starte %command%'
+'Saturday': 'Samstag'
+'Save client %clientid%': 'Gerät %clientid% sichern'
+'Save': 'Speichern'
+'Saved': 'Gespeichert'
+'Script "%id%" not found': 'Skript "%id%" nicht gefunden'
+'Scripts': 'Skripte'
+'Send notices to': 'Nachrichten senden an'
+'Set Parameter %paramname%': 'Setze Parameter %paramname%'
+'Show home page': 'Zeige Startseite'
+'Show Logs': 'Zeige Logs'
+'Show': 'Zeige'
+'Six months': 'Sechs Monate'
+'Sort jobs': 'Aufgaben sortieren'
+'Source': 'Quelle'
+'Status': 'Status'
+'Sunday': 'Sonntag'
+'Sync first': 'Zuerst synchronisieren'
+'Number of copies to keep': 'Anzahl der aufzubewahrenden Kopien'
+'The number of copies to make during the day': 'Anzahl der Kopien während des Tages'
+'There are no jobs': 'Es sind keine Aufgaben vorhanden'
+'Three weeks': 'Drei Wochen'
+'Three years': 'Drei Jahre'
+'Thursday': 'Donnerstag'
+'Time': 'Zeit'
+'Time of day': 'Tageszeit'
+'TODO': 'Noch zu erledigen'
+'Tuesday': 'Dienstag'
+'Two weeks': 'Zwei Wochen'
+'Two years': 'Zwei Jahre'
+'Unable to delete client: %extrainfo%': 'Gerät kann nicht gelöscht werden: %extrainfo%'
+'Unable to delete job: %extrainfo%': 'Aufgabe kann nicht gelöscht werden: %extrainfo%'
+'Unable to find Client entity': 'Gerät wurde nicht gefunden :'
+'Unable to find Job entity:': 'Aufgabe wurde nicht gefunden: '
+'Unable to find public key:': 'Öffentlicher Schlüssel wurde nicht gefunden:'
+'Unable to save your changes: %extrainfo%': 'Änderungen konnten nicht gespeichert werden: %extrainfo%'
+'Updating key file %keys%': 'Schlüsseldatei %keys% wird aktualisiert'
+'Upload dir': 'Upload-Verzeichnis'
+'Upload post script': 'Postskript hochladen'
+'Upload pre script': 'Pre-Skript hochladen'
+'Uploading a script is mandatory for script creation.': 'Um ein EB-Skript zu erstellen ist ein Skript erforderlich.'
+'Url': 'Url'
+'Url prefix': 'Url prefix'
+'Use local permissions': 'Lokale Berechtigungen verwenden'
+'Used by': 'Genutzt von'
+'User %username% logged in.': 'Benutzer %username% ist angemeldet.'
+'User': 'Benutzer'
+'Username': 'Benutzername'
+'Username:': 'Benutzername:'
+'Users': 'Benutzer'
+'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise': 'Schlüssel werden erzeugt. Sie sind binnen 2 Minuten verfügbar. Falls nicht, prüfe die Logs.'
+'Warning: the directory does not exist': 'Warnung: Verzeichnis existiert nicht'
+'Warnings and up': 'Warnungen und höher'
+'Wednesday': 'Mittwoch'
+'Weekly backups activated, weekly count can not be 0': 'Wöchentliche Sicherungen sind aktiviert, Wert darf nicht 0 sein'
+'Weekly': 'Wöchentlich'
+'Welcome to the backup server configuration application.': 'Willkommen in der Konfigurationsoberfläche des Backup-Servers.'
+'Wrong old password': 'Falsches altes Passwort'
+'Yearly backups activated, yearly count can not be 0': 'Jährliche Sicherungen sind aktiviert, Wert darf nicht 0 sein'
+'Yearly': 'Jährlich'
+'Yes': 'Ja'
+'You forgot to specify hours during the day': 'Du hast vergessen die Stunden im Tag zu definieren'
+'Add client': 'Gerät hinzufügen'
+'Backup not found': 'Sicherung nicht gefunden'
+'Client has not yet been saved': 'Gerät wurde noch nicht gespeichert'
+'Job has not yet been saved': 'Aufgabe wurde noch nicht gespeichert'
+'Impossible to delete superuser account': 'Es ist nicht möglich den Superuser-Account zu löschen'
+'This script is used by some client or job': 'Das Skript ist durch ein Gerät oder eine Aufgabe in Verwendung.'
+'Run as': 'Starte bei'
+'Job': 'Aufgabe'
+'Before': 'Vorher'
+'After': 'Danach'
+'Size' : 'Größe'
+'Back to root' : 'Zurück zum Ursprung'
+'Preferences': 'Optionen'
+'Manage preferences': 'Optionen verwalten'
+'Actions': 'Aktionen'
+'Abort': 'Abbruch'
+'More': 'Mehr'
+'Clone': 'Klonen'
+'Abort job': 'Aufgabe abbrechen'
+'Test connection': 'Test'
+policy_help: |
+ <h4>Name</h4>
+ Dient der Identifizierung der Regel. Er wird in Listen und Feldern angezeigt. Der Name muss einmalig sein und bleiben. Bleibt er das nicht, wird die Anwendung darauf hinweisen, dass es bereits eine Regel mit diesem Namen gibt.
+ <h4>Beschreibung</h4>
+ Freitext zur Beschreibung der Regel. Setze ein, was immer Dir nützlich und sinnhaft erscheint.
+ <h4>Ausschließen und Einschließen</h4>
+ Die Anwendung interpretiert jede Zeile im Ausschlussfeld und jede Zeile im Einschließen-Feld als Muster. Durch die intelligente Verwendung dieser Felder können Sie leicht auswählen, welche Dateien in den Snapshot aufgenommen und welche ignoriert werden sollen. Die beiden Felder interagieren auf folgende Weise für jede Datei und jedes Verzeichnis im Snapshot:
+ <ol>
+  <li>Wenn eine Datei oder ein Verzeichnis mit einer Zeile im Feld "Einschließen" übereinstimmt, wird die Anwendung diese Datei oder das Verzeichnis in die Sicherung einbinden. </li>
+  <li>Wenn eine Datei oder ein Verzeichnis mit einer Zeile im Feld "Ausschließen" übereinstimmt, wird die Anwendung diese Datei oder das Verzeichnis ignorieren und NICHT sichern. </li>
+  <li>Wenn eine Datei oder ein Verzeichnis nicht mit Werten dieser Felder übereinstimmt, wird es gesichert.</li>
+ </ol>
+ Wie Du siehst, sichert die Anwendung alle Dateien standardmäßig, ausgenommen solche, die im Ausschließen-Muster und NICHT im Einschließen-Muster definiert sind.
+ Beachte, dass jede Aufgabe eigene Definitionen zum ein- und ausschließen hat. Die jeweils in der Aufgabe hinterlegten Definitionen haben Vorrang vor denen der allgemeinen Regel.
+ <h4>Zuerst synchronisieren</h4>
+ Wenn "Zuerst synchronisieren" aktiviert ist, erfolgt die Datensynchronisation vor der Erstellung des Snapshots. Die Rotation erfolgt dann ohne die Verbindung zum Gerät. Das sichert die Konsistenz des Backups, kostet aber einen zusätzlichen Snapshot an Speicherplatz während der Synchronisation.
+ <h4>Tagsüber</h4>
+ Snapshots, die während des Tages erstellt werden.
+ <h4>Täglich</h4>
+ Snapshots am gewählten Tag zur angegebenen Zeit.
+ <h4>Wöchentlich</h4>
+ Snapshots einmal pro Woche.
+ <h4>Monatlich</h4>
+ Snapshots einmal pro Monat.
+ <h4>Jährlich</h4>
+ Snapshots einmal pro Jahr.
+client_help: |
+ <h4>Name</h4>
+ Dient der Identifizierung des Geräts. Es wird in Listen und Feldern angezeigt. Der Name muss einmalig sein und bleiben. Bleibt er das nicht, wird die Anwendung darauf hinweisen, dass es bereits ein Gerät mit diesem Namen gibt.
+ <h4>Url</h4>
+ Hier wird die Zeichenfolge hinterlegt, die zum Herstellen der Verbindung zum Gerät benutzt wird. Die Anwendung verwendet diesen Wert zusammen mit der Pfadangabe als komplette Url für die Aufgabe. Typische Werte für dieses Feld sind:
+ <ul>
+   <li>Es kann leer bleiben. Das ist sinnvoll, wenn die zu sichernden Daten im lokalen Dateisystem liegen.</li>
+   <li><i>user@domain.name</i> Die Anwendung wird sich via SSH mit dem Gerät unter <i>domain.name</i> verbinden und dabei <i>user</i> als Benutzer verwenden.</li>
+   <li><i>user@domain.name:</i> Beachte den Doppelpunkt. Macht das Gleiche wie eben, nutzt dabei aber nicht SSH, sondert verbindet sich direkt mit dem rsync Server des entfernten Geräts.</li>
+ </ul>
+ <h4>Limit</h4>
+ Der Wert in GB der auf der Festplatte benutzt werden darf. -1 bedeutet "ohne Limitierung". Wenn der eingestellte Grenzwert (standardmäßig 80%) erreicht ist, wird die Anwendung eine Warnung an die in den Aufgaben hinterlegten Personen ausgeben. Die Anwendung wird Aufgaben mit Fehlermeldung verwerfen, sollte der benötigte Speicherbedarf höher sein, als es das Limit zulässt.
+ <h4>Auslastung Speicher</h4>
+ Aktuelle Auslastung der Festplatte.
+ <h4>Beschreibung</h4>
+ Freitext, um das Gerät näher zu beschreiben. Schreibe hinein, was immer sinnhaft erscheinen mag.
+ <h4>Aktiv</h4>
+ Wenn dieses Kontrollkästchen nicht markiert ist, werden keine Snapshots angelegt.
+ <h4>Pre- und Postskripte</h4>
+ Skripte die entweder vor und/oder nach einer Aufgabe auf einem Gerät ausgeführt werden sollen. Denke bspw. an VPN-Verbindungen, Ordner anlegen, etc.. Sollten mehrere Pre- oder Postskripte verwendet werden, ist die Reihenfolge der Ausführung nicht spezifiziert.
+ <h4>Eigentümer</h4>
+ Dieser Benutzer ist in der Lage dieses Gerät und dazugehörige Aufgaben zu administrieren. Nur ein Admin kann den Eigentümer ändern.
+ <h4>Erweitert</h4>
+ <ul>
+ <li><b>SSH args</b>: Eigene SSH Argumente. Beispiel: -p2222 (wird zu SSH port TCP/2222 verbinden)</li>
+ <li><b>Rsync short args</b>: Eigene Rsync short args. Bereits enthalten: -a</li>
+ <li><b>Rsync long args</b>: Eigene Rsync long args. Beispiel: --bwlimit=500 (limitiert die Bandbreite auf 200kb/s). Bereits enthalten: --delete --numeric-ids --relative --delete-excluded --stats</li>
+ </ul>
+client_job_help: |
+ <h4>Aufgaben</h4>
+ Hier werden die wichtigsten Parameter einer Aufgabe zum angelegten Gerät bearbeitet. Vergiss' nicht, die Änderungen zu speichern.
+job_help: |
+ <h4>Name</h4>
+ Dient der Identifizierung der Aufgabe. Wird in Listen und Feldern angezeigt. Der Name muss einmalig sein und bleiben. Bleibt er das nicht, wird die Anwendung darauf hinweisen, dass es bereits eine Aufgabe mit diesem Namen gibt.
+ <h4>Pfad</h4>
+ Der Pfad oder der Name der rsync-Ressource im Gerät.
+ <h4>Auslastung Speicher</h4>
+ Von der Aufgabe verwendete Auslastung der Festplatte.
+ <h4>Beschreibung</h4>
+ Freitext um die Aufgabe näher zu beschreiben. Schreibe hinein, was immer sinnhaft erscheinen mag.
+ <h4>Aktiv</h4>
+ Wenn dieses Kontrollkästchen nicht markiert ist, werden keine Snapshots angelegt.
+ <h4>Nachrichten senden an</h4>
+ Du kannst die Anwendung anweisen, eine oder mehrere der folgenden Personen per E-Mail über Ereignisse zu informieren. Die Anwendung entscheidet, welche Ereignisse gemeldet werden, basierend auf den Einstellungen zu "Nur informieren bei". Wenn Du eine beliebige E-Mail benachrichtigen möchtest, muss diese hier eingefügt werden.
+ <h4>Nur informieren bei</h4>
+ Um den Nachrichtenfluss so gering wie möglich zu halten, kann die Anwendung so konfiguriert werden, dass sie nur in bestimmten Fällen Nachrichten versendet.
+ <h4>Pre- und Postskripte</h4>
+ Skripte, die vor und/oder nach der eigentlichen Aufgabe ausgeführt werden. Denke bspw. an VPN-Verbindungen, Ordner anlegen, etc.. Sollten mehrere Pre- oder Postskripte verwendet werden, ist die Reihenfolge der Ausführung nicht spezifiziert.
+ <h4>Regel</h4>
+ Wähle die zu verwendende Regel für diese Aufgabe aus. Die Regel definiert, wieviele Snapshots angelegt und aufbewahrt werden. Wenn dieses Feld leer bleibt, werden keine Snapshots angelegt.
+ <h4>Lokale Berechtigungen verwenden</h4>
+ Rsnapshot bemüht sich die Dateiberechtigungen exakt so zu behalten, wie in der Quelle. Das kann aber zu Problemen unter Windows führen. Sollte das der Fall sein, aktiviere diese Option. Das kann die Datei für den Webserver unlesbar machen.
+ <h4>Ein- und Ausschließen</h4>
+ Die Anwendung interpretiert jede Zeile im Ausschlussfeld und jede Zeile im Einschließen-Feld als Muster. Durch die intelligente Verwendung dieser Felder können Sie leicht auswählen, welche Dateien in den Snapshot aufgenommen und welche ignoriert werden sollen. Die beiden Felder interagieren auf folgende Weise für jede Datei und jedes Verzeichnis im Snapshot:
+ <ol>
+  <li>Wenn eine Datei oder ein Verzeichnis mit einer Zeile im Feld "Einschließen" übereinstimmt, wird die Anwendung diese Datei oder das Verzeichnis in die Sicherung einbinden. </li>
+  <li>Wenn eine Datei oder ein Verzeichnis mit einer Zeile im Feld "Ausschließen" übereinstimmt, wird die Anwendung diese Datei oder das Verzeichnis ignorieren und NICHT sichern. </li>
+  <li>Wenn eine Datei oder ein Verzeichnis nicht mit Werten dieser Felder übereinstimmt, wird es gesichert.</li>
+ </ol>
+ Wie Du siehst, sichert die Anwendung alle Dateien standardmäßig, ausgenommen solche, die im Ausschließen-Muster und NICHT im Einschließen-Muster definiert sind.
+ Wenn das Einschließen-Feld leer bleibt und nur dann, wird die Anwendung die definierten Direktiven aus den Regeln anwenden. Das Gleiche gilt für das Ausschließen-Feld.
+ <h4>Erweitert</h4>
+ <ul>
+  <li><b>Token</b>: Aufgaben-Token werden genutzt, um Aufgaben auf dem entfernten Gerät anonymisiert ausführen zu lassen. Lösche den Token um dieses Merkmal zu deaktivieren.</li>
+ </ul>
+user_help: |
+ <h4>Name</h4>
+ Dient der Identifizierung des Benutzers. Er wird in Listen und Feldern angezeigt. Der Name muss einmalig sein und bleiben. Bleibt er das nicht, wird die Anwendung darauf hinweisen, dass es bereits einen Benutzer mit diesem Namen gibt.
+ <h4>Email</h4>
+ Eine Angabe der E-Mail-Adresse ist sehr wichtig. Alle Benachrichtigungen für diesen Benutzer werden an diese Adresse gesandt.
+ <h4>Activ</h4>
+ Wenn dieses Kästchen nicht angehakt wird, kann sich der Benutzer nicht anmelden.
+ <h4>Rolle</h4>
+ <ul>
+  <li><b>Admin</b>: Administratoren sind in der Lage alles zu ändern</li>
+  <li><b>User</b>: Benutzer können nur ihre eigenen Geräte und Aufgaben verwalten. Achtung: Benutzer können die Aktivitäten anderer Benutzer sehen</li>
+ </ul>
+ <h4>Passwort</h4>
+ Das Passwort kann nicht eingesehen werden. Dieses Feld kann nur benutzt werden, um das Passwort zu ändern. Jede Eingabe (außer leeres Feld), die mit Speichern bestätigt wird, ändert das Passwort entsprechend.
+params_help: |
+ <h4>MySQL Konfiguration</h4>
+ Diese Parameter konfigurieren die Verbindung zur Datenbank. Hier ist Vorsicht geboten! Wird hier nicht korrekt gearbeitet, verweigert die Anwendung ihren Dienst.
+ <h4>Mailversand konfigurieren</h4>
+ Diese Parameter konfigurieren die Anwendung so, wie sie E-Mails versenden soll. Vorsicht, die Anwendung sendet keine Benachrichtigungen, wenn diese Einstellungen falsch sind. <a href="http://symfony.com/doc/current/cookbook/email/email.html">Die Dokumentation des Symfony Projekts</a> ist vielleicht hilfreich.
+ <h4>Upload-Verzeichnis</h4>
+ Die Anwendung speichert alle Pre- und Postskripte in diesem verzeichnis. Es muss schreibbar für den Benutzer des Webservers sein.
+ <h4>Entferne Logs älter als</h4>
+ Die Anwendung bereinigt periodisch die Logs, damit diese nicht zu groß werden. Alle Einträge, doe älter sind als hier definiert, werden gelöscht.
+ <h4>Warnung bei Erreichen eines Limits</h4>
+ Wenn der vom Gerät verwendete Speicherplatz diesen Prozentsatz in Bezug auf das Kontingent erreicht, wird gewarnt.
+ <h4>Eintrag pro Seite</h4>
+ Anzahl der Einträge, die auf der Seite angezeigt werden.
+ <h4>Url prefix</h4>
+ Abhängig von der Apache Konfiguration, kann die URL, die von den Sicherungsaufgaben erstellt worden ist, in den Logs falsch angezeigt werden. Beispiel, wenn http://your.host/client/1 erstellt wurde, obwohl Du http://your.host/elkarbackup/client/1 erwarten würdest, dann setze diesen Wert auf /elkarbackup.
+backupscriptconfig_help: |
+ <h4>Erlaubte Schlüssel</h4>
+ Hier kann ein öffentlicher Schlüssel der Anwendung hinzugefügt werden. Das ist notwendig, wenn von diesem Server mittels Skript Sicherungen erstellt werden sollen.
+managebackups_help: |
+ <h4>Host</h4>
+ Der Hostname oder die IP-Adresse des NFS-Server. Das Feld einfach leer lassen, falls es sich um ein lokales Dateisystem handelt.
+ <p>Diese Anwendung nutzt autofs, um die das entfernte System einzubinden. Sollte dieses Feld nicht zu bearbeiten sein, ist autofs nicht korrekt konfiguriert.</p>
+ <h4>Verzeichnis</h4>
+ Der komplette Pfad im lokalen System oder der Name des NFS-Servers. In jedem Fall muss der Wert mit '/' beginnen.
+ <h4>Tahoe Speicherung</h4>
+ Markiere das Kontrollkästchen, um einen sekundären Tahoe-Speicher zu aktivieren. Vergiß in diesem Fall nicht, die Tahoe-Konfiguration vorzunehmen.
+ <p>Diese Option basiert auf dem Paket "tahoe-lafs". Wenn dieses Paket auf diesem Server nicht installiert ist, ist das Feld deaktiviert.</p>
+script_help: |
+ <h4>Über Skripte</h4>
+ Die Anwendung verwendet zum Ausführen der Skripte den selben Benutzer, der auch die Sicherungen durchführt. Die Anwendung setzt die folgenden Umgebungsvariablen, bevor Skripte gestartet werden:
+ <ul>
+  <li>ELKARBACKUP_LEVEL:  mögliche Werte sind JOB oder CLIENT</li>
+  <li>ELKARBACKUP_EVENT:  mögliche Werte sind PRE oder POST</li>
+  <li>ELKARBACKUP_URL:    dieser Wert stellt die komplette URL der Aufgabe oder eines Geräts dar</li>
+  <li>ELKARBACKUP_ID:     numerische Aufgaben- oder Geräte-ID </li>
+  <li>ELKARBACKUP_PATH:   der komplette Pfad zum Snapshot-Root-Verzeichnis </li>
+  <li>ELKARBACKUP_STATUS: The output status of rsnapshot for post job scripts, always 0 otherwise</li>
+  <li>ELKARBACKUP_CLIENT_NAME:  Gerätename </li>
+  <li>ELKARBACKUP_JOB_NAME: Aufgabenname (empty in client) </li>
+  <li>ELKARBACKUP_OWNER_EMAIL: E-Mail-Adresse des Aufgabenbesitzers (empty in client) </li>
+  <li>ELKARBACKUP_RECIPIENT_LIST: Die E-Mail-Adresse der zu benachrichtigenden Person (empty in client) </li>
+  <li>ELKARBACKUP_CLIENT_TOTAL_SIZE: aktuelle Speicherbelegung des Geräts (in KB) </li>
+  <li>ELKARBACKUP_JOB_TOTAL_SIZE: aktuelle Speicherbelegung der Aufgabe (in KB) </li>
+  <li>ELKARBACKUP_JOB_RUN_SIZE: gesicherte Datenmenge des Durchgangs (in KB) </li>
+  <li>ELKARBACKUP_CLIENT_STARTTIME: Zeitstempel Startzeit der Gerätesicherung (nur im Modus "post-client" verfügbar)</li>
+  <li>ELKARBACKUP_CLIENT_ENDTIME: Zeitstempel Endzeit der Gerätesicherung (nur im Modus "post-client" verfügbar)</li>
+  <li>ELKARBACKUP_JOB_STARTTIME: Zeitstempel Startzeit der Aufgabe (nur im Modus "post-job" verfügbar)</li>
+  <li>ELKARBACKUP_JOB_ENDTIME: Zeitstempel Endzeit der Aufgabe (nur im Modus "post-job" verfügbar)</li>
+  <li>ELKARBACKUP_SSH_ARGS: erweiterte Argumente für die SSH-Verbindung</li>
+ </ul>
+ Wenn Pre-Skripte mit einem anderen Status als 0 beendet werden, bricht die Anwendung diesen Vorgang ab und verhindert so die Ausführung der geplanten Aufgaben. Andererseits wird die Anwendung eine Warnung für diesen Fall ausgeben (das Ausführen der Sicherung wird nicht verhindert).
+ <h4>Name</h4>
+ Dient der Identifizierung des Skripts. Er wird in Listen und Feldern angezeigt. Der Name muss einmalig sein und bleiben. Bleibt er das nicht, wird die Anwendung darauf hinweisen, dass es bereits ein Skript mit diesem Namen gibt.
+ <h4>Beschreibung</h4>
+ Freitext zur Beschreibung des Skripts. Schreibe hinein, was immer sinnhaft erscheint.
+ <h4>Datei</h4>
+ Suche das Skript und lade es hoch.
+ <h4>Gerät - Vorher</h4>
+ Markiere dieses Feld, wenn das Skript direkt nach dem Verbinden mit dem Gerät laufen soll.
+ <h4>Gerät - Danach</h4>
+ Markiere dieses Feld, wenn das Skript vor dem Beenden der Verbindung mit dem Gerät laufen soll.
+ <h4>Aufgabe - Vorher</h4>
+ Markiere diese Feld, wenn das Skript vor der Aufgabe ausgeführt werden soll.
+ <h4>Aufgabe - Danach</h4>
+ Markiere dieses Feld, wenn das Skript nach der Aufgabe ausgeführt werden soll.
+sort_jobs_help: |
+ <h4>Aufgaben sortieren</h4>
+ Du kannst die Reihenfolge, in der die Aufgaben abgearbeitet werden, verändern. Das kann sehr hilfreich sein, wenn Du mehrere Aufgaben für die selbe Zeit erstellt hast.
+ <p>Du kannst die Sorierung frei wählen. Einfach "draggen & droppen".</p>
+preferences_help: |
+ <h4>Verwaltung Benutzervorlieben</h4>
+ Alles was Du hier änderst betrifft keine anderen Benutzer.
+ <h4>Sprache</h4>
+ Wähle Deine bevorzugte Sprache
+ <h4>Einträge pro Seite</h4>
+ Wähle die Anzahl der Einträge, die Du pro Seite anzeigen lassen möchtest
+ 
