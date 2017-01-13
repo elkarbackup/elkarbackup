@@ -1,7 +1,11 @@
-## Upcoming
+## 1.2.5 (2017/01/13)
+Features:
+  - Added german translation (#185) by @nephilim75
+
 Bugfixes:
   - Notifications: SMTP transport not working (#174)
   - PHP Notice: Undefined variable: job (#172)
+  - Translate some missing strings (#185)
 
 ## 1.2.4 (2016/10/18)
 Bugfixes:
