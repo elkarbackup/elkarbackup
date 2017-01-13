@@ -23,9 +23,10 @@ ElkarBackup is a free open-source backup solution based on RSync/RSnapshot
 
 Do you need more?
 
-- [Installation & User Guide (Basque)] (http://docs.elkarbackup.org/eu/index.html)
-- [Installation & User Guide (Spanish)] (http://docs.elkarbackup.org/es/index.html)
-- Installation & User Guide (English) - TODO
+- User Guide (English)] - (http://docs.elkarbackup.org/en/index.html)
+- User Guide (Basque)] (http://docs.elkarbackup.org/eu/index.html)
+- User Guide (Spanish)] (http://docs.elkarbackup.org/es/index.html)
+
 
 
 ## Ready-to-use VM
