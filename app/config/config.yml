@@ -119,4 +119,4 @@ services:
         class: Binovo\ElkarTahoeBundle\Utils\TahoeBackup
         arguments: ["@BnvWebLogger", %home%]
 parameters:
-    supported_locales: [es, en, eu]
+    supported_locales: [es, en, eu, de]
