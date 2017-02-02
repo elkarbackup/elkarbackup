@@ -109,7 +109,7 @@
 'Jobs': 'Aufgaben'
 'Key file updated. The update should be effective in less than 2 minutes.': 'Schlüsseldatei wurde aktualisiert. Die Aktualisierung dauert weniger als 2 Minuten.'
 'Key': 'Schlüssel'
-'Language': Language
+'Language': 'Sprache'
 'language_de': Deutsch
 'language_en': English
 'language_es': Español
@@ -174,7 +174,7 @@
 'Pre script': 'Pre-Skript'
 'Public key generation requested': 'Öffentlicher Schlüssel angefordert'
 'Public key': 'Öffentlicher Schlüssel'
-'Quota warning level': 'Limitierung Warnstufe'
+'Quota warning level': 'Limit-Warnung'
 'Quota': 'Limit (GB)'
 'Really delete client %name%? This will remove all related jobs and backups': 'Gerät %name% wirklich löschen? Es werden alle dazugehörigen Aufgaben und Sicherungen entfernt.'
 'Really delete job %name%? This will remove all related backups': 'Aufgabe %name% wirklich löschen? Es werden alle dazugehörigen Sicherungen entfernt.'
@@ -184,9 +184,11 @@
 'Remove logs older than' : 'Logs löschen, die älter sind als'
 'Removing the policy %name% failed. Check that it is not in use.': 'Entfernen der Regel %name% ist fehlgeschlagen. Prüfe, ob sie noch genutzt wird.'
 'Removing the script %name% failed. Check that it is not in use.': 'Entfernen des Skripts %name% ist fehlgeschlagen. Check that it is not in use.'
-'Repository backup script': 'Repository Backup Skript'
+'Repository backup script': 'Repository Sicherungsskript'
+'Repository backups script': 'Repository Sicherungsskript'
 'Restore': 'Wiederherstellen'
 'Retention policy': 'Aufbewahrungsrichtlinie'
+'Roles': 'Rollen'
 'Run now': 'Jetzt starten'
 'Running %command%': 'Starte %command%'
 'Saturday': 'Samstag'
@@ -216,6 +218,7 @@
 'Time of day': 'Tageszeit'
 'TODO': 'Noch zu erledigen'
 'Tuesday': 'Dienstag'
+'Turn on Tahoe storage': 'Tahoe-Speicher aktivieren'
 'Two weeks': 'Zwei Wochen'
 'Two years': 'Zwei Jahre'
 'Unable to delete client: %extrainfo%': 'Gerät kann nicht gelöscht werden: %extrainfo%'
@@ -230,7 +233,7 @@
 'Upload pre script': 'Pre-Skript hochladen'
 'Uploading a script is mandatory for script creation.': 'Um ein EB-Skript zu erstellen ist ein Skript erforderlich.'
 'Url': 'Url'
-'Url prefix': 'Url prefix'
+'Url prefix': 'Url Präfix'
 'Use local permissions': 'Lokale Berechtigungen verwenden'
 'Used by': 'Genutzt von'
 'User %username% logged in.': 'Benutzer %username% ist angemeldet.'
@@ -366,7 +369,7 @@ user_help: |
  Dient der Identifizierung des Benutzers. Er wird in Listen und Feldern angezeigt. Der Name muss einmalig sein und bleiben. Bleibt er das nicht, wird die Anwendung darauf hinweisen, dass es bereits einen Benutzer mit diesem Namen gibt.
  <h4>Email</h4>
  Eine Angabe der E-Mail-Adresse ist sehr wichtig. Alle Benachrichtigungen für diesen Benutzer werden an diese Adresse gesandt.
- <h4>Activ</h4>
+ <h4>Aktiv</h4>
  Wenn dieses Kästchen nicht angehakt wird, kann sich der Benutzer nicht anmelden.
  <h4>Rolle</h4>
  <ul>
@@ -384,11 +387,11 @@ params_help: |
  Die Anwendung speichert alle Pre- und Postskripte in diesem verzeichnis. Es muss schreibbar für den Benutzer des Webservers sein.
  <h4>Entferne Logs älter als</h4>
  Die Anwendung bereinigt periodisch die Logs, damit diese nicht zu groß werden. Alle Einträge, doe älter sind als hier definiert, werden gelöscht.
- <h4>Warnung bei Erreichen eines Limits</h4>
- Wenn der vom Gerät verwendete Speicherplatz diesen Prozentsatz in Bezug auf das Kontingent erreicht, wird gewarnt.
+ <h4>Limit-Warnung</h4>
+ Wenn der vom Gerät verwendete Speicherplatz diesen Prozentsatz, in Relation zum Limit, erreicht, wird gewarnt.
  <h4>Eintrag pro Seite</h4>
- Anzahl der Einträge, die auf der Seite angezeigt werden.
- <h4>Url prefix</h4>
+ Anzahl der Einträge, die auf einer Seite angezeigt werden.
+ <h4>Url Präfix</h4>
  Abhängig von der Apache Konfiguration, kann die URL, die von den Sicherungsaufgaben erstellt worden ist, in den Logs falsch angezeigt werden. Beispiel, wenn http://your.host/client/1 erstellt wurde, obwohl Du http://your.host/elkarbackup/client/1 erwarten würdest, dann setze diesen Wert auf /elkarbackup.
 backupscriptconfig_help: |
  <h4>Erlaubte Schlüssel</h4>
