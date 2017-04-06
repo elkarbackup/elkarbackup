@@ -36,7 +36,7 @@ then
     db_reset elkarbackup/dbadminpassword
     echo "Attempting to create DB $dbname and user $dbusername in $dbhost"
     echo 'Create database'
-    echo "CREATE DATABASE IF NOT EXISTS $dbname DEFAULT CHARACTER SET utf8;" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost"
+    echo "CREATE DATABASE IF NOT EXISTS \`$dbname\` DEFAULT CHARACTER SET utf8;" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost"
     echo 'Create user'
     if [ "$dbhost" = localhost ]
     then
@@ -44,7 +44,7 @@ then
     else
         user="'$dbusername'"
     fi
-    echo "GRANT ALL ON $dbname.* TO $user IDENTIFIED BY '$dbuserpassword';" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost" || true
+    echo "GRANT ALL ON \`$dbname\`.* TO $user IDENTIFIED BY '$dbuserpassword';" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost" || true
     echo 'Configure parameters'
     sed -i "s#database_host:.*#database_host: $dbhost#"                 /etc/elkarbackup/parameters.yml
     sed -i "s#database_name:.*#database_name: $dbname#"                 /etc/elkarbackup/parameters.yml
