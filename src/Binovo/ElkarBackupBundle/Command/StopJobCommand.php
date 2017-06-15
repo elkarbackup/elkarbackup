@@ -76,7 +76,13 @@
                             'source' => Globals::STATUS_REPORT);
            $job->setStatus('ABORTED');
         } else {
-           $this->warn('Cannot abort job backup: not running', array(), $context);
+           if ($job->getStatus() == "ABORTING"){
+              // Avoid endless Aborting status
+              $job->setStatus('ABORTED');
+              $this->warn('Job already aborted', array(), $context);
+           } else {
+              $this->warn('Cannot abort job backup: not running', array(), $context);
+           }
         }
     }
 
