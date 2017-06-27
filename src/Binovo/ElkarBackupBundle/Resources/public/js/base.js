@@ -3,16 +3,6 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-/* Get the URL context from pathname */
-
-function getContext() {
-   var context;
-   context = $(context).prop('pathname').split('/')[1]
-	if (context != ''){
-		context = '/' + context;
-	}
-return context;
-}
 
 
 /*
