@@ -96,20 +96,26 @@
 
     {# table body #}
     {% for client in pagination %}
+    
       {# set clientstatus #}
       {%  if client.logEntry.message|default('')|length > 50 %}
         {% set clientstatus = client.logEntry.message|default('')|slice(0, 50) ~ '...' %}
       {% else %}
         {% set clientstatus = client.logEntry.message|default('')|slice(0, 50) %}
       {% endif %}
+      
       {# human readable disk usage #}
-      {% if client.diskUsage / 1024 > 1024 %}
+      {% if (client.diskUsage / 1024 / 1024) > 1024 %}
+        {% set cdu = (client.diskUsage / 1024 / 1024 / 1024 ) | number_format(1) %}
+        {% set cduunit = "TB" %}
+      {% elseif client.diskUsage / 1024 > 1024 %}
         {% set cdu = (client.diskUsage / 1024 / 1024 ) | number_format(1) %}
         {% set cduunit = "GB" %}
       {% else %}
         {% set cdu = (client.diskUsage / 1024) | number_format(0) %}
         {% set cduunit = "MB" %}
       {% endif %}
+      
       {# used percentage (if quota is set) #}
       {% if client.quota > 0 %}
         {% set cduused = (client.diskUsage / client.quota * 100) | number_format(0)
@@ -165,8 +171,12 @@
 
 
   {% for job in client.jobs %}
+  
   {# human readable disk usage #}
-  {% if job.diskUsage / 1024 > 1024 %}
+  {% if (job.diskUsage / 1024 / 1024) > 1024 %}
+    {% set jdu = (job.diskUsage / 1024 / 1024 / 1024) | number_format(1) %}
+    {% set jduunit = "TB" %}
+  {% elseif job.diskUsage / 1024 > 1024 %}
     {% set jdu = (job.diskUsage / 1024 / 1024) | number_format(1) %}
     {% set jduunit = "GB" %}
   {% else %}
