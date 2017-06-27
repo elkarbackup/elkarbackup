@@ -102,13 +102,26 @@
       {% else %}
         {% set clientstatus = client.logEntry.message|default('')|slice(0, 50) %}
       {% endif %}
+      {# human readable disk usage #}
+      {% if client.diskUsage / 1024 > 1024 %}
+        {% set cdu = (client.diskUsage / 1024 / 1024 ) | number_format(1) %}
+        {% set cduunit = "GB" %}
+      {% else %}
+        {% set cdu = (client.diskUsage / 1024) | number_format(0) %}
+        {% set cduunit = "MB" %}
+      {% endif %}
+      {# used percentage (if quota is set) #}
+      {% if client.quota > 0 %}
+        {% set cduused = (client.diskUsage / client.quota * 100) | number_format(0)
+      {% endif %}
+      
 
 <tr id="client-{{client.id}}" class="client-row client-{{client.id}} {% if client.isActive == false %}disabled{% endif %}">
   <td><input class="select-toggle-check" type="checkbox" value="client{{client.id}}"</input></td>
   <td><span class="client-icon"></span></td>
   <td class="vert-align id"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" href="{{ path('editClient', {id: client.id}) }}"> {{ client.id }}</a></td>
   <td class="vert-align name"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
-  <td class="vert-align diskusage" style="text-align:center{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{% if client.diskUsage / 1024 > 1024 %} {{ (client.diskUsage / 1024 / 1024 ) | number_format(1) }} GB{% else %} {{ (client.diskUsage / 1024) | number_format(0)}} MB{% endif %}{% if client.quota > 0 %} ({{ (client.diskUsage / client.quota * 100) | number_format(0)}}%){% endif %}</td>
+  <td class="vert-align diskusage" style="text-align:center{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{{ cdu }} {{ cduunit }} ({{ cduused }}%)</td>
   <td class="vert-align logentry"> <a data-toggle="tooltip" data-placement="top" title="{{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }}" href="logs?filter[gte][l.level]=0&filter[eq][l.source]=&filter[like][l.link]=%2Fclient%2F{{ client.id }}"> {{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} </a></td>
   <td class="vert-align status"><span class="label
     {% if client.isActive %}
