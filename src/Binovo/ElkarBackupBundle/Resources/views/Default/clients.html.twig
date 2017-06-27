@@ -118,7 +118,7 @@
       
       {# used percentage (if quota is set) #}
       {% if client.quota > 0 %}
-        {% set cduused = (client.diskUsage / client.quota * 100) | number_format(0)
+        {% set cduused = (client.diskUsage / client.quota * 100) | number_format(0) %}
       {% endif %}
       
 
