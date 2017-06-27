@@ -66,7 +66,7 @@ class Client
     /**
      * Quota in KB. -1 means no limit, which is the default.
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     protected $quota = self::QUOTA_UNLIMITED;
 
@@ -293,7 +293,7 @@ class Client
     /**
      * Get diskUsage
      *
-     * @return integer
+     * @return bigint
      */
     public function getDiskUsage()
     {
@@ -307,7 +307,7 @@ class Client
     /**
      * Set quota
      *
-     * @param integer $quota
+     * @param bigint $quota
      * @return Client
      */
     public function setQuota($quota)
@@ -319,7 +319,7 @@ class Client
     /**
      * Get quota
      *
-     * @return integer
+     * @return bigint
      */
     public function getQuota()
     {
