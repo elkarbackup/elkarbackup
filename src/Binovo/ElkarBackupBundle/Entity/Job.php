@@ -107,7 +107,7 @@ class Job
     /**
      * Disk usage in KB.
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     protected $diskUsage = 0;
 
@@ -486,7 +486,7 @@ class Job
     /**
      * Set diskUsage
      *
-     * @param integer $diskUsage
+     * @param bigint $diskUsage
      * @return Job
      */
     public function setDiskUsage($diskUsage)
@@ -499,7 +499,7 @@ class Job
     /**
      * Get diskUsage
      *
-     * @return integer
+     * @return bigint
      */
     public function getDiskUsage()
     {
