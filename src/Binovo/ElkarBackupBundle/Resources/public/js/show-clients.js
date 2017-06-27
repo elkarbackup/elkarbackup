@@ -8,6 +8,7 @@ var paranoidmode = true;
 
 function addClientRow(client){
   var c = client;
+  var context = getContext();
   if (c.id){
     var table = $('table');
     var parent = $('.client-row').first();
@@ -15,8 +16,8 @@ function addClientRow(client){
     clone.prop('id', 'client-'+c.id);
     clone.removeClass();
     clone.addClass('client-row client-'+c.id);
-    clone.find('td.id').html('<a href="/client/'+c.id+'">'+c.id+'</a>');
-    clone.find('td.name').html('<a href="/client/'+c.id+'">'+c.name+'</a>');
+    clone.find('td.id').html('<a href="'+context+'/client/'+c.id+'">'+c.id+'</a>');
+    clone.find('td.name').html('<a href="'+context+'/client/'+c.id+'">'+c.name+'</a>');
     clone.find('td.diskusage').html('0 MB');
     clone.find('td.logentry').html('');
     clone.find('td.status').html('');
@@ -54,6 +55,7 @@ function addClientRow(client){
 function addJobRow(job, client){
   var j = job;
   var c = client;
+  var context = getContext();
   console.log(c);
   if (j.id){
     var table = $('table');
@@ -62,8 +64,8 @@ function addJobRow(job, client){
     clone.prop('id', 'job-'+j.id);
     clone.removeClass();
     clone.addClass('job-row client-'+c.id+' job-'+j.id);
-    clone.find('td.id').html('<a href="/client/'+c.id+'/job/'+j.id+'">'+c.id+'.'+j.id+'</a>');
-    clone.find('td.name').html('<a href="/client/'+j.id+'">'+c.name+'/'+j.name+'</a>');
+    clone.find('td.id').html('<a href="'+context+'/client/'+c.id+'/job/'+j.id+'">'+c.id+'.'+j.id+'</a>');
+    clone.find('td.name').html('<a href="'+context+'/client/'+j.id+'">'+c.name+'/'+j.name+'</a>');
     clone.find('td.diskusage').html('0 MB');
     clone.find('td.logentry').html('');
     clone.find('td.status').html('');
