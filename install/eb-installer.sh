@@ -393,12 +393,12 @@ function create_root_user
 
 function clear_cache
 {
-  php $EB_PATH/app/console cache:clear >/dev/null || return 1
+  php $EB_PATH/app/console cache:clear --env=prod >/dev/null || return 1
 }
 
 function dump_assets
 {
-  php $EB_PATH/app/console assetic:dump >/dev/null || return 1
+  php $EB_PATH/app/console assetic:dump --env=prod >/dev/null || return 1
 }
 
 function invalidate_sessions
