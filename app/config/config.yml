@@ -24,7 +24,7 @@ twig:
     strict_variables: %kernel.debug%
     globals:
         warning_load_level: %warning_load_level%
-
+        url_prefix: %url_prefix%
 # Assetic Configuration
 assetic:
     debug:          %kernel.debug%
