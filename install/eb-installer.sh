@@ -192,6 +192,14 @@ function download
   if [ "$version" == "dev" ];then
     git clone https://github.com/elkarbackup/elkarbackup.git $EB_PATH && return 0 || return 1
   fi
+  
+  # Workaround to support custom download url reusing $version (probably should be better to use a new arg?)
+  if [[ $version == http* ]]; then
+    customurl = $version
+    git clone $customurl $EB_PATH && return 0 || return 1
+    # Once downloaded using git, reestablish version to "dev"
+    version = "dev"
+  fi
 
   if [ "$version" == "latest" ];then
     api_url="${base_url}/latest"
