@@ -204,7 +204,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                 $status        = 0;
                 $this->info('Running %command%', array('%command%' => $command), $context);
                 exec($command, $commandOutput, $status);
-                if (0 != $status) {
+                if (1 == $status) {
                     $this->err('Command %command% failed. Diagnostic information follows: %output%',
                                array('%command%' => $command,
                                      '%output%'  => "\n" . implode("\n", $commandOutput)),
@@ -379,7 +379,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                                  $client->getSshArgs(),
                                  $scriptFile);
         exec($command, $commandOutput, $status);
-        if (0 != $status) {
+        if (1 == $status) {
             $this->err($errScriptError,
                        array('%entityid%'   => $entity->getId(),
                              '%output%'     => "\n" . implode("\n", $commandOutput),
