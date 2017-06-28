@@ -3,7 +3,11 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
+/* Context is defined on base.html.twig as global mode */
 
+function getUrlPrefix(){
+return context;
+}
 
 /*
  * Feedback messages
