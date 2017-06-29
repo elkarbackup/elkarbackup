@@ -33,8 +33,11 @@
 		<tr>
 
 		    <td>
-
-          {% if file.2 %}
+          {% if file.3 %}
+            {# It's a symlink #}
+            <span class="glyphicon glyphicon-link"></span>&nbsp;{{ file.0 }}
+          {% elseif file.2 %}
+            {# It's a directory #}
 		        <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id , path: path  ~ file.0 ~ '/' , action: 'view'}) }}">
 			           <span class="glyphicon glyphicon-folder-open"></span>
                  &nbsp;{{ file.0 }}
@@ -48,7 +51,7 @@
 		        {{ file.1.format('Y-m-d H:i:s') }}
 		    </td>
 		    <td>
-		        {% if file.0 != ".." and file.0 != "." %}
+		        {% if file.0 != ".." and file.0 != "." and file.3 == false %}
 
               {% if file.2 %}
                 <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download'}) }}"><b>
