@@ -204,10 +204,16 @@ abstract class BackupRunningCommand extends LoggingCommand
                 $status        = 0;
                 $this->info('Running %command%', array('%command%' => $command), $context);
                 exec($command, $commandOutput, $status);
+
                 if (0 != $status) {
+                    $commandOutputString = implode("\n", $commandOutput);
+                    # Avoid too long output as it can provoke unexpected MySQL errors
+                    if (strlen($commandOutputString) > 500) {
+                        $commandOutputString = substr($commandOutputString, 0, 500);
+                    }
                     $this->err('Command %command% failed. Diagnostic information follows: %output%',
                                array('%command%' => $command,
-                                     '%output%'  => "\n" . implode("\n", $commandOutput)),
+                                     '%output%'  => "\n" . $commandOutputString),
                                $context);
                     $ok = false;
                     break;
