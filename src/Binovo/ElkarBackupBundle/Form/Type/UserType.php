@@ -17,7 +17,7 @@ class UserType extends AbstractType
         $t = $options['translator'];
         $builder->add('username'    , 'text'    , array('label' => $t->trans('Name'     , array(), 'BinovoElkarBackup'),
                                                         'attr'  => array('class'    => 'form-control')))
-	              ->add('email'       , 'email'   , array('label' => $t->trans('Email'    , array(), 'BinovoElkarBackup'),
+                ->add('email'       , 'email'   , array('label' => $t->trans('Email'    , array(), 'BinovoElkarBackup'),
                                                         'attr'  => array('class'    => 'form-control')))
                 ->add('isActive'    , 'checkbox', array('label' => $t->trans('Is active', array(), 'BinovoElkarBackup'),
                                                         'required' => false))
