@@ -43,7 +43,7 @@ class User implements AdvancedUserInterface
     public $newPassword;
 
     /**
-     * @ORM\Column(type="string", length=60, unique=true)
+     * @ORM\Column(type="string", length=60, unique=false)
      */
     private $email;
 
