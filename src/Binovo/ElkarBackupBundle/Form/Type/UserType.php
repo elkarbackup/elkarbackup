@@ -15,24 +15,13 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $t = $options['translator'];
-/*        $builder->add('username'    , 'text'    , array('label' => $t->trans('Name'     , array(), 'BinovoElkarBackup'),
-                                                        'attr'  => array('class'    => 'form-control')))
-                ->add('newPassword' , 'password', array('label' => $t->trans('Password' , array(), 'BinovoElkarBackup'),
-                                                        'required' => false,
+        $builder->add('username'    , 'text'    , array('label' => $t->trans('Name'     , array(), 'BinovoElkarBackup'),
                                                         'attr'  => array('class'    => 'form-control')))
                 ->add('email'       , 'email'   , array('label' => $t->trans('Email'    , array(), 'BinovoElkarBackup'),
                                                         'attr'  => array('class'    => 'form-control')))
                 ->add('isActive'    , 'checkbox', array('label' => $t->trans('Is active', array(), 'BinovoElkarBackup'),
-                                                        'required' => false));
-*/
-
-$builder->add('username'    , 'text'    , array('label' => $t->trans('Name'     , array(), 'BinovoElkarBackup'),
-                                                        'attr'  => array('class'    => 'form-control')))
-	->add('email'       , 'email'   , array('label' => $t->trans('Email'    , array(), 'BinovoElkarBackup'),
-                                                        'attr'  => array('class'    => 'form-control')))
-        ->add('isActive'    , 'checkbox', array('label' => $t->trans('Is active', array(), 'BinovoElkarBackup'),
                                                         'required' => false))
-        ->add('roles'      , 'collection', array('type' => 'choice',
+                ->add('roles'      , 'collection', array('type' => 'choice',
                                              //'label' => 'Profile type',
                                              //'attr' => array('class' => 'form-control'),
                                              'options' => array(
@@ -43,16 +32,13 @@ $builder->add('username'    , 'text'    , array('label' => $t->trans('Name'     
                                                 ),
                                              ),
                                           ))
-
-
-	->add('newPassword', 'repeated', array('type' => 'password',
-			     'options' => array('attr' => array('class' => 'password-field form-control')),
-			     'required' => true,
-			     'first_options'  => array('label' => $t->trans('New password' , array(), 'BinovoElkarBackup')),
-			     'second_options' => array('label' => $t->trans('Confirm new password', array(), 'BinovoElkarBackup')),
-    			     'invalid_message' => 'The password fields must match.',
-
-				));
+                ->add('newPassword', 'repeated', array('type' => 'password',
+			                                                 'options' => array('attr' => array('class' => 'password-field form-control')),
+			                                                 'required' => false,
+			                                                 'first_options'  => array('label' => $t->trans('New password' , array(), 'BinovoElkarBackup')),
+			                                                 'second_options' => array('label' => $t->trans('Confirm new password', array(), 'BinovoElkarBackup')),
+    			                                             'invalid_message' => 'The password fields must match.'
+                     ));
     }
 
     public function configureOptions(OptionsResolver $resolver)
