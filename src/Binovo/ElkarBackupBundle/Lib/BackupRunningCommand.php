@@ -466,6 +466,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                           $job->setStatus('WARNING');
                         }
                     }
+                    $manager->flush();
                     $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
 
                     /* setDiskUsage() moved here again */
