@@ -206,14 +206,10 @@ abstract class BackupRunningCommand extends LoggingCommand
                 exec($command, $commandOutput, $status);
 
                 if (0 != $status) {
-                    $commandOutputString = implode("\n", $commandOutput);
-                    # Avoid too long output as it can provoke unexpected MySQL errors
-                    if (strlen($commandOutputString) > 500) {
-                        $commandOutputString = substr($commandOutputString, 0, 500);
-                    }
+                    $commandOutputString = substr("\n" . implode("\n", $commandOutput), 0, 500); // Let's limit the output
                     $this->err('Command %command% failed. Diagnostic information follows: %output%',
                                array('%command%' => $command,
-                                     '%output%'  => "\n" . $commandOutputString),
+                                     '%output%'  => $commandOutputString),
                                $context);
                     $ok = false;
                     break;
@@ -240,8 +236,8 @@ abstract class BackupRunningCommand extends LoggingCommand
                 }
             }
             $job_endtime = time();
-            if (isset($total_transferred)){
-              $job_run_size = $total_transferred;
+            if (isset($total_transferred[1])){
+              $job_run_size = $total_transferred[1];
             } else {
               $job_run_size = 0;
             }
@@ -385,10 +381,12 @@ abstract class BackupRunningCommand extends LoggingCommand
                                  $client->getSshArgs(),
                                  $scriptFile);
         exec($command, $commandOutput, $status);
+
+        $commandOutputString = substr("\n" . implode("\n", $commandOutput), 0, 500); // Let's limit the output
         if (0 != $status) {
             $this->err($errScriptError,
                        array('%entityid%'   => $entity->getId(),
-                             '%output%'     => "\n" . implode("\n", $commandOutput),
+                             '%output%'     => $commandOutputString,
                              '%scriptname%' => $scriptName,
                              '%scripttype%' => $type),
                        $context);
@@ -397,7 +395,7 @@ abstract class BackupRunningCommand extends LoggingCommand
         }
         $this->info($errScriptOk,
                     array('%entityid%'   => $entity->getId(),
-                          '%output%'     => "\n" . implode("\n", $commandOutput),
+                          '%output%'     => $commandOutputString,
                           '%scriptname%' => $scriptName,
                           '%scripttype%' => $type),
                     $context);
