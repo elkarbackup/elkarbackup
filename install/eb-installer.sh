@@ -8,7 +8,7 @@
 
 # Config
 
-INSTALLER_VERSION="0.1.96"
+INSTALLER_VERSION="0.1.97"
 EB_PATH=/usr/local/elkarbackup
 TMP_PATH=/tmp
 
