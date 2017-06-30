@@ -8,7 +8,7 @@
 
 # Config
 
-INSTALLER_VERSION="0.1.96"
+INSTALLER_VERSION="0.1.97"
 EB_PATH=/usr/local/elkarbackup
 TMP_PATH=/tmp
 
@@ -192,7 +192,7 @@ function download
   if [ "$version" == "dev" ];then
     git clone https://github.com/elkarbackup/elkarbackup.git $EB_PATH && return 0 || return 1
   fi
-  
+
   # Workaround to support custom download url reusing $version (probably should be better to use a new arg?)
   if [[ $version == http* ]]; then
     customurl="$version"
@@ -435,12 +435,12 @@ function configure_apache
     # BETA: Fedora
     cp $ebconf /etc/httpd/conf.d/
     sed -i 's~/usr/share/elkarbackup/web~'$EB_PATH'/web~' /etc/httpd/conf.d/elkarbackup.conf || return 1
-    
+
     # SELinux
     chcon -t httpd_sys_rw_content_t $EB_PATH/app/cache/ -R
     chcon -t httpd_sys_rw_content_t $EB_PATH/app/sessions/ -R
     chcon -t httpd_sys_rw_content_t $EB_PATH/app/logs/ -R
-    
+
     $apache -S || return 1
   else
     echo "ERROR: Apache2 not found"
@@ -466,6 +466,24 @@ function configure_cron
   cp $cronfileorig $cronfiledest
   sed -i "s/www-data/${username}/" $cronfiledest
   sed -i "s@/usr/share/elkarbackup@${EB_PATH}@" $cronfiledest
+}
+
+function configure_sudo
+{
+  username="elkarbackup"
+  sudodirdest=/etc/sudoers.d
+  sudofiledest=$sudodirdest/elkarbackup
+  sudofileorig=$EB_PATH/debian/etc/sudoers.d/elkarbackup
+  configfile=$EB_PATH/app/config/parameters.yml
+  uploadsdir=`sed -n 's/^[ \t]*upload_dir:[ \t]*\([^ #\t]*\).*/\1/p' $configfile`
+
+  if [ -d "$sudodirdest" ];then
+    cp $sudofileorig $sudofiledest
+    sed -i -e "s#elkarbackup#$username#g" -e "s#\s*Cmnd_Alias\s*ELKARBACKUP_SCRIPTS.*#Cmnd_Alias ELKARBACKUP_SCRIPTS=$uploadsdir/*#" $sudofiledest
+    chmod 0440 $sudofiledest
+  else
+    echo "ERROR: cannot find sudo config directory: $sudodirdest" || return 1
+  fi
 }
 
 function usage
@@ -638,6 +656,8 @@ configure_apache ||
   { echo "ERROR: error configuring apache"; exit 1; };
 configure_cron ||
   { echo "ERROR: cannot add cron configuration"; exit 1; };
+configure_sudo ||
+  { echo "WARNING: cannot add sudo configuration. I cannot run pre and post scripts"; };
 
 echo -e "\nElkarBackup installed succesfully."
 exit 0
