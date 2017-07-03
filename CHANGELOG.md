@@ -1,9 +1,9 @@
-## Upcoming release
+## 1.2.6 (2017/07/03)
 Bugfixes:
   - Fix diskusage progress bar (#235)
   - Distinguish warning status with a different color (#234)
   - BackupRunningCommand: fix array error and limit the commands output (#233 #231 #227 #217)
-  - Added universal script installer (#226 #232)
+  - Added universal script installer. Added sudo config (#226 #232)
   - Editing a user forces a password change (#210)
   - Changing an user email to another user's email gives 500 (#209)
   - Restore window: 404 error following a symlink (#159)

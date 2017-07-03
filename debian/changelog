@@ -1,11 +1,17 @@
-elkarbackup (1.2.5) stable; urgency=medium
+elkarbackup (1.2.6) stable; urgency=medium
 
   [ Xabi Ezpeleta ]
-  Features:
-  * Added german translation (#185) by @nephilim75
   Bugfixes:
-  * Notifications: SMTP transport not working (#174)
-  * PHP Notice: Undefined variable: job (#172)
-  * Translate some missing strings (#185)
+  * Fix diskusage progress bar (#235)
+  * Distinguish warning status with a different color (#234)
+  * BackupRunningCommand: fix array error and limit the commands output (#233 #231 #227 #217)
+  * Added universal script installer (#226 #232)
+  * Editing a user forces a password change (#210)
+  * Changing an user email to another user's email gives 500 (#209)
+  * Restore window: 404 error following a symlink (#159)
+  * Cloning annoyance: wrong url (#216)
+  * Change status from ABORTING to ABORTED if the lockfile has been deleted (#219 by @vnetmx)
+  * DB name database not escaped for creation (#212)
+ 
 
- --  <>  Fri, 13 Jan 2017 13:27:10 +0000
+ --  <>  Mon, 03 Jul 2017 15:27:10 +0000
