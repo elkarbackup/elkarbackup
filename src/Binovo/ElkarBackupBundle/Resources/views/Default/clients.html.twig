@@ -44,7 +44,7 @@
   			<div id="disc-info">
   				<h3><span>Usage</span> {{ fsDiskUsage }}%</h3>
   				<div class="progress">
-  					<div class="progress-bar {{ discBarClass }}" role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100" style="width: 15%;">
+  					<div class="progress-bar {{ discBarClass }}" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ fsDiskUsage }}%;">
   					</div>
   				</div>
   			</div>
