@@ -2,15 +2,15 @@
 'A year': 'Год'
 'About': 'About'
 'Actions': 'Действия'
-'active': 'active'
-'Active': 'Active'
+'active': 'активно'
+'Active': 'Активно'
 'Add job': 'Добавить задание'
-'Add key': 'Add key'
+'Add key': 'Добавить ключ'
 'Add': 'Добавить'
 'Admin': 'Admin'
 'All messages': 'Все сообщения'
 'All': 'Все'
-'Authorized keys': 'Authorized keys'
+'Authorized keys': 'Ключи авторизации'
 'Authorized_keys file (%filename%) updated.': 'Authorized_keys file (%filename%) updated.'
 'Back to client': 'Back to client'
 'Back to job': 'Назад к заданиям'
@@ -168,9 +168,9 @@
 'Post script': 'Post script'
 'Pre script': 'Pre script'
 'Public key generation requested': 'Public key generation requested'
-'Public key': 'Public key'
+'Public key': 'Публичный ключ'
 'Quota warning level': 'Quota warning level'
-'Quota': 'Quota (GB)'
+'Quota': 'Квота (Гб)'
 'Really delete client %name%? This will remove all related jobs and backups': 'Really delete client %name%? This will remove all related jobs and backups.'
 'Really delete job %name%? This will remove all related backups': 'Really delete job %name%? This will remove all related backups.'
 'Really delete policy %name%?': 'Really delete policy %name%?'
@@ -200,7 +200,7 @@
 'Status': 'Состояние'
 'Sunday': 'Воскресенье'
 'Sync first': 'Sync first'
-'Number of copies to keep': 'Number of copies to keep'
+'Number of copies to keep': 'Максимальное количество копий'
 'The number of copies to make during the day': 'The number of copies to make during the day'
 'There are no jobs': 'There are no jobs'
 'Three weeks': 'Три недели'
@@ -214,12 +214,12 @@
 'Two years': 'Два года'
 'Unable to delete client: %extrainfo%': 'Unable to delete client: %extrainfo%'
 'Unable to delete job: %extrainfo%': 'Unable to delete job: %extrainfo%'
-'Unable to find Client entity': 'Unable to find Client entity:'
-'Unable to find Job entity:': 'Unable to find Job entity: '
-'Unable to find public key:': 'Unable to find public key:'
-'Unable to save your changes: %extrainfo%': 'Unable to save your changes: %extrainfo%'
-'Updating key file %keys%': 'Updating key file %keys%'
-'Upload dir': 'Upload dir'
+'Unable to find Client entity': 'Не удалось найти запись клиента:'
+'Unable to find Job entity:': 'Не удалось найти задание: '
+'Unable to find public key:': 'Не удалось найти публичный ключ:'
+'Unable to save your changes: %extrainfo%': 'Не удалось сохранить изменения: %extrainfo%'
+'Updating key file %keys%': 'Обновление файла ключа %keys%'
+'Upload dir': 'Директория для загрузки'
 'Upload post script': 'Upload post script'
 'Upload pre script': 'Upload pre script'
 'Uploading a script is mandatory for script creation.': 'Uploading a script is mandatory for script creation.'
@@ -300,7 +300,7 @@ client_help: |
    <li><i>user@domain.name</i> will connect via ssh to the <i>domain.name</i> machine using <i>user</i> as user for the connection.</li>
    <li><i>user@domain.name:</i> Notice the colon. Same as above but instead of using ssh connections it will connect to the remote rsync server.</li>
  </ul>
- <h4>Quota</h4>
+ <h4>Квота</h4>
  The amount of disk space in GB this client is allowed to use. -1 means "no limit". When the configured threshold is reached (80% by default) the application broadcasts a warning to the notification recipients specified in each job. The application discards backup jobs with an error if the disk usage is higher than the quota.
  <h4>Disk usage</h4>
  The currently used disk space by this client.
@@ -319,12 +319,12 @@ client_help: |
  <li><b>Rsync long args</b>: Custom Rsync long args. Example: --bwlimit=500 (will limit used bandwidth to 200kb/s). Already included: --delete --numeric-ids --relative --delete-excluded --stats</li>
  </ul>
 client_job_help: |
- <h4>Jobs</h4>
+ <h4>Задания</h4>
  You can edit the most important parameters of a job belonging to this client right here. Don't forget to save your changes after doing the modifications.
 job_help: |
  <h4>Имя</h4>
  This is the identifier for the job. It will show up in lists and combo boxes. The name must be unique among all jobs, the application will complain if you try to use a name which is already in use.
- <h4>Path</h4>
+ <h4>Путь</h4>
  The path or the name of the rsync resource in the client.
  <h4>Использование диска</h4>
  The currently used disk space by this job.
@@ -391,7 +391,7 @@ managebackups_help: |
  <h4>Host</h4>
  The host name or IP address of the NFS server. Leave empty for local file systems.
  <p>This application depends on autofs to mount the remote file systems. If autofs is not configured as expected this field will not be editable.</p>
- <h4>Directory</h4>
+ <h4>Директория</h4>
  The full path in the local file system or the name of the NFS export. In any case it must start with '/'.
  <h4>Tahoe storage</h4>
  Check the box to enable a secondary Tahoe storage. If so, remember to set the tahoe configuration.
@@ -420,11 +420,11 @@ script_help: |
   <li>ELKARBACKUP_SSH_ARGS: advanced arguments for ssh conection</li>
  </ul>
  If any pre client script returns an exit status other than 0 the application aborts the process and prevents jobs of the client from running. On the other hand, the application will trigger a warning alert if the exit status of the pre job script is other than 0 (backup execution will not be aborted).
- <h4>Name</h4>
+ <h4>Имя</h4>
  This is the identifier for the script. It will show up in lists and combo boxes. The name must be unique among all scripts, the application will complain if you try to use a name which is already in use.
- <h4>Description</h4>
+ <h4>Описание</h4>
  Free text to describe the script. Put here whatever you might find useful.
- <h4>File</h4>
+ <h4>Файл</h4>
  Browse and select the script to upload.
  <h4>Runs as before client script</h4>
  Check this field if the script is designed to run when opening the client.
@@ -435,13 +435,13 @@ script_help: |
  <h4>Runs as after job script</h4>
  Check this field if the script is designed to run when closing the job.
 sort_jobs_help: |
- <h4>Sorting jobs</h4>
+ <h4>Сортировка заданий</h4>
  You can change job execution order. It's really usefull if you have multiple jobs scheduled at the same time.
  <p>You can order as you desire just drag&drop-ing</p>
 preferences_help: |
  <h4>User preferences management</h4>
  Anything you change here will not affect the other users.
- <h4>Language</h4>
+ <h4>Язык</h4>
  Select your prefered language
- <h4>Records per page</h4>
+ <h4>Записей на страницу</h4>
  Choose the number of lines you want to show per page
