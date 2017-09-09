@@ -4,9 +4,9 @@
 'Actions': 'Действия'
 'active': 'active'
 'Active': 'Active'
-'Add job': 'Add job'
+'Add job': 'Добавить задание'
 'Add key': 'Add key'
-'Add': 'Add'
+'Add': 'Добавить'
 'Admin': 'Admin'
 'All messages': 'Все сообщения'
 'All': 'Все'
@@ -54,13 +54,13 @@
 'Day of month:': 'День месяца:'
 'Day of week:': 'День недели:'
 'Day of year:': 'День в году:'
-'Days of the week': 'Days of the week'
+'Days of the week': 'Дни недели'
 'Delete client %clientid%, job %jobid%': 'Delete client %clientid%, job %jobid%'
 'Delete script %scriptname%': 'Delete script %scriptname%'
 'Delete': 'Удалить'
 'Description': 'Описание'
 'Directory': 'Директория'
-'Disk usage': 'Disk usage'
+'Disk usage': 'Использование диска'
 'Documentation will be available soon': 'Documentation will be available soon'
 'Download as .tgz': 'Download as .tgz'
 'Download as .zip': 'Download as .zip'
@@ -68,7 +68,7 @@
 'During the day': 'During the day'
 'Edit client': 'Изменить клиента'
 'Edit Job': 'Изменить задачу'
-'Edit policy': 'Edit policy'
+'Edit policy': 'Редактировать правило'
 'Edit script': 'Изменить скрипт'
 'Edit User': 'Редактировать пользователя'
 'Edit': 'Редактировать'
@@ -111,18 +111,18 @@
 'language_es': Испанский
 'language_eu': Баскский
 'language_ru': Русский
-'Last log entry': 'Last log entry'
+'Last log entry': 'Последняя запись в журнале'
 'Level': 'Level'
 'Link': 'Ссылка'
 'Login': 'Вход'
 'Logout': 'Выход'
-'Logs': 'Логи'
+'Logs': 'Журнал'
 'Mailer host': 'Mailer host'
 'Mailer password': 'Mailer password'
 'Mailer transport': 'Mailer transport'
 'Mailer user': 'Mailer user'
 'Make backups during the day': 'Make backups during the day'
-'Make daily backups': 'Make daily backups'
+'Make daily backups': 'Ежедневное резервное копирование'
 'Make weekly backups': 'Make weekly backups'
 'Make monthly backups': 'Make monthly backups'
 'Make yearly backups': 'Make yearly backups'
@@ -134,18 +134,18 @@
 'Monday': 'Понедельник'
 'Monthly backups activated, monthly count can not be 0': 'Monthly backups activated, monthly count can not be 0'
 'Monthly': 'Каждый месяц'
-'MySQL DB name': 'MySQL DB name'
-'MySQL host': 'MySQL host'
-'MySQL password': 'MySQL password'
-'MySQL port': 'MySQL port'
-'MySQL user': 'MySQL user'
+'MySQL DB name': 'Имя БД'
+'MySQL host': 'Адрес сервера БД'
+'MySQL password': 'Пароль БД'
+'MySQL port': 'Порт БД'
+'MySQL user': 'Пользователь БД'
 'Name': 'Имя'
 'Never': 'Никогда'
 'New password': 'Новый пароль'
 'New': 'Новый'
 'No keys defined': 'No keys defined'
 'No script': 'No script'
-'No such job.': 'No such job.'
+'No such job.': 'Нет такой работы.'
 'None': 'None'
 'Nothing to run.': 'Nothing to run.'
 'Notices and up': 'Notices and up'
@@ -162,9 +162,9 @@
 'Passwords do not match': 'Пароли не совпадают'
 'Path not found:': 'Путь не найден: '
 'Path': 'Путь'
-'Policies': 'Policies'
+'Policies': 'Правила'
 'Policy %policyid% has no active retains': 'Policy %policyid% has no active retains'
-'Policy': 'Policy'
+'Policy': 'Правило'
 'Post script': 'Post script'
 'Pre script': 'Pre script'
 'Public key generation requested': 'Public key generation requested'
@@ -188,7 +188,7 @@
 'Save': 'Сохранить'
 'Saved': 'Сохранено'
 'Script "%id%" not found': 'Script "%id%" not found'
-'Scripts': 'Scripts'
+'Scripts': 'Скрипты'
 'Send notices to': 'Send notices to'
 'Set Parameter %paramname%': 'Set Parameter %paramname%'
 'Show home page': 'Show home page'
@@ -196,7 +196,7 @@
 'Show': 'Show'
 'Six months': 'Шесть месяцев'
 'Sort jobs': 'Сортировать задания'
-'Source': 'Source'
+'Source': 'Источник'
 'Status': 'Состояние'
 'Sunday': 'Воскресенье'
 'Sync first': 'Sync first'
@@ -207,7 +207,7 @@
 'Three years': 'Три годаs'
 'Thursday': 'Четверг'
 'Time': 'Время'
-'Time of day': 'Time of day'
+'Time of day': 'Время дня'
 'TODO': 'TODO'
 'Tuesday': 'Вторник'
 'Two weeks': 'Две недели'
@@ -280,20 +280,20 @@ policy_help: |
  Notice that each job has each own include and exclude definitions. The ones defined in the job take precedence over the ones defined in the policy.
  <h4>Sync first</h4>
  When sync_first is enabled, all sync behaviour happens during an additional sync step. Even hourly calls only rotate the directories, without even connecting to the client. This ensures that the snapshots are consistent with the cost of an additional snapshot used only for syncing.
- <h4>Hourly</h4>
+ <h4>Почасовые</h4>
  Snapshots made during the day.
- <h4>Daily</h4>
+ <h4>Ежедневные</h4>
  Snapshots once a every selected day at the given time.
- <h4>Weekly</h4>
+ <h4>Еженедельные</h4>
  Snapshots once a week.
  <h4>Monthly</h4>
  Snapshots once a month.
- <h4>Monthly</h4>
+ <h4>Ежемесячные</h4>
  Snapshots once a year.
 client_help: |
- <h4>Name</h4>
+ <h4>Имя</h4>
  This is the identifier for the client. It will show up in lists and combo boxes. The name must be unique among all clients, the application will complain if you try to use a name which is already in use.
- <h4>Url</h4>
+ <h4>Адрес</h4>
  This is connection string for the client. The application will use this value together with the job's path as the full url for the job. Typical values for this field are:
  <ul>
    <li>It can be empty. This is useful when the data we want to backup is mapped in the local file system.</li>
@@ -304,13 +304,13 @@ client_help: |
  The amount of disk space in GB this client is allowed to use. -1 means "no limit". When the configured threshold is reached (80% by default) the application broadcasts a warning to the notification recipients specified in each job. The application discards backup jobs with an error if the disk usage is higher than the quota.
  <h4>Disk usage</h4>
  The currently used disk space by this client.
- <h4>Description</h4>
+ <h4>Описание</h4>
  Free text to describe the client. Put here whatever you might find useful.
- <h4>Is active</h4>
+ <h4>Включено</h4>
  If this check box is not marked, then no snapshots will be taken.
  <h4>Pre and post scripts</h4>
  Scripts to run before and after any job belonging to this clients. Think of opening VPN connections, setting up shared folders, etc. If multiple pre or post scripts are selected the order of execution is unspecified.
- <h4>Owner</h4>
+ <h4>Владелец</h4>
  This user will be able to manage the client and its jobs. Only admin users can change the owner.
  <h4>Advanced</h4>
  <ul>
