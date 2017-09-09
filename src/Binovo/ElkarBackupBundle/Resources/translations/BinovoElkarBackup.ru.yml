@@ -65,7 +65,7 @@
 'Download as .tgz': 'Download as .tgz'
 'Download as .zip': 'Download as .zip'
 'Download': 'Скачать'
-'During the day': 'During the day'
+'During the day': 'В течении дня'
 'Edit client': 'Изменить клиента'
 'Edit Job': 'Изменить задачу'
 'Edit policy': 'Редактировать правило'
@@ -94,7 +94,7 @@
 'Hours': 'Hours'
 'Id': 'Id'
 'Inactive': 'Inactive'
-'Include': 'Включить'
+'Include': 'Include'
 'Invalid time specified.': 'Invalid time specified.'
 'Is active': 'Is active'
 'Job %jobid% has no policy': 'Job %jobid% has no policy'
@@ -119,14 +119,14 @@
 'Logs': 'Журнал'
 'Mailer host': 'Mailer host'
 'Mailer password': 'Mailer password'
-'Mailer transport': 'Mailer transport'
+'Mailer transport': 'Способ отправки почты'
 'Mailer user': 'Mailer user'
-'Make backups during the day': 'Make backups during the day'
+'Make backups during the day': 'Создавать резервные копии в течении дня'
 'Make daily backups': 'Ежедневное резервное копирование'
-'Make weekly backups': 'Make weekly backups'
+'Make weekly backups': 'Создавать еженедельные копии'
 'Make monthly backups': 'Make monthly backups'
 'Make yearly backups': 'Make yearly backups'
-'Manage backups location': 'Manage backups location'
+'Manage backups location': 'Расположение резервных копий'
 'Manage parameters': 'Параметры сообщения'
 'Message': 'Сообщение'
 'Missing job.': 'Missing job.'
@@ -175,7 +175,7 @@
 'Really delete job %name%? This will remove all related backups': 'Really delete job %name%? This will remove all related backups.'
 'Really delete policy %name%?': 'Really delete policy %name%?'
 'Really delete script %name%?': 'Really delete script %name%?'
-'Records per page': 'Records per page'
+'Records per page': 'Записей на страницу'
 'Removing the policy %name% failed. Check that it is not in use.': 'Removing the policy %name% failed. Check that it is not in use.'
 'Removing the script %name% failed. Check that it is not in use.': 'Removing the script %name% failed. Check that it is not in use.'
 'Repository backup script': 'Repository backup script'
@@ -265,7 +265,7 @@
 'Abort job': 'Прервать задание'
 'Test connection': 'Тест соединения'
 policy_help: |
- <h4>Name</h4>
+ <h4>Имя</h4>
  This is the identifier for the policy. It will show up in lists and combo boxes. The name must be unique among all policies, the application will complain if you try to use a name which is already in use.
  <h4>Description</h4>
  Free text to describe the policy. Put here whatever you might find useful.
@@ -322,13 +322,13 @@ client_job_help: |
  <h4>Jobs</h4>
  You can edit the most important parameters of a job belonging to this client right here. Don't forget to save your changes after doing the modifications.
 job_help: |
- <h4>Name</h4>
+ <h4>Имя</h4>
  This is the identifier for the job. It will show up in lists and combo boxes. The name must be unique among all jobs, the application will complain if you try to use a name which is already in use.
  <h4>Path</h4>
  The path or the name of the rsync resource in the client.
- <h4>Disk usage</h4>
+ <h4>Использование диска</h4>
  The currently used disk space by this job.
- <h4>Description</h4>
+ <h4>Описание</h4>
  Free text to describe the job. Put here whatever you might find useful.
  <h4>Is active</h4>
  If this check box is not marked, then no snapshots will be taken.
@@ -356,21 +356,21 @@ job_help: |
   <li><b>Token</b>: Job's Token will be used to allow anonymous remote job executions. Delete the token if you want to disable this feature.</li>
  </ul>
 user_help: |
- <h4>Name</h4>
+ <h4>Имя</h4>
  This is the identifier for the user. It will show up in lists and combo boxes. The name must be unique among all users, the application will complain if you try to use a name which is already in use.
  <h4>Email</h4>
  The email is very important. All the notifications for the user will be sent to the email specified here.
  <h4>Is active</h4>
  If this check box is not marked the user will not be able to log in.
- <h4>Role</h4>
+ <h4>Роль</h4>
  <ul>
   <li><b>Admin</b>: admin users will be able to change anything</li>
   <li><b>User</b>: limited users can only manage their own clients and jobs. Caution: they are able to see other users activity logs</li>
  </ul>
- <h4>Password</h4>
+ <h4>Пароль</h4>
  You can't read the password in this field, you can only use it to change it. If you put anything but the empty string in this field and save the password will be updated.
 params_help: |
- <h4>MySQL configuration</h4>
+ <h4>Конфигурация БД</h4>
  This parameters configure the connection to the DB. Be careful, if mess up with them the application will stop working.
  <h4>Mailer configuration</h4>
  This parameters configure the how the application sends emails. Be careful, if mess up with them the application will not be able to send notifications. <a href="http://symfony.com/doc/current/cookbook/email/email.html">The documentation from the Symfony project</a> might be helpful.
