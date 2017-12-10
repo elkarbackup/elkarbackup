@@ -765,8 +765,8 @@ class DefaultController extends Controller
                 return new StreamedResponse($f, 200, $headers);
             } else {
                 // Check if Zip is in the user path
-                system('which zip', $cmdretval);
-                $isZipInstalled = !$cmdretval;
+                exec('which zip 2>&1', $cmdretval);
+                $isZipInstalled = $cmdretval;
 
                 $content = scandir($realPath);
                 if (false === $content) {
