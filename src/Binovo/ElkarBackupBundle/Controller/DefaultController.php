@@ -32,6 +32,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\SecurityContext;
@@ -799,8 +800,11 @@ class DefaultController extends Controller
             $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
             $mimeType = finfo_file($finfo, $realPath);
             finfo_close($finfo);
-            $headers = array('Content-Type' => $mimeType,
-                             'Content-Disposition' => sprintf('attachment; filename="%s"', basename($realPath)));
+
+            $response = new BinaryFileResponse($realPath);
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, basename($realPath));
+            $response->headers->set('Content-Type', $mimeType);
+            $response->headers->set('Content-Disposition', $contentDisposition);
             $this->info('Download backup file %clientid%, %jobid% %path%',
                         array('%clientid%' => $idClient,
                               '%jobid%'    => $idJob,
@@ -812,7 +816,8 @@ class DefaultController extends Controller
                                                                  'path'     => $path))));
             $this->getDoctrine()->getManager()->flush();
 
-            return new Response(file_get_contents($realPath), 200, $headers);
+            return $response;
+
         }
     }
 
