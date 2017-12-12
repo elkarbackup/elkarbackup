@@ -105,11 +105,11 @@ abstract class BackupRunningCommand extends LoggingCommand
       // Search for common error words
       // grep -i 'ssh:\|permission\|such file\|sigterm' logfile
       $error = [];
-      $command = "/bin/grep -i 'ssh:\|permission\|such file\|sigterm' $logfile |cut -c23-";
+      $command = "/bin/grep -i 'ssh:\|permission\|such file\|sigterm' $logfile |cut -f2- -d\ ";
       exec($command, $error, $retval);
       if ($retval != 0) {
         // If we don't find any common error, return the last 5 lines from the log
-        exec('/usr/bin/tail -n5 ' + $logfile + '|cut -c23-', $lastlines, $retval);
+        exec('/usr/bin/tail -n5 ' + $logfile + '|cut -f2- -d\ ', $lastlines, $retval);
         if ($retval == 0) {
           $error = "[unknown error]: " + $lastlines;
         } else {
@@ -122,7 +122,7 @@ abstract class BackupRunningCommand extends LoggingCommand
     protected function captureStatsFromLogfile($logfile){
       //Detect and save rsync stats info
       $stats = [];
-      $command = "/bin/grep -B13 'speedup is' $logfile |cut -c23-";
+      $command = "/bin/grep -B13 'speedup is' $logfile |cut -f2- -d\ ";
       exec($command, $stats, $retval);
       return $stats;
     }
