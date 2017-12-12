@@ -254,10 +254,13 @@ abstract class BackupRunningCommand extends LoggingCommand
                 if (0 != $status) {
                     // Capture error from logfile
                     $commandOutput = $this->captureErrorFromLogfile($joblogfile);
-                    $commandOutputString = substr("\n" . implode("\n", $commandOutput), 0, 500); // Let's limit the output
-                    $this->err('Command %command% failed. Diagnostic information follows: %output%',
-                               array('%command%' => $command,
-                                     '%output%'  => $commandOutputString),
+                    // Log output limited to 500 chars
+                    if (strlen("\n" . implode("\n", $commandOutput)) >= 500) {
+                        $commandOutputString = substr("\n" . implode("\n", $commandOutput), 0, 500);
+                        $commandOutputString = "$commandOutputString (...)";
+                    }
+                    $this->err('Command failed: %output%',
+                               array('%output%'  => $commandOutputString),
                                $context);
                     $ok = false;
                     break;
@@ -280,9 +283,8 @@ abstract class BackupRunningCommand extends LoggingCommand
                         $commandOutput[] = "Total transferred file size: ".$total_transferred[1];
                       }
                     }
-                    $this->info('Command %command% succeeded with output: %output%',
-                                array('%command%' => $command,
-                                      '%output%'  => implode("\n", $commandOutput)),
+                    $this->info('Command succeeded: %output%',
+                                array('%output%'  => implode("\n", $commandOutput)),
                                 $context);
                 }
 
