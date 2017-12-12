@@ -258,6 +258,8 @@ abstract class BackupRunningCommand extends LoggingCommand
                     if (strlen("\n" . implode("\n", $commandOutput)) >= 500) {
                         $commandOutputString = substr("\n" . implode("\n", $commandOutput), 0, 500);
                         $commandOutputString = "$commandOutputString (...)";
+                    } else {
+                      $commandOutputString = "\n" . implode("\n", $commandOutput);
                     }
                     $this->err('Command failed: %output%',
                                array('%output%'  => $commandOutputString),
