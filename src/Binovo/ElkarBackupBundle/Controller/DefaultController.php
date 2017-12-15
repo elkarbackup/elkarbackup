@@ -1547,6 +1547,56 @@ EOF;
     }
 
     /**
+     * @Route("/logs/{id}/download", name="downloadLog")
+     * @Method("GET")
+     * @Template()
+     */
+    public function downloadLogAction(Request $request, $id)
+    {
+        $t = $this->get('translator');
+        $db = $this->getDoctrine();
+        $repository = $db->getRepository('BinovoElkarBackupBundle:LogRecord');
+        $manager = $db->getManager();
+        $log = $repository->findOneById($id);
+        if (null == $log) {
+            throw $this->createNotFoundException($t->trans('Log "%id%" not found', array('%id%' => $id), 'BinovoElkarBackup'));
+        }
+
+        $response = new Response();
+        if ( is_file($log->getLogfilePath()) ){
+            // Logfile exists
+            $this->info('Downloading log %logfile%',
+                        array('%logfile%' => $log->getLogfile()),
+                        array('link' => $this->generateUrl('downloadLog', array('id' => $id))));
+            $manager->flush();
+
+            $response->setContent(file_get_contents($log->getLogfilePath()));
+            $response->headers->set('Content-Type', 'application/octet-stream');
+            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $log->getLogfile()));
+        } elseif ( is_file($log->getLogFilePath().".gz") ) {
+            // Logfile is compressed (gz)
+            $this->info('Downloading log %logfile%.gz',
+                        array('%logfile%' => $log->getLogfile()),
+                        array('link' => $this->generateUrl('downloadLog', array('id' => $id))));
+            $manager->flush();
+
+            $response->setContent(file_get_contents($log->getLogfilePath().".gz"));
+            $response->headers->set('Content-Type', 'application/octet-stream');
+            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $log->getLogfile().".gz"));
+        } else {
+            // Logfile does not exist
+            $this->info('Cannot find log %logfile%',
+                         array('%logfile%' => $log->getLogfilePath()),
+                         array('link' => $this->generateUrl('downloadLog', array('id' => $id))));
+            $manager->flush();
+            $response = $this->redirect($this->generateUrl('showLogs'));
+        }
+
+        return $response;
+
+    }
+
+    /**
      * @Route("/script/{id}/delete", name="deleteScript")
      * @Method("POST")
      * @Template()
