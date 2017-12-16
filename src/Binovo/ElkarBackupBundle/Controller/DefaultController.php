@@ -1547,7 +1547,7 @@ EOF;
     }
 
     /**
-     * @Route("/logs/{id}/download", name="downloadLog")
+     * @Route("/log/{id}/download", name="downloadLog")
      * @Method("GET")
      * @Template()
      */
@@ -1565,7 +1565,7 @@ EOF;
         $response = new Response();
         if ( is_file($log->getLogfilePath()) ){
             // Logfile exists
-            $this->info('Downloading log %logfile%',
+            $this->info('Download log %logfile%',
                         array('%logfile%' => $log->getLogfile()),
                         array('link' => $this->generateUrl('downloadLog', array('id' => $id))));
             $manager->flush();
@@ -1575,7 +1575,7 @@ EOF;
             $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $log->getLogfile()));
         } elseif ( is_file($log->getLogFilePath().".gz") ) {
             // Logfile is compressed (gz)
-            $this->info('Downloading log %logfile%.gz',
+            $this->info('Download log %logfile%.gz',
                         array('%logfile%' => $log->getLogfile()),
                         array('link' => $this->generateUrl('downloadLog', array('id' => $id))));
             $manager->flush();
@@ -1585,7 +1585,7 @@ EOF;
             $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $log->getLogfile().".gz"));
         } else {
             // Logfile does not exist
-            $this->info('Cannot find log %logfile%',
+            $this->info('Log not found: %logfile%',
                          array('%logfile%' => $log->getLogfilePath()),
                          array('link' => $this->generateUrl('downloadLog', array('id' => $id))));
             $manager->flush();
