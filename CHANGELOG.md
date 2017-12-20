@@ -1,3 +1,9 @@
+## 1.2.7 (2017/12/20)
+Bugfixes:
+  - Download files without memory limit (#246)
+  - Debug information in prod (#256)
+  - Get job errors from log file (#257 #250 #221)
+
 ## 1.2.6 (2017/07/03)
 Bugfixes:
   - Fix diskusage progress bar (#235)
