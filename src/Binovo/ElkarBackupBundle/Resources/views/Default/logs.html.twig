@@ -20,6 +20,7 @@
             {{ filterSelect(source, {style: "width: 150px;"}) }}</th>
         <th>{% trans %}User{% endtrans %}</th>
         <th>{% trans %}Message{% endtrans %}</th>
+        <th></th>
         <th>{% trans %}Object{% endtrans %}<br />
             {{ filterText(object, {style: "width: 150px;"}) }}</th>
     </tr>
@@ -37,6 +38,7 @@
         <td>{{ logRecord.source }}</td>
         <td>{{ logRecord.userName }}</td>
         <td>{{ logRecord.message }}</td>
+        <td>{% if (logRecord.logfile) %} <a href="/log/{{ logRecord.id }}/download"><span class="glyphicon glyphicon-file" title="{% trans %}Logfile{% endtrans %}"></span></a>{% endif %}</td>
         <td style="white-space: nowrap;">{% if logRecord.link %}<a href="{{ logRecord.link }}">{{ logRecord.link }}</a>{% endif %}</td>
     </tr>
     {% endfor %}

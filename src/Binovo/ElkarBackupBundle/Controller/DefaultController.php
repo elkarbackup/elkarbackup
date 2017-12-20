@@ -581,6 +581,7 @@ class DefaultController extends Controller
             throw $this->createNotFoundException($t->trans('Unable to find Job entity: ', array(), 'BinovoElkarBackup') . $idClient . " " . $idJob);
         }
         $client = $job->getClient();
+        $logDir = $this->container->get('kernel')->getLogDir();
         $tmpDir = $this->container->getParameter('tmp_dir');
         $sshArgs = $client->getSshArgs();
         $rsyncShortArgs = $client->getRsyncShortArgs();
@@ -647,7 +648,8 @@ class DefaultController extends Controller
                                    'useLocalPermissions' => $job->getUseLocalPermissions(),
                                    'sshArgs'             => $sshArgs,
                                    'rsyncShortArgs'      => $rsyncShortArgs,
-                                   'rsyncLongArgs'       => $rsyncLongArgs),
+                                   'rsyncLongArgs'       => $rsyncLongArgs,
+                                   'logDir'              => $logDir),
                              $response);
     }
 
@@ -1542,6 +1544,56 @@ EOF;
             return $this->render('BinovoElkarBackupBundle:Default:password.html.twig',
                                  array('form'    => $form->createView()));
         }
+    }
+
+    /**
+     * @Route("/log/{id}/download", name="downloadLog")
+     * @Method("GET")
+     * @Template()
+     */
+    public function downloadLogAction(Request $request, $id)
+    {
+        $t = $this->get('translator');
+        $db = $this->getDoctrine();
+        $repository = $db->getRepository('BinovoElkarBackupBundle:LogRecord');
+        $manager = $db->getManager();
+        $log = $repository->findOneById($id);
+        if (null == $log) {
+            throw $this->createNotFoundException($t->trans('Log "%id%" not found', array('%id%' => $id), 'BinovoElkarBackup'));
+        }
+
+        $response = new Response();
+        if ( is_file($log->getLogfilePath()) ){
+            // Logfile exists
+            $this->info('Download log %logfile%',
+                        array('%logfile%' => $log->getLogfile()),
+                        array('link' => $this->generateUrl('downloadLog', array('id' => $id))));
+            $manager->flush();
+
+            $response->setContent(file_get_contents($log->getLogfilePath()));
+            $response->headers->set('Content-Type', 'application/octet-stream');
+            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $log->getLogfile()));
+        } elseif ( is_file($log->getLogFilePath().".gz") ) {
+            // Logfile is compressed (gz)
+            $this->info('Download log %logfile%.gz',
+                        array('%logfile%' => $log->getLogfile()),
+                        array('link' => $this->generateUrl('downloadLog', array('id' => $id))));
+            $manager->flush();
+
+            $response->setContent(file_get_contents($log->getLogfilePath().".gz"));
+            $response->headers->set('Content-Type', 'application/octet-stream');
+            $response->headers->set('Content-Disposition', $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $log->getLogfile().".gz"));
+        } else {
+            // Logfile does not exist
+            $this->info('Log not found: %logfile%',
+                         array('%logfile%' => $log->getLogfilePath()),
+                         array('link' => $this->generateUrl('downloadLog', array('id' => $id))));
+            $manager->flush();
+            $response = $this->redirect($this->generateUrl('showLogs'));
+        }
+
+        return $response;
+
     }
 
     /**

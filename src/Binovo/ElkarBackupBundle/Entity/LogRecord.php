@@ -64,7 +64,12 @@ class LogRecord
      */
     protected $userName;
 
-    public function __construct($channel, $dateTime, $level, $levelName, $message, $link = NULL, $source = NULL, $userId = NULL, $userName = NULL)
+    /**
+      * @ORM\Column(type="string", nullable=true)
+      */
+    protected $logFile;
+
+    public function __construct($channel, $dateTime, $level, $levelName, $message, $link = NULL, $source = NULL, $userId = NULL, $userName = NULL, $logFile = NULL)
     {
         $this->channel   = $channel;
         $this->dateTime  = $dateTime;
@@ -75,6 +80,7 @@ class LogRecord
         $this->source    = $source;
         $this->userId    = $userId;
         $this->userName  = $userName;
+        $this->logFile   = $logFile;
     }
 
     /**
@@ -292,5 +298,42 @@ class LogRecord
     public function getLink()
     {
         return $this->link;
+    }
+
+    /**
+     * Set logfile
+     *
+     * @param string $logfile
+     * @return LogRecord
+     */
+    public function setLogfile($logfile)
+    {
+        $this->logFile = $logfile;
+        return $this;
+    }
+
+    /**
+     * Get logfile
+     *
+     * @return string
+     */
+    public function getLogfile()
+    {
+       return $this->logFile;
+    }
+
+    public function getLogfilePath()
+    {
+       return sprintf('%s/%s/%s', $this->getLogDirectory(), 'jobs', $this->getLogfile());
+    }
+
+    public function getLogDirectory()
+    {
+        // Workaround to get kernel from Entity
+        global $kernel;
+        if ('AppCache' == get_class($kernel)) {
+            $kernel = $kernel->getKernel();
+        }
+        return $kernel->getLogDir();
     }
 }

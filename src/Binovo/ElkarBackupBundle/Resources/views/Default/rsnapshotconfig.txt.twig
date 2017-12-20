@@ -119,12 +119,12 @@ verbose		2
 # Same as "verbose" above, but controls the amount of data sent to the
 # logfile, if one is being used. The default is 3.
 #
-loglevel	3
+loglevel	4
 
 # If you enable this, data will be written to the file you specify. The
 # amount of data written is controlled by the "loglevel" parameter.
 #
-#logfile	/var/log/rsnapshot
+logfile	{{logDir}}/tmp-c{{idClient}}j{{idJob}}.log
 
 # If enabled, rsnapshot will write a lockfile to prevent two instances
 # from running simultaneously (and messing up the snapshot_root).
