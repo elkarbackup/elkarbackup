@@ -275,7 +275,7 @@ class DefaultController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function editClientAction(Request $request, $id)
+    public function editClientAction(Request $request, $id = 'new')
     {
         if ('new' === $id) {
             $client = new Client();
@@ -410,7 +410,7 @@ class DefaultController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function editJobAction(Request $request, $idClient, $idJob)
+    public function editJobAction(Request $request, $idClient, $idJob ='new')
     {
         if ('new' === $idJob) {
             $job = new Job();
@@ -846,7 +846,7 @@ class DefaultController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function editPolicyAction(Request $request, $id)
+    public function editPolicyAction(Request $request, $id = 'new')
     {
         if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
 	       //only allow to admins to do this task

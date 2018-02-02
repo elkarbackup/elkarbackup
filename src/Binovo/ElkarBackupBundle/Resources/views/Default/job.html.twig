@@ -28,13 +28,13 @@
           {% trans %}Job has not yet been saved{% endtrans %}
   </div>
   <div class="btn-group inline" {% if not form.vars.value.id %}id="btnRunNowDisabled"{% endif %}>
-    <button class="btn btn-default btn-pull-right" type="button" id="runNow"><span class="glyphicon glyphicon-repeat"></span> {% trans %}Run now{% endtrans %}</button>
+    <button class="btn btn-default btn-pull-right" type="button" id="runNow" {% if not form.vars.value.id %} disabled="true" {% endif %}><span class="glyphicon glyphicon-repeat"></span> {% trans %}Run now{% endtrans %}</button>
   </div>
   <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnRestoreDisabled'">
           {% trans %}Backup not found{% endtrans %}
   </div>
   <div class="btn-group inline" {% if hasBackups == false %}id="btnRestoreDisabled"{% endif %}>
-    <button type="button" class="btn btn-default btn-pull-right" {% if hasBackups == false %}disabled="true" {% endif %} onclick="document.location.href='{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}'"><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</button>
+    <button type="button" class="btn btn-default btn-pull-right" {% if hasBackups == false %}disabled="true" {% else %} onclick="document.location.href='{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}'" {% endif %}><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</button>
   </div>
 </div>
 
@@ -100,7 +100,7 @@
     </div>
 </form>
 
-<form id="runNowForm" action="{{ path('runJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="POST" {{ form_enctype(form) }}>
+<form id="runNowForm" {% if form.vars.value.id %} action="{{ path('runJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" {% endif %} method="POST" {{ form_enctype(form) }}>
 </form>
 
 {% endblock %}
