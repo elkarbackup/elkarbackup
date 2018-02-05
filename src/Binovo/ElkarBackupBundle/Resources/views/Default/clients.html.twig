@@ -83,7 +83,7 @@
 <table id="clients" class="table table-condensed table-hover">
 <tr>
   {# sorting of properties based on query components #}
-  <th><input id="checkAll" class="select-toggle-check" type="checkbox"</input></th>
+  <th><input id="checkAll" class="select-toggle-check" type="checkbox"></th>
   <th></th>
   <th>{% trans %}Id{% endtrans %}</th>
   <th>{% trans %}Name{% endtrans %}</th>
@@ -123,7 +123,7 @@
 
 
 <tr id="client-{{client.id}}" class="client-row client-{{client.id}} {% if client.isActive == false %}disabled{% endif %}">
-  <td><input class="select-toggle-check" type="checkbox" value="client{{client.id}}"</input></td>
+  <td><input class="select-toggle-check" type="checkbox" value="client{{client.id}}"></td>
   <td><span class="client-icon"></span></td>
   <td class="vert-align id"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" href="{{ path('editClient', {id: client.id}) }}"> {{ client.id }}</a></td>
   <td class="vert-align name"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
@@ -185,7 +185,7 @@
   {% endif %}
 
 <tr id="job-{{job.id}}" class="job-row client-{{client.id}} job-{{job.id}} {% if (job.isActive == false) or (client.isActive == false) %}disabled{% endif %}">
-  <td><input class="select-toggle-check" type="checkbox" value="job{{client.job}}"</input></td>
+  <td><input class="select-toggle-check" type="checkbox" value="job"></td>
   <td><span class="glyphicon glyphicon-folder-open"></span></td>
   <td class="vert-align id"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
   <td class="vert-align name"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.name ~ "/" ~ job.name }}</a></td>
