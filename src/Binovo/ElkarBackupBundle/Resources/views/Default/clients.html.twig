@@ -185,7 +185,7 @@
   {% endif %}
 
 <tr id="job-{{job.id}}" class="job-row client-{{client.id}} job-{{job.id}} {% if (job.isActive == false) or (client.isActive == false) %}disabled{% endif %}">
-  <td><input class="select-toggle-check" type="checkbox" value="job"></td> <!--  client.job estaba y no hacia nada, no existe atributo -->
+  <td><input class="select-toggle-check" type="checkbox" value="job"></td>
   <td><span class="glyphicon glyphicon-folder-open"></span></td>
   <td class="vert-align id"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
   <td class="vert-align name"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.name ~ "/" ~ job.name }}</a></td>
