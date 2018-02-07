@@ -11,12 +11,14 @@ use \Exception;
 use \PDOException;
 use \RuntimeException;
 use Binovo\ElkarBackupBundle\Entity\Client;
+use Binovo\ElkarBackupBundle\Entity\BackupLocation;
 use Binovo\ElkarBackupBundle\Entity\Job;
 use Binovo\ElkarBackupBundle\Entity\Message;
 use Binovo\ElkarBackupBundle\Entity\Policy;
 use Binovo\ElkarBackupBundle\Entity\Script;
 use Binovo\ElkarBackupBundle\Entity\User;
 use Binovo\ElkarBackupBundle\Form\Type\AuthorizedKeyType;
+use Binovo\ElkarBackupBundle\Form\Type\BackupLocationType;
 use Binovo\ElkarBackupBundle\Form\Type\ClientType;
 use Binovo\ElkarBackupBundle\Form\Type\JobForSortType;
 use Binovo\ElkarBackupBundle\Form\Type\JobType;
@@ -78,6 +80,12 @@ class DefaultController extends Controller
     protected function generateScriptRoute($id)
     {
         return $this->generateUrl('editScript',
+                                  array('id' => $id));
+    }
+    
+    protected function generateBackupLocationRoute($id)
+    {
+        return $this->generateUrl('editBackupLocation',
                                   array('id' => $id));
     }
 
@@ -275,7 +283,7 @@ class DefaultController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function editClientAction(Request $request, $id)
+    public function editClientAction(Request $request, $id = 'new')
     {
         if ('new' === $id) {
             $client = new Client();
@@ -410,7 +418,7 @@ class DefaultController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function editJobAction(Request $request, $idClient, $idJob)
+    public function editJobAction(Request $request, $idClient, $idJob ='new')
     {
         if ('new' === $idJob) {
             $job = new Job();
@@ -846,7 +854,7 @@ class DefaultController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function editPolicyAction(Request $request, $id)
+    public function editPolicyAction(Request $request, $id = 'new')
     {
         if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
 	       //only allow to admins to do this task
@@ -1271,100 +1279,129 @@ EOF;
     }
 
     /**
-     * @Route("/config/backupslocation", name="manageBackupsLocation")
+     * @Route("/config/backupLocation/{id}", name="editBackupLocation")
      * @Template()
      */
-    public function manageBackupsLocationAction(Request $request)
+    public function editBackupLocationAction(Request $request, $id ='new')
+    {
+        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            // only allow to admins to do this task
+            return $this->redirect($this->generateUrl('showClients'));
+        }
+        
+        $t = $this->get('translator');
+        if ('new' === $id) {
+            $backupLocation = new BackupLocation();
+        } else {
+            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation');
+            $backupLocation = $repository->find($id);
+        }
+        $form = $this->createForm(new BackupLocationType(), $backupLocation, array('translator' => $t));
+        $this->info('View location %backupLocationName%.',
+            array('%backupLocationName%' => $backupLocation->getName()),
+            array('link' => $this->generateBackupLocationRoute($id)));
+        $this->getDoctrine()
+            ->getManager()
+            ->flush();
+        
+        return $this->render('BinovoElkarBackupBundle:Default:backuplocation.html.twig', array(
+            'form' => $form->createView()));
+    }
+    
+    /**
+     * @Route("/backupLocation/{id}/save", name="saveBackupLocation")
+     * @Method("POST")
+     * @Template()
+     */
+    public function saveBackupLocationAction(Request $request, $id = 'new')
     {
         $t = $this->get('translator');
-        $backupDir = $this->container->getParameter('backup_dir');
-        $hostAndDir = array();
-        if (preg_match('/^\/net\/([^\/]+)(\/.*)$/', $backupDir, $hostAndDir)) {
-            $data = array('host'      => $hostAndDir[1],
-                          'directory' => $hostAndDir[2]);
+        if ('new' === $id) {
+            $backupLocation = new BackupLocation();
         } else {
-            $data = array('host'      => '',
-                          'directory' => $backupDir);
+            $repository = $this->getDoctrine()
+            ->getRepository('BinovoElkarBackupBundle:BackupLocation');
+            $backupLocation = $repository->find($id);
         }
-        $tahoe = $this->container->get('Tahoe');
-        $tahoeInstalled = $tahoe->isInstalled();
-        $tahoeOn = $this->container->getParameter('tahoe_active');
-        if (!$tahoeInstalled && $tahoeOn) {
-            $tahoeOn = false;
-            $this->setParameter('tahoe_active', 'false', 'manageBackupsLocation');
-        }
-        $data['tahoe_active'] = $tahoeOn;
-
-        $formBuilder = $this->createFormBuilder($data);
-        $formBuilder->add('host'      , 'text'  , array('required' => false,
-                                                        'label'    => $t->trans('Host', array(), 'BinovoElkarBackup'),
-                                                        'attr'     => array('class'    => 'form-control'),
-                                                        'disabled' => !$this->isAutoFsAvailable()));
-        $formBuilder->add('directory' , 'text'  , array('required' => false,
-                                                        'label'    => $t->trans('Directory', array(), 'BinovoElkarBackup'),
-                                                        'attr'     => array('class' => 'form-control')));
-        $formBuilder->add('tahoe_active', 'checkbox', array('required' => false,
-                                                            'label'    => $t->trans('Turn on Tahoe storage', array(), 'BinovoElkarTahoe'),
-                                                            'disabled' => !$tahoeInstalled ));
-
+        $form = $this->createForm(new BackupLocationType(), $backupLocation, array('translator' => $t));
+        $form->bind($request);
         $result = null;
-        $form = $formBuilder->getForm();
-        if ($request->isMethod('POST')) {
-            $form->bind($request);
-            $data = $form->getData();
-            if ('' != $data['host']) {
-                $backupDir = sprintf('/net/%s%s', $data['host'], $data['directory']);
-            } else {
-                $backupDir = $data['directory'];
-            }
-            $ok = true;
-            $result = $this->redirect($this->generateUrl('manageBackupsLocation'));
-            if ($this->container->getParameter('backup_dir') != $backupDir) {
-                if ($this->setParameter('backup_dir', $backupDir, 'manageBackupsLocation')) {
-                    $this->get('session')->getFlashBag()->add('manageParameters',
-                                                              $t->trans('Parameters updated',
-                                                                        array(),
-                                                                        'BinovoElkarBackup'));
-                }
-                if (!is_dir($backupDir)) {
-                    $form->addError(new FormError($t->trans('Warning: the directory does not exist',
-                                                            array(),
-                                                            'BinovoElkarBackup')));
-                    $result = $this->render('BinovoElkarBackupBundle:Default:backupslocation.html.twig',
-                                            array('form' => $form->createView()));
-                }
-            }
-            if ($data['tahoe_active'] != $tahoeOn) {
-                if ($data['tahoe_active']) {
-                  $strvalue = 'true';
-                } else {
-                  $strvalue = 'false';
-                }
-                if ($this->setParameter('tahoe_active', $strvalue, 'manageBackupsLocation')) {
-                    $this->get('session')->getFlashBag()->add('manageParameters', $t->trans('Parameters updated',
-                                                                                            array(),
-                                                                                            'BinovoElkarBackup'));
-                }
-            }
-        } else {
-            $result = $this->render('BinovoElkarBackupBundle:Default:backupslocation.html.twig',
-                                    array('form' => $form->createView()));
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($backupLocation);
+            $this->info('Save backup location %locationName%.',
+                array('%locationName%' => $backupLocation->getName()),
+                array('link' => $this->generateBackupLocationRoute($id)));
+            $em->flush();
+            $result = $this->redirect($this->generateUrl('manageBackupLocations'));
+
         }
-
-        if (!$tahoe->isReady() and $data['tahoe_active']) {
-            $this->get('session')->getFlashBag()->add('manageParameters',
-                                                      $t->trans('Warning: tahoe is not properly configured and will not work',
-                                                                array(),
-                                                                'BinovoElkarTahoe'));
-            $result = $this->render('BinovoElkarBackupBundle:Default:backupslocation.html.twig',
-                                    array('form' => $form->createView()));
+        if (!$result) {
+            $result = $this->render('BinovoElkarBackupBundle:Default:backuplocations.html.twig',
+                array('form' => $form->createView()));
         }
-
-        $this->getDoctrine()->getManager()->flush();
-        $this->clearCache();
-
+        
         return $result;
     }
+    
+    /**
+     * @Route("/backupLocation/{id}/delete", name="deleteBackupLocation")
+     * @Method("POST")
+     * @Template()
+     */
+    public function deleteBackupLocationAction(Request $request, $id)
+    {
+        if (!$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            //only allow to admins to do this task
+            return $this->redirect($this->generateUrl('showClients'));
+        }
+        
+        $t = $this->get('translator');
+        $db = $this->getDoctrine();
+        $repository = $db->getRepository('BinovoElkarBackupBundle:BackupLocation');
+        $manager = $db->getManager();
+        $backupLocation = $repository->find($id);
+        try{
+            $manager->remove($backupLocation);
+            $this->info('Delete backup location %locationName%',
+                array('%locationName%' => $backupLocation->getName()),
+                array('link' => $this->generateScriptRoute($id)));
+            $manager->flush();
+        } catch (PDOException $e) {
+            $this->get('session')->getFlashBag()->add('manageBackupLocations',
+                $t->trans('Removing %name% failed. Check that it is not in use.', array('%name%' => $backuplocation->getName()), 'BinovoElkarBackup'));
+        }
+        
+        return $this->redirect($this->generateUrl('manageBackupLocations'));
+    }
+    
+    /**
+     * @Route("/config/backupLocations", name="manageBackupLocations")
+     * @Template()
+     */
+    public function manageBackupLocationsAction(Request $request)
+    {
+
+        $repository = $this->getDoctrine()
+        ->getRepository('BinovoElkarBackupBundle:BackupLocation');
+        $query = $repository->createQueryBuilder('c')
+        ->getQuery();
+        
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1)/*page number*/,
+            $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
+            );
+        $this->info('View backup locations',
+            array(),
+            array('link' => $this->generateUrl('manageBackupLocations')));
+        $this->getDoctrine()->getManager()->flush();
+        
+        return $this->render('BinovoElkarBackupBundle:Default:backuplocations.html.twig',
+            array('pagination' => $pagination));
+    }
+        
     /**
      * @Route("/config/params", name="manageParameters")
      * @Template()

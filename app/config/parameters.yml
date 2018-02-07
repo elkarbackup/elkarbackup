@@ -3,9 +3,9 @@ parameters:
     database_driver: pdo_mysql
     database_host: localhost
     database_port: null
-    database_name: elkarbackup
-    database_user: elkarbackup
-    database_password: elkarbackup
+    database_name: elkarbackup2
+    database_user: elkarbackup2
+    database_password: binovo
     mailer_transport: smtp
     mailer_host: localhost
     mailer_user: null
@@ -13,9 +13,9 @@ parameters:
     locale: en
     secret: fba546d6ab6abc4a01391d161772a14e093c7aa2
     database_path: null
-    upload_dir: /var/spool/elkarbackup/uploads
-    backup_dir: /var/spool/elkarbackup/backups
-    public_key: /var/lib/elkarbackup/.ssh/id_rsa.pub
+    upload_dir: /var/spool/elkarbackup2/uploads
+    backup_dir: /var/spool/elkarbackup2/backups
+    public_key: /var/lib/elkarbackup2/.ssh/id_rsa.pub
     max_log_age: P1Y
     tmp_dir: /tmp
     rsnapshot: /usr/bin/rsnapshot
@@ -25,4 +25,4 @@ parameters:
     disable_background: false
     mailer_from: null
     tahoe_active: false
-    home: /var/lib/elkarbackup
+    home: /var/lib/elkarbackup2

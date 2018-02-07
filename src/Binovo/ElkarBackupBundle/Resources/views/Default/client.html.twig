@@ -19,7 +19,7 @@
           {% trans %}Client has not yet been saved{% endtrans %}
   </div>
   <div class="btn-group inline" {% if not form.vars.value.id %}id="btnAddJobDisabled"{% endif %}>
-    <button type="button" class="btn btn-default btn-pull-right" {% if not form.vars.value.id %}disabled="true"{% endif %} onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: form.vars.value.id}) }}'"> <span class="glyphicon glyphicon-plus"></span> {% trans %}Add job{% endtrans %}</button>
+    <button type="button" class="btn btn-default btn-pull-right" {% if not form.vars.value.id %}disabled="true" {% else %} onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: form.vars.value.id}) }}'" {% endif %}> <span class="glyphicon glyphicon-plus"></span> {% trans %}Add job{% endtrans %}</button>
   </div>
 </div>
 

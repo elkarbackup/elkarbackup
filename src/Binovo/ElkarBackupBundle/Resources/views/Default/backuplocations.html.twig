@@ -1,0 +1,95 @@
+{## # @copyright 2012,2013 Binovo it Human Project, S.L. # @license
+http://www.opensource.org/licenses/bsd-license.php New-BSD #}
+{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoElkarBackup' %}
+
+
+{% block body %}
+
+<div class="row">
+	<div class="max10">
+		<h3>
+			{% trans %}
+			Backup Locations
+			{% endtrans %}
+		</h3>
+
+		{% for flashMessage in app.session.flashbag.get('manageBackupLocations') %}
+		<div class="controls help-block">
+			{{ flashMessage }}
+		</div>
+		{% endfor %}
+
+		<table class="table table-condensed table-bordered table-striped">
+			<tr>
+				{# sorting of properties based on query components #}
+				<th>{% trans %}Id{% endtrans %}</th>
+				<th>{% trans %}Name{% endtrans %}</th>
+				<th>{% trans %}Host{% endtrans %}</th>
+				<th>{% trans %}Directory{% endtrans %}</th>
+				<th>{% trans %}Tahoe{% endtrans %}</th>
+				{% if is_granted('ROLE_ADMIN') %}
+				<th>{% trans %}Actions{% endtrans %}</th>
+				{% endif %}
+
+			</tr>
+
+			{# table body #}
+			{% for backupLocation in pagination %}
+			<tr>
+				<td onclick="document.location.href='{{ path('editBackupLocation', {id: backupLocation.id}) }}'"
+					class="ids"><a href="{{ path('editBackupLocation', {id: backupLocation.id}) }}">{{ backupLocation.id }}</a></td>
+				<td>{{ backupLocation.name }}</td>
+				<td>{{ backupLocation.host }}</td>
+				<td>{{ backupLocation.directory }}</td>
+				<td>{{ backupLocation.tahoe }}</td>
+				{% if is_granted('ROLE_ADMIN') %}
+				<td class="actions" style="width: 20%; text-align: center">
+					<form action="{{ path('editBackupLocation', {id: backupLocation.id}) }}" style="display: inline">
+						<button class="btn btn-default" type="submit">
+							<span class="glyphicon glyphicon-pencil"></span>
+							{% trans %}
+							Edit
+							{% endtrans %}
+						</button>
+					</form>
+					<form data-bnv-message="{% trans with {'%name%': backupLocation.name} %}Really delete %name%?{% endtrans %}"
+						class="delete-script"
+						action="{{ path('deleteBackupLocation', {id: backupLocation.id}) }}" method="POST"
+						style="display: inline">
+						<div data-dojo-type="dijit/Tooltip"
+							data-dojo-props="connectId: 'btnDeleteScriptDisabled'">
+							{% trans %}
+							This script is used by some client or job
+							{% endtrans %}
+						</div>
+						<div class="btn-group inline">
+							<button class="btn btn-default btn-danger" type="submit">
+								<span class="glyphicon glyphicon-trash"></span>
+								{% trans %}
+								Delete
+								{% endtrans %}
+							</button>
+						</div>
+					</form>
+				</td>
+				{% endif %}
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+	<button class="btn btn-default pull-right" type="button"
+		onclick="document.location.href='{{ path('editBackupLocation', {id: 'new'})}}'">
+		<span class="glyphicon glyphicon-plus"></span>
+		{% trans %}
+		New
+		{% endtrans %}
+	</button>
+
+	{# display navigation #}
+	<div class="navigation binovo-pagination">
+		{{ knp_pagination_render(pagination)|raw }}
+	</div>
+</div>
+</div>
+{% endblock %}

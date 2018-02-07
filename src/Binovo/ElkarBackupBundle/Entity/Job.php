@@ -141,6 +141,12 @@ class Job
      * Security token for remote management
      */
     protected $token = null;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="BackupLocation")
+     * @ORM\JoinColumn(referencedColumnName="id")
+     */
+    protected $backupLocation;
 
     /**
      * Returns the full path of the snapshot directory
@@ -682,4 +688,24 @@ class Job
         return $this->token;
     }
 
+    /**
+     * Get dirPath
+     * 
+     * @return string
+     */
+    public function getDirPath()
+    {
+        return $this->dirPath;
+    }
+    
+    /**
+     * Set dirPath
+     * 
+     * @param string $dirPath
+     * @return string
+     */
+    public function setDirPath($dirPath)
+    {
+        $this->dirPath = $dirPath;
+    }
 }

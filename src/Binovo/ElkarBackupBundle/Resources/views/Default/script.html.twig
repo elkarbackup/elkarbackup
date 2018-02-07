@@ -12,7 +12,7 @@
           {% trans %}Script has not yet been saved{% endtrans %}
   </div>
   <div class="btn-group inline" {% if not form.vars.value.id %}id="btnDownloadScriptDisabled"{% endif %}>
-    <button class="btn btn-default" {% if not form.vars.value.id %}disabled="true"{% endif %} onclick="window.location.href='{{path('downloadScript', {id: form.vars.value.id}) }}'"><span class="glyphicon glyphicon-download-alt"></span> {% trans %}Download{% endtrans %}</button>
+    <button class="btn btn-default" {% if not form.vars.value.id %}disabled="true" {% else %} onclick="window.location.href='{{path('downloadScript', {id: form.vars.value.id}) }}'" {% endif %}><span class="glyphicon glyphicon-download-alt"></span> {% trans %}Download{% endtrans %}</button>
   </div>
 </div>
 <form class="form-horizontal" action="{{ path('saveScript', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>

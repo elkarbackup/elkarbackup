@@ -17,8 +17,8 @@
 {% block body %}
 
 </form>
-<form class="form-horizontal" action="{{ path('manageBackupsLocation') }}" method="post" {{ form_enctype(form) }}>
-    <h3>{% trans %}Manage backups location{% endtrans %}</h3>
+<form class="form-horizontal" action="{{ path('saveBackupLocation', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
+    <h3>{% trans %}Edit backup location{% endtrans %}</h3>
     <div class="row">
         <div class="col-md-6">
             {% for flashMessage in app.session.flashbag.get('manageParameters') %}
