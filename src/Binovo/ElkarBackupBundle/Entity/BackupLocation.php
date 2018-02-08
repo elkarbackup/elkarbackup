@@ -33,7 +33,7 @@ class BackupLocation
     /**
      * @ORM\Column(type="string", length=255)
      */
-    protected $host;
+    protected $host = null;
     
     /**
      * @ORM\Column(type="string", length=255)

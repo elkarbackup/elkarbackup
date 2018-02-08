@@ -1287,7 +1287,7 @@ EOF;
         if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
-        }
+        }        
         
         $t = $this->get('translator');
         if ('new' === $id) {
@@ -1296,7 +1296,18 @@ EOF;
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation');
             $backupLocation = $repository->find($id);
         }
-        $form = $this->createForm(new BackupLocationType(), $backupLocation, array('translator' => $t));
+        
+        $tahoe = $this->container->get('Tahoe');
+        $tahoeInstalled = $tahoe->isInstalled();
+        $tahoeOn = $backupLocation->getTahoe();
+        if (!$tahoeInstalled && $tahoeOn) {
+            $tahoeOn = false;
+            $backupLocation->setTahoe(false);
+        }
+        
+        $form = $this->createForm(new BackupLocationType(), $backupLocation, array('translator' => $t), 
+                                  array('fs' => $this->isAutoFsAvailable(), 
+                                        'tahoe' => $this->container->get('Tahoe')->isInstalled()));
         $this->info('View location %backupLocationName%.',
             array('%backupLocationName%' => $backupLocation->getName()),
             array('link' => $this->generateBackupLocationRoute($id)));
@@ -1305,7 +1316,8 @@ EOF;
             ->flush();
         
         return $this->render('BinovoElkarBackupBundle:Default:backuplocation.html.twig', array(
-            'form' => $form->createView()));
+            'form' => $form->createView(), 
+            'id' => $id));
     }
     
     /**
@@ -1323,6 +1335,11 @@ EOF;
             ->getRepository('BinovoElkarBackupBundle:BackupLocation');
             $backupLocation = $repository->find($id);
         }
+        
+        if ($backupLocation->getTahoe() == null){
+            $backupLocation->setTahoe(false);
+        }
+        
         $form = $this->createForm(new BackupLocationType(), $backupLocation, array('translator' => $t));
         $form->bind($request);
         $result = null;
@@ -1365,7 +1382,7 @@ EOF;
             $manager->remove($backupLocation);
             $this->info('Delete backup location %locationName%',
                 array('%locationName%' => $backupLocation->getName()),
-                array('link' => $this->generateScriptRoute($id)));
+                array('link' => $this->generateBackupLocationRoute($id)));
             $manager->flush();
         } catch (PDOException $e) {
             $this->get('session')->getFlashBag()->add('manageBackupLocations',

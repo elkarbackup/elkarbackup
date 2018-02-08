@@ -708,4 +708,24 @@ class Job
     {
         $this->dirPath = $dirPath;
     }
+    
+    /**
+     * Get backupLocation
+     * @return Binovo\ElkarBackupBundle\Entity\BackupLocation
+     */
+    public function getBackupLocation()
+    {
+        return $this->backupLocation;
+    }
+    
+    /**
+     * Set backupLocation
+     * 
+     * @param Binovo\ElkarBackupBundle\Entity\BackupLocation $backupLocation
+     * @return Job
+     */
+    public function setBackupLocation($backupLocation)
+    {
+        $this->backupLocation = $backupLocation;
+    }
 }

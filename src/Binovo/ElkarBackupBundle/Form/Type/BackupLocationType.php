@@ -10,26 +10,29 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Binovo\ElkarBackupBundle\Controller\DefaultController;
+use Binovo\ElkarTahoeBundle\Utils\TahoeBackup;
 
 class BackupLocationType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options, array $vars = null)
     {
         $t = $options['translator'];
-        
+        $fs = $vars['fs'];
+        $tahoeInstalled = $vars['tahoe'];
+
         $builder->add('name'        , 'text'    , array('label' => $t->trans('Name', array(), 'BinovoElkarBackup'),
                                                         'required' => true,
                                                         'attr' => array('class' => 'form-control')))
                 ->add('host'        , 'text'    , array('label' => $t->trans('Host', array(), 'BinovoElkarBackup'),
                                                         'required' => false,
                                                         'attr' => array('class' => 'form-control'),
-                                                        'disabled' => false)) //CUIDADO
+                                                        'disabled' => !$fs)) //CUIDADO
                 ->add('directory'   , 'text'    , array('label' => $t->trans('Directory', array(), 'BinovoElkarBackup'),
                                                         'required' => true,
                                                         'attr' => array('class' => 'form-control')))
                 ->add('tahoe'       , 'checkbox', array('required' => false,
                                                         'label' => $t->trans('Turn on Tahoe storage', array(), 'BinovoElkarTahoe'),
-                                                        'disabled' => false)); //CUIDADO
+                                                        'disabled' => !$tahoeInstalled)); //CUIDADO
     }
 
     public function configureOptions(OptionsResolver $resolver)

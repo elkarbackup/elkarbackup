@@ -3,6 +3,12 @@ http://www.opensource.org/licenses/bsd-license.php New-BSD #}
 {% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
 {% trans_default_domain 'BinovoElkarBackup' %}
 
+{% block scripts %}
+    {{ parent() }}
+    {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/show-policies.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
 
 {% block body %}
 
@@ -42,7 +48,7 @@ http://www.opensource.org/licenses/bsd-license.php New-BSD #}
 				<td>{{ backupLocation.name }}</td>
 				<td>{{ backupLocation.host }}</td>
 				<td>{{ backupLocation.directory }}</td>
-				<td>{{ backupLocation.tahoe }}</td>
+				<td>{% if backupLocation.tahoe %} Active {% else %} Not active {% endif %}</td>
 				{% if is_granted('ROLE_ADMIN') %}
 				<td class="actions" style="width: 20%; text-align: center">
 					<form action="{{ path('editBackupLocation', {id: backupLocation.id}) }}" style="display: inline">
@@ -53,25 +59,9 @@ http://www.opensource.org/licenses/bsd-license.php New-BSD #}
 							{% endtrans %}
 						</button>
 					</form>
-					<form data-bnv-message="{% trans with {'%name%': backupLocation.name} %}Really delete %name%?{% endtrans %}"
-						class="delete-script"
-						action="{{ path('deleteBackupLocation', {id: backupLocation.id}) }}" method="POST"
-						style="display: inline">
-						<div data-dojo-type="dijit/Tooltip"
-							data-dojo-props="connectId: 'btnDeleteScriptDisabled'">
-							{% trans %}
-							This script is used by some client or job
-							{% endtrans %}
-						</div>
-						<div class="btn-group inline">
-							<button class="btn btn-default btn-danger" type="submit">
-								<span class="glyphicon glyphicon-trash"></span>
-								{% trans %}
-								Delete
-								{% endtrans %}
-							</button>
-						</div>
-					</form>
+					<form data-bnv-message="{% trans with {'%name%': backupLocation.name} %}Really delete location %name%?{% endtrans %}" class="delete-policy" action="{{ path('deleteBackupLocation', {id: backupLocation.id}) }}" method="POST" style="display:inline">
+                        <button class="btn btn-default btn-danger" type="submit"><span class="glyphicon glyphicon-trash"></span> {% trans %}Delete{% endtrans %} </button>
+                    </form>
 				</td>
 				{% endif %}
 			</tr>

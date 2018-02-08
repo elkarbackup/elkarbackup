@@ -80,7 +80,12 @@ class JobType extends AbstractType
                 ->add('token'               , 'text'    , array('label' => $t->trans('Token', array(), 'BinovoElkarBackup'),
                                                                 'read_only' => true,
                                                                 'required'  => false,
-                                                                'attr'  => array('class'    => 'form-control')));
+                                                                'attr'  => array('class'    => 'form-control')))
+                ->add('backupLocation'       , 'entity'    , array('label' => $t->trans('Backup location', array(), 'BinovoElkarBackup'),
+                                                                 'required' => true,
+                                                                 'attr'     => array('class'    => 'form-control'),
+                                                                 'class'    => 'BinovoElkarBackupBundle:BackupLocation',
+                                                                 'property' => 'name'));
     }
 
     public function configureOptions(OptionsResolver $resolver)
