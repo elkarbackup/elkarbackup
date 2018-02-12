@@ -30,18 +30,18 @@ function addClientRow(client){
 
     // Action buttons, custom attributes
     //    editClient button
-    clone.find(':button[eb-action="editClient"]').attr('eb-path', '/client/'+c.id);
+    clone.find(':button[eb-action="editClient"]').attr('eb-path', context+'/client/'+c.id);
     clone.find(':button[eb-action="editClient"]').attr('eb-clientid', c.id);
     //    addJob button
-    clone.find(':button[eb-action="addJob"]').attr('eb-path', '/client/'+c.id+'/job/new');
+    clone.find(':button[eb-action="addJob"]').attr('eb-path', context+'/client/'+c.id+'/job/new');
     clone.find(':button[eb-action="addJob"]').attr('eb-clientid', c.id);
     //    cloneClient a
     clone.find('a[eb-action="runClient"]').attr('eb-clientid', c.id);
     //    cloneClient a
-    clone.find('a[eb-action="cloneClient"]').attr('eb-path', '/client/clone/'+c.id);
+    clone.find('a[eb-action="cloneClient"]').attr('eb-path', context+'/client/clone/'+c.id);
     clone.find('a[eb-action="cloneClient"]').attr('eb-clientid', c.id);
     //    deleteClient a
-    clone.find('a[eb-action="deleteClient"]').attr('eb-path', '/client/'+c.id+'/delete');
+    clone.find('a[eb-action="deleteClient"]').attr('eb-path', context+'/client/'+c.id+'/delete');
     clone.find('a[eb-action="deleteClient"]').attr('eb-clientid', c.id);
 
     // Add row
@@ -78,20 +78,20 @@ function addJobRow(job, client){
 
     // Action buttons, custom attributes
     //    editJob button
-    clone.find(':button[eb-action="editJob"]').attr('eb-path', '/client/'+c.id+'/job/'+j.id);
+    clone.find(':button[eb-action="editJob"]').attr('eb-path', context+'/client/'+c.id+'/job/'+j.id);
     clone.find(':button[eb-action="editJob"]').attr('eb-jobid', j.id);
     //    showJobBackup button
-    clone.find(':button[eb-action="showJobBackup"]').attr('eb-path', '/client/'+c.id+'/job/'+j.id+'/backup/view');
+    clone.find(':button[eb-action="showJobBackup"]').attr('eb-path', context+'/client/'+c.id+'/job/'+j.id+'/backup/view');
     clone.find(':button[eb-action="showJobBackup"]').attr('eb-jobid', j.id);
     clone.find(':button[eb-action="showJobBackup"]').addClass('disabled');
     //    runJob a
-    clone.find('a[eb-action="runJob"]').attr('eb-path', '/client/'+c.id+'/job/'+j.id+'/run');
+    clone.find('a[eb-action="runJob"]').attr('eb-path', context+'/client/'+c.id+'/job/'+j.id+'/run');
     clone.find('a[eb-action="runJob"]').attr('eb-jobid', j.id);
     //    abortJob a
     clone.find('a[eb-action="abortJob"]').attr('eb-path', '');
     clone.find('a[eb-action="abortJob"]').attr('eb-jobid', j.id);
     //    deleteJob a
-    clone.find('a[eb-action="deleteJob"]').attr('eb-path', '/client/'+c.id+'/job/'+j.id+'/delete');
+    clone.find('a[eb-action="deleteJob"]').attr('eb-path', context+'/client/'+c.id+'/job/'+j.id+'/delete');
     clone.find('a[eb-action="deleteJob"]').attr('eb-jobid', j.id);
 
     // Add row
