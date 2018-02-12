@@ -3,7 +3,7 @@ Version: 1.2.7
 Section: admin
 Priority: optional
 Architecture: all
-Depends: acl, debconf, php5, php5-cli, rsnapshot, mysql-client, php5-mysql, php5-xml, sudo, apache2
+Depends: acl, debconf, php5, php5-cli, rsnapshot, mysql-client, php5-mysql, sudo, apache2
 Suggests: autofs5, bzip2, zip, mysql-server, tahoe-lafs
 Maintainer: Xabi Ezpeleta <xezpeleta@gmail.com>
 Description: backup solution with an easy-to-use web interface based on Rsync / RSnapshot
