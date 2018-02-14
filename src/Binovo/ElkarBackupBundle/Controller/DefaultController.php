@@ -1300,20 +1300,18 @@ EOF;
         $tahoe = $this->container->get('Tahoe');
         $tahoeInstalled = $tahoe->isInstalled();
         $tahoeOn = $backupLocation->getTahoe();
+        
         if (!$tahoeInstalled && $tahoeOn) {
             $tahoeOn = false;
             $backupLocation->setTahoe(false);
         }
         
-        $form = $this->createForm(new BackupLocationType(), $backupLocation, array('translator' => $t), 
-                                  array('fs' => $this->isAutoFsAvailable(), 
-                                        'tahoe' => $this->container->get('Tahoe')->isInstalled()));
+        $form = $this->createForm(new BackupLocationType($this->isAutoFsAvailable(), $tahoeInstalled), $backupLocation, array('translator' => $t));
+                                  
         $this->info('View location %backupLocationName%.',
-            array('%backupLocationName%' => $backupLocation->getName()),
-            array('link' => $this->generateBackupLocationRoute($id)));
-        $this->getDoctrine()
-            ->getManager()
-            ->flush();
+            		array('%backupLocationName%' => $backupLocation->getName()),
+            		array('link' => $this->generateBackupLocationRoute($id)));
+        $this->getDoctrine()->getManager()->flush();
         
         return $this->render('BinovoElkarBackupBundle:Default:backuplocation.html.twig', array(
             'form' => $form->createView(), 
@@ -1336,28 +1334,50 @@ EOF;
             $backupLocation = $repository->find($id);
         }
         
-        if ($backupLocation->getTahoe() == null){
+        $tahoe = $this->container->get('Tahoe');
+        $tahoeInstalled = $tahoe->isInstalled();
+        
+        if ($backupLocation->getTahoe() == null) {
             $backupLocation->setTahoe(false);
         }
         
-        $form = $this->createForm(new BackupLocationType(), $backupLocation, array('translator' => $t));
+        $form = $this->createForm(new BackupLocationType($this->isAutoFsAvailable(), $tahoeInstalled), 
+            					  $backupLocation, 
+            					  array('translator' => $t));
         $form->bind($request);
         $result = null;
-        if ($form->isValid()) {
+        
+        if (!is_dir($backupLocation->getDirectory())) {
+            $form->addError(new FormError($t->trans('Warning: the directory does not exist',
+                						  			array(),
+                									'BinovoElkarBackup')));
+            $result = $this->render('BinovoElkarBackupBundle:Default:backuplocation.html.twig',
+                    				array('form' => $form->createView(), 
+                    				      'id' => $id));
+        } elseif (!$tahoe->isReady() and $backupLocation->getTahoe()) {
+            $this->get('session')->getFlashBag()->add('manageParameters',
+                									  $t->trans('Warning: tahoe is not properly configured and will not work',
+                    								  			array(), 
+                									      		'BinovoElkarTahoe'));
+            $result = $this->render('BinovoElkarBackupBundle:Default:backuplocation.html.twig',
+                        			array('form' => $form->createView(), 
+                        			      'id' => $id));
+        } elseif ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($backupLocation);
             $this->info('Save backup location %locationName%.',
-                array('%locationName%' => $backupLocation->getName()),
-                array('link' => $this->generateBackupLocationRoute($id)));
+                		array('%locationName%' => $backupLocation->getName()),
+                		array('link' => $this->generateBackupLocationRoute($id)));
             $em->flush();
             $result = $this->redirect($this->generateUrl('manageBackupLocations'));
-
-        }
-        if (!$result) {
-            $result = $this->render('BinovoElkarBackupBundle:Default:backuplocations.html.twig',
-                array('form' => $form->createView()));
+            
+        } else {
+            $result = $this->render('BinovoElkarBackupBundle:Default:backuplocation.html.twig',
+                					array('form' => $form->createView(), 
+                					      'id' => $id));
         }
         
+        $this->clearCache();
         return $result;
     }
     
@@ -1381,12 +1401,14 @@ EOF;
         try{
             $manager->remove($backupLocation);
             $this->info('Delete backup location %locationName%',
-                array('%locationName%' => $backupLocation->getName()),
-                array('link' => $this->generateBackupLocationRoute($id)));
+                		array('%locationName%' => $backupLocation->getName()),
+                		array('link' => $this->generateBackupLocationRoute($id)));
             $manager->flush();
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             $this->get('session')->getFlashBag()->add('manageBackupLocations',
-                $t->trans('Removing %name% failed. Check that it is not in use.', array('%name%' => $backuplocation->getName()), 'BinovoElkarBackup'));
+                									  $t->trans('Removing %name% failed. Check that it is not in use.', 
+                									      		array('%name%' => $backupLocation->getName()), 
+                									      		'BinovoElkarBackup'));
         }
         
         return $this->redirect($this->generateUrl('manageBackupLocations'));
@@ -1411,12 +1433,12 @@ EOF;
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
             );
         $this->info('View backup locations',
-            array(),
-            array('link' => $this->generateUrl('manageBackupLocations')));
+            		array(),
+            		array('link' => $this->generateUrl('manageBackupLocations')));
         $this->getDoctrine()->getManager()->flush();
         
         return $this->render('BinovoElkarBackupBundle:Default:backuplocations.html.twig',
-            array('pagination' => $pagination));
+            				 array('pagination' => $pagination));
     }
         
     /**

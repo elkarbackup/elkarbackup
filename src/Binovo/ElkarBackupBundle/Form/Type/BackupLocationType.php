@@ -14,11 +14,19 @@ use Binovo\ElkarTahoeBundle\Utils\TahoeBackup;
 
 class BackupLocationType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options, array $vars = null)
+    private $fs;
+    private $tahoeInstalled;
+    
+    
+    public function __construct($fs, $tahoeInstalled)
+    {
+        $this->tahoeInstalled = $tahoeInstalled;
+        $this->fs = $fs;
+    }
+    
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $t = $options['translator'];
-        $fs = $vars['fs'];
-        $tahoeInstalled = $vars['tahoe'];
 
         $builder->add('name'        , 'text'    , array('label' => $t->trans('Name', array(), 'BinovoElkarBackup'),
                                                         'required' => true,
@@ -26,13 +34,13 @@ class BackupLocationType extends AbstractType
                 ->add('host'        , 'text'    , array('label' => $t->trans('Host', array(), 'BinovoElkarBackup'),
                                                         'required' => false,
                                                         'attr' => array('class' => 'form-control'),
-                                                        'disabled' => !$fs)) //CUIDADO
+                                                        'disabled' => !$this->fs))
                 ->add('directory'   , 'text'    , array('label' => $t->trans('Directory', array(), 'BinovoElkarBackup'),
                                                         'required' => true,
                                                         'attr' => array('class' => 'form-control')))
                 ->add('tahoe'       , 'checkbox', array('required' => false,
                                                         'label' => $t->trans('Turn on Tahoe storage', array(), 'BinovoElkarTahoe'),
-                                                        'disabled' => !$tahoeInstalled)); //CUIDADO
+                                                        'disabled' => !$this->tahoeInstalled));
     }
 
     public function configureOptions(OptionsResolver $resolver)

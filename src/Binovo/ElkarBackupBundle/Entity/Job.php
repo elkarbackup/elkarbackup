@@ -144,7 +144,6 @@ class Job
     
     /**
      * @ORM\ManyToOne(targetEntity="BackupLocation")
-     * @ORM\JoinColumn(referencedColumnName="id")
      */
     protected $backupLocation;
 
