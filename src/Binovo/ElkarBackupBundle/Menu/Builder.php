@@ -174,9 +174,12 @@ class Builder extends ContainerAware
 
             );
         if ($this->container->get('Tahoe')->isInstalled()) {
-            $menu[4]['children'][] = array('label'    => $t->trans('Manage Tahoe storage', array(), 'BinovoElkarTahoe'),
-                                                      'route'    => 'tahoeConfig');
-        	}
+            $label = $t->trans('Manage Tahoe storage', array(), 'BinovoElkarTahoe');
+            $menu[5]['children'][] = array('label'    => $label,
+                'route'    => 'tahoeConfig',
+                'class'    => 'tahoeConfig',
+                'icon'     => "<i class='glyphicon glyphicon-cloud-upload'></i><span>$label</span></a>");
+        }
 	} else {
 
 		$t = $this->container->get('translator');
