@@ -141,6 +141,11 @@ class Job
      * Security token for remote management
      */
     protected $token = null;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="BackupLocation")
+     */
+    protected $backupLocation;
 
     /**
      * Returns the full path of the snapshot directory
@@ -682,4 +687,44 @@ class Job
         return $this->token;
     }
 
+    /**
+     * Get dirPath
+     * 
+     * @return string
+     */
+    public function getDirPath()
+    {
+        return $this->dirPath;
+    }
+    
+    /**
+     * Set dirPath
+     * 
+     * @param string $dirPath
+     * @return string
+     */
+    public function setDirPath($dirPath)
+    {
+        $this->dirPath = $dirPath;
+    }
+    
+    /**
+     * Get backupLocation
+     * @return Binovo\ElkarBackupBundle\Entity\BackupLocation
+     */
+    public function getBackupLocation()
+    {
+        return $this->backupLocation;
+    }
+    
+    /**
+     * Set backupLocation
+     * 
+     * @param Binovo\ElkarBackupBundle\Entity\BackupLocation $backupLocation
+     * @return Job
+     */
+    public function setBackupLocation($backupLocation)
+    {
+        $this->backupLocation = $backupLocation;
+    }
 }
