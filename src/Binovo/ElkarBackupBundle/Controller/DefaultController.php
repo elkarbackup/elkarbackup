@@ -1326,12 +1326,12 @@ class DefaultController extends Controller
         $lastLog = null;
         $em = $this->getDoctrine()->getManager();
         // :WARNING: this call might end up slowing things too much.
-        $dql = "<<<EOF 
-            SELECT l
-            FROM  BinovoElkarBackupBundle:LogRecord l
-            WHERE l.source = :source AND l.link LIKE :link
-            ORDER BY l.id DESC
-            EOF";
+        $dql = <<<EOF
+SELECT l
+FROM  BinovoElkarBackupBundle:LogRecord l
+WHERE l.source = :source AND l.link LIKE :link
+ORDER BY l.id DESC
+EOF;
         $query = $em->createQuery($dql)
             ->setParameter('link', $link)
             ->setParameter('source', Globals::STATUS_REPORT)
