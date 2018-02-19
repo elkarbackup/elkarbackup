@@ -31,6 +31,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -45,6 +46,7 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Binovo\ElkarBackupBundle\BinovoElkarBackupBundle;
 
 class DefaultController extends Controller
 {
@@ -1481,17 +1483,26 @@ EOF;
      */
     public function getRepositoryBackupScriptAction(Request $request)
     {
+        if ($request->isMethod('POST')) {
+            $result = $request->request->all();
+            $backupLocationId = $result['form']['backup_script'];
+        }
+        
+        $backupLocation = $this
+            ->getDoctrine()
+            ->getRepository('BinovoElkarBackupBundle:BackupLocation')
+            ->find($backupLocationId);
         $response = $this->render(
             'BinovoElkarBackupBundle:Default:copyrepository.sh.twig',
             array(
-                'backupsroot' => $this->container->getParameter('backup_dir'),
-                'backupsuser' => 'elkarbackup',
-                'mysqldb' => $this->container->getParameter('database_name'),
-                'mysqlhost' => $this->container->getParameter('database_host'),
+                'backupsroot'   => $backupLocation->getDirectory(),
+                'backupsuser'   => 'elkarbackup',
+                'mysqldb'       => $this->container->getParameter('database_name'),
+                'mysqlhost'     => $this->container->getParameter('database_host'),
                 'mysqlpassword' => $this->container->getParameter('database_password'),
-                'mysqluser' => $this->container->getParameter('database_user'),
-                'server' => $request->getHttpHost(),
-                'uploads' => $this->container->getParameter('upload_dir')
+                'mysqluser'     => $this->container->getParameter('database_user'),
+                'server'        => $request->getHttpHost(),
+                'uploads'       => $this->container->getParameter('upload_dir')
             )
         );
         $response->headers->set('Content-Type', 'text/plain');
@@ -1524,6 +1535,27 @@ EOF;
     public function configureRepositoryBackupScriptAction(Request $request)
     {
         $t = $this->get('translator');
+        $params = array(
+            'backup_script' => array(
+                'type' => 'entity',
+                'required' => true,
+                'attr' => array('class' => 'form-control'),
+                'label' => $t->trans('Backup Script', array(), 'BinovoElkarBackup'),
+                'class'    => 'BinovoElkarBackupBundle:BackupLocation',
+                'property' => 'directory'
+            )
+        );
+        $defaultData = array();
+        $formBuilder2 = $this->createFormBuilder($defaultData);
+        foreach ($params as $paramName => $formField) {
+            $formBuilder2->add(
+                $paramName,
+                $formField['type'],
+                array_diff_key($formField, array('type' => true))
+            );
+        }
+        $form2 = $formBuilder2->getForm();
+        
         $authorizedKeysFile = dirname(
             $this->container->getParameter('public_key')
         ) . '/authorized_keys';
@@ -1575,7 +1607,7 @@ EOF;
         } else {
             $result = $this->render(
                 'BinovoElkarBackupBundle:Default:backupscriptconfig.html.twig',
-                array('form' => $form->createView())
+                array('form' => $form->createView(), 'form2' => $form2->createView())
             );
         }
         

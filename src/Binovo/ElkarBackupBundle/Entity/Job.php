@@ -152,7 +152,7 @@ class Job
      */
     public function getSnapshotRoot()
     {
-        return Globals::getSnapshotRoot($this->getClient()->getId(), $this->getId());
+        return Globals::getSnapshotRoot($this->getClient()->getId(), $this);
     }
 
     /**

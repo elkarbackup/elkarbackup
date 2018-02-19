@@ -14,14 +14,14 @@
 
 {% block body %}
 
-<form class="form-horizontal" action="{{ path('configureRepositoryBackupScript') }}" method="post" {{ form_enctype(form) }}>
+<form class="form-horizontal" id="locationForm" action="{{ path('getRepositoryBackupScript') }}" method="POST">
     <h3>{% trans %}Repository backups script{% endtrans %}</h3>
     {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
     <div class="row">
         <div class="col-md-6">
             <div class="control-group">
-                <label class="control-label col-xs-12 col-md-3">{% trans %}Backup script{% endtrans %}</label>
-                <div class="controls"><input class="btn btn-default" onclick="window.location='{{ path('getRepositoryBackupScript') }}'" type="button" value="{% trans %}Download{% endtrans %}" /></div>
+                {{ form_widget(form2) }}
+                <input class="btn btn-default" type="submit" value="{% trans %}Download{% endtrans %}"/>
             </div>
         </div>
     </div>
