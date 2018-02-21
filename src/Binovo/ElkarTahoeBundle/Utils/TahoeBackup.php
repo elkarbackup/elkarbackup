@@ -248,7 +248,7 @@ class TahoeBackup
             if (0===$result) {
                 $this->_logger->info($retain . ' was full: oldest item *deleted', $this->_context);
             } else {
-                if (null!=$resutl) { //if $result == null, retain was not full
+                if (null!=$result) { //if $result == null, retain was not full
                     return false; //some error happened (shown in the log)
                 }
             }
@@ -283,7 +283,7 @@ class TahoeBackup
                 if (0===$result) {
                     $this->_logger->info($retain . ' was full: oldest item *deleted', $this->_context);
                 } else {
-                    if (null!=$resutl) { //if $result == null, retain was not full
+                    if (null!=$result) { //if $result == null, retain was not full
                         return false; //some error happened (shown in the log)
                     }
                 }
