@@ -35,7 +35,7 @@ class Globals
 
     public static function getSnapshotRoot($idClient, $job)
     {
-        return sprintf('%s/%04d/%04d', $job->getBackupLocation()->getDirectory(), $idClient, $job->getId());
+        return sprintf('%s/%04d/%04d', $job->getBackupLocation()->getEffectiveDir(), $idClient, $job->getId());
     }
 
     public static function delTree($dir)

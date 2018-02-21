@@ -138,5 +138,14 @@ class BackupLocation
     {
         $this->tahoe = $tahoe;
     }
+    
+    public function getEffectiveDir()
+    {
+        if ("" == $this->getHost()) {
+            return $this->getDirectory();
+        } else {
+            return sprintf('/net/%s%s',$this->getHost(), $this->getDirectory());
+        }
+    }
   
 }

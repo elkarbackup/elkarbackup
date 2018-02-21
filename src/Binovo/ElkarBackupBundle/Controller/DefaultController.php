@@ -1542,7 +1542,7 @@ EOF;
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Backup Script', array(), 'BinovoElkarBackup'),
                 'class'    => 'BinovoElkarBackupBundle:BackupLocation',
-                'property' => 'directory'
+                'property' => 'name'
             )
         );
         $defaultData = array();
@@ -1691,8 +1691,8 @@ EOF;
         );
         $form->bind($request);
         $result = null;
-        
-        if (! is_dir($backupLocation->getDirectory())) {
+        $location = $backupLocation->getEffectiveDir();
+        if (! is_dir($backupLocation->getEffectiveDir())) {
             $form->addError(new FormError($t->trans(
                 'Warning: the directory does not exist',
                 array(),

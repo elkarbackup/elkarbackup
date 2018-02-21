@@ -71,26 +71,7 @@ class TahoeBackup
 
     protected function _getJobPath(Job $job)
     {
-        $paramsFilename = dirname(__FILE__) . '/../../../../app/config/parameters.yml';
-        $paramsFile = file_get_contents(realpath($paramsFilename) );
-        if (false==$paramsFile) {
-            return false;
-        }
-
-        $backupDirParam = 'backup_dir:';
-        $i=strpos($paramsFile, $backupDirParam);
-        $i+=strlen($backupDirParam);
-        $value = '';
-
-        for (;$i<strlen($paramsFile);$i++) {
-            if ("\n"==$paramsFile[$i]) {
-                break;
-            }
-            if (' '!=$paramsFile[$i]) {
-                $value.=$paramsFile[$i];
-            }
-        }
-
+        $value = $job->getBackupLocation()->getEffectiveDir();
         $idClient = $job->getClient()->getId();
         $idJob    = $job->getId();
 
@@ -248,7 +229,7 @@ class TahoeBackup
             if (0===$result) {
                 $this->_logger->info($retain . ' was full: oldest item *deleted', $this->_context);
             } else {
-                if (null!=$resutl) { //if $result == null, retain was not full
+                if (null!=$result) { //if $result == null, retain was not full
                     return false; //some error happened (shown in the log)
                 }
             }
@@ -283,7 +264,7 @@ class TahoeBackup
                 if (0===$result) {
                     $this->_logger->info($retain . ' was full: oldest item *deleted', $this->_context);
                 } else {
-                    if (null!=$resutl) { //if $result == null, retain was not full
+                    if (null!=$result) { //if $result == null, retain was not full
                         return false; //some error happened (shown in the log)
                     }
                 }

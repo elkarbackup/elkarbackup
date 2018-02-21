@@ -24,5 +24,5 @@ parameters:
     url_prefix: null
     disable_background: false
     mailer_from: null
-    tahoe_active: false
+    tahoe_active: true
     home: /var/lib/elkarbackup2
