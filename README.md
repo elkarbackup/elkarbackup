@@ -1,5 +1,7 @@
 # Elkarbackup
 
+[![Build Status](https://travis-ci.org/xezpeleta/elkarbackup.svg?branch=master)](https://travis-ci.org/xezpeleta/elkarbackup)
+
 ## What is it?
 ElkarBackup is a free open-source backup solution based on RSync/RSnapshot
 
