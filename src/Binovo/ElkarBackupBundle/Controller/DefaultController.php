@@ -725,8 +725,7 @@ class DefaultController extends Controller
      */
     public function showJobConfigAction(Request $request, $idClient, $idJob)
     {
-        $t = $this->get('translator');
-        $backupDir = $this->container->getParameter('backup_dir');
+        $t = $this->get('translator');        
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
         $job = $repository->find($idJob);
         if (null == $job || $job->getClient()->getId() != $idClient) {
@@ -739,6 +738,7 @@ class DefaultController extends Controller
                 . $idClient . " " . $idJob
             );
         }
+        $backupDir = $job->getEffectiveDir();
         $client = $job->getClient();
         $logDir = $this->container->get('kernel')->getLogDir();
         $tmpDir = $this->container->getParameter('tmp_dir');
@@ -875,17 +875,16 @@ class DefaultController extends Controller
         }
     }
 
-    /**
-     * @Route("/client/{idClient}/job/{idJob}/backup/{action}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "action" = "view|download|downloadzip"}, defaults={"path" = "/"}, name="showJobBackup")
+        /**
+     * @Route("/client/{idClient}/job/{idJob}/backup/{action}/{idBackupLocation}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "action" = "view|download|downloadzip", "idBackupLocation" = "\d+"}, defaults={"path" = "/", "idBackupLocation" = 0}, name="showJobBackup")
      *
      * @method ("GET")
      */
-    public function showJobBackupAction(Request $request, $idClient, $idJob, $action, $path)
+    public function showJobBackupAction(Request $request, $idClient, $idJob, $action, $idBackupLocation, $path)
     {
         if ($this->checkPermissions($idClient) == False) {
             return $this->redirect($this->generateUrl('showClients'));
         }
-        
         $t = $this->get('translator');
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
         $job = $repository->find($idJob);
@@ -896,146 +895,214 @@ class DefaultController extends Controller
                 'BinovoElkarBackup'
             ) . $idClient . " " . $idJob);
         }
-        
-        $snapshotRoot = realpath($job->getSnapshotRoot());
-        $realPath = realpath($snapshotRoot . '/' . $path);
-        if (false == $realPath) {
-            throw $this->createNotFoundException($t->trans(
-                'Path not found:',
-                array(),
-                'BinovoElkarBackup'
-            ) . $path);
-        }
-        if (0 !== strpos($realPath, $snapshotRoot)) {
-            throw $this->createNotFoundException($t->trans(
-                'Path not found:',
-                array(),
-                'BinovoElkarBackup'
-            ) . $path);
-        }
-        if (is_dir($realPath)) {
-            if ('download' == $action) {
-                $headers = array(
-                    'Content-Type' => 'application/x-gzip',
-                    'Content-Disposition' => sprintf(
-                        'attachment; filename="%s.tar.gz"',
-                        basename($realPath)
-                    )
-                );
-                $f = function () use ($realPath) {
-                    $command = sprintf(
-                        'cd "%s"; tar zc "%s"',
-                        dirname($realPath),
-                        basename($realPath)
+        if (0 != $idBackupLocation) {
+            $backupLocation = $this->getDoctrine()
+            ->getRepository('BinovoElkarBackupBundle:BackupLocation')
+            ->find($idBackupLocation);
+            $backupDir = sprintf(
+                '%s/%04d/%04d',
+                $backupLocation->getEffectiveDir(),
+                $job->getClient()->getId(),
+                $job->getId()
+            );
+            
+            $snapshotRoot = realpath($backupDir);
+            $realPath = realpath($snapshotRoot . '/' . $path);
+            $backupDirectories = array();
+            $jobPath = array(
+                $backupLocation,
+                $backupDir
+            );
+            if (file_exists($jobPath[1])) {
+                array_push($backupDirectories, $jobPath);
+            }
+            
+            if (false == $realPath) {
+                throw $this->createNotFoundException($t->trans(
+                    'Path not found:',
+                    array(),
+                    'BinovoElkarBackup'
+                    ) . $path);
+            }
+            if (0 !== strpos($realPath, $snapshotRoot)) {
+                throw $this->createNotFoundException($t->trans(
+                    'Path not found:',
+                    array(),
+                    'BinovoElkarBackup'
+                    ) . $path);
+            }
+            if (is_dir($realPath)) {
+                if ('download' == $action) {
+                    $headers = array(
+                        'Content-Type' => 'application/x-gzip',
+                        'Content-Disposition' => sprintf(
+                            'attachment; filename="%s.tar.gz"',
+                            basename($realPath)
+                            )
                     );
-                    passthru($command);
-                };
-                $this->info(
-                    'Download backup directory %clientid%, %jobid% %path%',
-                    array('%clientid%' => $idClient,'%jobid%' => $idJob,'%path%' => $path),
-                    array('link' => $this->generateUrl('showJobBackup', array(
-                        'action' => $action,
-                        'idClient' => $idClient,
-                        'idJob' => $idJob,
-                        'path' => $path
-                    ))));
-                $this->getDoctrine()->getManager()->flush();
-                
-                return new StreamedResponse($f, 200, $headers);
-            } elseif ('downloadzip' == $action) {
-                $headers = array(
-                    'Content-Type' => 'application/zip',
-                    'Content-Disposition' => sprintf(
-                        'attachment; filename="%s.zip"', 
-                        basename($realPath)
-                    )
-                );
-                $f = function () use ($realPath) {
-                    $command = sprintf(
-                        'cd "%s"; zip -r - "%s"',
-                        dirname($realPath),
-                        basename($realPath)
+                    $f = function () use ($realPath) {
+                        $command = sprintf(
+                            'cd "%s"; tar zc "%s"',
+                            dirname($realPath),
+                            basename($realPath)
+                            );
+                        passthru($command);
+                    };
+                    $this->info(
+                        'Download backup directory %clientid%, %jobid% %path%',
+                        array('%clientid%' => $idClient,'%jobid%' => $idJob,'%path%' => $path),
+                        array('link' => $this->generateUrl('showJobBackup', array(
+                            'action' => $action,
+                            'idClient' => $idClient,
+                            'idJob' => $idJob,
+                            'path' => $path
+                        ))));
+                    $this->getDoctrine()->getManager()->flush();
+                    
+                    return new StreamedResponse($f, 200, $headers);
+                } elseif ('downloadzip' == $action) {
+                    $headers = array(
+                        'Content-Type' => 'application/zip',
+                        'Content-Disposition' => sprintf(
+                            'attachment; filename="%s.zip"',
+                            basename($realPath)
+                            )
                     );
-                    passthru($command);
-                };
-                $this->info(
-                    'Download backup directory %clientid%, %jobid% %path%',
-                    array('%clientid%' => $idClient,'%jobid%' => $idJob,'%path%' => $path),
-                    array('link' => $this->generateUrl('showJobBackup', array(
-                        'action' => $action,
-                        'idClient' => $idClient,
-                        'idJob' => $idJob,
-                        'path' => $path
-                    )))
-                );
-                $this->getDoctrine()->getManager()->flush();
-                
-                return new StreamedResponse($f, 200, $headers);
+                    $f = function () use ($realPath) {
+                        $command = sprintf(
+                            'cd "%s"; zip -r - "%s"',
+                            dirname($realPath),
+                            basename($realPath)
+                            );
+                        passthru($command);
+                    };
+                    $this->info(
+                        'Download backup directory %clientid%, %jobid% %path%',
+                        array('%clientid%' => $idClient,'%jobid%' => $idJob,'%path%' => $path),
+                        array('link' => $this->generateUrl('showJobBackup', array(
+                            'action' => $action,
+                            'idClient' => $idClient,
+                            'idJob' => $idJob,
+                            'path' => $path
+                        )))
+                        );
+                    $this->getDoctrine()->getManager()->flush();
+                    
+                    return new StreamedResponse($f, 200, $headers);
+                } else {
+                    // Check if Zip is in the user path
+                    exec('which zip', $cmdretval);
+                    $isZipInstalled = $cmdretval;
+                    $dirContent = array();
+                    $content = scandir($realPath);
+                    if (false === $content) {
+                        $content = array();
+                    }
+                    foreach ($content as &$aFile) {
+                        $date = new \DateTime();
+                        $date->setTimestamp(filemtime($realPath . '/' . $aFile));
+                        $aFile = array(
+                            $aFile,
+                            $date,
+                            is_dir($realPath . '/' . $aFile),
+                            is_link($realPath . '/' . $aFile)
+                        );
+                    }
+                    array_push($dirContent, $content);
+                    $this->info(
+                        'View backup directory %clientid%, %jobid% %path%',
+                        array('%clientid%' => $idClient,'%jobid%' => $idJob, '%idBackupLocation%' => $idBackupLocation, '%path%' => $path),
+                        array('link' => $this->generateUrl('showJobBackup', array(
+                            'action' => $action,
+                            'idClient' => $idClient,
+                            'idJob' => $idJob,
+                            'idBackupLocation' => $idBackupLocation,
+                            'path' => $path
+                        )))
+                        );
+                    $this->getDoctrine()->getManager()->flush();
+                    
+                    $params = array(
+                        'dirContent' => $dirContent,
+                        'job' => $job,
+                        'path' => $path,
+                        'realPath' => $realPath,
+                        'isZipInstalled' => $isZipInstalled,
+                        'backupDirectories' => $backupDirectories,
+                        'idBackupLocation' => $idBackupLocation
+                    );
+                    return $this->render('BinovoElkarBackupBundle:Default:directory.html.twig', $params);
+                }
             } else {
-                // Check if Zip is in the user path
-                exec('which zip', $cmdretval);
-                $isZipInstalled = $cmdretval;
+                $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+                $mimeType = finfo_file($finfo, $realPath);
+                finfo_close($finfo);
                 
-                $content = scandir($realPath);
+                $response = new BinaryFileResponse($realPath);
+                $contentDisposition = $response->headers->makeDisposition(
+                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                    basename($realPath)
+                    );
+                $response->headers->set('Content-Type', $mimeType);
+                $response->headers->set('Content-Disposition', $contentDisposition);
+                $this->info('Download backup file %clientid%, %jobid% %path%', array(
+                    '%clientid%' => $idClient,
+                    '%jobid%' => $idJob,
+                    '%path%' => $path
+                ), array('link' => $this->generateUrl('showJobBackup', array(
+                    'action' => $action,
+                    'idClient' => $idClient,
+                    'idJob' => $idJob,
+                    'path' => $path
+                ))));
+                $this->getDoctrine()->getManager()->flush();
+                
+                return $response;
+            }
+        } else {
+            // Check if Zip is in the user path
+            exec('which zip', $cmdretval);
+            $isZipInstalled = $cmdretval;
+            
+            $backupDirectories = $this->findBackups($job);
+            $dirContent = array();
+            foreach ($backupDirectories as $backupDir) {
+                $content = scandir($backupDir[1]);
                 if (false === $content) {
                     $content = array();
                 }
                 foreach ($content as &$aFile) {
                     $date = new \DateTime();
-                    $date->setTimestamp(filemtime($realPath . '/' . $aFile));
+                    $date->setTimestamp(filemtime($backupDir[1] . '/' . $aFile));
                     $aFile = array(
                         $aFile,
-                        $date,is_dir($realPath . '/' . $aFile),
-                        is_link($realPath . '/' . $aFile)
+                        $date,
+                        is_dir($backupDir[1] . '/' . $aFile),
+                        is_link($backupDir[1] . '/' . $aFile)
                     );
                 }
-                $this->info(
-                    'View backup directory %clientid%, %jobid% %path%',
-                    array('%clientid%' => $idClient,'%jobid%' => $idJob,'%path%' => $path),
-                    array('link' => $this->generateUrl('showJobBackup', array(
-                        'action' => $action,
-                        'idClient' => $idClient,
-                        'idJob' => $idJob,
-                        'path' => $path
-                    )))
-                );
-                $this->getDoctrine()
-                    ->getManager()
-                    ->flush();
-                
-                return $this->render('BinovoElkarBackupBundle:Default:directory.html.twig', array(
-                    'content' => $content,
-                    'job' => $job,
-                    'path' => $path,
-                    'realPath' => $realPath,
-                    'isZipInstalled' => $isZipInstalled
-                ));
+                array_push($dirContent, $content);
             }
-        } else {
-            $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
-            $mimeType = finfo_file($finfo, $realPath);
-            finfo_close($finfo);
-            
-            $response = new BinaryFileResponse($realPath);
-            $contentDisposition = $response->headers->makeDisposition(
-                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                basename($realPath)
+            $this->info(
+                'View backup directory %clientid%, %jobid% %path%',
+                array('%clientid%' => $idClient,'%jobid%' => $idJob),
+                array('link' => $this->generateUrl('showJobBackup', array(
+                    'action' => $action,
+                    'idClient' => $idClient,
+                    'idJob' => $idJob,
+                )))
             );
-            $response->headers->set('Content-Type', $mimeType);
-            $response->headers->set('Content-Disposition', $contentDisposition);
-            $this->info('Download backup file %clientid%, %jobid% %path%', array(
-                '%clientid%' => $idClient,
-                '%jobid%' => $idJob,
-                '%path%' => $path
-            ), array('link' => $this->generateUrl('showJobBackup', array(
-                'action' => $action,
-                'idClient' => $idClient,
-                'idJob' => $idJob,
-                'path' => $path
-            ))));
             $this->getDoctrine()->getManager()->flush();
             
-            return $response;
+            $params = array(
+                'dirContent' => $dirContent,
+                'job' => $job,
+                'isZipInstalled' => $isZipInstalled,
+                'path' => '',
+                'backupDirectories' => $backupDirectories
+            );
+            return $this->render('BinovoElkarBackupBundle:Default:directory.html.twig', $params);
+
         }
     }
 
@@ -1251,8 +1318,8 @@ class DefaultController extends Controller
         $user = $this->get('security.context')->getToken()->getUser();
         $actualuserid = $user->getId();
         
-        $fsDiskUsage = (int) round($this->getFsUsed(
-            Globals::getBackupDir()) * 100 / $this->getFsSize(Globals::getBackupDir()),
+        $fsDiskUsage = (int) round(
+            $this->getFsUsed('/') * 100 / $this->getFsSize('/'),
             0,
             PHP_ROUND_HALF_UP
         );
@@ -1479,15 +1546,13 @@ EOF;
 
     /**
      * @Route("/config/repositorybackupscript/download", name="getRepositoryBackupScript")
+     * @method ("POST")
      * @Template()
      */
     public function getRepositoryBackupScriptAction(Request $request)
     {
-        if ($request->isMethod('POST')) {
-            $result = $request->request->all();
-            $backupLocationId = $result['form']['backup_script'];
-        }
-        
+        $result = $request->request->all();
+        $backupLocationId = $result['form']['backup_script'];
         $backupLocation = $this
             ->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:BackupLocation')
@@ -1495,7 +1560,7 @@ EOF;
         $response = $this->render(
             'BinovoElkarBackupBundle:Default:copyrepository.sh.twig',
             array(
-                'backupsroot'   => $backupLocation->getDirectory(),
+                'backupsroot'   => $backupLocation->getEffectiveDir(),
                 'backupsuser'   => 'elkarbackup',
                 'mysqldb'       => $this->container->getParameter('database_name'),
                 'mysqlhost'     => $this->container->getParameter('database_host'),
@@ -1546,22 +1611,22 @@ EOF;
             )
         );
         $defaultData = array();
-        $formBuilder2 = $this->createFormBuilder($defaultData);
+        $backupScriptFormBuilder = $this->createFormBuilder($defaultData);
         foreach ($params as $paramName => $formField) {
-            $formBuilder2->add(
+            $backupScriptFormBuilder->add(
                 $paramName,
                 $formField['type'],
                 array_diff_key($formField, array('type' => true))
             );
         }
-        $form2 = $formBuilder2->getForm();
+        $backupScriptForm = $backupScriptFormBuilder->getForm();
         
         $authorizedKeysFile = dirname(
             $this->container->getParameter('public_key')
         ) . '/authorized_keys';
         $keys = $this->readKeyFileAsCommentAndRest($authorizedKeysFile);
-        $formBuilder = $this->createFormBuilder(array('publicKeys' => $keys));
-        $formBuilder->add(
+        $authorizedKeysFormBuilder = $this->createFormBuilder(array('publicKeys' => $keys));
+        $authorizedKeysFormBuilder->add(
             'publicKeys',
             'collection',
             array(
@@ -1572,10 +1637,10 @@ EOF;
                 'options' => array('required' => false,'attr' => array('class' => 'span10'))
             )
         );
-        $form = $formBuilder->getForm();
+        $authorizedKeysForm = $authorizedKeysFormBuilder->getForm();
         if ($request->isMethod('POST')) {
-            $form->bind($request);
-            $data = $form->getData();
+            $authorizedKeysForm->bind($request);
+            $data = $authorizedKeysForm->getData();
             $serializedKeys = '';
             foreach ($data['publicKeys'] as $key) {
                 $serializedKeys .= sprintf("%s %s\n", $key['publicKey'], $key['comment']);
@@ -1607,7 +1672,7 @@ EOF;
         } else {
             $result = $this->render(
                 'BinovoElkarBackupBundle:Default:backupscriptconfig.html.twig',
-                array('form' => $form->createView(), 'form2' => $form2->createView())
+                array('authorizedKeysForm' => $authorizedKeysForm->createView(), 'backupScriptForm' => $backupScriptForm->createView())
             );
         }
         
@@ -2714,5 +2779,45 @@ EOF;
             $response = $user->getLinesperpage();
         }
         return $response;
+    }
+    
+    public function findBackups($job)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $backupLocations = $em->getRepository('BinovoElkarBackupBundle:BackupLocation')
+        ->findAll();
+        $jobLocations = array();
+        $actualLocation = $job->getBackupLocation()->getEffectiveDir();
+        $jobPath = array(
+            $job->getBackupLocation(),
+            sprintf(
+                '%s/%04d/%04d',
+                $actualLocation,
+                $job->getClient()->getId(),
+                $job->getId()
+                )
+        );
+        if (file_exists($jobPath[1]) and is_dir($jobPath[1])) {
+            array_push($jobLocations, $jobPath);
+        }
+        foreach ($backupLocations as $backupLocation) {
+            $directory = $backupLocation->getEffectiveDir();
+            if (strcmp($directory, $actualLocation) !== 0) {
+                $jobPath = array(
+                    $backupLocation,
+                    sprintf(
+                        '%s/%04d/%04d',
+                        $directory,
+                        $job->getClient()->getId(),
+                        $job->getId()
+                    )
+                );
+                if (file_exists($jobPath[1]) and is_dir($jobPath[1])) {
+                    array_push($jobLocations, $jobPath);
+                }
+            }
+        }
+        
+        return $jobLocations;
     }
 }

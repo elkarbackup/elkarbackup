@@ -209,7 +209,7 @@
         <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" class="btn btn-default" href="#" eb-action="editJob" eb-path="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}">
           <span class="glyphicon glyphicon-pencil"></span>
         </button>
-        <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Restore{% endtrans %}" class="btn btn-default {% if not job.hasBackups %}disabled{% endif %}" href="#" {% if job.hasBackups %}eb-action="showJobBackup"{% endif %} eb-path="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" id="btnRestore{{ client.id }}{{ job.id }}">
+        <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Restore{% endtrans %}" class="btn btn-default" href="#" eb-action="showJobBackup" eb-path="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" id="btnRestore{{ client.id }}{{ job.id }}">
           <span class="glyphicon glyphicon-cloud-download"></span>
         </button>
         <div class="btn-group" role="group">

@@ -29,22 +29,22 @@ class BackupLocation
      * @ORM\Column(type="string", length=255)
      */
     protected $name;
-    
+
     /**
      * @ORM\Column(type="string", length=255)
      */
     protected $host = null;
-    
+
     /**
      * @ORM\Column(type="string", length=255)
      */
     protected $directory;
-    
+
     /**
      * @ORM\Column(type="boolean")
      */
     protected $tahoe;
-   
+
     /**
      * Get id
      *
@@ -75,7 +75,7 @@ class BackupLocation
     {
         $this->name = $name;
     }
-    
+
     /**
      * Get host
      * 
@@ -96,7 +96,7 @@ class BackupLocation
     {
         $this->host = $host;
     }
-    
+
     /**
      * Get directory
      * 
@@ -117,7 +117,7 @@ class BackupLocation
     {
         $this->directory = $directory;
     }
-    
+
     /**
      * Get tahoe
      * 
@@ -138,7 +138,14 @@ class BackupLocation
     {
         $this->tahoe = $tahoe;
     }
-    
+
+    /**
+     * Get effective directory
+     * Returns the full path where the backup will be stored,
+     * host and directory.
+     *
+     * @return string
+     */
     public function getEffectiveDir()
     {
         if ("" == $this->getHost()) {
@@ -147,5 +154,4 @@ class BackupLocation
             return sprintf('/net/%s%s',$this->getHost(), $this->getDirectory());
         }
     }
-  
 }

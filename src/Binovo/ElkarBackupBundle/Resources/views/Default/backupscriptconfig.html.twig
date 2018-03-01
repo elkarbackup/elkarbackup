@@ -16,11 +16,11 @@
 
 <form class="form-horizontal" id="locationForm" action="{{ path('getRepositoryBackupScript') }}" method="POST">
     <h3>{% trans %}Repository backups script{% endtrans %}</h3>
-    {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
+    {% form_theme backupScriptForm 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
     <div class="row">
         <div class="col-md-6">
             <div class="control-group">
-                {{ form_widget(form2) }}
+                {{ form_widget(backupScriptForm) }}
                 <input class="btn btn-default" type="submit" value="{% trans %}Download{% endtrans %}"/>
             </div>
         </div>
@@ -28,7 +28,7 @@
 </form>
 <br />
 <br />
-<form class="form-horizontal" action="{{ path('configureRepositoryBackupScript') }}" method="post" {{ form_enctype(form) }}>
+<form class="form-horizontal" action="{{ path('configureRepositoryBackupScript') }}" method="post" {{ form_enctype(authorizedKeysForm) }}>
     <legend>{% trans %}Authorized keys{% endtrans %}</legend>
     <div class="row">
         <div id="public-keys" class="col-md-6">
@@ -37,7 +37,7 @@
                 {{ flashMessage }}
             </div>
             {% endfor %}
-{% for publicKey in form.publicKeys %}
+{% for publicKey in authorizedKeysForm.publicKeys %}
             <div class="control-group">
                 <label class="control-label">{% trans %}Comment / Key{% endtrans %}</label>
                 <div class="controls">
@@ -45,7 +45,7 @@
                 </div>
             </div>
 {% endfor %}
-            <div id="no-keys-defined" class="controls"{% if form.publicKeys|length > 0 %} style="display:none"{% endif %}>
+            <div id="no-keys-defined" class="controls"{% if authorizedKeysForm.publicKeys|length > 0 %} style="display:none"{% endif %}>
                 {% trans %}No keys defined{% endtrans %}
             </div>
             <div id="add-key" class="controls">
@@ -65,7 +65,7 @@
     <div class="control-group">
         <label class="control-label">{% trans %}Comment / Key{% endtrans %}</label>
         <div style="height:30px" class="controls">
-            {{ form_widget(form.publicKeys.vars.prototype.comment) }} {{ form_widget(form.publicKeys.vars.prototype.publicKey) }} <input data-command="delete-key" class="btn-default btn-sx" type="button" value="{% trans %}Delete{% endtrans %}">
+            {{ form_widget(authorizedKeysForm.publicKeys.vars.prototype.comment) }} {{ form_widget(authorizedKeysForm.publicKeys.vars.prototype.publicKey) }} <input data-command="delete-key" class="btn-default btn-sx" type="button" value="{% trans %}Delete{% endtrans %}">
         </div>
     </div>
 </div>

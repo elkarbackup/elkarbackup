@@ -45,7 +45,6 @@ class Client
      */
     protected $name;
 
-
     /**
      * @ORM\ManyToMany(targetEntity="Script", inversedBy="postClients")
      * @ORM\JoinTable(name="ClientScriptPost")
@@ -101,8 +100,6 @@ class Client
      * @ORM\Column(type="string",length=255, nullable=true)
      */
     protected $rsyncLongArgs;
-
-
 
     /**
      * Constructor
