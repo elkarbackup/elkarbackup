@@ -15,14 +15,6 @@
 
 {% block body %}
 
-
-{% set hasBackups = false %}
-{% if form.vars.value.id %}
-  {% if form.vars.value.hasBackups %}
-    {% set hasBackups = true %}
-  {% endif %}
-{% endif %}
-
 <div class="top-action-buttons pull-right">
   <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnRunNowDisabled'">
           {% trans %}Job has not yet been saved{% endtrans %}
@@ -33,8 +25,8 @@
   <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnRestoreDisabled'">
           {% trans %}Backup not found{% endtrans %}
   </div>
-  <div class="btn-group inline" {% if hasBackups == false %}id="btnRestoreDisabled"{% endif %}>
-    <button type="button" class="btn btn-default btn-pull-right" {% if hasBackups == false %}disabled="true" {% else %} onclick="document.location.href='{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}'" {% endif %}><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</button>
+  <div class="btn-group inline">
+    <button type="button" class="btn btn-default btn-pull-right" onclick="document.location.href='{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}'"><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</button>
   </div>
 </div>
 
@@ -69,6 +61,7 @@
                 {{ form_row(form.useLocalPermissions) }}
                 {{ form_row(form.exclude) }}
                 {{ form_row(form.include) }}
+                {{ form_row(form.backupLocation) }}
                 <div class="panel panel-default">
                   <div class="panel-heading panel-collapsable-heading">
                     <a class="collapsed" href="#viewadvanced" data-toggle="collapse" data-target="#viewadvanced">Advanced</a></div>

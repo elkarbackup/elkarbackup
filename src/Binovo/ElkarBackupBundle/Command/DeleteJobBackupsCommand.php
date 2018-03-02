@@ -19,7 +19,7 @@ class DeleteJobBackupsCommand extends ContainerAwareCommand
         parent::configure();
         $this->setName('elkarbackup:delete_job_backups')
               ->addArgument('client', InputArgument::REQUIRED, 'Client id')
-              ->addArgument('job'   , InputArgument::OPTIONAL, 'Job id')
+              ->addArgument('job'   , InputArgument::REQUIRED, 'Job')
               ->setDescription('Deletes a the backups of a job identified by its id');
     }
 

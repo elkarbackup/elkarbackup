@@ -143,19 +143,16 @@ class Job
     protected $token = null;
 
     /**
+     * @ORM\ManyToOne(targetEntity="BackupLocation")
+     */
+    protected $backupLocation;
+
+    /**
      * Returns the full path of the snapshot directory
      */
     public function getSnapshotRoot()
     {
-        return Globals::getSnapshotRoot($this->getClient()->getId(), $this->getId());
-    }
-
-    /**
-     * Returns true if the backup directory exists
-     */
-    public function hasBackups()
-    {
-        return is_dir($this->getSnapshotRoot());
+        return Globals::getSnapshotRoot($this->getClient()->getId(), $this);
     }
 
     /**
@@ -682,4 +679,23 @@ class Job
         return $this->token;
     }
 
+    /**
+     * Get backupLocation
+     * @return Binovo\ElkarBackupBundle\Entity\BackupLocation
+     */
+    public function getBackupLocation()
+    {
+        return $this->backupLocation;
+    }
+
+    /**
+     * Set backupLocation
+     * 
+     * @param Binovo\ElkarBackupBundle\Entity\BackupLocation $backupLocation
+     * @return Job
+     */
+    public function setBackupLocation($backupLocation)
+    {
+        $this->backupLocation = $backupLocation;
+    }
 }

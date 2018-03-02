@@ -156,10 +156,10 @@ class Builder extends ContainerAware
                                                       'class'    => 'manageParameters',
                                                       'icon'     => '<i class="glyphicon glyphicon-list"></i><span>'.$t->trans('Manage parameters', array(), 'BinovoElkarBackup').'</span></a>'),
 
-                                                array('label'    => $t->trans('Manage backups location', array(), 'BinovoElkarBackup'),
-                                                      'route'    => 'manageBackupsLocation',
-                                                      'class'    => 'manageBackupsLocation',
-                                                      'icon'     => '<i class="glyphicon glyphicon-hdd"></i><span>'.$t->trans('Manage backups location', array(), 'BinovoElkarBackup').'</span></a>'),
+                                                array('label'    => $t->trans('Manage backup locations', array(), 'BinovoElkarBackup'),
+                                                      'route'    => 'manageBackupLocations',
+                                                      'class'    => 'manageBackupLocations',
+                                                      'icon'     => '<i class="glyphicon glyphicon-hdd"></i><span>'.$t->trans('Manage backup locations', array(), 'BinovoElkarBackup').'</span></a>'),
 
                                                 array('label'    => $t->trans('Repository backup script', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'configureRepositoryBackupScript',

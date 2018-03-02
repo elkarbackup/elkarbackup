@@ -45,7 +45,6 @@ class Client
      */
     protected $name;
 
-
     /**
      * @ORM\ManyToMany(targetEntity="Script", inversedBy="postClients")
      * @ORM\JoinTable(name="ClientScriptPost")
@@ -102,8 +101,6 @@ class Client
      */
     protected $rsyncLongArgs;
 
-
-
     /**
      * Constructor
      */
@@ -113,19 +110,22 @@ class Client
     }
 
     /**
-     * Returns the full path of the snapshot directory
-     */
-    public function getSnapshotRoot()
-    {
-        return Globals::getSnapshotRoot($this->getId());
-    }
-
-    /**
      * Returns true if the backup directory exists
      */
     public function hasBackups()
     {
-        return is_dir($this->getSnapshotRoot());
+        $hasBackups = false;
+        $jobs = $this->getJobs();
+        foreach ($jobs as $job) {
+            $backupLocation = $job->getBackupLocation();
+            $directory = sprintf('%s/%04d', $backupLocation->getDirectory(), $this->getId());
+            if (is_dir($directory)) {
+                $hasBackups  = true;
+                break;
+            }
+        }
+        
+        return $hasBackups;
     }
 
     /**

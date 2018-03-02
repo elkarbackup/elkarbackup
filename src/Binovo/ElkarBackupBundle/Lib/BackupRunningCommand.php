@@ -156,7 +156,7 @@ abstract class BackupRunningCommand extends LoggingCommand
 
         $container = $this->getContainer();
 
-        $backupDir  = $container->getParameter('backup_dir');
+        $backupDir  = $job->getBackupLocation()->getEffectiveDir();
         $rsnapshot  = $container->getParameter('rsnapshot');
         $logDir     = $container->get('kernel')->getLogDir();
         $tmpDir     = $container->getParameter('tmp_dir');

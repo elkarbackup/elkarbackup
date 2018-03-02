@@ -366,11 +366,6 @@ function bootstrap
   username="elkarbackup"
   configfile=$EB_PATH/app/config/parameters.yml
   chown $APACHE_USER:$APACHE_GROUP $configfile
-
-  # Correct backup parent directory permissions (usually: /var/spool/elkarbackup)
-  backup_dir=`sed -n 's/^[ \t]*backup_dir:[ \t]*\([^ #\t]*\).*/\1/p' $configfile`
-  backup_parent_dir=${backup_dir%/*}
-  chown $username:$username $backup_parent_dir
 }
 
 function update_db

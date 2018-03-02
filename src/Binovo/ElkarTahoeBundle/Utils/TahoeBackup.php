@@ -71,26 +71,7 @@ class TahoeBackup
 
     protected function _getJobPath(Job $job)
     {
-        $paramsFilename = dirname(__FILE__) . '/../../../../app/config/parameters.yml';
-        $paramsFile = file_get_contents(realpath($paramsFilename) );
-        if (false==$paramsFile) {
-            return false;
-        }
-
-        $backupDirParam = 'backup_dir:';
-        $i=strpos($paramsFile, $backupDirParam);
-        $i+=strlen($backupDirParam);
-        $value = '';
-
-        for (;$i<strlen($paramsFile);$i++) {
-            if ("\n"==$paramsFile[$i]) {
-                break;
-            }
-            if (' '!=$paramsFile[$i]) {
-                $value.=$paramsFile[$i];
-            }
-        }
-
+        $value = $job->getBackupLocation()->getEffectiveDir();
         $idClient = $job->getClient()->getId();
         $idJob    = $job->getId();
 
