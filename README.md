@@ -14,7 +14,7 @@ ElkarBackup is a free open-source backup solution based on RSync/RSnapshot
 - Backup Linux/Windows clients
 - Instant recovery!
 - Pre-scripts & Post-scripts
-- Multilanguage (English, Basque, Spanish, German)
+- Multilanguage (English, Basque, Spanish, German) - [Help us](https://crowdin.com/project/elkarbackup) to translate Elkarbackup in your language!
 
 ## Documentation
 * [Installation](https://github.com/elkarbackup/elkarbackup/wiki/Installation)
