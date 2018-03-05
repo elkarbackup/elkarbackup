@@ -253,7 +253,6 @@ class DefaultController extends Controller
      */
     public function loginAction(Request $request)
     {
-        $request = $this->getRequest();
         $session = $request->getSession();
         $t = $this->get('translator');
         
@@ -577,7 +576,7 @@ class DefaultController extends Controller
                 $job = $repository->findOneById($idJob);
                 if ($token == $job->getToken()) {
                     // Valid token, but let's require HTTPS
-                    if ($this->getRequest()->isSecure()) {
+                    if ($request->isSecure()) {
                         $trustable = true;
                     } else {
                         $response = new JsonResponse(array(
