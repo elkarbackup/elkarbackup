@@ -1,0 +1,80 @@
+language: php
+
+php:
+#  - 5.3  # Debian Squeeze => NOT SUPPORTED
+#  - 5.4  # Debian Wheezy  => NOT SUPPORTED
+  - 5.5  # Ubuntu Trusty
+  - 5.6  # Debian Jessie
+  - 7.0  # Debian Stretch / Ubuntu Xenial
+  - 7.1  # Ubuntu Bionic
+  - 7.2  # Ubuntu Bionic
+
+sudo: false
+
+dist: xenial
+
+# Cache composer packages so "composer install" is faster
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+env:
+  global:
+  - COMPOSER_BIN_DIR=bin
+  - SYMFONY_VERSION=2.8.x
+  - DB=pdo_mysql DB_PATH=null
+
+# Heavy matrix to test every version of the bundle/package
+matrix:
+  # Fast finish allows to set the build as "finished" even if the "allow_failures" matrix elements are not finished yet.
+  fast_finish: true
+  include:
+    - php: 7.0
+      env: DB=pdo_sqlite DB_PATH="%kernel.root_dir%/sqlite.db"
+  allow_failures:
+    - php: 7.0
+      env: DB=pdo_sqlite DB_PATH="%kernel.root_dir%/sqlite.db"
+
+# Update composer, and update Symfony version depending on the matrix
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y rsnapshot bzip2 zip
+  - echo 'memory_limit = 4096M' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  # Avoiding single quotes error
+  - |-
+    if [[ "$DB" == "pdo_sqlite" ]]; then sed -i "s#database_path:.*#database_path: '%database.path%'#" app/config/parameters.yml.travis; fi
+  #- |-
+  #  if [[ "DB" == "pdo_sqlite" ]]; then echo "    database_path: '%database.path%'" >> app/config/parameters.yml.travis; fi
+  - export SYMFONY__DATABASE__DRIVER=$DB
+  - export SYMFONY__DATABASE__PATH=$DB_PATH
+
+# Install composer dependencies (memory_limit hack needed for php5)
+# but also phpunit (to test a specific version of it)
+install:
+  - cp app/config/parameters.yml.travis app/config/parameters.yml && cat app/config/parameters.yml
+  - composer install
+  # PHP < 5.5 requires PHPUnit 4.8
+  - if [ $(phpenv version-name) = "5.5" ]; then composer require --dev phpunit/phpunit:^4.8; fi
+  # PHP > 5.5 requires PHPUnit 5.7
+  - if [ $(phpenv version-name) != "5.5" ]; then composer require --dev phpunit/phpunit:^5.7; fi
+  - php app/console doctrine:database:create --env=test
+  - php app/console doctrine:schema:create  --env=test
+   # Enable coveralls
+   #- composer require --dev php-coveralls/php-coveralls:^2.0
+   # TODO: enable fixtures
+   #- php app/console doctrine:fixtures:load -n --env=test
+
+# Custom PHP configuration
+before_script:
+  - echo 'date.timezone = "Europe/Paris"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+
+# Run script and log coverage in the "build" directory
+script:
+  - $COMPOSER_BIN_DIR/phpunit --coverage-text --coverage-clover build/coverage-clover.xml -c app
+
+# TODO: enable coveralls
+#after_success: |
+#  if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then php vendor/bin/coveralls -v --config .coveralls.yml; fi;
+
+notifications:
+  email: xezpeleta+eb@gmail.com
