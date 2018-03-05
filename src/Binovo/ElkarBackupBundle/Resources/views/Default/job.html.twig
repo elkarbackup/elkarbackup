@@ -26,7 +26,7 @@
           {% trans %}Backup not found{% endtrans %}
   </div>
   <div class="btn-group inline">
-    <button type="button" class="btn btn-default btn-pull-right" onclick="document.location.href='{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}'"><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</button>
+    <button type="button" class="btn btn-default btn-pull-right" {% if form.vars.value.id%} onclick="document.location.href='{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}'" {% else %} disabled="true" {% endif %}><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</button>
   </div>
 </div>
 
