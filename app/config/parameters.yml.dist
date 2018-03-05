@@ -1,7 +1,7 @@
 # parameters.yml.dist is a template
 parameters:
     database_driver: pdo_mysql
-    database_host: localhost
+    database_host: db
     database_port: null
     database_name: elkarbackup
     database_user: elkarbackup

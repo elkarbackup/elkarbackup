@@ -1,18 +1,24 @@
-# Symfony2 default gitignore #
+# Symfony3 default gitignore #
 ##############################
-/app/bootstrap.php.cache
-/app/cache/*
-!app/cache/.gitkeep
-#/app/config/parameters.yml
-/app/logs/*
-!app/logs/.gitkeep
-/app/phpunit.xml
-/bin/
-/composer.phar
+/.web-server-pid
+/app/config/parameters.yml
+/build/
+/phpunit.xml
+/var/*
+!/var/cache
+/var/cache/*
+!var/cache/.gitkeep
+!/var/logs
+/var/logs/*
+!var/logs/.gitkeep
+!/var/sessions
+/var/sessions/*
+!var/sessions/.gitkeep
+!var/SymfonyRequirements.php
 /vendor/
 /web/bundles/
 
-# Symfony2 personal gitignore #
+# Symfony3 personal gitignore #
 ###############################
 /web/js/
 !/web/js/dojo-release
@@ -24,10 +30,19 @@
 /web/fonts/glyphicons-*
 /app/sessions/*
 
+# Composer #
+############
+composer.phar
+composer
+
 # Makepackage #
 ###############
 .debian
 build
+
+# elkarbackup-docker #
+######################
+keys/
 
 # OS generated files #
 ######################
