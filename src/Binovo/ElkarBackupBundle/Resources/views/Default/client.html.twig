@@ -23,7 +23,7 @@
   </div>
 </div>
 
-<form class="form-horizontal" action="{{ path('saveClient', {id: form.vars.value.id}) }}" method="POST" {{ form_enctype(form) }}>
+{{ form_start(form, {'attr': {'class': 'form-horizontal'} }) }}
     <h3 id="legend">{% trans %}Edit client{% endtrans %}</h3>
     <div class="row">
         <div class="col-md-6">

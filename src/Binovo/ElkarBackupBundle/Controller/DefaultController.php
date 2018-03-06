@@ -312,11 +312,11 @@ class DefaultController extends Controller
             }
         }
         
-        $form = $this->createForm(
-            new ClientType(),
-            $client,
-            array('translator' => $this->get('translator'))
-        );
+        $form = $this->createForm(ClientType::class, $client, array(
+            'translator' => $this->get('translator'),
+            'action' => $this->generateUrl('saveClient', array('id' => $id)),
+            'method' => 'POST'
+        ));
         $this->info(
             'View client %clientid%',
             array('%clientid%' => $id),
@@ -350,11 +350,11 @@ class DefaultController extends Controller
         }
         
         $form = $this->createForm(
-            new ClientType(),
+            ClientType::class,
             $client,
             array('translator' => $t)
         );
-        $form->bind($request);
+        $form->handleRequest($request);
         if ($form->isValid()) {
             $client = $form->getData();
             $em = $this->getDoctrine()->getManager();
