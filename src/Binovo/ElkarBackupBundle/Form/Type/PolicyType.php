@@ -10,48 +10,53 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+
 class PolicyType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $t = $options['translator'];
-        $builder->add('name'              , 'text'    , array('label' => $t->trans('Name'       , array(), 'BinovoElkarBackup'),
+        $builder->add('name'              , TextType::class    , array('label' => $t->trans('Name'       , array(), 'BinovoElkarBackup'),
                                                               'attr' => array('class'    => 'form-control')))
-                ->add('description'       , 'textarea', array('label' => $t->trans('Description', array(), 'BinovoElkarBackup'),
+                ->add('description'       , TextareaType::class, array('label' => $t->trans('Description', array(), 'BinovoElkarBackup'),
                                                               'required' => false,
                                                               'attr' => array('class'    => 'form-control','rows' => '3')))
-                ->add('hourlyHours'       , 'hidden'  , array('required' => false))
-                ->add('hourlyDaysOfMonth' , 'hidden'  , array('required' => false))
-                ->add('hourlyDaysOfWeek'  , 'hidden'  , array('required' => false))
-                ->add('hourlyMonths'      , 'hidden'  , array('required' => false))
-                ->add('hourlyCount'       , 'hidden'  , array('required' => false))
-                ->add('dailyHours'        , 'hidden'  , array('required' => false))
-                ->add('dailyDaysOfMonth'  , 'hidden'  , array('required' => false))
-                ->add('dailyDaysOfWeek'   , 'hidden'  , array('required' => false))
-                ->add('dailyMonths'       , 'hidden'  , array('required' => false))
-                ->add('dailyCount'        , 'hidden'  , array('required' => false))
-                ->add('weeklyHours'       , 'hidden'  , array('required' => false))
-                ->add('weeklyDaysOfMonth' , 'hidden'  , array('required' => false))
-                ->add('weeklyDaysOfWeek'  , 'hidden'  , array('required' => false))
-                ->add('weeklyMonths'      , 'hidden'  , array('required' => false))
-                ->add('weeklyCount'       , 'hidden'  , array('required' => false))
-                ->add('monthlyHours'      , 'hidden'  , array('required' => false))
-                ->add('monthlyDaysOfMonth', 'hidden'  , array('required' => false))
-                ->add('monthlyDaysOfWeek' , 'hidden'  , array('required' => false))
-                ->add('monthlyMonths'     , 'hidden'  , array('required' => false))
-                ->add('monthlyCount'      , 'hidden'  , array('required' => false))
-                ->add('yearlyHours'       , 'hidden'  , array('required' => false))
-                ->add('yearlyDaysOfMonth' , 'hidden'  , array('required' => false))
-                ->add('yearlyDaysOfWeek'  , 'hidden'  , array('required' => false))
-                ->add('yearlyMonths'      , 'hidden'  , array('required' => false))
-                ->add('yearlyCount'       , 'hidden'  , array('required' => false))
-                ->add('exclude'           , 'textarea', array('label' => $t->trans('Exclude', array(), 'BinovoElkarBackup'),
+                ->add('hourlyHours'       , HiddenType::class  , array('required' => false))
+                ->add('hourlyDaysOfMonth' , HiddenType::class  , array('required' => false))
+                ->add('hourlyDaysOfWeek'  , HiddenType::class  , array('required' => false))
+                ->add('hourlyMonths'      , HiddenType::class  , array('required' => false))
+                ->add('hourlyCount'       , HiddenType::class  , array('required' => false))
+                ->add('dailyHours'        , HiddenType::class  , array('required' => false))
+                ->add('dailyDaysOfMonth'  , HiddenType::class  , array('required' => false))
+                ->add('dailyDaysOfWeek'   , HiddenType::class  , array('required' => false))
+                ->add('dailyMonths'       , HiddenType::class  , array('required' => false))
+                ->add('dailyCount'        , HiddenType::class  , array('required' => false))
+                ->add('weeklyHours'       , HiddenType::class  , array('required' => false))
+                ->add('weeklyDaysOfMonth' , HiddenType::class  , array('required' => false))
+                ->add('weeklyDaysOfWeek'  , HiddenType::class  , array('required' => false))
+                ->add('weeklyMonths'      , HiddenType::class  , array('required' => false))
+                ->add('weeklyCount'       , HiddenType::class  , array('required' => false))
+                ->add('monthlyHours'      , HiddenType::class  , array('required' => false))
+                ->add('monthlyDaysOfMonth', HiddenType::class  , array('required' => false))
+                ->add('monthlyDaysOfWeek' , HiddenType::class  , array('required' => false))
+                ->add('monthlyMonths'     , HiddenType::class  , array('required' => false))
+                ->add('monthlyCount'      , HiddenType::class  , array('required' => false))
+                ->add('yearlyHours'       , HiddenType::class  , array('required' => false))
+                ->add('yearlyDaysOfMonth' , HiddenType::class  , array('required' => false))
+                ->add('yearlyDaysOfWeek'  , HiddenType::class  , array('required' => false))
+                ->add('yearlyMonths'      , HiddenType::class  , array('required' => false))
+                ->add('yearlyCount'       , HiddenType::class  , array('required' => false))
+                ->add('exclude'           , TextareaType::class, array('label' => $t->trans('Exclude', array(), 'BinovoElkarBackup'),
                                                               'required' => false,
                                                               'attr' => array('class'    => 'form-control','rows' => '3')))
-                ->add('include'           , 'textarea', array('label' => $t->trans('Include', array(), 'BinovoElkarBackup'),
+                ->add('include'           , TextareaType::class, array('label' => $t->trans('Include', array(), 'BinovoElkarBackup'),
                                                               'required' => false,
                                                               'attr' => array('class'    => 'form-control','rows' => '3')))
-                ->add('syncFirst'         , 'checkbox', array('label' => $t->trans('Sync first', array(), 'BinovoElkarBackup'),
+                ->add('syncFirst'         , CheckboxType::class, array('label' => $t->trans('Sync first', array(), 'BinovoElkarBackup'),
                                                               'required' => false))
             ;
     }

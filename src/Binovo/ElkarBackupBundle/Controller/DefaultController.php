@@ -1102,16 +1102,18 @@ class DefaultController extends Controller
         $t = $this->get('translator');
         if ('new' === $id) {
             $policy = new Policy();
+            // savePolicyAction will recognize id=-1 as a new policy 
+            $id = -1;
         } else {
             $policy = $this->getDoctrine()
                 ->getRepository('BinovoElkarBackupBundle:Policy')
                 ->find($id);
         }
-        $form = $this->createForm(
-            new PolicyType(),
-            $policy,
-            array('translator' => $t)
-        );
+        $form = $this->createForm(PolicyType::class, $policy, array(
+            'translator' => $t,
+            'action' => $this->generateUrl('savePolicy', array('id' => $id)),
+            'method' => 'POST'
+        ));
         $this->info(
             'View policy %policyname%',
             array('%policyname%' => $policy->getName()), 
@@ -1177,12 +1179,8 @@ class DefaultController extends Controller
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Policy');
             $policy = $repository->find($id);
         }
-        $form = $this->createForm(
-            new PolicyType(),
-            $policy,
-            array('translator' => $t)
-        );
-        $form->bind($request);
+        $form = $this->createForm(PolicyType::class, $policy, array('translator' => $t));
+        $form->handleRequest($request);
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($policy);
