@@ -30,7 +30,7 @@
   </div>
 </div>
 
-<form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_enctype(form) }}>
+{{ form_start(form, {'attr': {'class': 'form-horizontal'} }) }}
 
     <h3 id="legend">{% trans %}Edit Job{% endtrans %}</h3>
     <div class="row">
@@ -93,7 +93,7 @@
     </div>
 </form>
 
-<form id="runNowForm" {% if form.vars.value.id %} action="{{ path('runJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" {% endif %} method="POST" {{ form_enctype(form) }}>
+<form id="runNowForm" {% if form.vars.value.id %} action="{{ path('runJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" {% endif %} method="POST">
 </form>
 
 {% endblock %}

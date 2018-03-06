@@ -23,8 +23,9 @@ if (runNowtrue == 'new'){
                 toggler.hide();
             }
         };
-        toggler = new Toggler({node:'Job_notificationsEmail'});
-        checkbox = dojo.byId('Job_notificationsTo_2');
+        toggler = new Toggler({node:'job_notificationsEmail'});
+        checkbox = dojo.byId('job_notificationsTo_2');
+		//console.log(dojo.byId('job_notificationsTo_2'))
         dojo.connect(checkbox, 'onchange', showHideEmailBox);
         showHideEmailBox();
     };
@@ -51,15 +52,15 @@ if (runNowtrue == 'new'){
           });
 
 					$(document).ready(function(){
-						if(!$('#Job_token').val()){
-							$('#Job_token').addClass('alert-danger');
+						if(!$('#job_token').val()){
+							$('#job_token').addClass('alert-danger');
 						} else {
-							$('#Job_token').addClass('alert-success');
+							$('#job_token').addClass('alert-success');
 						}
 
 						$('#generateToken').click(function(e){
 							e.preventDefault();
-							$('#Job_token').removeClass('alert-danger').addClass('alert-success');
+							$('#job_token').removeClass('alert-danger').addClass('alert-success');
 							var action = $(this).attr("eb-action");
 							var path = $(this).attr("eb-path");
 							var jobid = $(this).attr("eb-jobid");
@@ -68,7 +69,7 @@ if (runNowtrue == 'new'){
 					      type: "POST",
 					      url: path,
 					      success: function(response) {
-									$('#Job_token').val(response.token);
+									$('#job_token').val(response.token);
 								},
 								error: function() {
 
@@ -78,8 +79,8 @@ if (runNowtrue == 'new'){
 						});
 						$('#removeToken').click(function(e){
 							e.preventDefault();
-							$('#Job_token').val("");
-							$('#Job_token').removeClass('alert-success').addClass('alert-danger');
+							$('#job_token').val("");
+							$('#job_token').removeClass('alert-success').addClass('alert-danger');
 						});
 
 

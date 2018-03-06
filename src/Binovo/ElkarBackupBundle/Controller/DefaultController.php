@@ -282,8 +282,7 @@ class DefaultController extends Controller
             'last_username'      => $helper->getLastUsername(),
             'error'              => $helper->getLastAuthenticationError(),
             'supportedLocales'   => $localesWithNames,
-            'disable_background' => $disable_background,
-            'alert'              => $alert
+            'disable_background' => $disable_background
         ));
     }
 
@@ -492,11 +491,11 @@ class DefaultController extends Controller
                 return $this->redirect($this->generateUrl('showClients'));
             }
         }
-        $form = $this->createForm(
-            new JobType(),
-            $job,
-            array('translator' => $this->get('translator'))
-        );
+        $form = $this->createForm(JobType::class, $job, array(
+            'translator' => $this->get('translator'),
+            'action' => $this->generateJobRoute($idJob, $idClient),
+            'method' => 'POST'
+        ));
         $this->info(
             'View client %clientid%, job %jobid%',
             array('%clientid%' => $idClient,'%jobid%' => $idJob),
@@ -800,12 +799,8 @@ class DefaultController extends Controller
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
             $job = $repository->find($idJob);
         }
-        $form = $this->createForm(
-            new JobType(),
-            $job,
-            array('translator' => $t)
-        );
-        $form->bind($request);
+        $form = $this->createForm(JobType::class, $job, array('translator' => $t));
+        $form->handleRequest($request);
         if ($form->isValid()) {
             $job = $form->getData();
             try {
