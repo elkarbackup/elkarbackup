@@ -84,10 +84,7 @@ class ClientType extends AbstractType
                                                             'required' => false))
                 ->add('rsyncLongArgs'	, TextType::class      , array('label'    => $t->trans('Rsync long args', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class'     => 'form-control advanced-form-item'),
-                                                            'required' => false))
-                ->add('jobs'          , CollectionType::class, array('entry_type'         => new JobShortType(),
-                                                            'allow_delete' => true,
-                                                            'label'        => $t->trans('Jobs', array(), 'BinovoElkarBackup')));
+                                                            'required' => false));
     }
 
     public function configureOptions(OptionsResolver $resolver)
