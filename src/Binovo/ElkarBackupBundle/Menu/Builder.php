@@ -7,10 +7,13 @@
 namespace Binovo\ElkarBackupBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class Builder extends ContainerAware
+class Builder implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+    
     /**
      * Generates the appropiate onClick handler for the dijit/MenuItem leaf menu items.
      *
