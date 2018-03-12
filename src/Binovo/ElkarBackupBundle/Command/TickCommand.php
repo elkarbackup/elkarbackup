@@ -11,12 +11,14 @@ use \DateTime;
 use \Exception;
 use Binovo\ElkarBackupBundle\Entity\Job;
 use Binovo\ElkarBackupBundle\Lib\BackupRunningCommand;
+use Binovo\ElkarBackupBundle\Lib\Globals;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\LockHandler;
 
 class TickCommand extends BackupRunningCommand
 {
@@ -30,21 +32,30 @@ class TickCommand extends BackupRunningCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $allOk = $this->executeBackups($input, $output);
-        $allOk = $this->removeOldLogs() && $allOk;
-        try { // we don't want to miss a backup because a command fails, so catch any exception
-            $this->executeMessages($input, $output);
-
-            //last but not least, backup @tahoe
-            $this->getContainer()->get('Tahoe')->runAllQueuedJobs();
-        } catch (Exception $e) {
-            echo "-----ERROR: " . $e;
-            $this->err('Exception running queued commands: %exceptionmsg%', array('%exceptionmsg%' => $e->getMessage()));
-            $this->getContainer()->get('doctrine')->getManager()->flush();
-            $allOk = false;
+        $allOk = $this->enqueueScheduledBackups($input, $output);
+        $lockHandler = new LockHandler('tick.lock');
+        try {
+            if ($lockHandler->lock()) {
+                $allOk = $this->removeOldLogs() && $allOk;
+                try { // we don't want to miss a backup because a command fails, so catch any exception
+                    //$this->executeMessages($input, $output);
+                    $this->executeJobs($input, $output);
+                    //last but not least, backup @tahoe
+                    $this->getContainer()->get('Tahoe')->runAllQueuedJobs();
+                } catch (Exception $e) {
+                    echo "-----ERROR: " . $e;
+                    $this->err('Exception running queued commands: %exceptionmsg%', array('%exceptionmsg%' => $e->getMessage()));
+                    $this->getContainer()->get('doctrine')->getManager()->flush();
+                    $allOk = false;
+                }
+                
+                return $allOk;
+            }
+            return false;
+            
+        } finally {
+            $lockHandler->release();
         }
-
-        return $allOk;
     }
 
     protected function getNameForLogs()
@@ -52,7 +63,46 @@ class TickCommand extends BackupRunningCommand
         return 'TickCommand';
     }
 
-    protected function executeBackups(InputInterface $input, OutputInterface $output)
+    protected function executeJobs(InputInterface $input, OutputInterface $output)
+    {
+        $container = $this->getContainer();
+        $manager = $container->get('doctrine')->getManager();
+        $logHandler = $this->getContainer()->get('BnvLoggerHandler');
+        $logHandler->startRecordingMessages();
+        
+        $dql =<<<EOF
+SELECT j, c
+FROM  BinovoElkarBackupBundle:Job j
+JOIN  j.client                            c
+WHERE j.isActive = 1 AND c.isActive = 1 AND j.status = 'QUEUED'
+ORDER BY j.priority, c.id
+EOF;
+        $jobs = $manager->createQuery($dql)->getResult();
+        $retainsToRun = array();
+        
+        foreach($jobs as $job){
+            $policy = $job->getPolicy();
+            if (!$policy) {
+                $this->warn('Job %jobid% has no policy', array('%jobid%' => $job->getId()));
+                
+                return false;
+            }
+            $retains = $policy->getRetains();
+            if (empty($retains)) {
+                $this->warn('Policy %policyid% has no active retains', array('%policyid%' => $policy->getId()));
+                
+                return false;
+            }
+            $retainsToRun[$policy->getId()] = array($retains[0][0]);
+        }
+        
+        $this->runAllJobs($jobs, $retainsToRun);
+        
+        return true;
+    }
+
+    
+    protected function enqueueScheduledBackups(InputInterface $input, OutputInterface $output)
     {
         $logHandler = $this->getContainer()->get('BnvLoggerHandler');
         $logHandler->startRecordingMessages();
@@ -90,79 +140,17 @@ ORDER BY j.priority, c.id
 EOF;
 
         $jobs = $manager->createQuery($dql)->getResult();
-        $this->runAllJobs($jobs, $policies);
+        //$this->runAllJobs($jobs, $policies);
+        
+        //Enqueue jobs
+        foreach ($jobs as $job) {
+            $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
+            $this->info('QUEUED', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
+            $job->setStatus('QUEUED');
+        }
+        $manager->flush();
 
         return true;
-    }
-
-    protected function executeMessages(InputInterface $input, OutputInterface $output)
-    {
-        $container = $this->getContainer();
-        $manager = $container->get('doctrine')->getManager();
-        $repository = $manager->getRepository('BinovoElkarBackupBundle:Message');
-        while (true) {
-            /*
-             * read messages one by one and remove them from the queue
-             * as soon as read so that if any command takes too long
-             * and the next invocation of the tick command starts
-             * running it won't see the commands that are already in
-             * process.
-             */
-            $message = $repository->createQueryBuilder('m')
-                ->where("m.to = 'TickCommand'")
-                ->orderBy('m.id', 'ASC')
-                ->getQuery()
-                ->setMaxResults(1)
-                ->getResult();
-            if (count($message) == 0) {
-                break;
-            }
-            $message = $message[0];
-            $commandText = $message->getMessage();
-            $manager->remove($message);
-            $this->info('About to run command: ' . $commandText);
-            $manager->flush();
-            $commandAndParams = json_decode($commandText, true);
-            if (is_array($commandAndParams) && isset($commandAndParams['command'])) {
-                $aborted = false;
-                if ($commandAndParams['command'] == 'elkarbackup:run_job') {
-                    // Check if run_job command has been aborted by user
-                    $idJob = $commandAndParams['job'];
-                    $container = $this->getContainer();
-                    $repository2 = $container->get('doctrine')->getRepository('BinovoElkarBackupBundle:Job');
-                    $job = $repository2->find($idJob);
-                    if (null == $job) {
-                        throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
-                    }
-                    if ($job->getStatus() == 'ABORTED'){
-                        $aborted = true;
-                        $this->info('Command aborted by user: ' . $commandText);
-                    }
-                }
-
-                if (!$aborted) {
-                    try {
-                        $command = $this->getApplication()->find($commandAndParams['command']);
-                        $input = new ArrayInput($commandAndParams);
-                        $status = $command->run($input, $output);
-                        if (0 == $status) {
-                            $this->info('Command success: ' . $commandText);
-                        } else {
-                            $this->err('Command failure: ' . $commandText);
-                        }
-                    } catch (Exception $e) {
-                        $idClient = $commandAndParams['client'];
-                        $context = array('link' => $this->generateJobRoute($idJob, $idClient));
-                        $this->err('Exception %exceptionmsg% running command %command%: ', array('%exceptionmsg%' => $e->getMessage(), '%command%' => $commandText), $context);
-                        $job->setStatus('FAIL');
-                    }
-                }
-
-            } else {
-                $this->err('Malformed command: ' . $commandText);
-            }
-            $manager->flush();
-        }
     }
 
     protected function removeOldLogs()
