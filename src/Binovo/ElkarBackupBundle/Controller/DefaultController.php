@@ -1362,6 +1362,34 @@ class DefaultController extends Controller
             array('pagination' => $pagination,'fsDiskUsage' => $fsDiskUsage)
         );
     }
+    
+    /**
+     * @Route("/status", name="showStatus")
+     * @Template()
+     */
+    public function showStatusAction(Request $request)
+    {
+        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Queue');
+        $query = $repository->createQueryBuilder('c')->getQuery();
+        
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1)/*page number*/,
+            $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
+            );
+        $this->info(
+            'View backup status',
+            array(),
+            array('link' => $this->generateUrl('showStatus'))
+            );
+        $this->getDoctrine()->getManager()->flush();
+        
+        return $this->render(
+            'BinovoElkarBackupBundle:Default:status.html.twig',
+            array('pagination' => $pagination)
+        );
+    }
 
     /**
      * @Route("/scripts", name="showScripts")
