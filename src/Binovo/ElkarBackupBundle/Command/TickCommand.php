@@ -69,21 +69,20 @@ class TickCommand extends BackupRunningCommand
         $manager = $container->get('doctrine')->getManager();
         $logHandler = $this->getContainer()->get('BnvLoggerHandler');
         $logHandler->startRecordingMessages();
-        
         $dql =<<<EOF
-SELECT j, c
-FROM  BinovoElkarBackupBundle:Job j
-JOIN  j.client                            c
-WHERE j.isActive = 1 AND c.isActive = 1 AND j.status = 'QUEUED'
-ORDER BY j.priority, c.id
+SELECT q,j,c
+FROM BinovoElkarBackupBundle:Queue q
+JOIN q.job j
+JOIN j.client c
+WHERE j.isActive = 1 AND c.isActive = 1
 EOF;
-        $jobs = $manager->createQuery($dql)->getResult();
+        $queue = $manager->createQuery($dql)->getResult();
         $retainsToRun = array();
         
-        foreach($jobs as $job){
-            $policy = $job->getPolicy();
+        foreach($queue as $task){
+            $policy = $task->getJob()->getPolicy();
             if (!$policy) {
-                $this->warn('Job %jobid% has no policy', array('%jobid%' => $job->getId()));
+                $this->warn('Job %jobid% has no policy', array('%jobid%' => $task->getJob()->getId()));
                 
                 return false;
             }
@@ -96,7 +95,7 @@ EOF;
             $retainsToRun[$policy->getId()] = array($retains[0][0]);
         }
         
-        $this->runAllJobs($jobs, $retainsToRun);
+        $this->runAllJobs($queue, $retainsToRun);
         
         return true;
     }
@@ -146,7 +145,7 @@ EOF;
         foreach ($jobs as $job) {
             $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
             $this->info('QUEUED', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
-            $job->setStatus('QUEUED');
+            $job->setLastResult('QUEUED');
         }
         $manager->flush();
 

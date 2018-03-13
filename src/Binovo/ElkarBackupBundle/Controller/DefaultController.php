@@ -47,6 +47,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Binovo\ElkarBackupBundle\BinovoElkarBackupBundle;
+use Binovo\ElkarBackupBundle\Entity\Queue;
 
 class DefaultController extends Controller
 {
@@ -618,35 +619,35 @@ class DefaultController extends Controller
                     throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
                 }
             }
-            
             $em = $this->getDoctrine()->getManager();
-            $msg = new Message(
-                'DefaultController',
-                'TickCommand',
-                json_encode(array(
-                    'command' => 'elkarbackup:run_job',
-                    'client' => $idClient,
-                    'job' => $idJob
-                ))
-            );
-            
             $context = array(
                 'link' => $this->generateJobRoute($idJob, $idClient),
                 'source' => Globals::STATUS_REPORT
             );
             $status = 'QUEUED';
-            $job->setStatus($status);
+            $isQueueIn = $this->getDoctrine()
+            ->getRepository('BinovoElkarBackupBundle:Queue')
+            ->findBy(array('job' => $job));
+            if(! $isQueueIn) {
+                $queue = new Queue($job);
+                $em->persist($queue);
+                $response = new Response($t->trans(
+                    'Job execution requested successfully',
+                    array(),
+                    'BinovoElkarBackup'
+                ));
+            } else {
+                $response = new Response($t->trans(
+                    'One or more jobs were already enqueued, ignoring',
+                    array(),
+                    'BinovoElkarBackup'
+                ));
+            }
             $this->info($status, array(), $context);
-            $em->persist($msg);
             $em->flush();
-            $response = new Response($t->trans(
-                'Job execution requested successfully',
-                array(),
-                'BinovoElkarBackup'
-            ));
             $response->headers->set('Content-Type', 'text/plain');
             // TODO: change the response from text plain to JSON
-            
+
             return $response;
         }
     }
@@ -668,7 +669,7 @@ class DefaultController extends Controller
             throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
         }
         
-        if ($job->getStatus() == 'RUNNING' or $job->getStatus() == 'QUEUED') {
+        if ($job->getLastResult() == 'RUNNING' or $job->getLastResult() == 'QUEUED') {
             $em = $this->getDoctrine()->getManager();
             $msg = new Message(
                 'DefaultController',
@@ -680,7 +681,7 @@ class DefaultController extends Controller
                 ))
             );
             
-            if ($job->getStatus() == "RUNNING") {
+            if ($job->getLastResult() == "RUNNING") {
                 // Job is running, next TickCommand will kill the process
                 $newstatus = "ABORTING";
             } else {
@@ -691,7 +692,7 @@ class DefaultController extends Controller
                 'link' => $this->generateJobRoute($idJob, $idClient),
                 'source' => Globals::STATUS_REPORT
             );
-            $job->setStatus($newstatus);
+            $job->setLastResult($newstatus);
             $this->info($newstatus, array(), $context);
             $em->persist($msg);
             $em->flush();
@@ -2660,7 +2661,7 @@ EOF;
                 $newjob = clone $job;
                 $newjob->setClient($client);
                 $newjob->setDiskUsage(0);
-                $newjob->setStatus('');
+                $newjob->setLastResult('');
                 $newem = $this->getDoctrine()->getManager();
                 $newem->persist($newjob);
                 $newem->flush();

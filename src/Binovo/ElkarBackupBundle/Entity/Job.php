@@ -132,7 +132,7 @@ class Job
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
-     * Job last result: ok, failed
+     * Job lastResult: ok, fail
      */
     protected $lastResult = null;
 

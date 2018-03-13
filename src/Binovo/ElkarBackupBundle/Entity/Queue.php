@@ -37,6 +37,12 @@ class Queue
      */
     protected $runningSince;
     
+    public function __construct($job = null)
+    {
+        $this->date = new DateTime();
+        $this->job = $job;
+    }
+    
     /**
      * Get job
      * @return Binovo\ElkarBackupBundle\Entity\Job

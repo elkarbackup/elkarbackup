@@ -18,6 +18,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Validator\Constraints\Date;
 
 /**
  * This class can be used as base class for those commands which need
@@ -495,13 +496,14 @@ abstract class BackupRunningCommand extends LoggingCommand
         return true;
     }
 
-    protected function runAllJobs($jobs, $policyIdToRetains)
+    protected function runAllJobs($queue, $policyIdToRetains)
     {
         $logHandler = $this->getContainer()->get('BnvLoggerHandler');
         $manager = $this->getContainer()->get('doctrine')->getManager();
         // set all jobs and clients to the queued status
         $lastClient = null;
-        foreach ($jobs as $job) {
+        foreach ($queue as $task) {
+            $job = $task->getJob();
             if ($job->getClient() != $lastClient) {
                 $lastClient = $job->getClient();
                 $context = array('link' => $this->generateClientRoute($job->getClient()->getId()));
@@ -509,7 +511,6 @@ abstract class BackupRunningCommand extends LoggingCommand
             }
             $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
             $this->info('QUEUED', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
-            $job->setStatus('QUEUED');
         }
         $manager->flush();
         $storageLoadLevel = 0;
@@ -519,13 +520,14 @@ abstract class BackupRunningCommand extends LoggingCommand
         $state = self::NEW_CLIENT;
         $clientMessages = array();
         $stats['ELKARBACKUP_CLIENT_STARTTIME'] = time();
-        while ($i < count($jobs)) { // the last clients post script runs after the loop
-            $job = $jobs[$i];
+        while ($i < count($queue)) { // the last clients post script runs after the loop
+            $job = $queue[$i]->getJob();
             switch ($state) {
             case self::RUN_JOB:
+                $queue[$i]->setRunningSince(new DateTime());
                 $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
                 $this->info('RUNNING', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
-                $job->setStatus('RUNNING');
+                $job->setLastResult('RUNNING');
                 $manager->flush();
                 if ($job->getClient() == $lastClient) {
                     $retains = $policyIdToRetains[$job->getPolicy()->getId()];
@@ -542,18 +544,19 @@ abstract class BackupRunningCommand extends LoggingCommand
                         // ERROR
                         $this->err('Client "%clientid%", Job "%jobid%" error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                         $this->err('FAIL', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
-                        $job->setStatus('FAIL');
+                        $job->setLastResult('FAIL');
                     } elseif (True === $jobstatus){
                         // OK
                         $this->info('Client "%clientid%", Job "%jobid%" ok.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                         $this->info('OK', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
-                        $job->setStatus('OK');
+                        $job->setLastResult('OK');
+                        $manager->remove($queue[$i]);
                     } else {
                         // WARNING
                         if (2 == $jobstatus){
                           $this->warn('Client "%clientid%", Job "%jobid%" ok with warnings.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                           $this->warn('WARNING', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
-                          $job->setStatus('WARNING');
+                          $job->setLastResult('WARNING');
                         }
                     }
                     $manager->flush();
@@ -604,7 +607,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                                      '%du%'       => $client->getDiskUsage() / 1024),
                                $context);
                     $this->err('QUOTA EXCEEDED', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
-                    $job->setStatus('FAIL');
+                    $job->setLastResult('FAIL');
                     $state = self::QUOTA_EXCEEDED;
                 } else {
                     $state = self::RUN_JOB;
@@ -647,7 +650,7 @@ abstract class BackupRunningCommand extends LoggingCommand
                     $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
                     $this->err('Client "%clientid%", Job "%jobid%" error. Client level error.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
                     $this->err('FAIL', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
-                    $job->setStatus('FAIL');
+                    $job->setLastResult('FAIL');
                     $manager->flush();
                     $this->sendNotifications($job, array_merge($clientMessages, $logHandler->getMessages()));
                     ++$i;
