@@ -10,6 +10,7 @@ use \DateInterval;
 use \DateTime;
 use \Exception;
 use Binovo\ElkarBackupBundle\Entity\Job;
+use Binovo\ElkarBackupBundle\Entity\Queue;
 use Binovo\ElkarBackupBundle\Lib\BackupRunningCommand;
 use Binovo\ElkarBackupBundle\Lib\Globals;
 use Symfony\Component\Console\Command\Command;
@@ -38,8 +39,11 @@ class TickCommand extends BackupRunningCommand
         try {
             if ($lockHandler->lock()) {
                 $allOk = $this->removeOldLogs() && $allOk;
-                try { // we don't want to miss a backup because a command fails, so catch any exception
+                try {
+                    // we don't want to miss a backup because a command fails,
+                    //so catch any exception
                     $this->executeJobs($input, $output);
+
                     //last but not least, backup @tahoe
                     $this->getContainer()->get('Tahoe')->runAllQueuedJobs();
                 } catch (Exception $e) {
@@ -48,11 +52,9 @@ class TickCommand extends BackupRunningCommand
                     $this->getContainer()->get('doctrine')->getManager()->flush();
                     $allOk = false;
                 }
-                
                 return $allOk;
             }
             return false;
-            
         } finally {
             $lockHandler->release();
         }
@@ -75,28 +77,29 @@ FROM BinovoElkarBackupBundle:Queue q
 JOIN q.job j
 JOIN j.client c
 WHERE j.isActive = 1 AND c.isActive = 1
+ORDER BY q.date, q.priority
 EOF;
         $queue = $manager->createQuery($dql)->getResult();
         $retainsToRun = array();
-        
+
         foreach($queue as $task){
             $policy = $task->getJob()->getPolicy();
             if (!$policy) {
                 $this->warn('Job %jobid% has no policy', array('%jobid%' => $task->getJob()->getId()));
-                
+
                 return false;
             }
             $retains = $policy->getRetains();
             if (empty($retains)) {
                 $this->warn('Policy %policyid% has no active retains', array('%policyid%' => $policy->getId()));
-                
+
                 return false;
             }
             $retainsToRun[$policy->getId()] = array($retains[0][0]);
         }
-        
+
         $this->runAllJobs($queue, $retainsToRun);
-        
+
         return true;
     }
 
@@ -139,13 +142,11 @@ ORDER BY j.priority, c.id
 EOF;
 
         $jobs = $manager->createQuery($dql)->getResult();
-        //$this->runAllJobs($jobs, $policies);
-        
-        //Enqueue jobs
         foreach ($jobs as $job) {
             $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
             $this->info('QUEUED', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
-            $job->setLastResult('QUEUED');
+            $queue = new Queue($job);
+            $manager->persist($queue);
         }
         $manager->flush();
 

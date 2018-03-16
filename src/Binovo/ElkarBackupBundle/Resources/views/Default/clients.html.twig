@@ -1,6 +1,6 @@
 {##
- # @copyright 2012,2013 Binovo it Human Project, S.L.
- # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ # @copyright 2012,2013 Binovo it Human Project, S.L. # @license 
+ # http://www.opensource.org/licenses/bsd-license.php New-BSD
  #}
 {% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
 {% trans_default_domain 'BinovoElkarBackup' %}
@@ -13,294 +13,279 @@
 {% endblock %}
 
 {% block body %}
-
 <div class="row">
     <div class="col-md-12" id="jobs-container">
+        <!-- top action buttons -->
+        <div class="top-action-buttons pull-right" style="padding-bottom: 10px;">
+            <!-- Disk usage -->
+            {% if fsDiskUsage <= 80 %}
+                {% set discIconClass = "ico-success" %}
+                {% set discBarClass = "progress-bar-success" %}
+            {% elseif fsDiskUsage <= 90 %}
+                {% set discIconClass = "ico-warning" %}
+                {% set discBarClass = "progress-bar-warning" %}
+            {% elseif fsDiskUsage > 90 %}
+                {% set discIconClass = "ico-danger" %}
+                {% set discBarClass = "progress-bar-danger" %}
+            {% endif %}
+            <div id="disc-usage">
+                {% if fsDiskUsage <= 90 %}
+                    <img src="{{ asset('/img/disc-status.png') }}" alt="disc" />
+                {% else %}
+                    <img src="{{ asset('/img/disc-status-danger.png') }}" alt="disc" />
+                {% endif %}
+                <div id="usage-box">
+                    <div id="usage">
+                        <div class="tooltip-arrow">
+                        </div>
+                        <div id="disc-status" class="{{ discIconClass }}">
+                        </div>
+                        <div id="disc-info">
+                            <h3><span>Usage</span> {{ fsDiskUsage }}%</h3>
+                            <div class="progress">
+                                <div class="progress-bar {{ discBarClass }}" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ fsDiskUsage }}%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End disk usage-->
+            <div class="btn-group" role="group" aria-label="...">
+                <button class="btn btn-default" action="#" eb-action="addClient" eb-path="{{ path('editClient', {id: 'new'}) }}">
+                    <span class="glyphicon glyphicon-plus"></span> {% trans %}Add client{% endtrans %}
+                </button>
+                <button class="btn btn-default" action="#" eb-action="sortJobs" eb-path="{{ path('sortJobs') }}">{% trans %}Sort jobs{% endtrans %}</button>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% trans %}Actions{% endtrans %}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li><a href="#" eb-action="runSelected">{% trans %}Enqueue now{% endtrans %}</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#" eb-action="deleteSelected">{% trans %}Delete{% endtrans %}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <h3 id="legend">{% trans %}Jobs{% endtrans %}</h3>
+        {% for flashMessage in app.session.flashbag.get('clients') %}
+            <div class="controls help-block">
+                {{ flashMessage }}
+            </div>
+        {% endfor %}
+        <table id="clients" class="table table-condensed table-hover">
+            <tr>
+                {# sorting of properties based on query components #}
+                <th><input id="checkAll" class="select-toggle-check" type="checkbox"></th>
+                <th></th>
+                <th>{% trans %}Id{% endtrans %}</th>
+                <th>{% trans %}Name{% endtrans %}</th>
+                <th style="text-align: center">{% trans %}Disk usage{% endtrans %}</th>
+                <th>{% trans %}Last log entry{% endtrans %}</th>
+                <th>{% trans %}Last Result{% endtrans %}</th>
+                <th>{% trans %}Actions{% endtrans %}</th>
+            </tr>
+            {# table body #}
+            {% for client in pagination %}
+                {# set clientstatus #}
+                {%  if client.logEntry.message|default('')|length > 50 %}
+                    {% set clientstatus = client.logEntry.message|default('')|slice(0, 50) ~ '...' %}
+                {% else %}
+                    {% set clientstatus = client.logEntry.message|default('')|slice(0, 50) %}
+                {% endif %}
 
-<!-- top action buttons -->
-<div class="top-action-buttons pull-right" style="padding-bottom: 10px;">
-  <!-- Disk usage -->
-  {% if fsDiskUsage <= 80 %}
-    {% set discIconClass = "ico-success" %}
-    {% set discBarClass = "progress-bar-success" %}
-  {% elseif fsDiskUsage <= 90 %}
-    {% set discIconClass = "ico-warning" %}
-    {% set discBarClass = "progress-bar-warning" %}
-  {% elseif fsDiskUsage > 90 %}
-    {% set discIconClass = "ico-danger" %}
-    {% set discBarClass = "progress-bar-danger" %}
-  {% endif %}
-
-  <div id="disc-usage">
-    {% if fsDiskUsage <= 90 %}
-  	<img src="{{ asset('/img/disc-status.png') }}" alt="disc" />
-    {% else %}
-    <img src="{{ asset('/img/disc-status-danger.png') }}" alt="disc" />
-    {% endif %}
-  	<div id="usage-box">
-  		<div id="usage">
-        <div class="tooltip-arrow"></div>
-  			<div id="disc-status" class="{{ discIconClass }}"></div>
-  			<div id="disc-info">
-  				<h3><span>Usage</span> {{ fsDiskUsage }}%</h3>
-  				<div class="progress">
-  					<div class="progress-bar {{ discBarClass }}" role="progressbar" aria-valuenow="{{ fsDiskUsage }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ fsDiskUsage }}%;">
-  					</div>
-  				</div>
-  			</div>
-  		</div>
-  	</div>
-  </div>
-  <!-- End disk usage-->
-  <div class="btn-group" role="group" aria-label="...">
-    <button class="btn btn-default" action="#" eb-action="addClient" eb-path="{{ path('editClient', {id: 'new'}) }}">
-      <span class="glyphicon glyphicon-plus"></span> {% trans %}Add client{% endtrans %}
-    </button>
-  <button class="btn btn-default" action="#" eb-action="sortJobs" eb-path="{{ path('sortJobs') }}">{% trans %}Sort jobs{% endtrans %}</button>
-
-  <div class="btn-group" role="group">
-    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      {% trans %}Actions{% endtrans %}
-      <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-      <li><a href="#" eb-action="runSelected">{% trans %}Run now{% endtrans %}</a></li>
-      <li role="separator" class="divider"></li>
-      <li><a href="#" eb-action="deleteSelected">{% trans %}Delete{% endtrans %}</a></li>
-    </ul>
-  </div>
-  </div>
-</div>
-
-<h3 id="legend">{% trans %}Jobs{% endtrans %}</h3>
-
-
-{% for flashMessage in app.session.flashbag.get('clients') %}
-    <div class="controls help-block">
-        {{ flashMessage }}
-    </div>
-{% endfor %}
-<table id="clients" class="table table-condensed table-hover">
-<tr>
-  {# sorting of properties based on query components #}
-  <th><input id="checkAll" class="select-toggle-check" type="checkbox"></th>
-  <th></th>
-  <th>{% trans %}Id{% endtrans %}</th>
-  <th>{% trans %}Name{% endtrans %}</th>
-  <th style="text-align: center">{% trans %}Disk usage{% endtrans %}</th>
-  <th>{% trans %}Last log entry{% endtrans %}</th>
-  <th>{% trans %}Last Result{% endtrans %}</th>
-  <!--<th>{% trans %}Active{% endtrans %}</th>-->
-  <th>{% trans %}Actions{% endtrans %}</th>
-</tr>
-
-    {# table body #}
-    {% for client in pagination %}
-
-      {# set clientstatus #}
-      {%  if client.logEntry.message|default('')|length > 50 %}
-        {% set clientstatus = client.logEntry.message|default('')|slice(0, 50) ~ '...' %}
-      {% else %}
-        {% set clientstatus = client.logEntry.message|default('')|slice(0, 50) %}
-      {% endif %}
-
-      {# human readable disk usage #}
-      {% if (client.diskUsage / 1024 / 1024) > 1024 %}
-        {% set cdu = (client.diskUsage / 1024 / 1024 / 1024 ) | number_format(1) %}
-        {% set cduunit = "TB" %}
-      {% elseif client.diskUsage / 1024 > 1024 %}
-        {% set cdu = (client.diskUsage / 1024 / 1024 ) | number_format(1) %}
-        {% set cduunit = "GB" %}
-      {% else %}
-        {% set cdu = (client.diskUsage / 1024) | number_format(0) %}
-        {% set cduunit = "MB" %}
-      {% endif %}
-
-      {# used percentage (if quota is set) #}
-      {% if client.quota > 0 %}
-        {% set cduused = (client.diskUsage / client.quota * 100) | number_format(0) %}
-      {% endif %}
-
-
-<tr id="client-{{client.id}}" class="client-row client-{{client.id}} {% if client.isActive == false %}disabled{% endif %}">
-  <td><input class="select-toggle-check" type="checkbox" value="client{{client.id}}"></td>
-  <td><span class="client-icon"></span></td>
-  <td class="vert-align id"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" href="{{ path('editClient', {id: client.id}) }}"> {{ client.id }}</a></td>
-  <td class="vert-align name"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
-  <td class="vert-align diskusage" style="text-align:center{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{{ cdu }} {{ cduunit }}{% if client.quota > 0 %} ({{ cduused }}%){% endif %}</td>
-  <td class="vert-align logentry"> <a data-toggle="tooltip" data-placement="top" title="{{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }}" href="logs?filter[gte][l.level]=0&filter[eq][l.source]=&filter[like][l.link]=%2Fclient%2F{{ client.id }}"> {{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} </a></td>
-  <td class="vert-align status"><span class="label
-    {% if client.isActive %}
-      {% if (client.logEntry.levelName)|default('') == 'ERROR'%}label-danger
-      {% else %}
-        {% if clientstatus == 'QUEUED' %}label-info
-        {% elseif clientstatus == 'RUNNING' %}label-primary
-        {% elseif clientstatus == 'FAIL' %}label-danger
-        {% else %}label-success
-        {% endif %}
-      {% endif %}">{{ clientstatus }}</span>
-    {% else %}label-default">INACTIVE</span>
-    {% endif %}
-  </td>
-  <!--<td class="vert-align isactive">{% if client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>-->
-  <td class="actions vert-align">
-
-    <div class="btn-group" role="group" aria-label="Actions">
-        <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" class="btn btn-default" href="#" eb-action="editClient" eb-path="{{ path('editClient', {id: client.id}) }}" eb-clientid="{{client.id}}">
-          <span class="glyphicon glyphicon-pencil"></span>
-        </button>
-        <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Add job{% endtrans %}" class="btn btn-default" href="#" eb-action="addJob" eb-path="{{ path('editJob', {idJob: 'new', idClient: client.id}) }}" eb-clientid="{{client.id}}">
-          <span class="glyphicon glyphicon-plus"></span>
-        </button>
-        <div class="btn-group" role="group">
-          <button id="btnGroupDrop1" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button">
-            {% trans %}More{% endtrans %}
-            <span class="caret-right"></span>
-          </button>
-          <ul class="dropdown-menu dropright" aria-labelledby="btnGroupDrop1">
-            <li><a href="#" eb-action="runClient" eb-clientid="{{client.id}}">{% trans %}Run now{% endtrans %}</a></li>
-            <li><a href="#" eb-action="cloneClient" eb-path="{{ path('cloneClient', {idClient: client.id}) }}" eb-clientid="{{client.id}}">{% trans %}Clone{% endtrans %}</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#" eb-action="deleteClient" eb-path="{{ path('deleteClient', {id: client.id}) }}" eb-clientid="{{client.id}}" eb-message="{{ 'Really delete client <strong>%name%</strong>? <br><br>This will remove all related jobs and backups' | trans({'%name%': client.name}) | raw }}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
-          </ul>
+                {# human readable disk usage #}
+                {% if (client.diskUsage / 1024 / 1024) > 1024 %}
+                    {% set cdu = (client.diskUsage / 1024 / 1024 / 1024 ) | number_format(1) %}
+                    {% set cduunit = "TB" %}
+                {% elseif client.diskUsage / 1024 > 1024 %}
+                    {% set cdu = (client.diskUsage / 1024 / 1024 ) | number_format(1) %}
+                    {% set cduunit = "GB" %}
+                {% else %}
+                    {% set cdu = (client.diskUsage / 1024) | number_format(0) %}
+                    {% set cduunit = "MB" %}
+                {% endif %}
+    
+                {# used percentage (if quota is set) #}
+                {% if client.quota > 0 %}
+                    {% set cduused = (client.diskUsage / client.quota * 100) | number_format(0) %}
+                {% endif %}
+    
+                <tr id="client-{{client.id}}" class="client-row client-{{client.id}} {% if client.isActive == false %}disabled{% endif %}">
+                    <td><input class="select-toggle-check" type="checkbox" value="client{{client.id}}"></td>
+                    <td><span class="client-icon"></span></td>
+                    <td class="vert-align id"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" href="{{ path('editClient', {id: client.id}) }}"> {{ client.id }}</a></td>
+                    <td class="vert-align name"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
+                    <td class="vert-align diskusage" style="text-align:center{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{{ cdu }} {{ cduunit }}{% if client.quota > 0 %} ({{ cduused }}%){% endif %}</td>
+                    <td class="vert-align logentry"> <a data-toggle="tooltip" data-placement="top" title="{{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }}" href="logs?filter[gte][l.level]=0&filter[eq][l.source]=&filter[like][l.link]=%2Fclient%2F{{ client.id }}"> {{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} </a></td>
+                    <td class="vert-align status"><span class="label
+                        {% if client.isActive %}
+                            {% if (client.logEntry.levelName)|default('') == 'ERROR'%}
+                                label-danger
+                            {% else %}
+                                {% if clientstatus == 'QUEUED' %}
+                                    label-info
+                                {% elseif clientstatus == 'RUNNING' %}
+                                    label-primary
+                                {% elseif clientstatus == 'FAIL' %}
+                                    label-danger
+                                {% else %}
+                                    label-success
+                                {% endif %}
+                            {% endif %}">{{ clientstatus }}</span>
+                        {% else %}
+                            label-default">INACTIVE</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions vert-align">
+                        <div class="btn-group" role="group" aria-label="Actions">
+                            <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" class="btn btn-default" href="#" eb-action="editClient" eb-path="{{ path('editClient', {id: client.id}) }}" eb-clientid="{{client.id}}">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </button>
+                            <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Add job{% endtrans %}" class="btn btn-default" href="#" eb-action="addJob" eb-path="{{ path('editJob', {idJob: 'new', idClient: client.id}) }}" eb-clientid="{{client.id}}">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </button>
+                            <div class="btn-group" role="group">
+                                <button id="btnGroupDrop1" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button">
+                                    {% trans %}More{% endtrans %}
+                                    <span class="caret-right"></span>
+                                </button>
+                                <ul class="dropdown-menu dropright" aria-labelledby="btnGroupDrop1">
+                                    <li><a href="#" eb-action="runClient" eb-clientid="{{client.id}}">{% trans %}Enqueue now{% endtrans %}</a></li>
+                                    <li><a href="#" eb-action="cloneClient" eb-path="{{ path('cloneClient', {idClient: client.id}) }}" eb-clientid="{{client.id}}">{% trans %}Clone{% endtrans %}</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="#" eb-action="deleteClient" eb-path="{{ path('deleteClient', {id: client.id}) }}" eb-clientid="{{client.id}}" eb-message="{{ 'Really delete client <strong>%name%</strong>? <br><br>This will remove all related jobs and backups' | trans({'%name%': client.name}) | raw }}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% for job in client.jobs %}
+                    {# human readable disk usage #}
+                    {% if (job.diskUsage / 1024 / 1024) > 1024 %}
+                        {% set jdu = (job.diskUsage / 1024 / 1024 / 1024) | number_format(1) %}
+                        {% set jduunit = "TB" %}
+                    {% elseif job.diskUsage / 1024 > 1024 %}
+                        {% set jdu = (job.diskUsage / 1024 / 1024) | number_format(1) %}
+                        {% set jduunit = "GB" %}
+                    {% else %}
+                        {% set jdu = (job.diskUsage / 1024) | number_format(0) %}
+                        {% set jduunit = "MB" %}
+                    {% endif %}
+                    <tr id="job-{{job.id}}" class="job-row client-{{client.id}} job-{{job.id}} {% if (job.isActive == false) or (client.isActive == false) %}disabled{% endif %}">
+                        <td><input class="select-toggle-check" type="checkbox" value="job"></td>
+                        <td><span class="glyphicon glyphicon-folder-open"></span></td>
+                        <td class="vert-align id"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
+                        <td class="vert-align name"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.name ~ "/" ~ job.name }}</a></td>
+                        <td class="vert-align diskusage" style="text-align:center;">{{ jdu }} {{ jduunit }}</td>
+                        <td class="vert-align logentry"> <a data-toggle="tooltip" data-placement="top" title="{{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }}" href="logs?filter[gte][l.level]=0&filter[eq][l.source]=&filter[like][l.link]=%2Fclient%2F{{ client.id }}%2Fjob%2F{{ job.id }}"> {{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }}</a></td>
+                        <td class="vert-align status"><span class="label
+                            {% if (job.isActive) and (client.isActive) %}
+                                {% if job.lastResult == 'QUEUED' %}
+                                    label-info
+                                {% elseif job.lastResult == 'RUNNING' %}
+                                    label-primary
+                                {% elseif job.lastResult == 'WARNING' %}
+                                    label-warning
+                                {% elseif job.lastResult == 'FAIL' %}
+                                    label-danger
+                                {% else %}
+                                    label-success
+                                {% endif %}
+                                ">{{ job.lastResult }}</span>
+                            {% else %}
+                                label-default">INACTIVE</span>
+                            {% endif %}
+                        </td>
+                        <td class="vert-align actions">
+                            <div class="btn-group" role="group" aria-label="Actions">
+                                <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" class="btn btn-default" href="#" eb-action="editJob" eb-path="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                </button>
+                                <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Restore{% endtrans %}" class="btn btn-default" href="#" eb-action="showJobBackup" eb-path="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" id="btnRestore{{ client.id }}{{ job.id }}">
+                                    <span class="glyphicon glyphicon-cloud-download"></span>
+                                </button>
+                                <div class="btn-group" role="group">
+                                    <button id="btnGroupDrop1" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button">
+                                        {% trans %}More{% endtrans %}
+                                        <span class="caret-right"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropright" aria-labelledby="btnGroupDrop1">
+                                        <li {% if (job.lastResult == 'RUNNING') or (job.lastResult == 'QUEUED') %}class="disabled"{% endif %}><a href="#" eb-action="enqueueJob" eb-path="{{ path('enqueueJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}">{% trans %}Enqueue now{% endtrans %}</a></li>
+                                        <li role="separator" class="divider"></li>
+                                        <li><a href="#" eb-action="deleteJob" eb-path="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" eb-clientid="{{client.id}}" eb-message="{{ 'Really delete job <strong>%name%</strong>?<br><br>This will remove all related backups' | trans({'%name%': job.name}) | raw }}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </table>
+        <div class="pull-right" style="padding-bottom: 10px;">
+            <div class="btn-group" role="group" aria-label="...">
+                <button class="btn btn-default" action="#" eb-action="addClient" eb-path="{{ path('editClient', {id: 'new'}) }}">
+                    <span class="glyphicon glyphicon-plus"></span> {% trans %}Add client{% endtrans %}
+                </button>
+                <button class="btn btn-default" action="#" eb-action="sortJobs" eb-path="{{ path('sortJobs') }}">{% trans %}Sort jobs{% endtrans %}</button>
+                <div class="btn-group dropup" role="group">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% trans %}Actions{% endtrans %}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li><a href="#" eb-action="runSelected">{% trans %}Enqueue now{% endtrans %}</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#" eb-action="deleteSelected">{% trans %}Delete{% endtrans %}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="navigation binovo-pagination">
+            {{ knp_pagination_render(pagination)|raw }}
         </div>
     </div>
-
-  </td>
-</tr>
-
-
-  {% for job in client.jobs %}
-
-  {# human readable disk usage #}
-  {% if (job.diskUsage / 1024 / 1024) > 1024 %}
-    {% set jdu = (job.diskUsage / 1024 / 1024 / 1024) | number_format(1) %}
-    {% set jduunit = "TB" %}
-  {% elseif job.diskUsage / 1024 > 1024 %}
-    {% set jdu = (job.diskUsage / 1024 / 1024) | number_format(1) %}
-    {% set jduunit = "GB" %}
-  {% else %}
-    {% set jdu = (job.diskUsage / 1024) | number_format(0) %}
-    {% set jduunit = "MB" %}
-  {% endif %}
-
-<tr id="job-{{job.id}}" class="job-row client-{{client.id}} job-{{job.id}} {% if (job.isActive == false) or (client.isActive == false) %}disabled{% endif %}">
-  <td><input class="select-toggle-check" type="checkbox" value="job"></td>
-  <td><span class="glyphicon glyphicon-folder-open"></span></td>
-  <td class="vert-align id"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
-  <td class="vert-align name"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.name ~ "/" ~ job.name }}</a></td>
-  <td class="vert-align diskusage" style="text-align:center;">{{ jdu }} {{ jduunit }}</td>
-  <td class="vert-align logentry"> <a data-toggle="tooltip" data-placement="top" title="{{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }}" href="logs?filter[gte][l.level]=0&filter[eq][l.source]=&filter[like][l.link]=%2Fclient%2F{{ client.id }}%2Fjob%2F{{ job.id }}"> {{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }}</a></td>
-  <td class="vert-align status"><span class="label
-    {% if (job.isActive) and (client.isActive) %}
-      {% if job.lastResult == 'QUEUED' %}label-info
-      {% elseif job.lastResult == 'RUNNING' %}label-primary
-      {% elseif job.lastResult == 'WARNING' %}label-warning
-      {% elseif job.lastResult == 'FAIL' %}label-danger
-      {% else %}label-success
-      {% endif %}">{{ job.lastResult }}</span>
-    {% else %}label-default">INACTIVE</span>
-    {% endif %}
-  </td>
-  <!--<td class="vert-align isactive">{% if job.isActive %}{% trans %}Active{% endtrans%}{% else %}{% trans %}Inactive{% endtrans%}{% endif %}</td>-->
-  <td class="vert-align actions">
-
-    <div class="btn-group" role="group" aria-label="Actions">
-        <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" class="btn btn-default" href="#" eb-action="editJob" eb-path="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}">
-          <span class="glyphicon glyphicon-pencil"></span>
-        </button>
-        <button type="button" data-toggle="tooltip" data-placement="top" title="{% trans %}Restore{% endtrans %}" class="btn btn-default" href="#" eb-action="showJobBackup" eb-path="{{ path('showJobBackup', {action: 'view', idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" id="btnRestore{{ client.id }}{{ job.id }}">
-          <span class="glyphicon glyphicon-cloud-download"></span>
-        </button>
-        <div class="btn-group" role="group">
-          <button id="btnGroupDrop1" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button">
-            {% trans %}More{% endtrans %}
-            <span class="caret-right"></span>
-          </button>
-          <ul class="dropdown-menu dropright" aria-labelledby="btnGroupDrop1">
-            <li {% if (job.lastResult == 'RUNNING') or (job.lastResult == 'QUEUED') %}class="disabled"{% endif %}><a href="#" eb-action="runJob" eb-path="{{ path('runJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}">{% trans %}Run now{% endtrans %}</a></li>
-            <li {% if (job.lastResult != 'RUNNING') and (job.lastResult != 'QUEUED') %}class="disabled"{% endif %}><a href="#" eb-action="abortJob" eb-path="{{ path('abortJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}" eb-message="{{ 'Job <strong>%name%</strong> is running. Do you really want to abort it ?' | trans({'%name%': job.name}) | raw }}" class="danger">{% trans %}Abort{% endtrans %}</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#" eb-action="deleteJob" eb-path="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" eb-clientid="{{client.id}}" eb-message="{{ 'Really delete job <strong>%name%</strong>?<br><br>This will remove all related backups' | trans({'%name%': job.name}) | raw }}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
-          </ul>
-        </div>
-    </div>
-
-  </td>
-</tr>
-
-  {% endfor %}
-{% endfor %}
-</table>
-
-
-<div class="pull-right" style="padding-bottom: 10px;">
-  <div class="btn-group" role="group" aria-label="...">
-    <button class="btn btn-default" action="#" eb-action="addClient" eb-path="{{ path('editClient', {id: 'new'}) }}">
-      <span class="glyphicon glyphicon-plus"></span> {% trans %}Add client{% endtrans %}
-    </button>
-  <button class="btn btn-default" action="#" eb-action="sortJobs" eb-path="{{ path('sortJobs') }}">{% trans %}Sort jobs{% endtrans %}</button>
-
-  <div class="btn-group dropup" role="group">
-    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      {% trans %}Actions{% endtrans %}
-      <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-      <li><a href="#" eb-action="runSelected">{% trans %}Run now{% endtrans %}</a></li>
-      <li role="separator" class="divider"></li>
-      <li><a href="#" eb-action="deleteSelected">{% trans %}Delete{% endtrans %}</a></li>
-    </ul>
-  </div>
-  </div>
 </div>
-
-<div class="navigation binovo-pagination">
-    {{ knp_pagination_render(pagination)|raw }}
-</div>
-</div>
-</div>
-
 <div id="footer"></div>
 
+<!-- MODALS -->
 
-<!--
-MODALS
--->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content panel-danger">
-      <div class="modal-header panel-heading">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="exampleModalLabel">Danger zone!</h4>
-      </div>
-      <div class="modal-body">
-        <span class="modal-message">message</span>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-danger" action="#" eb-action="" eb-path="" eb-jobid="" eb-clientid="" eb-action-confirmed="">Delete</button>
-      </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content panel-danger">
+            <div class="modal-header panel-heading">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Danger zone!</h4>
+            </div>
+            <div class="modal-body">
+                <span class="modal-message">message</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" action="#" eb-action="" eb-path="" eb-jobid="" eb-clientid="" eb-action-confirmed="">Delete</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <div class="modal fade" id="abortModal" tabindex="-1" role="dialog" aria-labelledby="abortModal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content panel-danger">
-      <div class="modal-header panel-heading">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="exampleModalLabel">Danger zone!</h4>
-      </div>
-      <div class="modal-body">
-        <span class="modal-message">message</span>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-danger" action="#" eb-action="" eb-path="" eb-jobid="" eb-clientid="" eb-action-confirmed="">Abort job</button>
-      </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content panel-danger">
+            <div class="modal-header panel-heading">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Danger zone!</h4>
+            </div>
+            <div class="modal-body">
+                <span class="modal-message">message</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" action="#" eb-action="" eb-path="" eb-jobid="" eb-clientid="" eb-action-confirmed="">Abort job</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
-
 {% endblock %}

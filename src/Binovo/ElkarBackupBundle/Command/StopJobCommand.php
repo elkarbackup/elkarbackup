@@ -59,32 +59,24 @@
 
          return false;
      }
-     $lockfile = sprintf("%s/rsnapshot.%04d_%04d.pid",
-                                          $tmp,
-                                          $clientId,
-                                          $jobId);
+     $lockfile = sprintf(
+        "%s/rsnapshot.%04d_%04d.pid",
+        $tmp,
+        $clientId,
+        $jobId);
 
-    if ($job->getLastResult() == "ABORTED"){
-        $this->info('Job previously aborted by tick command', array(), $context);
-    } else {
-        if (file_exists($lockfile)) {
-           $command1 = shell_exec(sprintf("kill -TERM $(cat '%s')", $lockfile));
-           $command2 = shell_exec("killall rsync");
-           $this->info('Job backup aborted successfully', array(), $context);
-           $job->setLastResult('ABORTED');
-           $context = array('link'   => $this->generateJobRoute($jobId, $clientId),
-                            'source' => Globals::STATUS_REPORT);
-           $job->setLastResult('ABORTED');
-        } else {
-           if ($job->getLastResult() == "ABORTING"){
-              // Avoid endless Aborting status
-              $job->setLastResult('ABORTED');
-              $this->warn('Job already aborted', array(), $context);
-           } else {
-              $this->warn('Cannot abort job backup: not running', array(), $context);
-           }
-        }
-    }
+     if (file_exists($lockfile)) {
+       $command1 = shell_exec(sprintf("kill -TERM $(cat '%s')", $lockfile));
+       $command2 = shell_exec("killall rsync");
+       $repository = $container->get('doctrine')->getRepository('BinovoElkarBackupBundle:Queue');
+       $queue = $repository->findOneBy(array('job' => $job));
+       $manager->remove($queue);
+       $this->info('Job backup aborted successfully', array(), $context);
+       $context = array('link'   => $this->generateJobRoute($jobId, $clientId),
+                        'source' => Globals::STATUS_REPORT);
+     } else {
+          $this->warn('Cannot abort job backup: not running', array(), $context);
+     }
 
     return true;
    }

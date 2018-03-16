@@ -527,7 +527,6 @@ abstract class BackupRunningCommand extends LoggingCommand
                 $queue[$i]->setRunningSince(new DateTime());
                 $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
                 $this->info('RUNNING', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
-                $job->setLastResult('RUNNING');
                 $manager->flush();
                 if ($job->getClient() == $lastClient) {
                     $retains = $policyIdToRetains[$job->getPolicy()->getId()];

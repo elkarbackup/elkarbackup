@@ -1,10 +1,18 @@
-{## # @copyright 2012,2013 Binovo it Human Project, S.L. # @license
-http://www.opensource.org/licenses/bsd-license.php New-BSD #}
+{## 
+ # @copyright 2012,2013 Binovo it Human Project, S.L. # @license
+ # http://www.opensource.org/licenses/bsd-license.php New-BSD 
+#}
 {% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
 {% trans_default_domain 'BinovoElkarBackup' %}
 
-{% block body %}
+{% block scripts %}
+    {{ parent() }}
+    {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/show-clients.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
 
+{% block body %}
 <div class="row">
     <div class="max10">
         <h3>
@@ -12,7 +20,7 @@ http://www.opensource.org/licenses/bsd-license.php New-BSD #}
             Backup status
             {% endtrans %}
         </h3>
-        <table class="table table-condensed table-bordered table-striped">
+        <table class="table table-condensed table-bordered table-striped eb-actions">
             <tr>
                 {# sorting of properties based on query components #}
                 <th>{% trans %}Id{% endtrans %}</th>
@@ -25,25 +33,33 @@ http://www.opensource.org/licenses/bsd-license.php New-BSD #}
 
             {# table body #}
             {% for queue in pagination %}
-                <tr>
-                    <td onclick="document.location.href='{{ path('editJob', {idClient: queue.job.client.id, idJob: queue.job.id}) }}'" class="ids">
+                <tr id="job-{{queue.job.id}}">
+                    <td class="vert-align id" align="center" onclick="document.location.href='{{ path('editJob', {idClient: queue.job.client.id, idJob: queue.job.id}) }}'" class="ids">
                         <a href="{{ path('editJob', {idClient: queue.job.client.id, idJob: queue.job.id}) }}">{{queue.job.client.id}}.{{ queue.job.id }}</a></td>
-                    <td>{{ queue.job.name }}</td>
-                    <td align="center">{{ queue.date|date('Y-m-d H:i:s') }}</td>
+                    <td class="vert-align name" align="center">{{ queue.job.name }}</td>
+                    <td class="vert-align date" align="center">{{ queue.date|date('Y-m-d H:i:s') }}</td>
                     <td class="vert-align status" align="center">
-                        {% if queue.runningSince %}
-                            <span class="label label-primary">RUNNING</span>
+                        {% if queue.priority == 0 %}
+                            <span class="label label-warning">ABORTING</span>
                         {% else %}
-                            <span class="label label-info">QUEUED</span>
+                            {% if queue.runningSince %}
+                                <span class="label label-primary">RUNNING</span>
+                            {% else %}
+                                <span class="label label-info">QUEUED</span>
+                            {% endif %}
                         {% endif %}
                     </td>
-                    <td align="center">{% if queue.runningSince %} {{ queue.runningSince }} {% else %} - {% endif %}</td>
-                    <td align="center">
-                        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" href="#" eb-action="abortJob" eb-path="{{ path('abortJob', {idJob: queue.job.id, idClient: queue.job.client.id}) }}" eb-jobid="{{queue.job.id}}" eb-message="{{ 'Job <strong>%name%</strong> is running. Do you really want to abort it ?' | trans({'%name%': queue.job.name}) | raw }}" class="danger">{% trans %}Abort{% endtrans %}</a>
+                    <td class="vert-align runningSince" align="center">{% if queue.runningSince %} {{ queue.runningSince|date('Y-m-d H:i:s') }} {% else %} - {% endif %}</td>
+                    <td class="vert-align status" align="center">
+                        <button class="btn btn-default" eb-action="abortJob" eb-path="{{ path('abortJob', {idJob: queue.job.id, idClient: queue.job.client.id}) }}" eb-jobid="{{queue.job.id}}" eb-clientid="{{queue.job.client.id}}" eb-message="{{ 'Job <strong>%name%</strong> is running. Do you really want to abort it ?' | trans({'%name%': queue.job.name}) | raw }}" class="danger">Abort</button>
                     </td>
                 </tr>
             {% endfor %}
         </table>
+        {% if pagination|length == 0 %}
+            <br/>
+            <h4 align="center">{% trans %}There are no enqueued jobs yet.{% endtrans %}</h4>
+        {% endif %}
     </div>
     {# display navigation #}
     <div class="navigation binovo-pagination">
@@ -51,6 +67,10 @@ http://www.opensource.org/licenses/bsd-license.php New-BSD #}
     </div>
 </div>
 
+
+<!--
+MODALS
+-->
 <div class="modal fade" id="abortModal" tabindex="-1" role="dialog" aria-labelledby="abortModal">
   <div class="modal-dialog" role="document">
     <div class="modal-content panel-danger">

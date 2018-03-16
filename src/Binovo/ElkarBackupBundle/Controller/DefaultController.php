@@ -546,12 +546,12 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/client/{idClient}/job/{idJob}/run", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="runJob")
+     * @Route("/client/{idClient}/job/{idJob}/run", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="enqueueJob")
      *
      * @method ("POST")
      *         @Template()
      */
-    public function runJobAction(Request $request, $idClient, $idJob)
+    public function enqueueJobAction(Request $request, $idClient, $idJob)
     {
         $t = $this->get('translator');
         $user = $this->get('security.context')->getToken();
@@ -665,12 +665,14 @@ class DefaultController extends Controller
         $job = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Job')
             ->find($idJob);
+        $queue = $this->getDoctrine()
+            ->getRepository('BinovoElkarBackupBundle:Queue')
+            ->findOneBy(array('job' => $job));
         if (null == $job) {
             throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
         }
-        
-        if ($job->getLastResult() == 'RUNNING' or $job->getLastResult() == 'QUEUED') {
-            $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
+        if ($queue->getStatus() == 'RUNNING') {
             $msg = new Message(
                 'DefaultController',
                 'TickCommand',
@@ -680,20 +682,12 @@ class DefaultController extends Controller
                     'job' => $idJob
                 ))
             );
-            
-            if ($job->getLastResult() == "RUNNING") {
-                // Job is running, next TickCommand will kill the process
-                $newstatus = "ABORTING";
-            } else {
-                // Job is queued, next TickCommand will ignore it
-                $newstatus = "ABORTED";
-            }
             $context = array(
                 'link' => $this->generateJobRoute($idJob, $idClient),
                 'source' => Globals::STATUS_REPORT
             );
-            $job->setLastResult($newstatus);
-            $this->info($newstatus, array(), $context);
+            $this->info('ABORTING', array(), $context);
+            $queue->setPriority(0);
             $em->persist($msg);
             $em->flush();
             $response = new JsonResponse(array(
@@ -707,6 +701,22 @@ class DefaultController extends Controller
                 'data' => array($idJob)
             ));
             return $response;
+
+        } elseif ($queue->getStatus() == 'QUEUED') {
+            $em->remove($queue);
+            $response = new JsonResponse(array(
+                'error' => false,
+                'msg' => $t->trans(
+                    'Job stop requested: aborting job',
+                    array(),
+                    'BinovoElkarBackup'
+                    ),
+                'action' => 'callbackJobAborting',
+                'data' => array($idJob)
+            ));
+            $em->flush();
+            return $response;
+            
         } else {
             $response = new JsonResponse(array(
                 'error' => true,
@@ -1370,7 +1380,10 @@ class DefaultController extends Controller
     public function showStatusAction(Request $request)
     {
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Queue');
-        $query = $repository->createQueryBuilder('c')->getQuery();
+        $query = $repository
+            ->createQueryBuilder('c')
+            ->orderBy('c.date ASC, c.priority')
+            ->getQuery();
         
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(

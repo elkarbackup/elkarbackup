@@ -37,12 +37,27 @@ class Queue
      */
     protected $runningSince;
     
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $priority;
+
     public function __construct($job = null)
     {
         $this->date = new DateTime();
         $this->job = $job;
+        $this->priority = $job->getPriority();
     }
-    
+
+    /**
+     * Get id
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
     /**
      * Get job
      * @return Binovo\ElkarBackupBundle\Entity\Job
@@ -62,7 +77,7 @@ class Queue
     {
         $this->job = $job;
     }
-    
+
     /**
      * Get date
      *
@@ -83,7 +98,7 @@ class Queue
     {
         $this->date = $date;
     }
-    
+
     /**
      * Get running since
      *
@@ -103,5 +118,41 @@ class Queue
     public function setRunningSince($runningSince)
     {
         $this->runningSince = $runningSince;
+    }
+
+    /**
+     * Get status
+     * Returns queued item status depending if it is running.
+     *
+     * @return Queue
+     */
+    public function getStatus()
+    {
+        if($this->runningSince == null){
+            return "QUEUED";
+        } else {
+            return "RUNNING";
+        }
+    }
+    
+    /**
+     * Get priority
+     *
+     * @return Queue
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+    
+    /**
+     * Set priority
+     *
+     * @param integer $priority
+     * @return Queue
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
     }
 }
