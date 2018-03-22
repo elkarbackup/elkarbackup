@@ -689,6 +689,7 @@ class DefaultController extends Controller
             $this->info('ABORTING', array(), $context);
             $queue->setPriority(0);
             $em->persist($msg);
+            $queue->setAborted(true);
             $em->flush();
             $response = new JsonResponse(array(
                 'error' => false,

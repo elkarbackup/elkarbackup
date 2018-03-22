@@ -14,59 +14,104 @@
 
 {% block body %}
 <div class="row">
-    <div class="max10">
-        <h3>
-            {% trans %}
-            Backup status
-            {% endtrans %}
-        </h3>
-        <table class="table table-condensed table-bordered table-striped eb-actions">
-            <tr>
-                {# sorting of properties based on query components #}
-                <th>{% trans %}Id{% endtrans %}</th>
-                <th>{% trans %}Name{% endtrans %}</th>
-                <th>{% trans %}Queued{% endtrans %}</th>
-                <th>{% trans %}Status{% endtrans %}</th>
-                <th>{% trans %}Running Since{% endtrans %}</th>
-                <th></th>
-            </tr>
-
-            {# table body #}
-            {% for queue in pagination %}
-                <tr id="job-{{queue.job.id}}">
-                    <td class="vert-align id" align="center" onclick="document.location.href='{{ path('editJob', {idClient: queue.job.client.id, idJob: queue.job.id}) }}'" class="ids">
-                        <a href="{{ path('editJob', {idClient: queue.job.client.id, idJob: queue.job.id}) }}">{{queue.job.client.id}}.{{ queue.job.id }}</a></td>
-                    <td class="vert-align name" align="center">{{ queue.job.name }}</td>
-                    <td class="vert-align date" align="center">{{ queue.date|date('Y-m-d H:i:s') }}</td>
-                    <td class="vert-align status" align="center">
-                        {% if queue.priority == 0 %}
-                            <span class="label label-warning">ABORTING</span>
-                        {% else %}
-                            {% if queue.runningSince %}
-                                <span class="label label-primary">RUNNING</span>
-                            {% else %}
-                                <span class="label label-info">QUEUED</span>
-                            {% endif %}
-                        {% endif %}
-                    </td>
-                    <td class="vert-align runningSince" align="center">{% if queue.runningSince %} {{ queue.runningSince|date('Y-m-d H:i:s') }} {% else %} - {% endif %}</td>
-                    <td class="vert-align status" align="center">
-                        <button class="btn btn-default" eb-action="abortJob" eb-path="{{ path('abortJob', {idJob: queue.job.id, idClient: queue.job.client.id}) }}" eb-jobid="{{queue.job.id}}" eb-clientid="{{queue.job.client.id}}" eb-message="{{ 'Job <strong>%name%</strong> is running. Do you really want to abort it ?' | trans({'%name%': queue.job.name}) | raw }}" class="danger">Abort</button>
-                    </td>
+    <div class="col-md-8">
+        <div class="max10">
+            <h3>
+                {% trans %}
+                Queue status
+                {% endtrans %}
+            </h3>
+            <table class="table table-condensed table-bordered table-striped eb-actions">
+                <tr>
+                    {# sorting of properties based on query components #}
+                    <th>{% trans %}Id{% endtrans %}</th>
+                    <th>{% trans %}Name{% endtrans %}</th>
+                    <th>{% trans %}Queued{% endtrans %}</th>
+                    <th>{% trans %}Status{% endtrans %}</th>
+                    <th>{% trans %}Running Since{% endtrans %}</th>
+                    <th></th>
                 </tr>
-            {% endfor %}
-        </table>
-        {% if pagination|length == 0 %}
-            <br/>
-            <h4 align="center">{% trans %}There are no enqueued jobs yet.{% endtrans %}</h4>
-        {% endif %}
+    
+                {# table body #}
+                {% for queue in pagination %}
+                    <tr id="job-{{queue.job.id}}">
+                        <td class="vert-align id" align="center" onclick="document.location.href='{{ path('editJob', {idClient: queue.job.client.id, idJob: queue.job.id}) }}'" class="ids">
+                            <a href="{{ path('editJob', {idClient: queue.job.client.id, idJob: queue.job.id}) }}">{{queue.job.client.id}}.{{ queue.job.id }}</a></td>
+                        <td class="vert-align name" align="center">{{ queue.job.name }}</td>
+                        <td class="vert-align date" align="center">{{ queue.date|date('Y-m-d H:i:s') }}</td>
+                        <td class="vert-align status" align="center">
+                            {% if queue.aborted %}
+                                <span class="label label-warning">ABORTING</span>
+                            {% else %}
+                                {% if queue.runningSince %}
+                                    <span class="label label-primary">RUNNING</span>
+                                {% else %}
+                                    <span class="label label-info">QUEUED</span>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td class="vert-align runningSince" align="center">{% if queue.runningSince %} {{ queue.runningSince|date('Y-m-d H:i:s') }} {% else %} - {% endif %}</td>
+                        <td class="vert-align button" align="center">
+                            <button class="btn btn-default" eb-action="abortJob" eb-path="{{ path('abortJob', {idJob: queue.job.id, idClient: queue.job.client.id}) }}" eb-jobid="{{queue.job.id}}" eb-clientid="{{queue.job.client.id}}" eb-message="{{ 'Job <strong>%name%</strong> is running. Do you really want to abort it ?' | trans({'%name%': queue.job.name}) | raw }}" class="danger">Abort</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {# display navigation #}
+        <div class="navigation binovo-pagination">
+            {{ knp_pagination_render(pagination)|raw }}
+        </div>
     </div>
-    {# display navigation #}
-    <div class="navigation binovo-pagination">
-        {{ knp_pagination_render(pagination)|raw }}
+    <div class="col-md-4">
+        <div class="max10">
+            <h3>
+                {% trans %}
+                Clients status
+                {% endtrans %}
+            </h3>
+            <table class="table table-condensed table-bordered table-striped eb-actions">
+                <tr>
+                    {# sorting of properties based on query components #}
+                    <th>{% trans %}Id{% endtrans %}</th>
+                    <th>{% trans %}Name{% endtrans %}</th>
+                    <th>{% trans %}Status{% endtrans %}</th>
+                </tr>
+                
+                {# table body #}
+                {% set clientsArray = [] %}
+                {% for queue in pagination %}
+                    {% if queue.job.client.id not in clientsArray %}
+                        <tr id="client-{{queue.job.client.id}}">
+                            <td class="vert-align id" align="center" onclick="document.location.href='{{ path('editClient', {id: queue.job.client.id}) }}'" class="ids">
+                                <a href="{{ path('editClient', {id: queue.job.client.id}) }}">{{queue.job.client.id}}</a></td>
+                            <td class="vert-align name" align="center">{{ queue.job.client.name }}</td>
+                            <td class="vert-align status" align="center">
+                                {% if queue.job.client.state == 'NotReady' %}
+                                    <span class="label label-default">NOT READY</span>
+                                {% elseif queue.job.client.state == 'PreClient' %}
+                                    <span class="label label-warning">PRE CLIENT</span>
+                                {% elseif queue.job.client.state == 'Ready' %}
+                                    <span class="label label-success">READY</span>
+                                {% elseif queue.job.client.state == 'PostClient' %}
+                                    <span class="label label-warning">POST CLIENT</span>
+                                {% elseif queue.job.client.state == 'Error' %}
+                                    <span class="label label-danger">ERROR</span>
+                                {% endif %}
+                        </tr>
+                        {% set clientsArray = clientsArray|merge([queue.job.client.id]) %}
+                    {% endif %}
+                {% endfor %}
+            </table>
+        </div>
     </div>
 </div>
-
+<div class="row">
+    {% if pagination|length == 0 %}
+        <br /> <br /> 
+        <h4 align="center">{% trans %}There are no enqueued jobs yet.{% endtrans %}</h4>
+    {% endif %}
+</div>
 
 <!--
 MODALS

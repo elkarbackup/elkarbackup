@@ -8,8 +8,8 @@ namespace Binovo\ElkarBackupBundle\Command;
 
 use Binovo\ElkarBackupBundle\Entity\Message;
 use Binovo\ElkarBackupBundle\Entity\Queue;
-use Binovo\ElkarBackupBundle\Lib\BackupRunningCommand;
 use Binovo\ElkarBackupBundle\Lib\Globals;
+use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,13 +17,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\LockHandler;
 use Exception;
 
-class ExecTickCommand extends BackupRunningCommand
+class ExecTickCommand extends LoggingCommand
 {
     private $timeoutPid = 0;
     private $awakenPid = 0;
     private $awakenStatus = 0;
     private $jobsPid = array();
     private $clientsPid = array();
+    private $errors = array();
     
     protected function configure()
     {
@@ -308,6 +309,7 @@ EOF;
         $job = $task->getJob();
         switch ($state){
             case 'Queued':
+                $this->errors[$job->getId()] = false;
                 if ($task->getAborted()) {
                     //remove from queue
                     $manager->remove($task);
@@ -342,7 +344,7 @@ EOF;
                         array(),
                         $context
                     );
-                    $em->flush();
+                    
                 } elseif ($clientState == 'Ready') {
                     $task->setState('PreJob');
                     //run prejob
@@ -400,6 +402,7 @@ EOF;
                         );
                         $task->setState('PostJob');
                         $job->setLastResult('FAIL');
+                        $this->errors[$job->getId()] = true;
                         //run postJob
                         $pid = $this->runInBackground(function () use ($job) {
                             $this->runJobPostScripts($job);
@@ -459,6 +462,7 @@ EOF;
                             );
                         $task->setState('PostJob');
                         $job->setLastResult('FAIL');
+                        $this->errors[$job->getId()] = true;
                         //run postJob
                         $pid = $this->runInBackground(function () use ($job) {
                             $this->runJobPostScripts($job);
@@ -498,11 +502,20 @@ EOF;
                             $job->getId(),
                             $job->getClient()->getId()
                         ));
-                        $this->info(
-                            'Job successfully finished!',
-                            array(),
-                            $context
-                        );
+                        $errors = $this->errors[$job->getId()];
+                        if ($errors) {
+                            $this->warn(
+                                'Job finished with errors',
+                                array(),
+                                $context
+                            );
+                        } else {
+                            $this->info(
+                                'Job successfully finished!',
+                                array(),
+                                $context
+                            );
+                        }
                         $job->setLastResult('OK');
                         $manager->remove($task);
                         //se actualiza job y se borra cola, se flushea?
@@ -853,7 +866,6 @@ EOF;
             ->findAll();
         foreach ($clients as $client) {
             $client->setState('NotReady');
-
         }
         $manager->flush();
     }
