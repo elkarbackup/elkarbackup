@@ -100,6 +100,13 @@ class Client
      * @ORM\Column(type="string",length=255, nullable=true)
      */
     protected $rsyncLongArgs;
+    
+    /**
+     * Variable to show the state in the queue
+     *
+     * @ORM\Column(type="string",length=255, nullable=false)
+     */
+    protected $state;
 
     /**
      * Constructor
@@ -484,5 +491,26 @@ class Client
     public function getRsyncLongArgs()
     {
         return $this->rsyncLongArgs;
+    }
+    
+    /**
+     * Get state
+     * 
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+    
+    /**
+     * Set state
+     * @param string $state
+     * 
+     * @return Client
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
     }
 }

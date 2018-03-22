@@ -41,12 +41,28 @@ class Queue
      * @ORM\Column(type="integer")
      */
     protected $priority;
+    
+    /**
+     * Variable to show the state in the queue
+     *
+     * @ORM\Column(type="string",length=255, nullable=false)
+     */
+    protected $state;
+    
+    /**
+     * Variable to show if the task is aborted
+     *
+     * @ORM\Column(type="boolean")
+     */
+    protected $aborted;
 
     public function __construct($job = null)
     {
         $this->date = new DateTime();
         $this->job = $job;
         $this->priority = $job->getPriority();
+        $this->state = 'Queued';
+        $this->aborted = false;
     }
 
     /**
@@ -154,5 +170,49 @@ class Queue
     public function setPriority($priority)
     {
         $this->priority = $priority;
+    }
+    
+    /**
+     * Get State
+     * 
+     * @return Queue
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+    
+    /**
+     * Set State
+     * 
+     * @param string $state
+     * 
+     * @return Queue
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+    }
+    
+    /**
+     * Get aborted
+     * 
+     * @return boolean
+     */
+    public function getAborted()
+    {
+        return $this->aborted;
+    }
+    
+    /**
+     * Set aborted
+     * 
+     * @param boolean $aborted
+     * 
+     * @return Queue
+     */
+    public function setAborted($aborted)
+    {
+        $this->aborted = $aborted;
     }
 }
