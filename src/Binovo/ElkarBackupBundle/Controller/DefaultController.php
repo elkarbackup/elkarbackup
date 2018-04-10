@@ -1385,13 +1385,15 @@ class DefaultController extends Controller
             ->createQueryBuilder('c')
             ->orderBy('c.date ASC, c.priority')
             ->getQuery();
-        
+        $clients = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client')->findAll();
+            
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
             );
+        
         $this->info(
             'View backup status',
             array(),
@@ -1401,7 +1403,7 @@ class DefaultController extends Controller
         
         return $this->render(
             'BinovoElkarBackupBundle:Default:status.html.twig',
-            array('pagination' => $pagination)
+            array('pagination' => $pagination, 'clients' => $clients)
         );
     }
 

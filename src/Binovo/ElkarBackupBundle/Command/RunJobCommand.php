@@ -1,84 +1,292 @@
 <?php
-/**
- * @copyright 2012,2013 Binovo it Human Project, S.L.
- * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
- */
-
 namespace Binovo\ElkarBackupBundle\Command;
 
-use \DateInterval;
-use \DateTime;
-use \Exception;
 use Binovo\ElkarBackupBundle\Entity\Job;
-use Binovo\ElkarBackupBundle\Lib\BackupRunningCommand;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArrayInput;
+use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class RunJobCommand extends BackupRunningCommand
+class RunJobCommand extends LoggingCommand
 {
+    
     protected function configure()
     {
         parent::configure();
         $this->setName('elkarbackup:run_job')
-             ->setDescription('Run specified job. Runs the lowest of all retains (the one that actually syncs)')
-             ->addArgument('client', InputArgument::REQUIRED, 'clientId')
-             ->addArgument('job'   , InputArgument::REQUIRED, 'jobId');
+            ->setDescription('Runs specified job. Runs the lowest of all retains (the one that actually syncs)')
+            ->addArgument('job', InputArgument::REQUIRED, 'The ID of the job.');
     }
+
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $manager = $this->getContainer()->get('doctrine')->getManager();
-        $result = $this->executeJob($input, $output);
-        $manager->flush();
-        if ($result) {
-
-            return 0;
-        } else {
-
-            return 1;
-        }
-    }
-
-    protected function executeJob(InputInterface $input, OutputInterface $output)
-    {
-        $manager = $this->getContainer()->get('doctrine')->getManager();
-        $logHandler = $this->getContainer()->get('BnvLoggerHandler');
-        $logHandler->startRecordingMessages();
-        $clientId = $input->getArgument('client');
-        $jobId    = $input->getArgument('job');
         $container = $this->getContainer();
-        $repository = $container->get('doctrine')->getRepository('BinovoElkarBackupBundle:Job');
-        $job = $repository->find($jobId);
-        if (!$job || $job->getClient()->getId() != $clientId) {
-            $this->err('No such job.');
-
-            return false;
-        }
+        $manager = $container->get('doctrine')->getManager();
+        
+        $jobId = $input->getArgument('job');
+        $job = $container
+            ->get('doctrine')
+            ->getRepository('BinovoElkarBackupBundle:Job')
+            ->find($jobId);
+        
         $policy = $job->getPolicy();
-        if (!$policy) {
-            $this->warn('Job %jobid% has no policy', array('%jobid%' => $job->getId()));
-
-            return false;
-        }
         $retains = $policy->getRetains();
         if (empty($retains)) {
             $this->warn('Policy %policyid% has no active retains', array('%policyid%' => $policy->getId()));
-
             return false;
         }
-        $retains = array($policy->getId() => array($retains[0][0]));
-        $jobs = array($job);
-        $this->runAllJobs($jobs, $retains);
-
-        return true;
+        $retainsToRun = array($retains[0][0]);
+        $stats = array();
+        $result = $this->runJob($job, $retainsToRun, $stats);
+        $manager->flush();
+        
+        return $result;
     }
-
+    
+    protected function runJob(Job $job, $runnableRetains, $stats)
+    {
+        $warnings = False;
+        
+        $container = $this->getContainer();
+        
+        $backupDir  = $job->getBackupLocation()->getEffectiveDir();
+        $rsnapshot  = $container->getParameter('rsnapshot');
+        $logDir     = $container->get('kernel')->getLogDir();
+        $tmpDir     = $container->getParameter('tmp_dir');
+        $engine     = $container->get('templating');
+        $idClient   = $job->getClient()->getId();
+        $client     = $job->getClient();
+        $idJob      = $job->getId();
+        $url        = $job->getUrl();
+        $retains    = $job->getPolicy()->getRetains();
+        $includes   = array();
+        $include    = $job->getInclude();
+        if ($include) {
+            $includes = explode("\n", $include);
+            foreach($includes as &$theInclude) {
+                $theInclude = str_replace('\ ', '?', trim($theInclude));
+            }
+        }
+        $excludes = array();
+        $exclude = $job->getExclude();
+        if ($exclude) {
+            $excludes = explode("\n", $exclude);
+            foreach($excludes as &$theExclude) {
+                $theExclude = str_replace('\ ', '?', trim($theExclude));
+            }
+        }
+        $syncFirst = (int)$job->getPolicy()->getSyncFirst();
+        $context = array('link' => $this->generateJobRoute($idJob, $idClient));
+        
+        $content = $engine->render(
+            'BinovoElkarBackupBundle:Default:rsnapshotconfig.txt.twig',
+            array('cmdPreExec'          => '',
+                'cmdPostExec'         => '',
+                'excludes'            => $excludes,
+                'idClient'            => sprintf('%04d', $idClient),
+                'idJob'               => sprintf('%04d', $idJob),
+                'includes'            => $includes,
+                'backupDir'           => $backupDir,
+                'retains'             => $retains,
+                'tmp'                 => $tmpDir,
+                'snapshotRoot'        => $job->getSnapshotRoot(),
+                'syncFirst'           => $syncFirst,
+                'url'                 => $url,
+                'useLocalPermissions' => $job->getUseLocalPermissions(),
+                'sshArgs'             => $client->getSshArgs(),
+                'rsyncShortArgs'      => $client->getRsyncShortArgs(),
+                'rsyncLongArgs'       => $client->getRsyncLongArgs(),
+                'logDir'              => $logDir
+            )
+        );
+        $confFileName = sprintf("%s/rsnapshot.%s_%s.cfg", $tmpDir, $idClient, $idJob);
+        $fd = fopen($confFileName, 'w');
+        if (false === $fd) {
+            $this->err('Error opening config file %filename%. Aborting backup.', array('%filename%' => $confFileName), $context);
+            return false;
+        }
+        $bytesWriten = fwrite($fd, $content);
+        if (false === $bytesWriten) {
+            $this->err('Error writing to config file %filename%. Aborting backup.', array('%filename%' => $confFileName), $context);
+            return false;
+        }
+        $ok = fclose($fd);
+        if (false === $ok) {
+            $this->warn('Error closing config file %filename%.', array('%filename%' => $confFileName), $context);
+        }
+        if (!is_dir($job->getSnapshotRoot())) {
+            $ok = mkdir($job->getSnapshotRoot(), 0777, true);
+            if (false === $ok) {
+                $this->err('Error creating snapshot root %filename%. Aborting backup.', array('%filename%' => $job->getSnapshotRoot()), $context);
+                return false;
+            }
+        }
+        
+        foreach ($runnableRetains as $retain) {
+            $status = 0;
+            $job_starttime = time();
+            // run rsnapshot. sync first if needed
+            $commands = array();
+            if ($job->getPolicy()->mustSync($retain)) {
+                $commands[] = sprintf('"%s" -c "%s" sync 2>&1', $rsnapshot, $confFileName);
+            }
+            $commands[] = sprintf('"%s" -c "%s" %s 2>&1', $rsnapshot, $confFileName, $retain);
+            $i=0; # Command number. Will be appended to the logfile name.
+            foreach ($commands as $command) {
+                $i = ++$i;
+                $commandOutput = array();
+                $status = 0;
+                // Clean logfile from previous context
+                unset($context['logfile']);
+                $this->info('Running %command%', array('%command%' => $command), $context);
+                exec($command, $commandOutput, $status);
+                // Temporary logfile generated by rsnapshot (see rsnapshotconfig.txt.twig)
+                $tmplogfile = sprintf('%s/tmp-c%04dj%04d.log', $logDir, $idClient, $idJob);
+                
+                // Ends with errors / warnings
+                if (0 != $status) {
+                    // Capture error from logfile
+                    $commandOutput = $this->captureErrorFromLogfile($tmplogfile);
+                    // Log output limited to 500 chars
+                    if (strlen("\n" . $commandOutput) >= 500) {
+                        $commandOutputString = substr("\n" . $commandOutput, 0, 500);
+                        $commandOutputString = "$commandOutputString (...)";
+                    } else {
+                        $commandOutputString = "\n" . $commandOutput;
+                    }
+                    
+                    // Let's save this log for debug
+                    $joblogfile = sprintf('%s/jobs/c%dj%d_%s_%d.log', $logDir, $idClient, $idJob, date("YmdHis",time()),$i);
+                    // Rename the logfile and link it to the log message
+                    if ($this->moveLogfile($tmplogfile, $joblogfile) == True) {
+                        $context['logfile'] = basename($joblogfile);
+                    }
+                    
+                    $this->err(
+                        'Command failed: %output%',
+                        array('%output%'  => $commandOutputString),
+                        $context
+                    );
+                    $ok = false;
+                    break;
+                    // Ends successfully
+                } else {
+                    // Capture stats from logfile
+                    $commandOutput = $this->captureStatsFromLogfile($tmplogfile);
+                    if ($commandOutput){
+                        $commandOutputString = implode("\n", $commandOutput);
+                        // Parse rsnapshot/rsync output stats
+                        preg_match('/^Number of files:(.*)$/m', $commandOutputString, $files_total);
+                        preg_match('/^Number of created files:(.*)$/m', $commandOutputString, $files_created);
+                        preg_match('/^Number of deleted files:(.*)$/m', $commandOutputString, $files_deleted);
+                        preg_match('/^Total transferred file size:(.*)$/m', $commandOutputString, $total_transferred);
+                        if (isset($files_total[1], $files_created[1], $files_deleted[1], $total_transferred[1])){
+                            $commandOutput      = [];
+                            $commandOutput[]    = "Number of files: ".$files_total[1];
+                            $commandOutput[]    = "Number of created files: ".$files_created[1];
+                            $commandOutput[]    = "Number of deleted files: ".$files_deleted[1];
+                            $commandOutput[]    = "Total transferred file size: ".$total_transferred[1];
+                        }
+                    }
+                    // DELETE tmp logfile
+                    if (false === unlink($tmplogfile)) {
+                        $this->warn('Error unlinking logfile %filename%.',
+                            array('%filename%' => $tmplogfile),
+                            $context);
+                    }
+                    
+                    $this->info('Command succeeded. %output%',
+                        array('%output%'  => implode("\n", $commandOutput)),
+                        $context);
+                }
+                
+            }
+            $job_endtime = time();
+            if (isset($total_transferred[1])){
+                $job_run_size = $total_transferred[1];
+            } else {
+                $job_run_size = 0;
+            }
+            
+            $stats['ELKARBACKUP_JOB_RUN_SIZE']      = $job_run_size;
+            $stats['ELKARBACKUP_JOB_STARTTIME']     = $job_starttime;
+            $stats['ELKARBACKUP_JOB_ENDTIME']       = $job_endtime;
+            
+            //tahoe backup
+            $tahoe = $container->get('Tahoe');
+            $tahoeInstalled = $tahoe->isInstalled();
+            $tahoeOn = $container->getParameter('tahoe_active');
+            if ($tahoeInstalled && $tahoeOn) {
+                $tahoe->enqueueJob($job, $retain);
+            }
+        }
+        if (false === unlink($confFileName)) {
+            $this->warn('Error unlinking config file %filename%.',
+                array('%filename%' => $confFileName),
+                $context);
+        }
+        
+        if (True === $ok) {
+            if (True === $warnings) {
+                $ok = 2;
+            }
+        }
+        return $ok;
+    }
+    
+    protected function captureErrorFromLogfile($logfile){
+        // Detect well known errors and return a customized error message
+        // Search for common error, else return last lines (string)
+        // cut -f2- -d\ => ignore first column (timestamp)
+        // grep -i 'ssh:\|permission\|such file\|sigterm' => search for common errors
+        $error = [];
+        $command = "cat $logfile | cut -f2- -d\ | grep -i 'ssh:\|permission\|such file\|sigterm'";
+        exec($command, $error, $retval);
+        if ($retval != 0) {
+            // If we don't find any common error, return the last 5 lines from the log
+            $command2 = "cat $logfile | cut -f2- -d\ | tail -n5";
+            exec($command2, $lastlines, $retval2);
+            if ($retval2 == 0) {
+                $error = "[unknown error] " . implode('\n', $lastlines);
+            } else {
+                $error = "[unknown error]";
+            }
+        } else {
+            $error = implode('\n', $error);
+        }
+        return $error;
+    }
+    
+    protected function captureStatsFromLogfile($logfile){
+        // Capture rsync stats. Else, return an empty array.
+        $stats = [];
+        $command = "grep -B13 'speedup is' $logfile |cut -f2- -d\ ";
+        exec($command, $stats, $retval);
+        return $stats;
+    }
+    
+    protected function moveLogfile($tmplogfile, $joblogfile){
+        // Save jobs under job logs directory
+        $retval = False;
+        if (is_file($tmplogfile)) {
+            $jobLogDir = dirname($joblogfile);
+            if ( !is_dir($jobLogDir) ){
+                // If job log directory does not exist, create it
+                if (False == mkdir($jobLogDir, 0750)){
+                    $retval = False;
+                }
+            }
+            $retval = rename($tmplogfile, $joblogfile);
+        } else {
+            $retval = False;
+        }
+        return $retval;
+    }
+    
     protected function getNameForLogs()
     {
         return 'RunJobCommand';
     }
+
 }

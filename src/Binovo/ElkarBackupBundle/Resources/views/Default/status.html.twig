@@ -43,10 +43,14 @@
                             {% if queue.aborted %}
                                 <span class="label label-warning">ABORTING</span>
                             {% else %}
-                                {% if queue.runningSince %}
-                                    <span class="label label-primary">RUNNING</span>
+                                {% if queue.state == 'QUEUED' %}
+                                    <span class="label label-info">{{ queue.state }}</span>
+                                {% elseif queue.state == 'WAITING FOR CLIENT' %}
+                                    <span class="label label-default">{{ queue.state }}</span>
+                                {% elseif queue.state == 'RUNNING' %}
+                                    <span class="label label-primary">{{ queue.state }}</span>
                                 {% else %}
-                                    <span class="label label-info">QUEUED</span>
+                                    <span class="label label-warning">{{ queue.state }}</span>
                                 {% endif %}
                             {% endif %}
                         </td>
@@ -79,28 +83,24 @@
                 </tr>
                 
                 {# table body #}
-                {% set clientsArray = [] %}
-                {% for queue in pagination %}
-                    {% if queue.job.client.id not in clientsArray %}
-                        <tr id="client-{{queue.job.client.id}}">
-                            <td class="vert-align id" align="center" onclick="document.location.href='{{ path('editClient', {id: queue.job.client.id}) }}'" class="ids">
-                                <a href="{{ path('editClient', {id: queue.job.client.id}) }}">{{queue.job.client.id}}</a></td>
-                            <td class="vert-align name" align="center">{{ queue.job.client.name }}</td>
-                            <td class="vert-align status" align="center">
-                                {% if queue.job.client.state == 'NotReady' %}
-                                    <span class="label label-default">NOT READY</span>
-                                {% elseif queue.job.client.state == 'PreClient' %}
-                                    <span class="label label-warning">PRE CLIENT</span>
-                                {% elseif queue.job.client.state == 'Ready' %}
-                                    <span class="label label-success">READY</span>
-                                {% elseif queue.job.client.state == 'PostClient' %}
-                                    <span class="label label-warning">POST CLIENT</span>
-                                {% elseif queue.job.client.state == 'Error' %}
-                                    <span class="label label-danger">ERROR</span>
-                                {% endif %}
-                        </tr>
-                        {% set clientsArray = clientsArray|merge([queue.job.client.id]) %}
-                    {% endif %}
+                {% for client in clients %}
+                    <tr id="client-{{client.id}}">
+                        <td class="vert-align id" align="center" onclick="document.location.href='{{ path('editClient', {id: client.id}) }}'" class="ids">
+                            <a href="{{ path('editClient', {id: client.id}) }}">{{client.id}}</a></td>
+                        <td class="vert-align name" align="center">{{ client.name }}</td>
+                        <td class="vert-align status" align="center">
+                            {% if client.state == 'NOT READY' %}
+                                <span class="label label-default">{{ client.state }}</span>
+                            {% elseif client.state == 'PRE CLIENT' %}
+                                <span class="label label-warning">{{ client.state }}</span>
+                            {% elseif client.state == 'READY' %}
+                                <span class="label label-success">{{ client.state }}</span>
+                            {% elseif client.state == 'POST CLIENT' %}
+                                <span class="label label-warning">{{ client.state }}</span>
+                            {% elseif client.state == 'ERROR' %}
+                                <span class="label label-danger">{{ client.state }}</span>
+                            {% endif %}
+                    </tr>
                 {% endfor %}
             </table>
         </div>

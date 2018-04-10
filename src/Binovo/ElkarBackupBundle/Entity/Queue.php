@@ -61,7 +61,7 @@ class Queue
         $this->date = new DateTime();
         $this->job = $job;
         $this->priority = $job->getPriority();
-        $this->state = 'Queued';
+        $this->state = 'QUEUED';
         $this->aborted = false;
     }
 

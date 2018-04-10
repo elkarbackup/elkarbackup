@@ -1,0 +1,260 @@
+<?php
+namespace Binovo\ElkarBackupBundle\Lib;
+
+use Binovo\ElkarBackupBundle\Entity\Client;
+use Binovo\ElkarBackupBundle\Entity\Job;
+
+class BaseScriptsCommand extends LoggingCommand
+{
+    /**
+     * Prepares the model with the necessary data to run Client scripts.
+     *
+     * @param   Client      $client     Client entity.
+     *
+     * @param   string      $type       Defines the type of scripts the model will be used for, PRE or POST.
+     *
+     * @param   string      $stats      Stats for script environment vars (not stored in DB).
+     *
+     * @return array        $model      The model needed to execute scripts.
+     */
+    protected function prepareClientModel($client, $type, $stats)
+    {
+        $model = array();
+        
+        $model['level']             = 'CLIENT';
+        $model['type']              = $type; //must be PRE or POST
+        $model['clientUrl']         = $client->getUrl();
+        $model['clientId']          = $client->getId();
+        $model['clientRoot']        = ''; //Does not exist
+        $model['status']            = 0; //status from the previous command
+        $model['clientName']        = $client->getName();
+        $model['clientDiskUsage']   = $client->getDiskUsage();
+        $model['clientSshArgs']     = $client->getSshArgs();
+        $model['scriptFiles']       = array();
+        $model['context']           = array('link' => $this->generateClientRoute($client->getId()));
+        
+        if ('PRE' == $type){
+            $model['clientEndTime'] = 0;
+            $model['clientStartTime'] = time();
+            $scripts = $client->getPreScripts();
+        } elseif ('POST' == $type) {
+            $model['clientEndTime'] = time();
+            $model['clientStartTime'] = $stats['ELKARBACKUP_CLIENT_STARTTIME'];
+            $scripts = $client->getPostScripts();
+        }
+        
+        foreach ($scripts as $script) {
+            array_push($model['scriptFiles'], $script);
+        }
+        return $model;
+    }
+    
+    /**
+     * Runs client level scripts
+     *
+     * @param   array       $model      Contains the pertinent information to run the scripts
+     */
+    protected function runClientScripts($model)
+    {
+        $status = $model['status'];
+        $errScriptError   = 'Client "%entityid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%';
+        $errScriptMissing = 'Client "%entityid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.';
+        $errScriptOk      = 'Client "%entityid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%';
+        $allOk = true;
+        $commandOutput = array();
+        foreach ($model['scriptFiles'] as $script) {
+            $scriptFile = $script->getScriptPath();
+            if (!file_exists($scriptFile)) {
+                $this->err(
+                    $errScriptMissing,
+                    array(
+                        '%entityid%'   => $model['clientId'],
+                        '%scripttype%' => $model['type'],
+                        '%scriptname%' => $script->getName(),
+                        '%scriptfile%' => $scriptFile
+                    ),
+                    $model['context']
+                );
+                $allOk = false;
+            } else {
+                $command = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_CLIENT_TOTAL_SIZE="%s" ELKARBACKUP_CLIENT_STARTTIME="%s" ELKARBACKUP_CLIENT_ENDTIME="%s" ELKARBACKUP_SSH_ARGS="%s" sudo "%s" 2>&1',
+                    $model['level'],
+                    $model['type'],
+                    $model['clientUrl'],
+                    $model['clientId'],
+                    $model['clientRoot'],
+                    $status,
+                    $model['clientName'],
+                    $model['clientDiskUsage'],
+                    $model['clientStartTime'],
+                    $model['clientEndTime'],
+                    $model['clientSshArgs'],
+                    $scriptFile);
+                exec($command, $commandOutput, $newStatus);
+                $status = $newStatus;
+                
+                $commandOutputString = substr("\n" . implode("\n", $commandOutput), 0, 500); // Let's limit the output
+                if (0 != $status) {
+                    $this->err(
+                        $errScriptError,
+                        array(
+                            '%entityid%'   => $model['clientId'],
+                            '%scripttype%' => $model['type'],
+                            '%scriptname%' => $script->getName(),
+                            '%output%'     => $commandOutputString
+                        ),
+                        $model['context']
+                        );
+                    $allOk = false;
+                } else {
+                    $this->info(
+                        $errScriptOk,
+                        array(
+                            '%entityid%'   => $model['clientId'],
+                            '%scripttype%' => $model['type'],
+                            '%scriptname%' => $script->getName(),
+                            '%output%'     => $commandOutputString
+                        ),
+                        $model['context']
+                    );
+                }
+            }
+        }
+        return $allOk;
+    }
+    
+    /**
+     * Prepares the model with the necessary data to run Job scripts.
+     *
+     * @param   Job         $job        Job entity.
+     *
+     * @param   string      $type       Defines the type of scripts the model will be used for, PRE or POST.
+     *
+     * @param   string      $stats      Stats for script environment vars (not stored in DB).
+     *
+     * @return array        $model      The model needed to execute scripts.
+     */
+    protected function prepareJobModel($job, $type, $stats)
+    {
+        $model = array();
+        $client = $job->getClient();
+        
+        $model['level']             = 'JOB';
+        $model['type']              = $type; //must be PRE or POST
+        $model['clientUrl']         = $client->getUrl();
+        $model['clientId']          = $client->getId();
+        $model['clientRoot']        = ''; //No existe
+        $model['status']            = 0; //status from the previous command
+        $model['clientName']        = $client->getName();
+        $model['jobName']           = $job->getName();
+        $model['jobId']             = $job->getId();
+        $model['ownerEmail']        = $client->getOwner()->getEmail();
+        $model['recipientList']     = $job->getNotificationsEmail();
+        $model['clientDiskUsage']   = $client->getDiskUsage();
+        $model['jobTotalSize']      = $job->getDiskUsage();
+        $model['clientSshArgs']     = $client->getSshArgs();
+        $model['scriptFiles']       = array();
+        $model['context']           = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
+        
+        if ('PRE' == $type){
+            $scripts = $job->getPreScripts();
+            $model['jobRunSize']    = 0;
+            $model['jobStartTime']  = 0;
+            $model['jobEndTime']    = 0;
+        } elseif ('POST' == $type) {
+            $scripts = $job->getPostScripts();
+            $model['jobRunSize']    = $stats['ELKARBACKUP_JOB_RUN_SIZE'];
+            $model['jobStartTime']  = $stats['ELKARBACKUP_JOB_STARTTIME'];
+            $model['jobEndTime']    = $stats['ELKARBACKUP_JOB_ENDTIME'];
+        }
+        
+        foreach ($scripts as $script) {
+            array_push($model['scriptFiles'], $script);
+        }
+        return $model;
+    }
+    
+    /**
+     * Runs job level scripts
+     *
+     * @param   array       $model      Contains the pertinent information to run the scripts
+     */
+    protected function runJobScripts($model)
+    {
+        $status = $model['status'];
+        $errScriptError   = 'Job "%entityid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%';
+        $errScriptMissing = 'Job "%entityid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.';
+        $errScriptOk      = 'Job "%entityid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%';
+        $allOk = true;
+        $commandOutput = array();
+        foreach ($model['scriptFiles'] as $script) {
+            $scriptFile = $script->getScriptPath();
+            if (!file_exists($scriptFile)) {
+                $this->err(
+                    $errScriptMissing,
+                    array(
+                        '%entityid%'   => $model['jobId'],
+                        '%scripttype%' => $model['type'],
+                        '%scriptname%' => $script->getName(),
+                        '%scriptfile%' => $scriptFile
+                    ),
+                    $model['context']
+                );
+                $allOk = false;
+            } else {
+                $command = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_JOB_NAME="%s" ELKARBACKUP_OWNER_EMAIL="%s" ELKARBACKUP_RECIPIENT_LIST="%s" ELKARBACKUP_CLIENT_TOTAL_SIZE="%s" ELKARBACKUP_JOB_TOTAL_SIZE="%s" ELKARBACKUP_JOB_RUN_SIZE="%s" ELKARBACKUP_JOB_STARTTIME="%s" ELKARBACKUP_JOB_ENDTIME="%s" ELKARBACKUP_SSH_ARGS="%s" sudo "%s" 2>&1',
+                    $model['level'],
+                    $model['type'],
+                    $model['clientUrl'],
+                    $model['clientId'],
+                    $model['clientRoot'],
+                    $status,
+                    $model['clientName'],
+                    $model['jobName'],
+                    $model['ownerEmail'],
+                    $model['recipientList'],
+                    $model['clientDiskUsage'],
+                    $model['jobTotalSize'],
+                    $model['jobRunSize'],
+                    $model['jobStartTime'],
+                    $model['jobEndTime'],
+                    $model['clientSshArgs'],
+                    $scriptFile);
+                exec($command, $commandOutput, $newStatus);
+                $status = $newStatus;
+                
+                $commandOutputString = substr("\n" . implode("\n", $commandOutput), 0, 500); // Let's limit the output
+                if (0 != $status) {
+                    $this->err(
+                        $errScriptError,
+                        array(
+                            '%entityid%'   => $model['jobId'],
+                            '%scripttype%' => $model['type'],
+                            '%scriptname%' => $script->getName(),
+                            '%output%'     => $commandOutputString
+                        ),
+                        $model['context']
+                        );
+                    $allOk = false;
+                } else {
+                    $this->info(
+                        $errScriptOk,
+                        array(
+                            '%entityid%'   => $model['jobId'],
+                            '%scripttype%' => $model['type'],
+                            '%scriptname%' => $script->getName(),
+                            '%output%'     => $commandOutputString
+                        ),
+                        $model['context']
+                    );
+                }
+            }
+        }
+        return $allOk;
+    }
+    
+    protected function getNameForLogs()
+    {
+        return $this->child_method();
+    }
+}
