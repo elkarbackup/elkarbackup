@@ -1,6 +1,7 @@
 <?php
 namespace Binovo\ElkarBackupBundle\Command;
 
+use Assetic\Exception\Exception;
 use Binovo\ElkarBackupBundle\Entity\Job;
 use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,33 +22,46 @@ class RunJobCommand extends LoggingCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $container = $this->getContainer();
-        $manager = $container->get('doctrine')->getManager();
-        
-        $jobId = $input->getArgument('job');
-        $job = $container
+        try {
+            $container = $this->getContainer();
+            $manager = $container->get('doctrine')->getManager();
+            
+            $jobId = $input->getArgument('job');
+            if (! is_int($jobId)) {
+                $this->err('Input argument not valid');
+                return 2;
+            }
+            $job = $container
             ->get('doctrine')
             ->getRepository('BinovoElkarBackupBundle:Job')
             ->find($jobId);
-        
-        $policy = $job->getPolicy();
-        $retains = $policy->getRetains();
-        if (empty($retains)) {
-            $this->warn('Policy %policyid% has no active retains', array('%policyid%' => $policy->getId()));
-            return false;
+            if (null == $job) {
+                $this->err('Job not found');
+                return 3;
+            }
+            
+            $policy = $job->getPolicy();
+            $retains = $policy->getRetains();
+            if (empty($retains)) {
+                $this->warn('Policy %policyid% has no active retains', array('%policyid%' => $policy->getId()));
+                return 4;
+            }
+            $retainsToRun = array($retains[0][0]);
+            $stats = array();
+            $result = $this->runJob($job, $retainsToRun, $stats);
+            $manager->flush();
+            
+            return $result;
+            
+        } catch (Exception $e) {
+            $this->err('Unknown exception\n'.$e->getMessage());
+            return 1;
         }
-        $retainsToRun = array($retains[0][0]);
-        $stats = array();
-        $result = $this->runJob($job, $retainsToRun, $stats);
-        $manager->flush();
-        
-        return $result;
+
     }
     
     protected function runJob(Job $job, $runnableRetains, $stats)
     {
-        $warnings = False;
-        
         $container = $this->getContainer();
         
         $backupDir  = $job->getBackupLocation()->getEffectiveDir();

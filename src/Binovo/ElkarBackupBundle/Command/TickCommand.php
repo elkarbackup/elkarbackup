@@ -7,10 +7,8 @@
 namespace Binovo\ElkarBackupBundle\Command;
 
 use Binovo\ElkarBackupBundle\Entity\Client;
-use Binovo\ElkarBackupBundle\Entity\Job;
 use Binovo\ElkarBackupBundle\Entity\Message;
 use Binovo\ElkarBackupBundle\Entity\Queue;
-use Binovo\ElkarBackupBundle\Entity\Script;
 use Binovo\ElkarBackupBundle\Lib\Globals;
 use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -44,12 +42,16 @@ class TickCommand extends LoggingCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        //BUCLE DE CONTROL
         $this->container = $this->getContainer();
-        $this->manager = $this->getContainer()->get('doctrine')->getManager();
+        $this->manager = $this->container->get('doctrine')->getManager();
+        $allOk = true;
         $allOk = $this->enqueueScheduledBackups($input, $output);
-        $this->executeMessages($input, $output);
+        $allOk = $this->executeMessages($input, $output) && $allOk;
         $allOk = $this->removeOldLogs() && $allOk;
+        
+        $logHandler = $this->container->get('BnvLoggerHandler');
+        $logHandler->startRecordingMessages();
+        
         $lockHandler = new LockHandler('tick.lock');
         
         try {
@@ -57,6 +59,8 @@ class TickCommand extends LoggingCommand
                 try {
                     // we don't want to miss a backup because a command fails,
                     //so catch any exception
+                    //SET CLIENTS TO NOT READY
+                    $this->initializeClients();
                     $dql =<<<EOF
 SELECT q
 FROM BinovoElkarBackupBundle:Queue q
@@ -97,12 +101,17 @@ EOF;
                 } catch (Exception $e) {
                     echo "-----ERROR: " . $e;
                     $this->err('Exception running queued commands: %exceptionmsg%', array('%exceptionmsg%' => $e->getMessage()));
-                    $this->getContainer()->get('doctrine')->getManager()->flush();
+                    $this->manager->flush();
                     $allOk = false;
                 }
-                return $allOk;
+                $logHandler->stopRecordingMessages();
+                if ($allOk) {
+                    return 0;
+                } else {
+                    return $this->ERR_CODE_UNKNOWN;
+                }
             }
-            return false;
+            return $this->ERR_CODE_UNKNOWN;
         } finally {
             $lockHandler->release();
         }
@@ -110,13 +119,11 @@ EOF;
     
     protected function enqueueScheduledBackups(InputInterface $input, OutputInterface $output)
     {
-        $logHandler = $this->getContainer()->get('BnvLoggerHandler');
-        $logHandler->startRecordingMessages();
         $time = $this->parseTime($input->getArgument('time'));
         if (!$time) {
             $this->err('Invalid time specified.');
             
-            return false;
+            return $this->ERR_CODE_INPUT_ARG;
         }
         $repository = $this->container->get('doctrine')->getRepository('BinovoElkarBackupBundle:Policy');
         $query = $repository->createQueryBuilder('policy')->getQuery();
@@ -129,8 +136,7 @@ EOF;
         }
         if (count($policies) == 0) {
             $this->info('Nothing to run.');
-            
-            return true;
+            return 0;
         }
         $policyQuery = array();
         $runnablePolicies = implode(', ', array_keys($policies));
@@ -152,7 +158,7 @@ EOF;
         }
         $this->manager->flush();
         
-        return true;
+        return 0;
     }
 
     protected function executeMessages(InputInterface $input, OutputInterface $output)
@@ -218,48 +224,11 @@ EOF;
             }
             $this->manager->flush();
         }
+        return 0;
     }
 
-    protected function executeJobs(InputInterface $input, OutputInterface $output)
-    {
-        $logHandler = $this->getContainer()->get('BnvLoggerHandler');
-        $logHandler->startRecordingMessages();
-        $dql =<<<EOF
-SELECT q,j,c
-FROM BinovoElkarBackupBundle:Queue q
-JOIN q.job j
-JOIN j.client c
-WHERE j.isActive = 1 AND c.isActive = 1
-ORDER BY q.date, q.priority
-EOF;
-        $queue = $this->manager->createQuery($dql)->getResult();
-        $retainsToRun = array();
-        
-        foreach($queue as $task){
-            $policy = $task->getJob()->getPolicy();
-            if (!$policy) {
-                $this->warn('Job %jobid% has no policy', array('%jobid%' => $task->getJob()->getId()));
-                
-                return false;
-            }
-            $retains = $policy->getRetains();
-            if (empty($retains)) {
-                $this->warn('Policy %policyid% has no active retains', array('%policyid%' => $policy->getId()));
-                
-                return false;
-            }
-            $retainsToRun[$policy->getId()] = array($retains[0][0]);
-        }
-        
-        $this->runAllJobs($queue, $retainsToRun);
-        
-        return true;
-    }
-    
     protected function processQueueElements(InputInterface $input, OutputInterface $output)
     {
-        $logHandler = $this->container->get('BnvLoggerHandler');
-        $logHandler->startRecordingMessages();
         $dql =<<<EOF
 SELECT q,j,c
 FROM BinovoElkarBackupBundle:Queue q
@@ -276,8 +245,6 @@ EOF;
     
     protected function processClients(InputInterface $input, OutputInterface $output)
     {
-        $logHandler = $this->container->get('BnvLoggerHandler');
-        $logHandler->startRecordingMessages();
         $clients = $this->manager->getRepository('BinovoElkarBackupBundle:Client')
         ->findAll();
         foreach($clients as $client) {
@@ -286,14 +253,15 @@ EOF;
     }
     
     protected function waitWithTimeout(){
-        if ($this->timeoutPid == $this->awakenPid) {
+       if ($this->timeoutPid == $this->awakenPid) {
             $pid = pcntl_fork();
             if ($pid == -1) {
-                exit('could not fork');
+                exit($this->ERR_CODE_UNKNOWN);
             } elseif ($pid == 0) {
                 sleep(1);
                 exit(0);
             }
+            $this->renewDbConnection();
             $this->timeoutPid = $pid;
         }
         $this->awakenPid = pcntl_wait($status);
@@ -309,16 +277,17 @@ EOF;
     {
         $state = $task->getState();
         $job = $task->getJob();
+        $context = array('link' => $this->generateJobRoute(
+            $job->getId(),
+            $job->getClient()->getId()
+        ));
+        
         switch ($state){
             case 'QUEUED':
                 $this->errors[$job->getId()] = false;
                 if ($task->getAborted()) {
                     //remove from queue
                     $this->manager->remove($task);
-                    $context = array('link' => $this->generateJobRoute(
-                        $task->getJob()->getId(),
-                        $job->getClient()->getId()
-                    ));
                     $this->warn(
                         'Job stop requested: aborting job',
                         array(),
@@ -334,13 +303,10 @@ EOF;
                 
             case 'WAITING FOR CLIENT':
                 $clientState = $job->getClient()->getState();
+                
                 if ($task->getAborted()) {
                     //remove from queue
                     $this->manager->remove($task);
-                    $context = array('link' => $this->generateJobRoute(
-                        $job->getId(),
-                        $job->getClient()->getId()
-                    ));
                     $this->warn(
                         'Job stop requested: aborting job',
                         array(),
@@ -351,19 +317,12 @@ EOF;
                     $task->setState('PRE JOB');
                     //run prejob
                     $stats = array();
-                    $model = $this->prepareJobModel($job, 'PRE', $stats);
-                    $pid = $this->runInBackground(function () use ($model) {
-                        $this->runJobScripts($model);
-                    });
+                    $pid = $this->runPreJobScripts($job);
                     $this->jobsPid[$job->getId()] = $pid;
+                    
                 } elseif ($clientState == 'ERROR') {
-                    //abort & log error
-                    //remove from queue
+                    //abort & log error & remove from queue
                     $this->manager->remove($task);
-                    $context = array('link' => $this->generateJobRoute(
-                        $job->getId(),
-                        $job->getClient()->getId()
-                    ));
                     $this->err(
                         'Job aborted: pre client scripts failed!',
                         array(),
@@ -378,23 +337,26 @@ EOF;
                     //our child has finished
                     if ($task->getAborted()) {
                         //abort
-                        $context = array('link' => $this->generateJobRoute(
-                            $job->getId(),
-                            $job->getClient()->getId()
-                        ));
                         $this->warn(
                             'Job stop requested: aborting job',
                             array(),
                             $context
                         );
-                        $task->setState('POST JOB');
-                        //run postJob
-                        $stats = array();
-                        $model = $this->prepareJobModel($job, 'POST', $stats);
-                        $pid = $this->runInBackground(function () use ($model) {
-                            $this->runJobScripts($model);
-                        });
-                        $this->jobsPid[$job->getId()] = $pid;
+                        $doPost = $this->container->getParameter('post_on_pre_fail');
+                        if ($doPost == true) {
+                            $task->setState('POST JOB');
+                            //run postJob
+                            $stats = array();
+                            $pid = $this->runPostJobScripts($job);
+                            $this->jobsPid[$job->getId()] = $pid;
+                        } else {
+                            $this->manager->remove($task);
+                            $this->err(
+                                'Job aborted!',
+                                array(),
+                                $context
+                            );
+                        }
                     } elseif ($this->awakenStatus != 0) {
                         //PreJob error
                         $context = array('link' => $this->generateJobRoute(
@@ -565,10 +527,7 @@ EOF;
                     $client->setState('PRE CLIENT');
                     //run preclient
                     $stats = array();
-                    $model = $this->prepareClientModel($client, 'PRE', $stats);
-                    $pid = $this->runInBackground(function () use ($model) {
-                        $this->runClientPreScripts($model);
-                    });
+                    $pid = $this->runPreClientScript($client->getId());
                     $this->clientsPid[$client->getId()] = $pid;
                 }
                 
@@ -648,19 +607,7 @@ EOF;
         }
         $this->manager->flush();
     }
-    
-    private function runInBackground(callable $func)
-    {
-        $pid = pcntl_fork();
-        if ($pid == -1) {
-            exit('could not fork');
-        } elseif ($pid == 0) {
-            call_user_func($func);
-            exit(0);
-        }
-        return $pid;
-    }
-    
+
     /**
      * Determines if the task is candidate to be executed
      *
@@ -668,8 +615,8 @@ EOF;
      */
     protected function isCandidate($task) {
         $globalLimit = $this->getContainer()->getParameter('max_parallel_jobs');
-        $perClientLimit = $this->getContainer()->getParameter('client_parallel_jobs');
-        $perStorageLimit = $this->getContainer()->getParameter('storage_parallel_jobs');
+        $perClientLimit = $task->getJob()->getClient()->getMaxParallelJobs();
+        $perStorageLimit = $task->getJob()->getBackupLocation()->getMaxParallelJobs();
         
         $dql =<<<EOF
 SELECT q,j,c
@@ -704,361 +651,6 @@ EOF;
             } else {
                 return false;
             }
-    }
-    
-    /**
-     * Prepares the model with the necessary data to run Client scripts.
-     *
-     * @param   Client      $client     Client entity.
-     * 
-     * @param   string      $type       Defines the type of scripts the model will be used for, PRE or POST.
-     * 
-     * @param   string      $stats      Stats for script environment vars (not stored in DB).
-     * 
-     * @return array        $model      The model needed to execute scripts.
-     */
-    protected function prepareClientModel($client, $type, $stats)
-    {
-        $model = array();
-        
-        $model['level'] = 'CLIENT';
-        $model['type'] = $type; //must be PRE or POST
-        $model['clientUrl'] = $client->getUrl();
-        $model['clientId'] = $client->getId();
-        $model['clientRoot'] = $client->getSnapshotRoot();
-        $model['status'] = 0; //status from the previous command
-        $model['clientName'] = $client->getName();
-        $model['clientDiskUsage'] = $client->getDiskUsage();
-        $model['clientSshArgs'] = $client->getSshArgs();
-        $model['scriptFiles'] = array();
-        
-        if ('PRE' == $type){
-            $model['clientEndTime'] = 0;
-            $model['clientStartTime'] = 0;
-            $scripts = $client->getPreScripts();
-        } elseif ('POST' == $type) {
-            $model['clientEndTime'] = $stats['ELKARBACKUP_CLIENT_ENDTIME'];
-            $model['clientStartTime'] = $stats['ELKARBACKUP_CLIENT_STARTTIME'];
-            $scripts = $client->getPostScripts();
-        }
-        
-        foreach ($scripts as $script) {
-            array_push($model['scriptFiles'], $script->getScriptPath());
-        }
-        return $model;
-    }
-    
-    /**
-     * Runs client level scripts
-     *
-     * @param   array       $model      Contains the pertinent information to run the scripts
-     */
-    protected function runClientScripts($model)
-    {
-        $status = $model['status'];
-        $commandOutput = array();
-        foreach ($model['scriptFiles'] as $scriptFile) {
-            $command = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_CLIENT_TOTAL_SIZE="%s" ELKARBACKUP_CLIENT_STARTTIME="%s" ELKARBACKUP_CLIENT_ENDTIME="%s" ELKARBACKUP_SSH_ARGS="%s" sudo "%s" 2>&1',
-                $model['level'],
-                $model['type'],
-                $model['clientUrl'],
-                $model['clientId'],
-                $model['clientRoot'],
-                $status,
-                $model['clientName'],
-                $model['clientDiskUsage'],
-                $model['clientStartTime'],
-                $model['clientEndTime'],
-                $model['clientSshArgs'],
-                $scriptFile);
-            exec($command, $commandOutput, $newStatus);
-            $status = $newStatus;
-        }
-
-    }
-    
-    /**
-     * Prepares the model with the necessary data to run Job scripts.
-     *
-     * @param   Job         $job        Job entity.
-     *
-     * @param   string      $type       Defines the type of scripts the model will be used for, PRE or POST.
-     *
-     * @param   string      $stats      Stats for script environment vars (not stored in DB).
-     * 
-     * @return array        $model      The model needed to execute scripts.
-     */
-    protected function prepareJobModel($job, $type, $stats)
-    {
-        $model = array();
-        $client = $job->getClient();
-        
-        $model['level']             = 'JOB';
-        $model['type']              = $type; //must be PRE or POST
-        $model['clientUrl']         = $client->getUrl();
-        $model['clientId']          = $client->getId();
-        $model['clientRoot']        = $client->getSnapshotRoot();
-        $model['status']            = 0; //status from the previous command
-        $model['clientName']        = $client->getName();
-        $model['jobName']           = $job->getName();
-        $model['ownerEmail']        = $client->getOwner()->getEmail();
-        $model['recipientList']     = $job->getNotificationsEmail();
-        $model['clientDiskUsage']   = $client->getDiskUsage();
-        $model['jobTotalSize']      = $job->getDiskUsage();
-        $model['clientSshArgs']     = $client->getSshArgs();
-        $model['scriptFiles']       = array();
-        
-        if ('PRE' == $type){
-            $scripts = $job->getPreScripts();
-            $model['jobRunSize']    = 0;
-            $model['jobStartTime']  = 0;
-            $model['jobEndTime']    = 0;
-        } elseif ('POST' == $type) {
-            $scripts = $job->getPostScripts();
-            $model['jobRunSize']    = $stats['ELKARBACKUP_JOB_RUN_SIZE'];
-            $model['jobStartTime']  = $stats['ELKARBACKUP_JOB_STARTTIME'];
-            $model['jobEndTime']    = $stats['ELKARBACKUP_JOB_ENDTIME'];
-        }
-
-        foreach ($scripts as $script) {
-            array_push($model['scriptFiles'], $script->getScriptPath());
-        }
-        return $model;
-    }
-    
-    /**
-     * Runs job level scripts
-     * 
-     * @param   array       $model      Contains the pertinent information to run the scripts
-     */
-    protected function runJobScripts($model)
-    {
-        $status = $model['status'];
-        $commandOutput = array();
-        foreach ($model['scriptFiles'] as $scriptFile) {
-            $command = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_JOB_NAME="%s" ELKARBACKUP_OWNER_EMAIL="%s" ELKARBACKUP_RECIPIENT_LIST="%s" ELKARBACKUP_CLIENT_TOTAL_SIZE="%s" ELKARBACKUP_JOB_TOTAL_SIZE="%s" ELKARBACKUP_JOB_RUN_SIZE="%s" ELKARBACKUP_JOB_STARTTIME="%s" ELKARBACKUP_JOB_ENDTIME="%s" ELKARBACKUP_SSH_ARGS="%s" sudo "%s" 2>&1',
-                $model['level'],
-                $model['type'],
-                $model['clientUrl'],
-                $model['clientId'],
-                $model['clientRoot'],
-                $status,
-                $model['clientName'],
-                $model['jobName'],
-                $model['ownerEmail'],
-                $model['recipientList'],
-                $model['clientDiskUsage'],
-                $model['jobTotalSize'],
-                $model['clientSshArgs'],
-                $scriptFile);
-            exec($command, $commandOutput, $newStatus);
-            $status = $newStatus;
-        }
-        
-    }
-    
-    protected function prepareRunJobModel($job, $runnableRetains)
-    {
-        $stats[] = array();
-        $model = array();
-        $warnings = False;
-        
-        $container = $this->container;
-        
-        $tmpDir     = $container->getParameter('tmp_dir');
-        $engine     = $container->get('templating');
-        
-        $model['runnableRetains']   = $runnableRetains;
-        $model['logDir']            = $container->get('kernel')->getLogDir();
-        $model['idClient']          = $job->getClient()->getId();
-        $model['idJob']             = $job->getId();
-        $model['jobPolicy']         = $job->getPolicy(); //????
-        $model['rsnapshot']         = $container->getParameter('rsnapshot');
-        $model['context']           = array('link' => $this->generateJobRoute($model['idJob'], $model['idClient']));
-        $model['confFileName'] = sprintf("%s/rsnapshot.%s_%s.cfg", $tmpDir, $model['idClient'], $model['idJob']);
-        
-        $backupDir  = $job->getBackupLocation()->getEffectiveDir();
-        $client     = $job->getClient();
-        $url        = $job->getUrl();
-        $retains    = $job->getPolicy()->getRetains();
-        $includes   = array();
-        $include    = $job->getInclude();
-        if ($include) {
-            $includes = explode("\n", $include);
-            foreach($includes as &$theInclude) {
-                $theInclude = str_replace('\ ', '?', trim($theInclude));
-            }
-        }
-        $excludes   = array();
-        $exclude    = $job->getExclude();
-        if ($exclude) {
-            $excludes = explode("\n", $exclude);
-            foreach($excludes as &$theExclude) {
-                $theExclude = str_replace('\ ', '?', trim($theExclude));
-            }
-        }
-        $syncFirst = (int)$job->getPolicy()->getSyncFirst();
-        
-        $content = $engine->render(
-            'BinovoElkarBackupBundle:Default:rsnapshotconfig.txt.twig',
-            array(
-                'cmdPreExec'          => '',
-                'cmdPostExec'         => '',
-                'excludes'            => $excludes,
-                'idClient'            => sprintf('%04d', $model['idClient']),
-                'idJob'               => sprintf('%04d', $model['idJob']),
-                'includes'            => $includes,
-                'backupDir'           => $backupDir,
-                'retains'             => $retains,
-                'tmp'                 => $tmpDir,
-                'snapshotRoot'        => $job->getSnapshotRoot(),
-                'syncFirst'           => $syncFirst,
-                'url'                 => $url,
-                'useLocalPermissions' => $job->getUseLocalPermissions(),
-                'sshArgs'             => $client->getSshArgs(),
-                'rsyncShortArgs'      => $client->getRsyncShortArgs(),
-                'rsyncLongArgs'       => $client->getRsyncLongArgs(),
-                'logDir'              => $model['logDir']
-            )
-        );
-        
-        
-        $fd = fopen($model['confFileName'], 'w');
-        if (false === $fd) {
-            $this->err('Error opening config file %filename%. Aborting backup.', array('%filename%' => $model['confFileName']), $model['context']);
-            
-            return false;
-        }
-        $bytesWriten = fwrite($fd, $content);
-        if (false === $bytesWriten) {
-            $this->err('Error writing to config file %filename%. Aborting backup.', array('%filename%' => $model['confFileName']), $model['context']);
-            
-            return false;
-        }
-        $ok = fclose($fd);
-        if (false === $ok) {
-            $this->warn('Error closing config file %filename%.', array('%filename%' => $model['confFileName']), $model['context']);
-        }
-        if (!is_dir($job->getSnapshotRoot())) {
-            $ok = mkdir($job->getSnapshotRoot(), 0777, true);
-            if (false === $ok) {
-                $this->err('Error creating snapshot root %filename%. Aborting backup.', array('%filename%' => $job->getSnapshotRoot()), $model['context']);
-                
-                return false;
-            }
-        }
-        return $model;
-    }
-    
-    
-    /**
-     * Runs a job
-     *
-     * @param   Array       $model      Contains the pertinent information to run the job.
-     */
-    protected function runJob($model)
-    {
-        foreach ($model['runnableRetains'] as $retain) {
-            $status = 0;
-            
-            $job_starttime = time();
-            // run rsnapshot. sync first if needed
-            $commands = array();
-            if ($model['jobPolicy']->mustSync($retain)) { //FUNCIONARÁ??
-                $commands[] = sprintf('"%s" -c "%s" sync 2>&1', $model['rsnapshot'], $model['confFileName']);
-            }
-            $commands[] = sprintf('"%s" -c "%s" %s 2>&1', $model['rsnapshot'], $model['confFileName'], $retain);
-            $i=0; # Command number. Will be appended to the logfile name.
-            foreach ($commands as $command) {
-                $i = ++$i;
-                $commandOutput = array();
-                $status        = 0;
-                // Clean logfile from previous context
-                unset($model['context']['logfile']);
-                exec($command, $commandOutput, $status);
-                // Temporary logfile generated by rsnapshot (see rsnapshotconfig.txt.twig)
-                $tmplogfile = sprintf('%s/tmp-c%04dj%04d.log', $model['logDir'], $model['idClient'], $model['idJob']);
-                
-                // Ends with errors / warnings
-                if (0 != $status) {
-                    // Capture error from logfile
-                    $commandOutput = $this->captureErrorFromLogfile($tmplogfile);
-                    // Log output limited to 500 chars
-                    if (strlen("\n" . $commandOutput) >= 500) {
-                        $commandOutputString = substr("\n" . $commandOutput, 0, 500);
-                        $commandOutputString = "$commandOutputString (...)";
-                    } else {
-                        $commandOutputString = "\n" . $commandOutput;
-                    }
-                    
-                    // Let's save this log for debug
-                    $joblogfile = sprintf('%s/jobs/c%dj%d_%s_%d.log', $model['logDir'], $model['idClient'], $model['idJob'], date("YmdHis",time()),$i);
-                    // Rename the logfile and link it to the log message
-                    if ($this->moveLogfile($tmplogfile, $joblogfile) == True) {
-                        $model['context']['logfile'] = basename($joblogfile);
-                    }
-                    
-                    $ok = false;
-                    break;
-                    // Ends successfully
-                } else {
-                    // Capture stats from logfile
-                    $commandOutput = $this->captureStatsFromLogfile($tmplogfile);
-                    if ($commandOutput){
-                        $commandOutputString = implode("\n", $commandOutput);
-                        // Parse rsnapshot/rsync output stats
-                        preg_match('/^Number of files:(.*)$/m', $commandOutputString, $files_total);
-                        preg_match('/^Number of created files:(.*)$/m', $commandOutputString, $files_created);
-                        preg_match('/^Number of deleted files:(.*)$/m', $commandOutputString, $files_deleted);
-                        preg_match('/^Total transferred file size:(.*)$/m', $commandOutputString, $total_transferred);
-                        if (isset($files_total[1], $files_created[1], $files_deleted[1], $total_transferred[1])){
-                            $commandOutput = [];
-                            $commandOutput[] = "Number of files: ".$files_total[1];
-                            $commandOutput[] = "Number of created files: ".$files_created[1];
-                            $commandOutput[] = "Number of deleted files: ".$files_deleted[1];
-                            $commandOutput[] = "Total transferred file size: ".$total_transferred[1];
-                        }
-                    }
-                    // DELETE tmp logfile
-                    if (false === unlink($tmplogfile)) {
-                        $this->warn('Error unlinking logfile %filename%.',
-                            array('%filename%' => $tmplogfile),
-                            $model['context']);
-                    }
-                    
-                    $this->info('Command succeeded. %output%',
-                        array('%output%'  => implode("\n", $commandOutput)),
-                        $context);
-                }
-                
-            }
-            $job_endtime = time();
-            if (isset($total_transferred[1])){
-                $job_run_size = $total_transferred[1];
-            } else {
-                $job_run_size = 0;
-            }
-            
-            //tahoe backup
-            $tahoe = $container->get('Tahoe');
-            $tahoeInstalled = $tahoe->isInstalled();
-            $tahoeOn = $container->getParameter('tahoe_active');
-            if ($tahoeInstalled && $tahoeOn) {
-                $tahoe->enqueueJob($job, $retain);
-            }
-        }
-        if (false === unlink($confFileName)) {
-            $this->warn('Error unlinking config file %filename%.',
-                array('%filename%' => $confFileName),
-                $context);
-        }
-        
-        if (True === $ok) {
-            if (True === $warnings) {
-                $ok = 2;
-            }
-        }
-        return $ok;
     }
 
     /**
@@ -1104,4 +696,75 @@ EOF;
         return true;
     }
 
+    private function renewDbConnection()
+    {
+        $conn = $this->manager->getConnection();
+        $conn->close();
+        $conn->connect();
+    }
+    
+    private function runPreClientScripts($client)
+    {
+        $context = array('link' => $this->generateClientRoute($client->getId()));
+        $clientId = $client->getId();
+        $command = 'run_pre_client_scripts';
+        $pid = $this->runBackgroundCommand($command, $clientId, $context);
+        return $pid;
+    }
+    
+    private function runPostClientScripts($client)
+    {
+        $context = array('link' => $this->generateClientRoute($client->getId()));
+        $clientId = $client->getId();
+        $command = 'run_post_client_scripts';
+        $pid = $this->runBackgroundCommand($command, $clientId, $context);
+        return $pid;
+    }
+    
+    private function runPreJobScripts($job)
+    {
+        $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
+        $jobId = $job->getId();
+        $command = 'run_pre_job_scripts';
+        $pid = $this->runBackgroundCommand($command, $jobId, $context);
+        return $pid;
+    }
+    
+    private function runPostJobScripts($job)
+    {
+        $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
+        $jobId = $job->getId();
+        $command = 'run_post_job_scripts';
+        $pid = $this->runBackgroundCommand($command, $jobId, $context);
+        return $pid;
+    }
+    
+    private function runJob($job)
+    {
+        $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
+        $jobId = $job->getId();
+        $command = 'run_job';
+        $pid = $this->runBackgroundCommand($command, $jobId, $context);
+        return $pid;
+    }
+    
+    private function runBackgroundCommand($command, $id, $context)
+    {
+        $pid = pcntl_fork();
+        if ($pid == -1) {
+            $this->err(
+                'Error forking.',
+                $context
+                );
+            //Return unknown error code because this shouldn't happen
+            exit(ERR_CODE_UNKNOWN);
+        } elseif ($pid == 0) {
+            $rootDir = $this->container->get('kernel')->getRootDir();
+            $consoleCmd = $rootDir.'/console';
+            pcntl_exec($consoleCmd, array('elkarbackup:'.$command, $entity->getId()));
+            exit(ERR_CODE_PROC_EXEC_FAILURE);
+        }
+        $this->renewDbConnection();
+        return $pid;
+    }
 }

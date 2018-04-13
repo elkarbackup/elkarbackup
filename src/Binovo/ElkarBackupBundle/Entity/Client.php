@@ -107,6 +107,34 @@ class Client
      * @ORM\Column(type="string",length=255, nullable=false)
      */
     protected $state;
+    
+    /**
+     * Parallel jobs allowed for the client
+     *
+     * @ORM\Column(type="integer", nullable=false)
+     */
+    protected $maxParallelJobs = 1;
+
+    /**
+     * Get max parallel jobs
+     *
+     * @return integer
+     */
+    public function getMaxParallelJobs()
+    {
+        return $this->maxParallelJobs;
+    }
+
+    /**
+     * Set max parallel jobs
+     *
+     * @param integer $maxParallelJobs
+     * @return Client
+     */
+    public function setMaxParallelJobs($maxParallelJobs)
+    {
+        $this->maxParallelJobs = $maxParallelJobs;
+    }
 
     /**
      * Constructor

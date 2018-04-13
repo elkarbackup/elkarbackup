@@ -14,6 +14,13 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
  */
 abstract class LoggingCommand extends ContainerAwareCommand
 {
+    const ERR_CODE_UNKNOWN = 1;
+    const ERR_CODE_WARNING = 2;
+    const ERR_CODE_INPUT_ARG = 3;
+    const ERR_CODE_ENTITY_NOT_FOUND = 4;
+    const ERR_CODE_NO_ACTIVE_RETAINS = 5;
+    const ERR_CODE_PROC_EXEC_FAILURE = 6;
+    
     abstract protected function getNameForLogs();
 
     protected function generateClientRoute($id)

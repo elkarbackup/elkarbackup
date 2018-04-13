@@ -22,7 +22,8 @@ class Version20180312114527 extends AbstractMigration
         $this->addSql('ALTER TABLE Queue ADD CONSTRAINT FK_BE3C5067BE04EA9 FOREIGN KEY (job_id) REFERENCES Job (id)');
         $this->addSql('ALTER TABLE Job DROP status');
         $this->addSql('ALTER TABLE Job ADD lastResult VARCHAR(10) DEFAULT NULL');
-        $this->addSql('ALTER TABLE Client ADD state VARCHAR(255) NOT NULL');
+        $this->addSql('ALTER TABLE Client ADD COLUMN state VARCHAR(255) NOT NULL, ADD COLUMN maxParallelJobs INT NOT NULL');
+        $this->addSql('ALTER TABLE BackupLocation ADD maxParallelJobs INT NOT NULL');
         
    }
 
@@ -37,6 +38,7 @@ class Version20180312114527 extends AbstractMigration
         $this->addSql('DROP TABLE Queue');
         $this->addSql('ALTER TABLE Job DROP lastResult');
         $this->addSql('ALTER TABLE Job ADD status VARCHAR(255) DEFAULT NULL');
-        $this->addSql('ALTER TABLE Client DROP state');
+        $this->addSql('ALTER TABLE Client DROP state, DROP maxParallelJobs');
+        $this->addSql('ALTER TABLE BackupLocation DROP maxParallelJobs');
     }
 }
