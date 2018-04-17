@@ -114,6 +114,13 @@ class Client
      * @ORM\Column(type="integer", nullable=false)
      */
     protected $maxParallelJobs = 1;
+    
+    /**
+     * Data generated during the execution
+     *
+     * @ORM\Column(type="text")
+     */
+    protected $data;
 
     /**
      * Get max parallel jobs
@@ -540,5 +547,28 @@ class Client
     public function setState($state)
     {
         $this->state = $state;
+    }
+    
+    /**
+     * Get data
+     *
+     * @return array
+     */
+    public function getData()
+    {
+        $decodedData = json_decode($this->data, true);
+        return $decodedData;;
+    }
+    
+    /**
+     * Set data
+     *
+     * @param array $data
+     *
+     * @return Client
+     */
+    public function setData($data)
+    {
+        $this->data = json_encode($data);
     }
 }

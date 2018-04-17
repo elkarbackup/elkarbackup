@@ -44,8 +44,8 @@ class TickCommand extends LoggingCommand
     {
         $this->container = $this->getContainer();
         $this->manager = $this->container->get('doctrine')->getManager();
-        $allOk = true;
-        $allOk = $this->enqueueScheduledBackups($input, $output);
+        $allOk = 0;
+        $allOk = $this->enqueueScheduledBackups($input, $output) && $allOk ;
         $allOk = $this->executeMessages($input, $output) && $allOk;
         $allOk = $this->removeOldLogs() && $allOk;
         
@@ -105,7 +105,7 @@ EOF;
                     $allOk = false;
                 }
                 $logHandler->stopRecordingMessages();
-                if ($allOk) {
+                if (0 == $allOk) {
                     return 0;
                 } else {
                     return $this->ERR_CODE_UNKNOWN;
@@ -151,10 +151,15 @@ EOF;
         
         $jobs = $this->manager->createQuery($dql)->getResult();
         foreach ($jobs as $job) {
-            $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
-            $this->info('QUEUED', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
-            $queue = new Queue($job);
-            $this->manager->persist($queue);
+            $isQueueIn = $this->getDoctrine()
+            ->getRepository('BinovoElkarBackupBundle:Queue')
+            ->findBy(array('job' => $job));
+            if (! $isQueueIn) {
+                $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
+                $this->info('QUEUED', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
+                $queue = new Queue($job);
+                $this->manager->persist($queue);
+            }
         }
         $this->manager->flush();
         
@@ -258,7 +263,8 @@ EOF;
             if ($pid == -1) {
                 exit($this->ERR_CODE_UNKNOWN);
             } elseif ($pid == 0) {
-                sleep(1);
+                sleep(10);
+                //TODO: CUANDO ACABA EL SLEEP PETA
                 exit(0);
             }
             $this->renewDbConnection();
@@ -316,7 +322,6 @@ EOF;
                 } elseif ($clientState == 'READY') {
                     $task->setState('PRE JOB');
                     //run prejob
-                    $stats = array();
                     $pid = $this->runPreJobScripts($job);
                     $this->jobsPid[$job->getId()] = $pid;
                     
@@ -333,6 +338,8 @@ EOF;
                 
             case 'PRE JOB':
                 $jobPid = $this->jobsPid[$job->getId()];
+                $doPost = $this->container->getParameter('post_on_pre_fail');
+                
                 if ($this->awakenPid == $jobPid ){
                     //our child has finished
                     if ($task->getAborted()) {
@@ -342,57 +349,52 @@ EOF;
                             array(),
                             $context
                         );
-                        $doPost = $this->container->getParameter('post_on_pre_fail');
-                        if ($doPost == true) {
+                        if (true == $doPost) {
                             $task->setState('POST JOB');
                             //run postJob
-                            $stats = array();
-                            $pid = $this->runPostJobScripts($job);
+                            $pid = $this->runPostJobScripts($job, '-1');
                             $this->jobsPid[$job->getId()] = $pid;
                         } else {
                             $this->manager->remove($task);
-                            $this->err(
-                                'Job aborted!',
+                            $this->warn(
+                                'Job aborted',
                                 array(),
                                 $context
                             );
                         }
                     } elseif ($this->awakenStatus != 0) {
                         //PreJob error
-                        $context = array('link' => $this->generateJobRoute(
-                            $job->getId(),
-                            $job->getClient()->getId()
-                        ));
                         $this->err(
                             'Pre job scripts failed: aborting job',
                             array(),
                             $context
                         );
-                        $task->setState('POST JOB');
-                        $job->setLastResult('FAIL');
-                        $this->errors[$job->getId()] = true;
-                        //run postJob
-                        $stats = array();
-                        $model = $this->prepareJobModel($job, 'POST', $stats);
-                        $pid = $this->runInBackground(function () use ($model) {
-                            $this->runJobScripts($model);
-                        });
-                        $this->jobsPid[$job->getId()] = $pid;
+                        if (true == $doPost) {
+                            $task->setState('POST JOB');
+                            $job->setLastResult('FAIL');
+                            $this->errors[$job->getId()] = true;
+                            //run postJob
+                            $pid = $this->runPostJobScripts($job, '-1');
+                            $this->jobsPid[$job->getId()] = $pid;
+                        } else {
+                            $this->manager->remove($task);
+                            $this->err(
+                                'Job aborted',
+                                array(),
+                                $context
+                            );
+                        }
                     } elseif ($this->awakenStatus == 0) {
                         //PreJob correct
                         $task->setState('RUNNING');
                         //run job
-                        $model = $this->prepareRunJobModel($job, $runnableRetains);
-                        $pid = $this->runInBackground(function () use ($model) {
-                            $this->runJob($model);
-                        });
+                        $pid = $this->runJob($job);
                         $this->jobsPid[$job->getId()] = $pid;
                     }
                 }
                 break;
                 
             case 'RUNNING':
-                //Problema cada segundo se va a crear...
                 if ($task->getAborted()) {
                     //Abort, kill, log, post
                     $msg = new Message(
@@ -403,54 +405,39 @@ EOF;
                             'client' => $job->getClient()->getId(),
                             'job' => $job->getId()
                         ))
-                        );
+                    );
                     $em->persist($msg);
-                    $context = array('link' => $this->generateJobRoute(
-                        $job->getId(),
-                        $job->getClient()->getId()
-                        ));
                     $this->warn(
                         'Job stop requested: aborting job',
                         array(),
                         $context
-                        );
+                    );
                     $task->setState('POST JOB');
                     //COMO RECOGEMOS EL PID SI ABORTAMOS?
                     //EJECUTAMOS POST?
+                    //TODO: HACER ALGO!
                 }
                 $jobPid = $this->jobsPid[$job->getId()];
                 if ($this->awakenPid == $jobPid ){
                     if ($this->awakenStatus != 0) {
                         //Error running, log, remember, post
-                        $context = array('link' => $this->generateJobRoute(
-                            $job->getId(),
-                            $job->getClient()->getId()
-                            ));
                         $this->err(
                             'Job execution failed!',
                             array(),
                             $context
-                            );
+                        );
                         $task->setState('POST JOB');
                         $job->setLastResult('FAIL');
                         $this->errors[$job->getId()] = true;
                         //run postJob
-                        $stats = array();
-                        $model = $this->prepareJobModel($job, 'POST', $stats);
-                        $pid = $this->runInBackground(function () use ($model) {
-                            $this->runJobScripts($model);
-                        });
+                        $pid = $this->runPostJobScripts($job, '-1');
                         $this->jobsPid[$job->getId()] = $pid;
                         
                     } elseif ($this->awakenStatus == 0) {
                         //OK, post, run
                         $task->setState('POST JOB');
                         //run postJob
-                        $stats = array();
-                        $model = $this->prepareJobModel($job, 'POST', $stats);
-                        $pid = $this->runInBackground(function () use ($model) {
-                            $this->runJobScripts($model);
-                        });
+                        $pid = $this->runPostJobScripts($job);
                         $this->jobsPid[$job->getId()] = $pid;
                     }
                 }
@@ -458,13 +445,9 @@ EOF;
                 
             case 'POST JOB':
                 $jobPid = $this->jobsPid[$job->getId()];
-                if ($this->awakenPid == $jobPid ){
+                if ($this->awakenPid == $jobPid) {
                     if ($this->awakenStatus != 0) {
                         //PostJob error, log, lastResult, remove
-                        $context = array('link' => $this->generateJobRoute(
-                            $job->getId(),
-                            $job->getClient()->getId()
-                        ));
                         $this->err(
                             'Post job scripts failed!',
                             array(),
@@ -474,10 +457,6 @@ EOF;
                         $this->manager->remove($task);
                     } elseif ($this->awakenStatus == 0) {
                         //success, log, lastResult rememebered, remove
-                        $context = array('link' => $this->generateJobRoute(
-                            $job->getId(),
-                            $job->getClient()->getId()
-                        ));
                         $errors = $this->errors[$job->getId()];
                         if ($errors) {
                             $this->warn(
@@ -494,7 +473,6 @@ EOF;
                         }
                         $job->setLastResult('OK');
                         $this->manager->remove($task);
-                        //se actualiza job y se borra cola, se flushea?
                     }
                 }
                 break;
@@ -510,6 +488,9 @@ EOF;
     protected function processClientState($client)
     {
         $state = $client->getState();
+        $context = array('link' => $this->generateClientRoute(
+            $client->getId()
+        ));
         switch ($state) {
             case 'NOT READY':
                 //search queue waiting for me
@@ -526,23 +507,26 @@ EOF;
                     //if so, pasar preclient y ejecutar
                     $client->setState('PRE CLIENT');
                     //run preclient
-                    $stats = array();
-                    $pid = $this->runPreClientScript($client->getId());
+                    $pid = $this->runPreClientScripts($client);
                     $this->clientsPid[$client->getId()] = $pid;
                 }
-                
                 break;
                 
             case 'PRE CLIENT':
+                $doPost = $this->container->getParameter('post_on_pre_fail');
                 $clientPid = $this->clientsPid[$client->getId()];
                 if ($this->awakenPid == $clientPid ) {
                     //our child has finished
                     if ($this->awakenStatus != 0) {
-                        //PreClient error
-                        $client->setState('ERROR');
-                        $context = array('link' => $this->generateClientRoute(
-                            $job->getClient()->getId()
-                        ));
+                        if (true == $doPost) {
+                            $client->setState('POST CLIENT');
+                            //run postClient
+                            $pid = $this->runPostClientScripts($client);
+                            $this->clientsPid[$client->getId()] = $pid;
+                        } else {
+                            //PreClient error
+                            $client->setState('ERROR');
+                        }
                         $this->err(
                             'Pre client scripts failed!',
                             array(),
@@ -570,11 +554,7 @@ EOF;
                     //if so, pasar postclient y ejecutar
                     $client->setState('POST CLIENT');
                     //run postclient
-                    $stats = array();
-                    $model = $this->prepareClientModel($client, 'POST', $stats);
-                    $pid = $this->runInBackground(function () use ($model) {
-                        $this->runClientPostScripts($model);
-                    });
+                    $pid = $this->runPostClientScripts($client);
                     $this->clientsPid[$client->getId()] = $pid;
                 }
                 break;
@@ -586,15 +566,11 @@ EOF;
                     if ($this->awakenStatus != 0) {
                         //PostClient error
                         $client->setState('ERROR');
-                        $context = array('link' => $this->generateClientRoute(
-                            $job->getClient()->getId()
-                        ));
                         $this->err(
-                            'Post client scripts failed!',
+                            'Post client scripts failed',
                             array(),
                             $context
                         );
-                        
                     } elseif ($this->awakenStatus == 0) {
                         $client->setState('NOT READY');
                     }
@@ -614,9 +590,12 @@ EOF;
      * @param   Queue       $task       An item from the queue
      */
     protected function isCandidate($task) {
+        $myClient = $task->getJob()->getClient();
+        $myLocation = $task->getJob()->getBackupLocation();
+        
         $globalLimit = $this->getContainer()->getParameter('max_parallel_jobs');
-        $perClientLimit = $task->getJob()->getClient()->getMaxParallelJobs();
-        $perStorageLimit = $task->getJob()->getBackupLocation()->getMaxParallelJobs();
+        $perClientLimit = $myClient->getMaxParallelJobs();
+        $perStorageLimit = $myLocation->getMaxParallelJobs();
         
         $dql =<<<EOF
 SELECT q,j,c
@@ -631,15 +610,13 @@ EOF;
         $perClientRunning = 0;
         $perStorageRunning = 0;
         
-        $myClient = $task->getJob()->getClient();
-        $myStorage = $task->getJob()->getBackupLocation();
         foreach ($runningItems as $item) {
             $client = $item->getJob()->getClient();
             if ($client == $myClient) {
                 $perClientRunning ++;
             }
             $location = $item->getJob()->getBackupLocation();
-            if ($location == $myStorage) {
+            if ($location == $myLocation) {
                 $perStorageRunning ++;
             }
         }
@@ -723,8 +700,8 @@ EOF;
     
     private function runPreJobScripts($job)
     {
-        $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
         $jobId = $job->getId();
+        $context = array('link' => $this->generateJobRoute($jobId, $job->getClient()->getId()));
         $command = 'run_pre_job_scripts';
         $pid = $this->runBackgroundCommand($command, $jobId, $context);
         return $pid;
@@ -732,8 +709,8 @@ EOF;
     
     private function runPostJobScripts($job)
     {
-        $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
         $jobId = $job->getId();
+        $context = array('link' => $this->generateJobRoute($jobId, $job->getClient()->getId()));
         $command = 'run_post_job_scripts';
         $pid = $this->runBackgroundCommand($command, $jobId, $context);
         return $pid;
@@ -741,8 +718,8 @@ EOF;
     
     private function runJob($job)
     {
-        $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
         $jobId = $job->getId();
+        $context = array('link' => $this->generateJobRoute($jobId, $job->getClient()->getId()));
         $command = 'run_job';
         $pid = $this->runBackgroundCommand($command, $jobId, $context);
         return $pid;
@@ -755,14 +732,14 @@ EOF;
             $this->err(
                 'Error forking.',
                 $context
-                );
+            );
             //Return unknown error code because this shouldn't happen
-            exit(ERR_CODE_UNKNOWN);
+            exit($this->ERR_CODE_UNKNOWN);
         } elseif ($pid == 0) {
             $rootDir = $this->container->get('kernel')->getRootDir();
             $consoleCmd = $rootDir.'/console';
-            pcntl_exec($consoleCmd, array('elkarbackup:'.$command, $entity->getId()));
-            exit(ERR_CODE_PROC_EXEC_FAILURE);
+            pcntl_exec($consoleCmd, array('elkarbackup:'.$command));
+            exit($this->ERR_CODE_PROC_EXEC_FAILURE);
         }
         $this->renewDbConnection();
         return $pid;

@@ -55,6 +55,13 @@ class Queue
      * @ORM\Column(type="boolean")
      */
     protected $aborted;
+    
+    /**
+     * Data generated during the execution
+     *
+     * @ORM\Column(type="text")
+     */
+    protected $data;
 
     public function __construct($job = null)
     {
@@ -214,5 +221,28 @@ class Queue
     public function setAborted($aborted)
     {
         $this->aborted = $aborted;
+    }
+    
+    /**
+     * Get data
+     * 
+     * @return array
+     */
+    public function getData()
+    {
+        $decodedData = json_decode($this->data, true);
+        return $decodedData;;
+    }
+    
+    /**
+     * Set data
+     * 
+     * @param array $data
+     * 
+     * @return Queue
+     */
+    public function setData($data)
+    {
+        $this->data = json_encode($data);
     }
 }

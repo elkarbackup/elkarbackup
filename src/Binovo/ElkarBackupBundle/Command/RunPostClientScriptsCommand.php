@@ -6,6 +6,7 @@ use Binovo\ElkarBackupBundle\Lib\BaseScriptsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
 
 class RunPostClientScriptsCommand extends BaseScriptsCommand
 {
@@ -24,13 +25,19 @@ class RunPostClientScriptsCommand extends BaseScriptsCommand
         $manager = $container->get('doctrine')->getManager();
         
         $clientId = $input->getArgument('client');
+        if (! ctype_digit($clientId)) {
+            $this->err('Input argument not valid');
+            return LoggingCommand::ERR_CODE_INPUT_ARG;
+        }
         $client = $container
             ->get('doctrine')
             ->getRepository('BinovoElkarBackupBundle:Client')
             ->find($clientId);
-        $stats = array(); //Los stats tienen variables aquí
-        $stats['ELKARBACKUP_CLIENT_STARTTIME'] = 1523353565;
-        $model = $this->prepareClientModel($client, 'POST', $stats);
+        if (null == $client) {
+            $this->err('Client not found');
+            return LoggingCommand::ERR_CODE_ENTITY_NOT_FOUND;
+        }
+        $model = $this->prepareClientModel($client, 'POST');
         $result = $this->runClientScripts($model);
         $manager->flush();
         

@@ -5,6 +5,7 @@ use Binovo\ElkarBackupBundle\Lib\BaseScriptsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
 
 class RunPreJobScriptsCommand extends BaseScriptsCommand
 {
@@ -22,12 +23,19 @@ class RunPreJobScriptsCommand extends BaseScriptsCommand
         $manager = $container->get('doctrine')->getManager();
         
         $jobId = $input->getArgument('job');
+        if (! ctype_digit($jobId)) {
+            $this->err('Input argument not valid');
+            return LoggingCommand::ERR_CODE_INPUT_ARG;
+        }
         $job = $container
             ->get('doctrine')
             ->getRepository('BinovoElkarBackupBundle:Job')
             ->find($jobId);
-        $stats = array();
-        $model = $this->prepareJobModel($job, 'PRE', $stats);
+        if (null == $job) {
+            $this->err('Job not found');
+            return LoggingCommand::ERR_CODE_ENTITY_NOT_FOUND;
+        }
+        $model = $this->prepareJobModel($job, 'PRE');
         $result = $this->runJobScripts($model);
         $manager->flush();
         

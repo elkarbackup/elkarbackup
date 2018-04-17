@@ -5,6 +5,7 @@ use Binovo\ElkarBackupBundle\Lib\BaseScriptsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
 
 class RunPostJobScriptsCommand extends BaseScriptsCommand
 {
@@ -13,7 +14,8 @@ class RunPostJobScriptsCommand extends BaseScriptsCommand
         parent::configure();
         $this->setName('elkarbackup:run_post_job_scripts')
             ->setDescription('Runs specified job post scripts.')
-            ->addArgument('job', InputArgument::REQUIRED, 'The ID of the job.');
+            ->addArgument('job', InputArgument::REQUIRED, 'The ID of the job.')
+            ->addArgument('status', InputArgument::OPTIONAL, 'The status of the last execution');
     }
     
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -22,15 +24,29 @@ class RunPostJobScriptsCommand extends BaseScriptsCommand
         $manager = $container->get('doctrine')->getManager();
         
         $jobId = $input->getArgument('job');
+        if (! ctype_digit($jobId)) {
+            $this->err('Input argument not valid');
+            return LoggingCommand::ERR_CODE_INPUT_ARG;
+        }
+        
+        $status = $input->getArgument('status');
+        if (null == $status) {
+            $status = '0';
+        }
+        if (! ctype_digit($status) && '-1' != $status) {
+            $this->err('Input argument not valid');
+            return LoggingCommand::ERR_CODE_INPUT_ARG;
+        }
+        
         $job = $container
             ->get('doctrine')
             ->getRepository('BinovoElkarBackupBundle:Job')
             ->find($jobId);
-        $stats = array(); //Los stats tienen variables aquí
-        $stats['ELKARBACKUP_JOB_RUN_SIZE'] = 125764;
-        $stats['ELKARBACKUP_JOB_STARTTIME'] = 1523353565;
-        $stats['ELKARBACKUP_JOB_ENDTIME'] = 1523353565;
-        $model = $this->prepareJobModel($job, 'POST', $stats);
+        if (null == $job) {
+            $this->err('Job not found');
+            return LoggingCommand::ERR_CODE_ENTITY_NOT_FOUND;
+        }
+        $model = $this->prepareJobModel($job, 'POST', $status);
         $result = $this->runJobScripts($model);
         $manager->flush();
         

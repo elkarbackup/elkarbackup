@@ -13,11 +13,9 @@ class BaseScriptsCommand extends LoggingCommand
      *
      * @param   string      $type       Defines the type of scripts the model will be used for, PRE or POST.
      *
-     * @param   string      $stats      Stats for script environment vars (not stored in DB).
-     *
      * @return array        $model      The model needed to execute scripts.
      */
-    protected function prepareClientModel($client, $type, $stats)
+    protected function prepareClientModel($client, $type)
     {
         $model = array();
         
@@ -25,7 +23,6 @@ class BaseScriptsCommand extends LoggingCommand
         $model['type']              = $type; //must be PRE or POST
         $model['clientUrl']         = $client->getUrl();
         $model['clientId']          = $client->getId();
-        $model['clientRoot']        = ''; //Does not exist
         $model['status']            = 0; //status from the previous command
         $model['clientName']        = $client->getName();
         $model['clientDiskUsage']   = $client->getDiskUsage();
@@ -35,12 +32,23 @@ class BaseScriptsCommand extends LoggingCommand
         
         if ('PRE' == $type){
             $model['clientEndTime'] = 0;
-            $model['clientStartTime'] = time();
+            $time = time();
+            $model['clientStartTime'] = $time;
+            $data = array();
+            $data['clientStartTime'] = $time;
+            $client->setData($data);
             $scripts = $client->getPreScripts();
         } elseif ('POST' == $type) {
+            $data = $client->getData();
+            if (null != $data) {
+                $model['clientStartTime'] = $data['clientStartTime'];
+            } else {
+                $model['clientStartTime'] = '';
+            }
+            
             $model['clientEndTime'] = time();
-            $model['clientStartTime'] = $stats['ELKARBACKUP_CLIENT_STARTTIME'];
             $scripts = $client->getPostScripts();
+            $client->setData(null);
         }
         
         foreach ($scripts as $script) {
@@ -56,7 +64,6 @@ class BaseScriptsCommand extends LoggingCommand
      */
     protected function runClientScripts($model)
     {
-        $status = $model['status'];
         $errScriptError   = 'Client "%entityid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%';
         $errScriptMissing = 'Client "%entityid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.';
         $errScriptOk      = 'Client "%entityid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%';
@@ -77,21 +84,19 @@ class BaseScriptsCommand extends LoggingCommand
                 );
                 $allOk = false;
             } else {
-                $command = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_CLIENT_TOTAL_SIZE="%s" ELKARBACKUP_CLIENT_STARTTIME="%s" ELKARBACKUP_CLIENT_ENDTIME="%s" ELKARBACKUP_SSH_ARGS="%s" sudo "%s" 2>&1',
+                $command = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_CLIENT_TOTAL_SIZE="%s" ELKARBACKUP_CLIENT_STARTTIME="%s" ELKARBACKUP_CLIENT_ENDTIME="%s" ELKARBACKUP_SSH_ARGS="%s" sudo "%s" 2>&1',
                     $model['level'],
                     $model['type'],
                     $model['clientUrl'],
                     $model['clientId'],
-                    $model['clientRoot'],
-                    $status,
+                    $model['status'],
                     $model['clientName'],
                     $model['clientDiskUsage'],
                     $model['clientStartTime'],
                     $model['clientEndTime'],
                     $model['clientSshArgs'],
                     $scriptFile);
-                exec($command, $commandOutput, $newStatus);
-                $status = $newStatus;
+                exec($command, $commandOutput, $status);
                 
                 $commandOutputString = substr("\n" . implode("\n", $commandOutput), 0, 500); // Let's limit the output
                 if (0 != $status) {
@@ -129,22 +134,22 @@ class BaseScriptsCommand extends LoggingCommand
      * @param   Job         $job        Job entity.
      *
      * @param   string      $type       Defines the type of scripts the model will be used for, PRE or POST.
+     * 
+     * @param   string      $status     The status of the last execution;
      *
-     * @param   string      $stats      Stats for script environment vars (not stored in DB).
-     *
-     * @return array        $model      The model needed to execute scripts.
+     * @return  array       $model      The model needed to execute scripts.
      */
-    protected function prepareJobModel($job, $type, $stats)
+    protected function prepareJobModel($job, $type, $status = '0')
     {
         $model = array();
         $client = $job->getClient();
+        $container = $this->getContainer();
         
         $model['level']             = 'JOB';
         $model['type']              = $type; //must be PRE or POST
         $model['clientUrl']         = $client->getUrl();
         $model['clientId']          = $client->getId();
         $model['clientRoot']        = ''; //No existe
-        $model['status']            = 0; //status from the previous command
         $model['clientName']        = $client->getName();
         $model['jobName']           = $job->getName();
         $model['jobId']             = $job->getId();
@@ -161,11 +166,29 @@ class BaseScriptsCommand extends LoggingCommand
             $model['jobRunSize']    = 0;
             $model['jobStartTime']  = 0;
             $model['jobEndTime']    = 0;
+            $model['status']        = 0;
         } elseif ('POST' == $type) {
+            $model['status']        = $status;
             $scripts = $job->getPostScripts();
-            $model['jobRunSize']    = $stats['ELKARBACKUP_JOB_RUN_SIZE'];
-            $model['jobStartTime']  = $stats['ELKARBACKUP_JOB_STARTTIME'];
-            $model['jobEndTime']    = $stats['ELKARBACKUP_JOB_ENDTIME'];
+            
+            $queue = $container
+            ->get('doctrine')
+            ->getRepository('BinovoElkarBackupBundle:Queue')
+            ->findOneBy(array('job' => $job));
+            if (null != $queue) {
+                $data = $queue->getData();
+            }
+            
+            if (null == $queue || null == $data) {
+                $model['jobRunSize']    = '';
+                $model['jobStartTime']  = '';
+                $model['jobEndTime']    = '';
+                
+            } else {
+                $model['jobRunSize']    = $data['ELKARBACKUP_JOB_RUN_SIZE'];
+                $model['jobStartTime']  = $data['ELKARBACKUP_JOB_STARTTIME'];
+                $model['jobEndTime']    = $data['ELKARBACKUP_JOB_ENDTIME'];
+            }
         }
         
         foreach ($scripts as $script) {
@@ -181,7 +204,6 @@ class BaseScriptsCommand extends LoggingCommand
      */
     protected function runJobScripts($model)
     {
-        $status = $model['status'];
         $errScriptError   = 'Job "%entityid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%';
         $errScriptMissing = 'Job "%entityid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.';
         $errScriptOk      = 'Job "%entityid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%';
@@ -208,7 +230,7 @@ class BaseScriptsCommand extends LoggingCommand
                     $model['clientUrl'],
                     $model['clientId'],
                     $model['clientRoot'],
-                    $status,
+                    $model['status'],
                     $model['clientName'],
                     $model['jobName'],
                     $model['ownerEmail'],
@@ -220,8 +242,7 @@ class BaseScriptsCommand extends LoggingCommand
                     $model['jobEndTime'],
                     $model['clientSshArgs'],
                     $scriptFile);
-                exec($command, $commandOutput, $newStatus);
-                $status = $newStatus;
+                exec($command, $commandOutput, $status);
                 
                 $commandOutputString = substr("\n" . implode("\n", $commandOutput), 0, 500); // Let's limit the output
                 if (0 != $status) {

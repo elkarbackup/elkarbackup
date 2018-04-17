@@ -27,9 +27,9 @@ class RunJobCommand extends LoggingCommand
             $manager = $container->get('doctrine')->getManager();
             
             $jobId = $input->getArgument('job');
-            if (! is_int($jobId)) {
+            if (! ctype_digit($jobId)) {
                 $this->err('Input argument not valid');
-                return 2;
+                return LoggingCommand::ERR_CODE_INPUT_ARG;
             }
             $job = $container
             ->get('doctrine')
@@ -37,30 +37,29 @@ class RunJobCommand extends LoggingCommand
             ->find($jobId);
             if (null == $job) {
                 $this->err('Job not found');
-                return 3;
+                return LoggingCommand::ERR_CODE_ENTITY_NOT_FOUND;
             }
             
             $policy = $job->getPolicy();
             $retains = $policy->getRetains();
             if (empty($retains)) {
                 $this->warn('Policy %policyid% has no active retains', array('%policyid%' => $policy->getId()));
-                return 4;
+                return LoggingCommand::ERR_CODE_NO_ACTIVE_RETAINS;
             }
             $retainsToRun = array($retains[0][0]);
-            $stats = array();
-            $result = $this->runJob($job, $retainsToRun, $stats);
+            $result = $this->runJob($job, $retainsToRun);
             $manager->flush();
             
             return $result;
             
         } catch (Exception $e) {
             $this->err('Unknown exception\n'.$e->getMessage());
-            return 1;
+            return LoggingCommand::ERR_CODE_UNKNOWN;
         }
 
     }
     
-    protected function runJob(Job $job, $runnableRetains, $stats)
+    protected function runJob(Job $job, $runnableRetains)
     {
         $container = $this->getContainer();
         
@@ -118,12 +117,12 @@ class RunJobCommand extends LoggingCommand
         $fd = fopen($confFileName, 'w');
         if (false === $fd) {
             $this->err('Error opening config file %filename%. Aborting backup.', array('%filename%' => $confFileName), $context);
-            return false;
+            return LoggingCommand::ERR_CODE_OPEN_FILE;
         }
         $bytesWriten = fwrite($fd, $content);
         if (false === $bytesWriten) {
             $this->err('Error writing to config file %filename%. Aborting backup.', array('%filename%' => $confFileName), $context);
-            return false;
+            return LoggingCommand::ERR_CODE_WRITE_FILE;
         }
         $ok = fclose($fd);
         if (false === $ok) {
@@ -133,7 +132,7 @@ class RunJobCommand extends LoggingCommand
             $ok = mkdir($job->getSnapshotRoot(), 0777, true);
             if (false === $ok) {
                 $this->err('Error creating snapshot root %filename%. Aborting backup.', array('%filename%' => $job->getSnapshotRoot()), $context);
-                return false;
+                return LoggingCommand::ERR_CODE_CREATE_FILE;
             }
         }
         
@@ -205,14 +204,17 @@ class RunJobCommand extends LoggingCommand
                     }
                     // DELETE tmp logfile
                     if (false === unlink($tmplogfile)) {
-                        $this->warn('Error unlinking logfile %filename%.',
+                        $this->warn(
+                            'Error unlinking logfile %filename%.',
                             array('%filename%' => $tmplogfile),
-                            $context);
+                            $context
+                        );
                     }
-                    
-                    $this->info('Command succeeded. %output%',
+                    $this->info(
+                        'Command succeeded. %output%',
                         array('%output%'  => implode("\n", $commandOutput)),
-                        $context);
+                        $context
+                    );
                 }
                 
             }
@@ -223,9 +225,27 @@ class RunJobCommand extends LoggingCommand
                 $job_run_size = 0;
             }
             
-            $stats['ELKARBACKUP_JOB_RUN_SIZE']      = $job_run_size;
-            $stats['ELKARBACKUP_JOB_STARTTIME']     = $job_starttime;
-            $stats['ELKARBACKUP_JOB_ENDTIME']       = $job_endtime;
+            $data = array();
+            $data['ELKARBACKUP_JOB_RUN_SIZE']      = $job_run_size;
+            $data['ELKARBACKUP_JOB_STARTTIME']     = $job_starttime;
+            $data['ELKARBACKUP_JOB_ENDTIME']       = $job_endtime;
+            
+            $queue = $container
+            ->get('doctrine')
+            ->getRepository('BinovoElkarBackupBundle:Queue')
+            ->findOneBy(array('job' => $job));
+            
+            if (null == $queue) {
+                $this->warn(
+                    'Job data could not be stored!',
+                    array(),
+                    $context
+                );
+                
+            } else {
+                $queue->setData($data);
+                
+            }
             
             //tahoe backup
             $tahoe = $container->get('Tahoe');
@@ -236,16 +256,13 @@ class RunJobCommand extends LoggingCommand
             }
         }
         if (false === unlink($confFileName)) {
-            $this->warn('Error unlinking config file %filename%.',
+            $this->warn(
+                'Error unlinking config file %filename%.',
                 array('%filename%' => $confFileName),
-                $context);
+                $context
+            );
         }
         
-        if (True === $ok) {
-            if (True === $warnings) {
-                $ok = 2;
-            }
-        }
         return $ok;
     }
     
