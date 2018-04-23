@@ -134,7 +134,7 @@ function callbackClonedClient(data){
  * callbackJobAborted will be executed
  */
 function callbackJobAborting(jobid){
-  changeJobStatus(jobid, 'ABORTING');
+  $('tr#job-'+jobid).find('td.button').html('<span class="label label-warning">ABORTING</span>');
 }
 
 function deleteJob(path, id, msg, confirmed){

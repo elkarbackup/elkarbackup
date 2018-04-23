@@ -149,7 +149,7 @@ class BaseScriptsCommand extends LoggingCommand
         $model['type']              = $type; //must be PRE or POST
         $model['clientUrl']         = $client->getUrl();
         $model['clientId']          = $client->getId();
-        $model['clientRoot']        = ''; //No existe
+        $model['jobRoot']           = $job->getSnapshotRoot();
         $model['clientName']        = $client->getName();
         $model['jobName']           = $job->getName();
         $model['jobId']             = $job->getId();
@@ -229,7 +229,7 @@ class BaseScriptsCommand extends LoggingCommand
                     $model['type'],
                     $model['clientUrl'],
                     $model['clientId'],
-                    $model['clientRoot'],
+                    $model['jobRoot'],
                     $model['status'],
                     $model['clientName'],
                     $model['jobName'],

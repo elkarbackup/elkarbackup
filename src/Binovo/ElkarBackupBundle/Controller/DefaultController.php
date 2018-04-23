@@ -661,6 +661,7 @@ class DefaultController extends Controller
     public function runAbortAction(Request $request, $idClient, $idJob)
     {
         $t = $this->get('translator');
+        $manager = $this->getDoctrine()->getManager();
         
         $job = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Job')
@@ -671,60 +672,22 @@ class DefaultController extends Controller
         if (null == $job) {
             throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
         }
-        $em = $this->getDoctrine()->getManager();
-        if ($queue->getStatus() == 'RUNNING') {
-            $msg = new Message(
-                'DefaultController',
-                'TickCommand',
-                json_encode(array(
-                    'command' => 'elkarbackup:stop_job',
-                    'client' => $idClient,
-                    'job' => $idJob
-                ))
-            );
-            $context = array(
-                'link' => $this->generateJobRoute($idJob, $idClient),
-                'source' => Globals::STATUS_REPORT
-            );
-            $this->info('ABORTING', array(), $context);
-            $queue->setPriority(0);
-            $em->persist($msg);
-            $queue->setAborted(true);
-            $em->flush();
-            $response = new JsonResponse(array(
-                'error' => false,
-                'msg' => $t->trans(
-                    'Job stop requested: aborting job',
-                    array(),
-                    'BinovoElkarBackup'
-                ),
-                'action' => 'callbackJobAborting',
-                'data' => array($idJob)
-            ));
-            return $response;
-
-        } elseif ($queue->getStatus() == 'QUEUED') {
-            $em->remove($queue);
-            $response = new JsonResponse(array(
-                'error' => false,
-                'msg' => $t->trans(
-                    'Job stop requested: aborting job',
-                    array(),
-                    'BinovoElkarBackup'
-                    ),
-                'action' => 'callbackJobAborting',
-                'data' => array($idJob)
-            ));
-            $em->flush();
-            return $response;
-            
-        } else {
-            $response = new JsonResponse(array(
-                'error' => true,
-                'msg' => $t->trans('Cannot abort job: not running', array(), 'BinovoElkarBackup')
-            ));
-            return $response;
-        }
+        
+        $queue->setAborted(true);
+        $queue->setPriority(0);
+        
+        $manager->flush();
+      
+        $response = new JsonResponse(array(
+            'error' => false,
+            'msg' => $t->trans(
+                'Job stop requested: aborting job',
+                array(),
+                'BinovoElkarBackup'
+            ),
+            'action' => 'callbackJobAborting',
+            'data' => array($idJob)
+        ));
         
         return $response;
     }

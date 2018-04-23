@@ -25,7 +25,7 @@ class RunPreJobScriptsCommand extends BaseScriptsCommand
         $jobId = $input->getArgument('job');
         if (! ctype_digit($jobId)) {
             $this->err('Input argument not valid');
-            return LoggingCommand::ERR_CODE_INPUT_ARG;
+            return self::ERR_CODE_INPUT_ARG;
         }
         $job = $container
             ->get('doctrine')
@@ -33,7 +33,7 @@ class RunPreJobScriptsCommand extends BaseScriptsCommand
             ->find($jobId);
         if (null == $job) {
             $this->err('Job not found');
-            return LoggingCommand::ERR_CODE_ENTITY_NOT_FOUND;
+            return self::ERR_CODE_ENTITY_NOT_FOUND;
         }
         $model = $this->prepareJobModel($job, 'PRE');
         $result = $this->runJobScripts($model);

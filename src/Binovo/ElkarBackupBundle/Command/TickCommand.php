@@ -61,6 +61,7 @@ class TickCommand extends LoggingCommand
                     //so catch any exception
                     //SET CLIENTS TO NOT READY
                     $this->initializeClients();
+                    $this->initializeQueue();
                     $dql =<<<EOF
 SELECT q
 FROM BinovoElkarBackupBundle:Queue q
@@ -93,11 +94,12 @@ EOF;
                         $clientCount = count($this->manager->createQuery($dql)->getResult());
                     }
                     
+                    //last but not least, backup @tahoe
+                    $this->getContainer()->get('Tahoe')->runAllQueuedJobs();
+                    
                     //SET CLIENTS TO NOT READY
                     $this->initializeClients();
                     
-                    //last but not least, backup @tahoe
-                    $this->getContainer()->get('Tahoe')->runAllQueuedJobs();
                 } catch (Exception $e) {
                     echo "-----ERROR: " . $e;
                     $this->err('Exception running queued commands: %exceptionmsg%', array('%exceptionmsg%' => $e->getMessage()));
@@ -108,10 +110,10 @@ EOF;
                 if (0 == $allOk) {
                     return 0;
                 } else {
-                    return $this->ERR_CODE_UNKNOWN;
+                    return self::ERR_CODE_UNKNOWN;
                 }
             }
-            return $this->ERR_CODE_UNKNOWN;
+            return self::ERR_CODE_UNKNOWN;
         } finally {
             $lockHandler->release();
         }
@@ -123,7 +125,7 @@ EOF;
         if (!$time) {
             $this->err('Invalid time specified.');
             
-            return $this->ERR_CODE_INPUT_ARG;
+            return self::ERR_CODE_INPUT_ARG;
         }
         $repository = $this->container->get('doctrine')->getRepository('BinovoElkarBackupBundle:Policy');
         $query = $repository->createQueryBuilder('policy')->getQuery();
@@ -261,10 +263,9 @@ EOF;
        if ($this->timeoutPid == $this->awakenPid) {
             $pid = pcntl_fork();
             if ($pid == -1) {
-                exit($this->ERR_CODE_UNKNOWN);
+                exit(self::ERR_CODE_UNKNOWN);
             } elseif ($pid == 0) {
-                sleep(10);
-                //TODO: CUANDO ACABA EL SLEEP PETA
+                sleep(1);
                 exit(0);
             }
             $this->renewDbConnection();
@@ -286,12 +287,15 @@ EOF;
         $context = array('link' => $this->generateJobRoute(
             $job->getId(),
             $job->getClient()->getId()
-        ));
+            ), 
+            'source' => Globals::STATUS_REPORT
+        );
+        $abortStatus = $task->getAborted();
         
         switch ($state){
             case 'QUEUED':
                 $this->errors[$job->getId()] = false;
-                if ($task->getAborted()) {
+                if (true == $abortStatus) {
                     //remove from queue
                     $this->manager->remove($task);
                     $this->warn(
@@ -310,7 +314,7 @@ EOF;
             case 'WAITING FOR CLIENT':
                 $clientState = $job->getClient()->getState();
                 
-                if ($task->getAborted()) {
+                if (true == $abortStatus) {
                     //remove from queue
                     $this->manager->remove($task);
                     $this->warn(
@@ -342,27 +346,7 @@ EOF;
                 
                 if ($this->awakenPid == $jobPid ){
                     //our child has finished
-                    if ($task->getAborted()) {
-                        //abort
-                        $this->warn(
-                            'Job stop requested: aborting job',
-                            array(),
-                            $context
-                        );
-                        if (true == $doPost) {
-                            $task->setState('POST JOB');
-                            //run postJob
-                            $pid = $this->runPostJobScripts($job, '-1');
-                            $this->jobsPid[$job->getId()] = $pid;
-                        } else {
-                            $this->manager->remove($task);
-                            $this->warn(
-                                'Job aborted',
-                                array(),
-                                $context
-                            );
-                        }
-                    } elseif ($this->awakenStatus != 0) {
+                    if ($this->awakenStatus != 0) {
                         //PreJob error
                         $this->err(
                             'Pre job scripts failed: aborting job',
@@ -386,6 +370,19 @@ EOF;
                         }
                     } elseif ($this->awakenStatus == 0) {
                         //PreJob correct
+                        if (true == $abortStatus) {
+                            //abort
+                            $this->warn(
+                                'Job stop requested: aborting job',
+                                array(),
+                                $context
+                                );
+                            $task->setState('POST JOB');
+                            //run postJob
+                            $pid = $this->runPostJobScripts($job, '-1');
+                            $this->jobsPid[$job->getId()] = $pid;
+                            
+                        }
                         $task->setState('RUNNING');
                         //run job
                         $pid = $this->runJob($job);
@@ -395,28 +392,16 @@ EOF;
                 break;
                 
             case 'RUNNING':
-                if ($task->getAborted()) {
+                if (true == $abortStatus) {
                     //Abort, kill, log, post
-                    $msg = new Message(
-                        'DefaultController',
-                        'TickCommand',
-                        json_encode(array(
-                            'command' => 'elkarbackup:stop_job',
-                            'client' => $job->getClient()->getId(),
-                            'job' => $job->getId()
-                        ))
-                    );
-                    $em->persist($msg);
                     $this->warn(
                         'Job stop requested: aborting job',
                         array(),
                         $context
                     );
-                    $task->setState('POST JOB');
-                    //COMO RECOGEMOS EL PID SI ABORTAMOS?
-                    //EJECUTAMOS POST?
-                    //TODO: HACER ALGO!
+                    $task->setState('ABORTING');
                 }
+                
                 $jobPid = $this->jobsPid[$job->getId()];
                 if ($this->awakenPid == $jobPid ){
                     if ($this->awakenStatus != 0) {
@@ -442,6 +427,12 @@ EOF;
                     }
                 }
                 break;
+            
+            case 'ABORTING':
+                $this->stopJob($job);
+                $task->setState('POST JOB');
+                
+                break;
                 
             case 'POST JOB':
                 $jobPid = $this->jobsPid[$job->getId()];
@@ -464,14 +455,16 @@ EOF;
                                 array(),
                                 $context
                             );
+                            $job->setLastResult('FAIL');
+                            
                         } else {
                             $this->info(
-                                'Job successfully finished!',
+                                'OK',
                                 array(),
                                 $context
                             );
+                            $job->setLastResult('OK');
                         }
-                        $job->setLastResult('OK');
                         $this->manager->remove($task);
                     }
                 }
@@ -488,9 +481,10 @@ EOF;
     protected function processClientState($client)
     {
         $state = $client->getState();
-        $context = array('link' => $this->generateClientRoute(
-            $client->getId()
-        ));
+        $context = array(
+            'link' => $this->generateClientRoute($client->getId()),
+            'source' => Globals::STATUS_REPORT
+        );
         switch ($state) {
             case 'NOT READY':
                 //search queue waiting for me
@@ -545,7 +539,7 @@ SELECT q,j,c
 FROM BinovoElkarBackupBundle:Queue q
 JOIN q.job j
 JOIN j.client c
-WHERE c.id = :clientId'
+WHERE c.id = :clientId
 EOF;
                 $query = $this->manager->createQuery($dql);
                 $query->setParameter('clientId', $client->getId());
@@ -573,6 +567,11 @@ EOF;
                         );
                     } elseif ($this->awakenStatus == 0) {
                         $client->setState('NOT READY');
+                        $this->info(
+                            'OK',
+                            array(),
+                            $context
+                        );
                     }
                 }
                 break;
@@ -598,15 +597,20 @@ EOF;
         $perStorageLimit = $myLocation->getMaxParallelJobs();
         
         $dql =<<<EOF
-SELECT q,j,c
+SELECT q,j,c,bc
 FROM BinovoElkarBackupBundle:Queue q
 JOIN q.job j
 JOIN j.client c
+JOIN j.backupLocation bc
 WHERE j.isActive = 1 AND c.isActive = 1 AND q.state NOT LIKE 'QUEUED'
 ORDER BY q.date, q.priority
 EOF;
         $runningItems = $this->manager->createQuery($dql)->getResult();
         $globalRunning = count($runningItems);
+        if ($globalRunning >= $globalLimit) {
+            return false;
+        }
+        
         $perClientRunning = 0;
         $perStorageRunning = 0;
         
@@ -734,14 +738,70 @@ EOF;
                 $context
             );
             //Return unknown error code because this shouldn't happen
-            exit($this->ERR_CODE_UNKNOWN);
+            exit(self::ERR_CODE_UNKNOWN);
         } elseif ($pid == 0) {
             $rootDir = $this->container->get('kernel')->getRootDir();
             $consoleCmd = $rootDir.'/console';
-            pcntl_exec($consoleCmd, array('elkarbackup:'.$command));
-            exit($this->ERR_CODE_PROC_EXEC_FAILURE);
+            pcntl_exec($consoleCmd, array('elkarbackup:'.$command, $id));
+            exit(self::ERR_CODE_PROC_EXEC_FAILURE);
         }
         $this->renewDbConnection();
         return $pid;
+    }
+    
+    protected function stopJob($job)
+    {
+        $manager = $this->getContainer()->get('doctrine')->getManager();
+        $logHandler = $this->getContainer()->get('BnvLoggerHandler');
+        $logHandler->startRecordingMessages();
+        $clientId = $job->getClient()->getId();
+        $jobId    = $job->getId();
+        $container = $this->getContainer();
+        $repository = $container->get('doctrine')->getRepository('BinovoElkarBackupBundle:Job');
+        $tmp = $container->getParameter('tmp_dir');
+        $job = $repository->find($jobId);
+        $context = array('link' => $this->generateJobRoute($jobId, $clientId));
+        if (!$job || $job->getClient()->getId() != $clientId) {
+            $this->err('No such job.');
+            
+            return false;
+        }
+        $lockfile = sprintf(
+            "%s/rsnapshot.%04d_%04d.pid",
+            $tmp,
+            $clientId,
+            $jobId);
+        
+        if (file_exists($lockfile)) {
+            $command1 = shell_exec(sprintf("kill -TERM $(cat '%s')", $lockfile));
+            $this->info('Job backup aborted successfully', array(), $context);
+            $context = array(
+                'link'   => $this->generateJobRoute($jobId, $clientId),
+                'source' => Globals::STATUS_REPORT
+            );
+        } else {
+            $this->warn('Cannot abort job backup: not running', array(), $context);
+        }
+        
+        return true;
+    }
+    
+    private function initializeQueue()
+    {
+        $queue = $this->manager->getRepository('BinovoElkarBackupBundle:Queue')
+        ->findAll();
+        
+        foreach ($queue as $task) {
+            if ('QUEUED' != $task->getState()) {
+                $job = $task->getJob();
+                $client = $job->getClient();
+                $context = array(
+                    'link' => $this->generateJobRoute($job->getId(), $client->getId()),
+                    'source' => Globals::STATUS_REPORT
+                );
+                $this->warn('Job resetting', array(), $context);
+                $task->setState('QUEUED');
+            }
+        }
     }
 }

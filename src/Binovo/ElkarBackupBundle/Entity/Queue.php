@@ -50,7 +50,7 @@ class Queue
     protected $state;
     
     /**
-     * Variable to show if the task is aborted
+     * Variable to show if the task is aborted and its state
      *
      * @ORM\Column(type="boolean")
      */
@@ -142,21 +142,6 @@ class Queue
     {
         $this->runningSince = $runningSince;
     }
-
-    /**
-     * Get status
-     * Returns queued item status depending if it is running.
-     *
-     * @return Queue
-     */
-    public function getStatus()
-    {
-        if($this->runningSince == null){
-            return "QUEUED";
-        } else {
-            return "RUNNING";
-        }
-    }
     
     /**
      * Get priority
@@ -172,6 +157,7 @@ class Queue
      * Set priority
      *
      * @param integer $priority
+     * 
      * @return Queue
      */
     public function setPriority($priority)
@@ -204,7 +190,7 @@ class Queue
     /**
      * Get aborted
      * 
-     * @return boolean
+     * @return Queue
      */
     public function getAborted()
     {

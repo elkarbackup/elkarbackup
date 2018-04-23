@@ -40,23 +40,23 @@
                         <td class="vert-align name" align="center">{{ queue.job.name }}</td>
                         <td class="vert-align date" align="center">{{ queue.date|date('Y-m-d H:i:s') }}</td>
                         <td class="vert-align status" align="center">
-                            {% if queue.aborted %}
-                                <span class="label label-warning">ABORTING</span>
+                            {% if queue.state == 'QUEUED' %}
+                                <span class="label label-info">{{ queue.state }}</span>
+                            {% elseif queue.state == 'WAITING FOR CLIENT' %}
+                                <span class="label label-default">{{ queue.state }}</span>
+                            {% elseif queue.state == 'RUNNING' %}
+                                <span class="label label-primary">{{ queue.state }}</span>
                             {% else %}
-                                {% if queue.state == 'QUEUED' %}
-                                    <span class="label label-info">{{ queue.state }}</span>
-                                {% elseif queue.state == 'WAITING FOR CLIENT' %}
-                                    <span class="label label-default">{{ queue.state }}</span>
-                                {% elseif queue.state == 'RUNNING' %}
-                                    <span class="label label-primary">{{ queue.state }}</span>
-                                {% else %}
-                                    <span class="label label-warning">{{ queue.state }}</span>
-                                {% endif %}
+                                <span class="label label-warning">{{ queue.state }}</span>
                             {% endif %}
                         </td>
                         <td class="vert-align runningSince" align="center">{% if queue.runningSince %} {{ queue.runningSince|date('Y-m-d H:i:s') }} {% else %} - {% endif %}</td>
                         <td class="vert-align button" align="center">
+                        {% if queue.aborted %}
+                            <span class="label label-warning">ABORTING</span>
+                        {% else %}
                             <button class="btn btn-default" eb-action="abortJob" eb-path="{{ path('abortJob', {idJob: queue.job.id, idClient: queue.job.client.id}) }}" eb-jobid="{{queue.job.id}}" eb-clientid="{{queue.job.client.id}}" eb-message="{{ 'Job <strong>%name%</strong> is running. Do you really want to abort it ?' | trans({'%name%': queue.job.name}) | raw }}" class="danger">Abort</button>
+                        {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

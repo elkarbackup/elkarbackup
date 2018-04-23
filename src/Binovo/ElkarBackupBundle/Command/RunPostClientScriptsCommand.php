@@ -27,7 +27,7 @@ class RunPostClientScriptsCommand extends BaseScriptsCommand
         $clientId = $input->getArgument('client');
         if (! ctype_digit($clientId)) {
             $this->err('Input argument not valid');
-            return LoggingCommand::ERR_CODE_INPUT_ARG;
+            return self::ERR_CODE_INPUT_ARG;
         }
         $client = $container
             ->get('doctrine')
@@ -35,7 +35,7 @@ class RunPostClientScriptsCommand extends BaseScriptsCommand
             ->find($clientId);
         if (null == $client) {
             $this->err('Client not found');
-            return LoggingCommand::ERR_CODE_ENTITY_NOT_FOUND;
+            return self::ERR_CODE_ENTITY_NOT_FOUND;
         }
         $model = $this->prepareClientModel($client, 'POST');
         $result = $this->runClientScripts($model);

@@ -29,7 +29,7 @@ class RunJobCommand extends LoggingCommand
             $jobId = $input->getArgument('job');
             if (! ctype_digit($jobId)) {
                 $this->err('Input argument not valid');
-                return LoggingCommand::ERR_CODE_INPUT_ARG;
+                return self::ERR_CODE_INPUT_ARG;
             }
             $job = $container
             ->get('doctrine')
@@ -37,14 +37,14 @@ class RunJobCommand extends LoggingCommand
             ->find($jobId);
             if (null == $job) {
                 $this->err('Job not found');
-                return LoggingCommand::ERR_CODE_ENTITY_NOT_FOUND;
+                return self::ERR_CODE_ENTITY_NOT_FOUND;
             }
             
             $policy = $job->getPolicy();
             $retains = $policy->getRetains();
             if (empty($retains)) {
                 $this->warn('Policy %policyid% has no active retains', array('%policyid%' => $policy->getId()));
-                return LoggingCommand::ERR_CODE_NO_ACTIVE_RETAINS;
+                return self::ERR_CODE_NO_ACTIVE_RETAINS;
             }
             $retainsToRun = array($retains[0][0]);
             $result = $this->runJob($job, $retainsToRun);
@@ -54,7 +54,7 @@ class RunJobCommand extends LoggingCommand
             
         } catch (Exception $e) {
             $this->err('Unknown exception\n'.$e->getMessage());
-            return LoggingCommand::ERR_CODE_UNKNOWN;
+            return self::ERR_CODE_UNKNOWN;
         }
 
     }
@@ -117,12 +117,12 @@ class RunJobCommand extends LoggingCommand
         $fd = fopen($confFileName, 'w');
         if (false === $fd) {
             $this->err('Error opening config file %filename%. Aborting backup.', array('%filename%' => $confFileName), $context);
-            return LoggingCommand::ERR_CODE_OPEN_FILE;
+            return self::ERR_CODE_OPEN_FILE;
         }
         $bytesWriten = fwrite($fd, $content);
         if (false === $bytesWriten) {
             $this->err('Error writing to config file %filename%. Aborting backup.', array('%filename%' => $confFileName), $context);
-            return LoggingCommand::ERR_CODE_WRITE_FILE;
+            return self::ERR_CODE_WRITE_FILE;
         }
         $ok = fclose($fd);
         if (false === $ok) {
@@ -132,7 +132,7 @@ class RunJobCommand extends LoggingCommand
             $ok = mkdir($job->getSnapshotRoot(), 0777, true);
             if (false === $ok) {
                 $this->err('Error creating snapshot root %filename%. Aborting backup.', array('%filename%' => $job->getSnapshotRoot()), $context);
-                return LoggingCommand::ERR_CODE_CREATE_FILE;
+                return self::ERR_CODE_CREATE_FILE;
             }
         }
         
