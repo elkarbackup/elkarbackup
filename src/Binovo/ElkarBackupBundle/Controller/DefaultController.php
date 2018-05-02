@@ -476,7 +476,7 @@ class DefaultController extends Controller
         $manager = $db->getManager();
         $job = $repository->find($idJob);
         try {
-            $manager->remove($job);
+            //$manager->remove($job);
             $msg = new Message('DefaultController', 'TickCommand', json_encode(array(
                 'command' => "elkarbackup:delete_job_backups",
                 'client' => (int) $idClient,
@@ -1993,7 +1993,19 @@ EOF;
                 'type' => 'checkbox',
                 'required' => false,
                 'label' => $t->trans('Disable background', array(), 'BinovoElkarBackup')
-            )
+            ),
+            'max_parallel_jobs' => array(
+                'type' => 'integer',
+                'required' => false,
+                'attr' => array('class' => 'form-control'),
+                'label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup')
+            ),
+            'post_on_pre_fail' => array(
+                'type' => 'checkbox',
+                'required' => false,
+                'label' => $t->trans('Do post script on pre script failure', array(), 'BinovoElkarBackup')
+            ),
+            
         );
         $defaultData = array();
         foreach ($params as $paramName => $formField) {

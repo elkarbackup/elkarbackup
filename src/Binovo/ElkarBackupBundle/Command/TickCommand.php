@@ -137,7 +137,7 @@ EOF;
             }
         }
         if (count($policies) == 0) {
-            $this->info('Nothing to run.');
+            $this->info('Nothing scheduled to run.');
             return 0;
         }
         $policyQuery = array();

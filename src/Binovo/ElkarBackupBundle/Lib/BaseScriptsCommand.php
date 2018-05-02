@@ -69,6 +69,18 @@ class BaseScriptsCommand extends LoggingCommand
         $errScriptOk      = 'Client "%entityid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%';
         $allOk = true;
         $commandOutput = array();
+        $clientId = $model['clientId'];
+        $context = array('link' => $this->generateClientRoute($clientId));
+        
+        if (null == $model['scriptFiles']) {
+            $this->info(
+                'There are no ' . $model['type'] . ' scripts to run for this client.',
+                array(),
+                $context
+            );
+            return true;
+        }
+        
         foreach ($model['scriptFiles'] as $script) {
             $scriptFile = $script->getScriptPath();
             if (!file_exists($scriptFile)) {
@@ -209,6 +221,20 @@ class BaseScriptsCommand extends LoggingCommand
         $errScriptOk      = 'Job "%entityid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%';
         $allOk = true;
         $commandOutput = array();
+        
+        $clientId = $model['clientId'];
+        $jobId = $model['jobId'];
+        $context = array('link' => $this->generateJobRoute($jobId, $clientId));
+        
+        if (null == $model['scriptFiles']) {
+            $this->info(
+                'There are no ' . $model['type'] . ' scripts to run for this job.',
+                array(),
+                $context
+                );
+            return true;
+        }
+        
         foreach ($model['scriptFiles'] as $script) {
             $scriptFile = $script->getScriptPath();
             if (!file_exists($scriptFile)) {

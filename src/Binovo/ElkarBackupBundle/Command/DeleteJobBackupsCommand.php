@@ -19,8 +19,8 @@ class DeleteJobBackupsCommand extends ContainerAwareCommand
         parent::configure();
         $this->setName('elkarbackup:delete_job_backups')
               ->addArgument('client', InputArgument::REQUIRED, 'Client id')
-              ->addArgument('job'   , InputArgument::REQUIRED, 'Job')
-              ->setDescription('Deletes a the backups of a job identified by its id');
+              ->addArgument('job'   , InputArgument::REQUIRED, 'Job id')
+              ->setDescription('Deletes all the backups of a job identified by its id');
     }
 
 
@@ -28,7 +28,15 @@ class DeleteJobBackupsCommand extends ContainerAwareCommand
     {
         $logger = $this->getContainer()->get('BnvWebLogger');
         $context = array('source' => 'DeleteJobBackupsCommand');
-        $backupsDir = Globals::getSnapshotRoot($input->getArgument('client'), $input->getArgument('job'));
+        $doctrine = $this->getContainer()->get('doctrine');
+        $manager = $doctrine->getManager();
+        $jobId = $input->getArgument('job');
+        $job = $doctrine->getRepository('BinovoElkarBackupBundle:Job')->find($jobId);
+        //TODO: BUSCAR JOB
+        
+        $backupsDir = Globals::getSnapshotRoot($input->getArgument('client'), $job);
+        $manager->remove($job);
+        $manager->flush();
         if (Globals::delTree($backupsDir)) {
             $logger->info('Directory deleted: ' . $backupsDir, array('source' => 'DeleteJobBackupsCommand'));
 
