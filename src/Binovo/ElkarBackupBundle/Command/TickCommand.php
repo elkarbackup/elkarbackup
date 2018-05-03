@@ -57,9 +57,6 @@ class TickCommand extends LoggingCommand
         try {
             if ($lockHandler->lock()) {
                 try {
-                    // we don't want to miss a backup because a command fails,
-                    //so catch any exception
-                    //SET CLIENTS TO NOT READY
                     $this->initializeClients();
                     $this->initializeQueue();
                     $dql =<<<EOF
@@ -74,7 +71,7 @@ FROM BinovoElkarBackupBundle:Client c
 WHERE c.state NOT LIKE 'NOT READY' AND c.state NOT LIKE 'ERROR'
 EOF;
                     $clientCount = count($this->manager->createQuery($dql)->getResult());
-                    //mientras haya entradas en cola o cliente que no esta en NOT READY ni ERROR
+                    
                     while ($queueCount > 0 || $clientCount > 0) {
                         $this->processQueueElements($input, $output);
                         $this->processClients($input, $output);
@@ -97,7 +94,6 @@ EOF;
                     //last but not least, backup @tahoe
                     $this->getContainer()->get('Tahoe')->runAllQueuedJobs();
                     
-                    //SET CLIENTS TO NOT READY
                     $this->initializeClients();
                     
                 } catch (Exception $e) {
@@ -296,7 +292,6 @@ EOF;
             case 'QUEUED':
                 $this->errors[$job->getId()] = false;
                 if (true == $abortStatus) {
-                    //remove from queue
                     $this->manager->remove($task);
                     $this->warn(
                         'Job stop requested: aborting job',
@@ -304,7 +299,6 @@ EOF;
                         $context
                     );
                 } else {
-                    //if it is candidate
                     if ($this->isCandidate($task)) {
                         $task->setState('WAITING FOR CLIENT');
                     }
@@ -315,7 +309,6 @@ EOF;
                 $clientState = $job->getClient()->getState();
                 
                 if (true == $abortStatus) {
-                    //remove from queue
                     $this->manager->remove($task);
                     $this->warn(
                         'Job stop requested: aborting job',
@@ -325,12 +318,10 @@ EOF;
                     
                 } elseif ($clientState == 'READY') {
                     $task->setState('PRE JOB');
-                    //run prejob
                     $pid = $this->runPreJobScripts($job);
                     $this->jobsPid[$job->getId()] = $pid;
                     
                 } elseif ($clientState == 'ERROR') {
-                    //abort & log error & remove from queue
                     $this->manager->remove($task);
                     $this->err(
                         'Job aborted: pre client scripts failed!',
@@ -345,9 +336,7 @@ EOF;
                 $doPost = $this->container->getParameter('post_on_pre_fail');
                 
                 if ($this->awakenPid == $jobPid ){
-                    //our child has finished
                     if ($this->awakenStatus != 0) {
-                        //PreJob error
                         $this->err(
                             'Pre job scripts failed: aborting job',
                             array(),
@@ -357,7 +346,6 @@ EOF;
                             $task->setState('POST JOB');
                             $job->setLastResult('FAIL');
                             $this->errors[$job->getId()] = true;
-                            //run postJob
                             $pid = $this->runPostJobScripts($job, '-1');
                             $this->jobsPid[$job->getId()] = $pid;
                         } else {
@@ -369,22 +357,18 @@ EOF;
                             );
                         }
                     } elseif ($this->awakenStatus == 0) {
-                        //PreJob correct
                         if (true == $abortStatus) {
-                            //abort
                             $this->warn(
                                 'Job stop requested: aborting job',
                                 array(),
                                 $context
-                                );
+                            );
                             $task->setState('POST JOB');
-                            //run postJob
                             $pid = $this->runPostJobScripts($job, '-1');
                             $this->jobsPid[$job->getId()] = $pid;
                             
                         }
                         $task->setState('RUNNING');
-                        //run job
                         $pid = $this->runJob($job);
                         $this->jobsPid[$job->getId()] = $pid;
                     }
@@ -393,7 +377,6 @@ EOF;
                 
             case 'RUNNING':
                 if (true == $abortStatus) {
-                    //Abort, kill, log, post
                     $this->warn(
                         'Job stop requested: aborting job',
                         array(),
@@ -405,7 +388,6 @@ EOF;
                 $jobPid = $this->jobsPid[$job->getId()];
                 if ($this->awakenPid == $jobPid ){
                     if ($this->awakenStatus != 0) {
-                        //Error running, log, remember, post
                         $this->err(
                             'Job execution failed!',
                             array(),
@@ -414,14 +396,11 @@ EOF;
                         $task->setState('POST JOB');
                         $job->setLastResult('FAIL');
                         $this->errors[$job->getId()] = true;
-                        //run postJob
                         $pid = $this->runPostJobScripts($job, '-1');
                         $this->jobsPid[$job->getId()] = $pid;
                         
                     } elseif ($this->awakenStatus == 0) {
-                        //OK, post, run
                         $task->setState('POST JOB');
-                        //run postJob
                         $pid = $this->runPostJobScripts($job);
                         $this->jobsPid[$job->getId()] = $pid;
                     }
@@ -438,7 +417,6 @@ EOF;
                 $jobPid = $this->jobsPid[$job->getId()];
                 if ($this->awakenPid == $jobPid) {
                     if ($this->awakenStatus != 0) {
-                        //PostJob error, log, lastResult, remove
                         $this->err(
                             'Post job scripts failed!',
                             array(),
@@ -447,7 +425,6 @@ EOF;
                         $job->setLastResult('FAIL');
                         $this->manager->remove($task);
                     } elseif ($this->awakenStatus == 0) {
-                        //success, log, lastResult rememebered, remove
                         $errors = $this->errors[$job->getId()];
                         if ($errors) {
                             $this->warn(
@@ -456,7 +433,6 @@ EOF;
                                 $context
                             );
                             $job->setLastResult('FAIL');
-                            
                         } else {
                             $this->info(
                                 'OK',
@@ -487,42 +463,29 @@ EOF;
         );
         switch ($state) {
             case 'NOT READY':
-                //search queue waiting for me
                 $dql =<<<EOF
 SELECT COUNT(q)
 FROM BinovoElkarBackupBundle:Queue q
 JOIN q.job j
-WHERE j.client = :clientId AND q.state LIKE 'WAITING FOR CLIENT'
+WHERE j.client = :clientId AND q.state = 'WAITING FOR CLIENT'
 EOF;
                 $query = $this->manager->createQuery($dql);
                 $query->setParameter('clientId', $client->getId());
                 $jobsCount = $query->getSingleScalarResult();
                 if ($jobsCount > 0) {
-                    //if so, pasar preclient y ejecutar
                     $client->setState('PRE CLIENT');
-                    //run preclient
                     $pid = $this->runPreClientScripts($client);
                     $this->clientsPid[$client->getId()] = $pid;
                 }
                 break;
                 
             case 'PRE CLIENT':
-                $doPost = $this->container->getParameter('post_on_pre_fail');
                 $clientPid = $this->clientsPid[$client->getId()];
                 if ($this->awakenPid == $clientPid ) {
-                    //our child has finished
                     if ($this->awakenStatus != 0) {
-                        if (true == $doPost) {
-                            $client->setState('POST CLIENT');
-                            //run postClient
-                            $pid = $this->runPostClientScripts($client);
-                            $this->clientsPid[$client->getId()] = $pid;
-                        } else {
-                            //PreClient error
-                            $client->setState('ERROR');
-                        }
+                        $client->setState('ERROR');
                         $this->err(
-                            'Pre client scripts failed!',
+                            'FAIL',
                             array(),
                             $context
                         );
@@ -533,7 +496,6 @@ EOF;
                 break;
                 
             case 'READY':
-                //search queue waiting for me
                 $dql =<<<EOF
 SELECT q,j,c
 FROM BinovoElkarBackupBundle:Queue q
@@ -545,9 +507,7 @@ EOF;
                 $query->setParameter('clientId', $client->getId());
                 $queue = $query->getResult();
                 if (! $queue) {
-                    //if so, pasar postclient y ejecutar
                     $client->setState('POST CLIENT');
-                    //run postclient
                     $pid = $this->runPostClientScripts($client);
                     $this->clientsPid[$client->getId()] = $pid;
                 }
@@ -556,12 +516,10 @@ EOF;
             case 'POST CLIENT':
                 $clientPid = $this->clientsPid[$client->getId()];
                 if ($this->awakenPid == $clientPid ) {
-                    //our child has finished
                     if ($this->awakenStatus != 0) {
-                        //PostClient error
                         $client->setState('ERROR');
                         $this->err(
-                            'Post client scripts failed',
+                            'FAIL',
                             array(),
                             $context
                         );
@@ -602,7 +560,7 @@ FROM BinovoElkarBackupBundle:Queue q
 JOIN q.job j
 JOIN j.client c
 JOIN j.backupLocation bc
-WHERE j.isActive = 1 AND c.isActive = 1 AND q.state NOT LIKE 'QUEUED'
+WHERE j.isActive = 1 AND c.isActive = 1 AND q.state != 'QUEUED'
 ORDER BY q.date, q.priority
 EOF;
         $runningItems = $this->manager->createQuery($dql)->getResult();

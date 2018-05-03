@@ -67,7 +67,6 @@ class BaseScriptsCommand extends LoggingCommand
         $errScriptError   = 'Client "%entityid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%';
         $errScriptMissing = 'Client "%entityid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.';
         $errScriptOk      = 'Client "%entityid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%';
-        $allOk = true;
         $commandOutput = array();
         $clientId = $model['clientId'];
         $context = array('link' => $this->generateClientRoute($clientId));
@@ -78,7 +77,7 @@ class BaseScriptsCommand extends LoggingCommand
                 array(),
                 $context
             );
-            return true;
+            return 0;
         }
         
         foreach ($model['scriptFiles'] as $script) {
@@ -94,7 +93,7 @@ class BaseScriptsCommand extends LoggingCommand
                     ),
                     $model['context']
                 );
-                $allOk = false;
+                return self::ERR_CODE_NOT_FOUND;
             } else {
                 $command = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_CLIENT_TOTAL_SIZE="%s" ELKARBACKUP_CLIENT_STARTTIME="%s" ELKARBACKUP_CLIENT_ENDTIME="%s" ELKARBACKUP_SSH_ARGS="%s" sudo "%s" 2>&1',
                     $model['level'],
@@ -122,7 +121,7 @@ class BaseScriptsCommand extends LoggingCommand
                         ),
                         $model['context']
                         );
-                    $allOk = false;
+                    return self::ERR_CODE_PROC_EXEC_FAILURE;
                 } else {
                     $this->info(
                         $errScriptOk,
@@ -137,7 +136,7 @@ class BaseScriptsCommand extends LoggingCommand
                 }
             }
         }
-        return $allOk;
+        return 0;
     }
     
     /**
@@ -232,7 +231,7 @@ class BaseScriptsCommand extends LoggingCommand
                 array(),
                 $context
                 );
-            return true;
+            return 0;
         }
         
         foreach ($model['scriptFiles'] as $script) {
@@ -248,7 +247,7 @@ class BaseScriptsCommand extends LoggingCommand
                     ),
                     $model['context']
                 );
-                $allOk = false;
+                return self::ERR_CODE_NOT_FOUND;
             } else {
                 $command = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_JOB_NAME="%s" ELKARBACKUP_OWNER_EMAIL="%s" ELKARBACKUP_RECIPIENT_LIST="%s" ELKARBACKUP_CLIENT_TOTAL_SIZE="%s" ELKARBACKUP_JOB_TOTAL_SIZE="%s" ELKARBACKUP_JOB_RUN_SIZE="%s" ELKARBACKUP_JOB_STARTTIME="%s" ELKARBACKUP_JOB_ENDTIME="%s" ELKARBACKUP_SSH_ARGS="%s" sudo "%s" 2>&1',
                     $model['level'],
@@ -282,7 +281,7 @@ class BaseScriptsCommand extends LoggingCommand
                         ),
                         $model['context']
                         );
-                    $allOk = false;
+                    return self::ERR_CODE_PROC_EXEC_FAILURE;
                 } else {
                     $this->info(
                         $errScriptOk,
@@ -297,7 +296,7 @@ class BaseScriptsCommand extends LoggingCommand
                 }
             }
         }
-        return $allOk;
+        return 0;
     }
     
     protected function getNameForLogs()

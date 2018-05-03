@@ -19,7 +19,7 @@ class DeleteJobBackupsCommand extends ContainerAwareCommand
         parent::configure();
         $this->setName('elkarbackup:delete_job_backups')
               ->addArgument('client', InputArgument::REQUIRED, 'Client id')
-              ->addArgument('job'   , InputArgument::REQUIRED, 'Job id')
+              ->addArgument('job'   , InputArgument::OPTIONAL, 'Job id')
               ->setDescription('Deletes all the backups of a job identified by its id');
     }
 
@@ -31,20 +31,37 @@ class DeleteJobBackupsCommand extends ContainerAwareCommand
         $doctrine = $this->getContainer()->get('doctrine');
         $manager = $doctrine->getManager();
         $jobId = $input->getArgument('job');
-        $job = $doctrine->getRepository('BinovoElkarBackupBundle:Job')->find($jobId);
-        //TODO: BUSCAR JOB
-        
-        $backupsDir = Globals::getSnapshotRoot($input->getArgument('client'), $job);
-        $manager->remove($job);
-        $manager->flush();
-        if (Globals::delTree($backupsDir)) {
-            $logger->info('Directory deleted: ' . $backupsDir, array('source' => 'DeleteJobBackupsCommand'));
+        $clientId = $input->getArgument('client');
+        $backupLocations = $doctrine->getRepository('BinovoElkarBackupBundle:BackupLocation')->findAll();
+        $allOk = 0;
+        foreach ($backupLocations as $location) {
+            $backupDir = $location->getEffectiveDir();
+            if (null == $jobId) {
+                $removeDir = sprintf('%s/%04d', $backupDir, $clientId);
+            } else {
+                $removeDir = sprintf(
+                    '%s/%04d/%04d',
+                    $backupDir,
+                    $clientId,
+                    $jobId
+                );
+            }
+            
+            if (is_dir($removeDir)) {
+                if (Globals::delTree($removeDir)) {
+                    $logger->info('Directory deleted: ' . $removeDir, array('source' => 'DeleteJobBackupsCommand'));
+                } else {
+                    $logger->err('Error deleting directory: ' . $removeDir, array('source' => 'DeleteJobBackupsCommand'));
+                    $allOk = 1;
+                }
+            } else {
+                $logger->info('Directory does not exist: ' . $removeDir, array('source' => 'DeleteJobBackupsCommand'));
+            }
 
-            return 0;
-        } else {
-            $logger->err('Error deleting directory: ' . $backupsDir, array('source' => 'DeleteJobBackupsCommand'));
-
-            return 1;
+            
         }
+        $manager->flush();
+        return $allOk;
+
     }
 }

@@ -24,6 +24,7 @@ abstract class LoggingCommand extends ContainerAwareCommand
     const ERR_CODE_WRITE_FILE = 8;
     const ERR_CODE_CREATE_FILE = 9;
     const ERR_CODE_DATA_ARGUMENTS = 10;
+    const ERR_CODE_NOT_FOUND = 11;
     
     abstract protected function getNameForLogs();
 

@@ -476,7 +476,7 @@ class DefaultController extends Controller
         $manager = $db->getManager();
         $job = $repository->find($idJob);
         try {
-            //$manager->remove($job);
+            $manager->remove($job);
             $msg = new Message('DefaultController', 'TickCommand', json_encode(array(
                 'command' => "elkarbackup:delete_job_backups",
                 'client' => (int) $idClient,
