@@ -96,6 +96,18 @@ then
     echo                    >> /etc/elkarbackup/parameters.yml
     echo "    home: /var/lib/elkarbackup" >> /etc/elkarbackup/parameters.yml
 fi
+if test "x`grep max_parallel_jobs /etc/elkarbackup/parameters.yml`" = x
+then
+    echo "    Add max_parallel_jobs"
+    echo                    >> /etc/elkarbackup/parameters.yml
+    echo "    max_parallel_jobs: 1" >> /etc/elkarbackup/parameters.yml
+fi
+if test "x`grep post_on_pre_fail /etc/elkarbackup/parameters.yml`" = x
+then
+    echo "    Add post_on_pre_fail"
+    echo                    >> /etc/elkarbackup/parameters.yml
+    echo "    post_on_pre_fail: true" >> /etc/elkarbackup/parameters.yml
+fi
 
 echo Delete cache content
 rm -fR /var/cache/elkarbackup/*
