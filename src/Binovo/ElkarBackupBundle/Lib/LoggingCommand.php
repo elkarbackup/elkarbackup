@@ -14,6 +14,8 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
  */
 abstract class LoggingCommand extends ContainerAwareCommand
 {
+    const ERR_CODE_PRE_FAIL = -1;
+    const ERR_CODE_NO_RUN = -2;
     const ERR_CODE_UNKNOWN = 1;
     const ERR_CODE_WARNING = 2;
     const ERR_CODE_INPUT_ARG = 3;

@@ -411,8 +411,8 @@ script_help: |
   <li>ELKARBACKUP_EVENT:  possible values are PRE or POST</li>
   <li>ELKARBACKUP_URL:    the value is the full URL of the job or client</li>
   <li>ELKARBACKUP_ID:     the numeric job id or client id </li>
-  <li>ELKARBACKUP_PATH:   the full path of the snapshot root </li>
-  <li>ELKARBACKUP_STATUS: The output status of rsnapshot for post job scripts, always 0 otherwise</li>
+  <li>ELKARBACKUP_PATH:   the full path of the snapshot root (only available in job scripts) </li>
+  <li>ELKARBACKUP_STATUS: The output status of rsnapshot for post job scripts, -1 if pre scripts have failed, -2 if rsnapshot has not been executed, always 0 otherwise</li>
   <li>ELKARBACKUP_CLIENT_NAME:  client name </li>
   <li>ELKARBACKUP_JOB_NAME: job name (empty in client) </li>
   <li>ELKARBACKUP_OWNER_EMAIL: job owner's email address (empty in client) </li>

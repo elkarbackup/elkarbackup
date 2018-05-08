@@ -346,7 +346,7 @@ EOF;
                             $task->setState('POST JOB');
                             $job->setLastResult('FAIL');
                             $this->errors[$job->getId()] = true;
-                            $pid = $this->runPostJobScripts($job, '-1');
+                            $pid = $this->runPostJobScripts($job, self::ERR_CODE_PRE_FAIL);
                             $this->jobsPid[$job->getId()] = $pid;
                         } else {
                             $this->manager->remove($task);
@@ -364,7 +364,7 @@ EOF;
                                 $context
                             );
                             $task->setState('POST JOB');
-                            $pid = $this->runPostJobScripts($job, '-1');
+                            $pid = $this->runPostJobScripts($job, self::ERR_CODE_NO_RUN);
                             $this->jobsPid[$job->getId()] = $pid;
                             
                         }
@@ -396,7 +396,7 @@ EOF;
                         $task->setState('POST JOB');
                         $job->setLastResult('FAIL');
                         $this->errors[$job->getId()] = true;
-                        $pid = $this->runPostJobScripts($job, '-1');
+                        $pid = $this->runPostJobScripts($job, $this->awakenStatus);
                         $this->jobsPid[$job->getId()] = $pid;
                         
                     } elseif ($this->awakenStatus == 0) {
@@ -669,12 +669,12 @@ EOF;
         return $pid;
     }
     
-    private function runPostJobScripts($job)
+    private function runPostJobScripts($job, $status = 0)
     {
         $jobId = $job->getId();
         $context = array('link' => $this->generateJobRoute($jobId, $job->getClient()->getId()));
         $command = 'run_post_job_scripts';
-        $pid = $this->runBackgroundCommand($command, $jobId, $context);
+        $pid = $this->runBackgroundCommand($command, $jobId, $context, $status);
         return $pid;
     }
     
@@ -687,7 +687,7 @@ EOF;
         return $pid;
     }
     
-    private function runBackgroundCommand($command, $id, $context)
+    private function runBackgroundCommand($command, $id, $context, $status = 0)
     {
         $pid = pcntl_fork();
         if ($pid == -1) {
@@ -700,7 +700,10 @@ EOF;
         } elseif ($pid == 0) {
             $rootDir = $this->container->get('kernel')->getRootDir();
             $consoleCmd = $rootDir.'/console';
-            pcntl_exec($consoleCmd, array('elkarbackup:'.$command, $id));
+            $variables = array();
+            array_push($variables, $id);
+            array_push($variables, $status);
+            pcntl_exec($consoleCmd, array('elkarbackup:'.$command, $variables));
             exit(self::ERR_CODE_PROC_EXEC_FAILURE);
         }
         $this->renewDbConnection();
