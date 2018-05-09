@@ -124,7 +124,7 @@ rm -rf /var/lib/elkarbackup/sessions/*
 
 username="elkarbackup"
 sed -i "s/www-data/$username/" /etc/cron.d/elkarbackup
-if test x`grep $username /etc/passwd` = x
+if test x`grep ^$username\: /etc/passwd` = x
 then
     adduser --system --home /var/lib/elkarbackup --shell /bin/bash --group $username
     chown -R elkarbackup.elkarbackup /var/lib/elkarbackup &>/dev/null
