@@ -84,7 +84,7 @@ function addJobRow(job, client){
     clone.find(':button[eb-action="showJobBackup"]').attr('eb-path', context+'/client/'+c.id+'/job/'+j.id+'/backup/view');
     clone.find(':button[eb-action="showJobBackup"]').attr('eb-jobid', j.id);
     clone.find(':button[eb-action="showJobBackup"]').addClass('disabled');
-    //    runJob a
+    //    enqueueJob a
     clone.find('a[eb-action="enqueueJob"]').attr('eb-path', context+'/client/'+c.id+'/job/'+j.id+'/run');
     clone.find('a[eb-action="enqueueJob"]').attr('eb-jobid', j.id);
     //    abortJob a
@@ -202,7 +202,7 @@ function runClient(clientid){
       path = $(this).find('a[eb-action="enqueueJob"]').attr('eb-path');
       jobid = $(this).find('a[eb-action="enqueueJob"]').attr('eb-jobid');
       if (path && jobid){
-        runJob(path, jobid);
+        enqueueJob(path, jobid);
       }
       $(this).addClass('queued');
     });
@@ -233,7 +233,7 @@ function runSelected(){
         console.log('Job already queued');
       } else {
         // Job available
-        r = runJob(path, jobid);
+        r = enqueueJob(path, jobid);
       }
     }
   });
@@ -293,7 +293,7 @@ function cloneClient(path, clientId){
   postRequest(path);
 };
 
-function runJob(path, id){
+function enqueueJob(path, id){
   if (path && id){
     r = postRequest(path);
     return true;
@@ -441,7 +441,7 @@ $(document).ready(function(){
             break;
           case 'enqueueJob':
             if (!disabled){
-              if (runJob(path, jobid)){
+              if (enqueueJob(path, jobid)){
                 // msg should be received from controller (translated)
                 okMsg('Job queued successfully. It will start running in less than a minute!');
               } else {

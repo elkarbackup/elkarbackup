@@ -109,7 +109,7 @@ EOF;
                     return self::ERR_CODE_UNKNOWN;
                 }
             }
-            return self::ERR_CODE_UNKNOWN;
+            return 0;
         } finally {
             $lockHandler->release();
         }
@@ -700,10 +700,13 @@ EOF;
         } elseif ($pid == 0) {
             $rootDir = $this->container->get('kernel')->getRootDir();
             $consoleCmd = $rootDir.'/console';
-            $variables = array();
-            array_push($variables, $id);
-            array_push($variables, $status);
-            pcntl_exec($consoleCmd, array('elkarbackup:'.$command, $variables));
+            
+            if ('run_post_job_scripts' == $command) {
+                pcntl_exec($consoleCmd, array('elkarbackup:'.$command, $id, $status));
+                
+            } else {
+                pcntl_exec($consoleCmd, array('elkarbackup:'.$command, $id));
+            }
             exit(self::ERR_CODE_PROC_EXEC_FAILURE);
         }
         $this->renewDbConnection();
