@@ -23,14 +23,14 @@ class BaseScriptsCommand extends LoggingCommand
         $model['type']              = $type; //must be PRE or POST
         $model['clientUrl']         = $client->getUrl();
         $model['clientId']          = $client->getId();
-        $model['status']            = 0; //status from the previous command
+        $model['status']            = self::ERR_CODE_OK; //status from the previous command
         $model['clientName']        = $client->getName();
         $model['clientDiskUsage']   = $client->getDiskUsage();
         $model['clientSshArgs']     = $client->getSshArgs();
         $model['scriptFiles']       = array();
         $model['context']           = array('link' => $this->generateClientRoute($client->getId()));
         
-        if ('PRE' == $type){
+        if ( self::TYPE_PRE == $type){
             $model['clientEndTime'] = 0;
             $time = time();
             $model['clientStartTime'] = $time;
@@ -38,7 +38,7 @@ class BaseScriptsCommand extends LoggingCommand
             $data['clientStartTime'] = $time;
             $client->setData($data);
             $scripts = $client->getPreScripts();
-        } elseif ('POST' == $type) {
+        } elseif (self::TYPE_POST == $type) {
             $data = $client->getData();
             if (null != $data) {
                 $model['clientStartTime'] = $data['clientStartTime'];
@@ -77,7 +77,7 @@ class BaseScriptsCommand extends LoggingCommand
                 array(),
                 $context
             );
-            return 0;
+            return self::ERR_CODE_OK;
         }
         
         foreach ($model['scriptFiles'] as $script) {
@@ -110,7 +110,7 @@ class BaseScriptsCommand extends LoggingCommand
                 exec($command, $commandOutput, $status);
                 
                 $commandOutputString = substr("\n" . implode("\n", $commandOutput), 0, 500); // Let's limit the output
-                if (0 != $status) {
+                if (self::ERR_CODE_OK != $status) {
                     $this->err(
                         $errScriptError,
                         array(
@@ -136,7 +136,7 @@ class BaseScriptsCommand extends LoggingCommand
                 }
             }
         }
-        return 0;
+        return self::ERR_CODE_OK;
     }
     
     /**
@@ -150,7 +150,7 @@ class BaseScriptsCommand extends LoggingCommand
      *
      * @return  array       $model      The model needed to execute scripts.
      */
-    protected function prepareJobModel($job, $type, $status = '0')
+    protected function prepareJobModel($job, $type, $status = self::ERR_CODE_OK)
     {
         $model = array();
         $client = $job->getClient();
@@ -172,13 +172,13 @@ class BaseScriptsCommand extends LoggingCommand
         $model['scriptFiles']       = array();
         $model['context']           = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
         
-        if ('PRE' == $type){
+        if (self::TYPE_PRE == $type){
             $scripts = $job->getPreScripts();
             $model['jobRunSize']    = 0;
-            $model['jobStartTime']  = 0;
+            $model['jobStartTime']  = time();
             $model['jobEndTime']    = 0;
-            $model['status']        = 0;
-        } elseif ('POST' == $type) {
+            $model['status']        = self::ERR_CODE_OK;
+        } elseif (self::TYPE_POST == $type) {
             $model['status']        = $status;
             $scripts = $job->getPostScripts();
             
@@ -231,7 +231,7 @@ class BaseScriptsCommand extends LoggingCommand
                 array(),
                 $context
                 );
-            return 0;
+            return self::ERR_CODE_OK;
         }
         
         foreach ($model['scriptFiles'] as $script) {
@@ -253,7 +253,7 @@ class BaseScriptsCommand extends LoggingCommand
                     $model['level'],
                     $model['type'],
                     $model['clientUrl'],
-                    $model['clientId'],
+                    $model['jobId'],
                     $model['jobRoot'],
                     $model['status'],
                     $model['clientName'],
@@ -270,7 +270,7 @@ class BaseScriptsCommand extends LoggingCommand
                 exec($command, $commandOutput, $status);
                 
                 $commandOutputString = substr("\n" . implode("\n", $commandOutput), 0, 500); // Let's limit the output
-                if (0 != $status) {
+                if (self::ERR_CODE_OK != $status) {
                     $this->err(
                         $errScriptError,
                         array(
@@ -296,7 +296,7 @@ class BaseScriptsCommand extends LoggingCommand
                 }
             }
         }
-        return 0;
+        return self::ERR_CODE_OK;
     }
     
     protected function getNameForLogs()

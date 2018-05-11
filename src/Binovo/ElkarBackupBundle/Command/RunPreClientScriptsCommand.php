@@ -36,7 +36,7 @@ class RunPreClientScriptsCommand extends BaseScriptsCommand
             $this->err('Client not found');
             return self::ERR_CODE_ENTITY_NOT_FOUND;
         }
-        $model = $this->prepareClientModel($client, 'PRE');
+        $model = $this->prepareClientModel($client, self::TYPE_PRE);
         $result = $this->runClientScripts($model);
         $manager->flush();
         

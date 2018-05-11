@@ -31,9 +31,9 @@ class RunPostJobScriptsCommand extends BaseScriptsCommand
         
         $status = $input->getArgument('status');
         if (null == $status) {
-            $status = '0';
+            $status = self::ERR_CODE_OK;
         }
-        if (! ctype_digit($status) && '-1' != $status) {
+        if (! ctype_digit($status) && '-1' != $status && '-2' != $status) {
             $this->err('Input argument not valid');
             return self::ERR_CODE_INPUT_ARG;
         }
@@ -46,7 +46,7 @@ class RunPostJobScriptsCommand extends BaseScriptsCommand
             $this->err('Job not found');
             return self::ERR_CODE_ENTITY_NOT_FOUND;
         }
-        $model = $this->prepareJobModel($job, 'POST', $status);
+        $model = $this->prepareJobModel($job, self::TYPE_POST, $status);
         $result = $this->runJobScripts($model);
         $manager->flush();
         

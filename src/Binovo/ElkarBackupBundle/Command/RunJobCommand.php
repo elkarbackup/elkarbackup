@@ -114,7 +114,8 @@ class RunJobCommand extends LoggingCommand
             )
         );
         $confFileName = sprintf("%s/rsnapshot.%s_%s.cfg", $tmpDir, $idClient, $idJob);
-        $fd = fopen($confFileName, 'w');
+        
+        $fd = @fopen($confFileName, 'w');
         if (false === $fd) {
             $this->err('Error opening config file %filename%. Aborting backup.', array('%filename%' => $confFileName), $context);
             return self::ERR_CODE_OPEN_FILE;
@@ -129,15 +130,15 @@ class RunJobCommand extends LoggingCommand
             $this->warn('Error closing config file %filename%.', array('%filename%' => $confFileName), $context);
         }
         if (!is_dir($job->getSnapshotRoot())) {
-            $ok = mkdir($job->getSnapshotRoot(), 0777, true);
+            $ok = @mkdir($job->getSnapshotRoot(), 0777, true);
             if (false === $ok) {
                 $this->err('Error creating snapshot root %filename%. Aborting backup.', array('%filename%' => $job->getSnapshotRoot()), $context);
                 return self::ERR_CODE_CREATE_FILE;
             }
         }
         
+        $ok = self::ERR_CODE_OK;
         foreach ($runnableRetains as $retain) {
-            $status = 0;
             $job_starttime = time();
             // run rsnapshot. sync first if needed
             $commands = array();
@@ -149,7 +150,7 @@ class RunJobCommand extends LoggingCommand
             foreach ($commands as $command) {
                 $i = ++$i;
                 $commandOutput = array();
-                $status = 0;
+                $status = self::ERR_CODE_OK;
                 // Clean logfile from previous context
                 unset($context['logfile']);
                 $this->info('Running %command%', array('%command%' => $command), $context);
@@ -158,7 +159,7 @@ class RunJobCommand extends LoggingCommand
                 $tmplogfile = sprintf('%s/tmp-c%04dj%04d.log', $logDir, $idClient, $idJob);
                 
                 // Ends with errors / warnings
-                if (0 != $status) {
+                if (self::ERR_CODE_OK != $status) {
                     // Capture error from logfile
                     $commandOutput = $this->captureErrorFromLogfile($tmplogfile);
                     // Log output limited to 500 chars
@@ -181,7 +182,7 @@ class RunJobCommand extends LoggingCommand
                         array('%output%'  => $commandOutputString),
                         $context
                     );
-                    $ok = false;
+                    $ok = self::ERR_CODE_PROC_EXEC_FAILURE;
                     break;
                     // Ends successfully
                 } else {
@@ -269,7 +270,6 @@ class RunJobCommand extends LoggingCommand
         $du = (int)shell_exec(sprintf("du -ks '%s' | sed 's/\t.*//'", $job->getSnapshotRoot()));
         $job->setDiskUsage($du);
         $this->info('Client "%clientid%", Job "%jobid%" du end.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
-        
         
         return $ok;
     }

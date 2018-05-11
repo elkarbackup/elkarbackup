@@ -35,7 +35,7 @@ class RunPreJobScriptsCommand extends BaseScriptsCommand
             $this->err('Job not found');
             return self::ERR_CODE_ENTITY_NOT_FOUND;
         }
-        $model = $this->prepareJobModel($job, 'PRE');
+        $model = $this->prepareJobModel($job, self::TYPE_PRE);
         $result = $this->runJobScripts($model);
         $manager->flush();
         

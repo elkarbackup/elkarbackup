@@ -44,10 +44,10 @@ class TickCommand extends LoggingCommand
     {
         $this->container = $this->getContainer();
         $this->manager = $this->container->get('doctrine')->getManager();
-        $allOk = 0;
-        $allOk = $this->enqueueScheduledBackups($input, $output) && $allOk ;
-        $allOk = $this->executeMessages($input, $output) && $allOk;
-        $allOk = $this->removeOldLogs() && $allOk;
+        $errors = false;
+        $errors = $this->enqueueScheduledBackups($input, $output) && $errors ;
+        $errors = $this->executeMessages($input, $output) && $errors;
+        $errors = $this->removeOldLogs() && $errors;
         
         $logHandler = $this->container->get('BnvLoggerHandler');
         $logHandler->startRecordingMessages();
@@ -60,17 +60,17 @@ class TickCommand extends LoggingCommand
                     $this->initializeClients();
                     $this->initializeQueue();
                     $dql =<<<EOF
-SELECT q
+SELECT COUNT(q)
 FROM BinovoElkarBackupBundle:Queue q
 EOF;
-                    $queueCount = count($this->manager->createQuery($dql)->getResult());
+                    $queueCount = $this->manager->createQuery($dql)->getSingleScalarResult();
                     
                     $dql =<<<EOF
-SELECT c
+SELECT COUNT(c)
 FROM BinovoElkarBackupBundle:Client c
-WHERE c.state NOT LIKE 'NOT READY' AND c.state NOT LIKE 'ERROR'
+WHERE c.state != 'NOT READY' AND c.state != 'ERROR'
 EOF;
-                    $clientCount = count($this->manager->createQuery($dql)->getResult());
+                    $clientCount = $this->manager->createQuery($dql)->getSingleScalarResult();
                     
                     while ($queueCount > 0 || $clientCount > 0) {
                         $this->processQueueElements($input, $output);
@@ -78,17 +78,17 @@ EOF;
                         $this->waitWithTimeout();
                         
                         $dql =<<<EOF
-SELECT q
+SELECT COUNT(q)
 FROM BinovoElkarBackupBundle:Queue q
 EOF;
-                        $queueCount = count($this->manager->createQuery($dql)->getResult());
+                        $queueCount = $this->manager->createQuery($dql)->getSingleScalarResult();
                         
                         $dql =<<<EOF
-SELECT c
+SELECT COUNT(c)
 FROM BinovoElkarBackupBundle:Client c
-WHERE c.state NOT LIKE 'NOT READY' AND c.state NOT LIKE 'ERROR'
+WHERE c.state != 'NOT READY' AND c.state != 'ERROR'
 EOF;
-                        $clientCount = count($this->manager->createQuery($dql)->getResult());
+                        $clientCount = $this->manager->createQuery($dql)->getSingleScalarResult();
                     }
                     
                     //last but not least, backup @tahoe
@@ -100,16 +100,16 @@ EOF;
                     echo "-----ERROR: " . $e;
                     $this->err('Exception running queued commands: %exceptionmsg%', array('%exceptionmsg%' => $e->getMessage()));
                     $this->manager->flush();
-                    $allOk = false;
+                    $errors = true;
                 }
                 $logHandler->stopRecordingMessages();
-                if (0 == $allOk) {
-                    return 0;
+                if (false == $errors) {
+                    return self::ERR_CODE_OK;
                 } else {
                     return self::ERR_CODE_UNKNOWN;
                 }
             }
-            return 0;
+            return self::ERR_CODE_OK;
         } finally {
             $lockHandler->release();
         }
@@ -134,7 +134,7 @@ EOF;
         }
         if (count($policies) == 0) {
             $this->info('Nothing scheduled to run.');
-            return 0;
+            return self::ERR_CODE_OK;
         }
         $policyQuery = array();
         $runnablePolicies = implode(', ', array_keys($policies));
@@ -149,19 +149,20 @@ EOF;
         
         $jobs = $this->manager->createQuery($dql)->getResult();
         foreach ($jobs as $job) {
-            $isQueueIn = $this->getDoctrine()
+            $isQueueIn = $this->container->get('doctrine')
             ->getRepository('BinovoElkarBackupBundle:Queue')
             ->findBy(array('job' => $job));
             if (! $isQueueIn) {
                 $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
                 $this->info('QUEUED', array(), array_merge($context, array('source' => Globals::STATUS_REPORT)));
                 $queue = new Queue($job);
+                $queue->setDate($time);
                 $this->manager->persist($queue);
             }
         }
         $this->manager->flush();
         
-        return 0;
+        return self::ERR_CODE_OK;
     }
 
     protected function executeMessages(InputInterface $input, OutputInterface $output)
@@ -227,7 +228,7 @@ EOF;
             }
             $this->manager->flush();
         }
-        return 0;
+        return self::ERR_CODE_OK;
     }
 
     protected function processQueueElements(InputInterface $input, OutputInterface $output)
@@ -262,7 +263,7 @@ EOF;
                 exit(self::ERR_CODE_UNKNOWN);
             } elseif ($pid == 0) {
                 sleep(1);
-                exit(0);
+                exit(self::ERR_CODE_OK);
             }
             $this->renewDbConnection();
             $this->timeoutPid = $pid;
@@ -336,7 +337,7 @@ EOF;
                 $doPost = $this->container->getParameter('post_on_pre_fail');
                 
                 if ($this->awakenPid == $jobPid ){
-                    if ($this->awakenStatus != 0) {
+                    if ($this->awakenStatus != self::ERR_CODE_OK) {
                         $this->err(
                             'Pre job scripts failed: aborting job',
                             array(),
@@ -356,7 +357,7 @@ EOF;
                                 $context
                             );
                         }
-                    } elseif ($this->awakenStatus == 0) {
+                    } elseif ($this->awakenStatus == self::ERR_CODE_OK) {
                         if (true == $abortStatus) {
                             $this->warn(
                                 'Job stop requested: aborting job',
@@ -387,7 +388,7 @@ EOF;
                 
                 $jobPid = $this->jobsPid[$job->getId()];
                 if ($this->awakenPid == $jobPid ){
-                    if ($this->awakenStatus != 0) {
+                    if ($this->awakenStatus != self::ERR_CODE_OK) {
                         $this->err(
                             'Job execution failed!',
                             array(),
@@ -399,9 +400,9 @@ EOF;
                         $pid = $this->runPostJobScripts($job, $this->awakenStatus);
                         $this->jobsPid[$job->getId()] = $pid;
                         
-                    } elseif ($this->awakenStatus == 0) {
+                    } elseif ($this->awakenStatus == self::ERR_CODE_OK) {
                         $task->setState('POST JOB');
-                        $pid = $this->runPostJobScripts($job);
+                        $pid = $this->runPostJobScripts($job, $this->awakenStatus);
                         $this->jobsPid[$job->getId()] = $pid;
                     }
                 }
@@ -416,7 +417,7 @@ EOF;
             case 'POST JOB':
                 $jobPid = $this->jobsPid[$job->getId()];
                 if ($this->awakenPid == $jobPid) {
-                    if ($this->awakenStatus != 0) {
+                    if ($this->awakenStatus != self::ERR_CODE_OK) {
                         $this->err(
                             'Post job scripts failed!',
                             array(),
@@ -424,7 +425,7 @@ EOF;
                         );
                         $job->setLastResult('FAIL');
                         $this->manager->remove($task);
-                    } elseif ($this->awakenStatus == 0) {
+                    } elseif ($this->awakenStatus == self::ERR_CODE_OK) {
                         $errors = $this->errors[$job->getId()];
                         if ($errors) {
                             $this->warn(
@@ -482,14 +483,14 @@ EOF;
             case 'PRE CLIENT':
                 $clientPid = $this->clientsPid[$client->getId()];
                 if ($this->awakenPid == $clientPid ) {
-                    if ($this->awakenStatus != 0) {
+                    if ($this->awakenStatus != self::ERR_CODE_OK) {
                         $client->setState('ERROR');
                         $this->err(
                             'FAIL',
                             array(),
                             $context
                         );
-                    } elseif ($this->awakenStatus == 0) {
+                    } elseif ($this->awakenStatus == self::ERR_CODE_OK) {
                         $client->setState('READY');
                     }
                 }
@@ -516,14 +517,14 @@ EOF;
             case 'POST CLIENT':
                 $clientPid = $this->clientsPid[$client->getId()];
                 if ($this->awakenPid == $clientPid ) {
-                    if ($this->awakenStatus != 0) {
+                    if ($this->awakenStatus != self::ERR_CODE_OK) {
                         $client->setState('ERROR');
                         $this->err(
                             'FAIL',
                             array(),
                             $context
                         );
-                    } elseif ($this->awakenStatus == 0) {
+                    } elseif ($this->awakenStatus == self::ERR_CODE_OK) {
                         $client->setState('NOT READY');
                         $this->info(
                             'OK',
@@ -535,7 +536,7 @@ EOF;
                 break;
                 
             case 'ERROR':
-                
+                //Nothing to do, when the scheduler finishes the state will reset.
                 break;
         }
         $this->manager->flush();
@@ -669,7 +670,7 @@ EOF;
         return $pid;
     }
     
-    private function runPostJobScripts($job, $status = 0)
+    private function runPostJobScripts($job, $status = self::ERR_CODE_OK)
     {
         $jobId = $job->getId();
         $context = array('link' => $this->generateJobRoute($jobId, $job->getClient()->getId()));
@@ -687,7 +688,7 @@ EOF;
         return $pid;
     }
     
-    private function runBackgroundCommand($command, $id, $context, $status = 0)
+    private function runBackgroundCommand($command, $id, $context, $status = self::ERR_CODE_OK)
     {
         $pid = pcntl_fork();
         if ($pid == -1) {

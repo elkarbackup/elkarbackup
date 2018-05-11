@@ -37,7 +37,7 @@ class RunPostClientScriptsCommand extends BaseScriptsCommand
             $this->err('Client not found');
             return self::ERR_CODE_ENTITY_NOT_FOUND;
         }
-        $model = $this->prepareClientModel($client, 'POST');
+        $model = $this->prepareClientModel($client, self::TYPE_POST);
         $result = $this->runClientScripts($model);
         $manager->flush();
         

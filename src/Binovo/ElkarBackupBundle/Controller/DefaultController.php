@@ -676,8 +676,6 @@ class DefaultController extends Controller
         $queue->setAborted(true);
         $queue->setPriority(0);
         
-        $manager->flush();
-      
         $response = new JsonResponse(array(
             'error' => false,
             'msg' => $t->trans(
@@ -688,7 +686,7 @@ class DefaultController extends Controller
             'action' => 'callbackJobAborting',
             'data' => array($idJob)
         ));
-        
+        $manager->flush();
         return $response;
     }
 

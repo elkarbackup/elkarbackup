@@ -412,18 +412,18 @@ script_help: |
   <li>ELKARBACKUP_URL:    the value is the full URL of the job or client</li>
   <li>ELKARBACKUP_ID:     the numeric job id or client id </li>
   <li>ELKARBACKUP_PATH:   the full path of the snapshot root (only available in job scripts) </li>
-  <li>ELKARBACKUP_STATUS: The output status of rsnapshot for post job scripts, -1 if pre scripts have failed, -2 if rsnapshot has not been executed, always 0 otherwise</li>
+  <li>ELKARBACKUP_STATUS: The output status of rsnapshot for post job scripts, -1 if pre scripts have failed, -2 if rsnapshot has been skipped, always 0 otherwise</li>
   <li>ELKARBACKUP_CLIENT_NAME:  client name </li>
   <li>ELKARBACKUP_JOB_NAME: job name (empty in client) </li>
   <li>ELKARBACKUP_OWNER_EMAIL: job owner's email address (empty in client) </li>
   <li>ELKARBACKUP_RECIPIENT_LIST: job recipients email addresses (empty in client) </li>
   <li>ELKARBACKUP_CLIENT_TOTAL_SIZE: current client disk usage (in KB) </li>
-  <li>ELKARBACKUP_JOB_TOTAL_SIZE: current job disk usage (in KB) </li>
-  <li>ELKARBACKUP_JOB_RUN_SIZE: data size backed up this run (in KB) </li>
-  <li>ELKARBACKUP_CLIENT_STARTTIME: client backup start timestamp (only available in post-client)</li>
-  <li>ELKARBACKUP_CLIENT_ENDTIME: client backup end timestamp (only available in post-client)</li>
-  <li>ELKARBACKUP_JOB_STARTTIME: job backup start timestamp (only available in post-job)</li>
-  <li>ELKARBACKUP_JOB_ENDTIME: job backup end timestamp (only available in post-job)</li>
+  <li>ELKARBACKUP_JOB_TOTAL_SIZE: current job disk usage (in KB, empty in client) </li>
+  <li>ELKARBACKUP_JOB_RUN_SIZE: data size backed up this run (in KB, empty in client) </li>
+  <li>ELKARBACKUP_CLIENT_STARTTIME: client backup start timestamp (only available in client scripts)</li>
+  <li>ELKARBACKUP_CLIENT_ENDTIME: client backup end timestamp (only available in post client scripts)</li>
+  <li>ELKARBACKUP_JOB_STARTTIME: job backup start timestamp (only available in job scripts)</li>
+  <li>ELKARBACKUP_JOB_ENDTIME: job backup end timestamp (only available in post job scripts)</li>
   <li>ELKARBACKUP_SSH_ARGS: advanced arguments for ssh conection</li>
  </ul>
  If any pre client script returns an exit status other than 0 the application aborts the process and prevents jobs of the client from running. On the other hand, the application will trigger a warning alert if the exit status of the pre job script is other than 0 (backup execution will not be aborted).
