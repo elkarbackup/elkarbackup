@@ -352,6 +352,8 @@ job_help: |
  </ol>
  As you can see the application backs up all files by default, excluding only those which match an exclude pattern and do NOT match any include pattern.
  If and only if the include field is empty the application uses the include directives defined in the selected policy. The same can be said for the exclude field.
+ <h4>Backup location</h4>
+ Select the backup location for this job. The backup will be saved in the selected location.
  <h4>Advanced</h4>
  <ul>
   <li><b>Token</b>: Job's Token will be used to allow anonymous remote job executions. Delete the token if you want to disable this feature.</li>
