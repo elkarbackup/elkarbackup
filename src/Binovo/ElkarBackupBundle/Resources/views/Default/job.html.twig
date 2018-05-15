@@ -93,7 +93,7 @@
     </div>
 </form>
 
-<form id="runNowForm" {% if form.vars.value.id %} action="{{ path('runJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" {% endif %} method="POST" {{ form_enctype(form) }}>
+<form id="runNowForm" {% if form.vars.value.id %} action="{{ path('enqueueJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" {% endif %} method="POST" {{ form_enctype(form) }}>
 </form>
 
 {% endblock %}

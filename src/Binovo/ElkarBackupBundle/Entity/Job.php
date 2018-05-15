@@ -131,10 +131,10 @@ class Job
     protected $logEntry = null;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * Job status: running, queued, failed, aborting, aborted
+     * @ORM\Column(type="string", length=10, nullable=true)
+     * Job lastResult: ok, fail
      */
-    protected $status = null;
+    protected $lastResult = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -618,41 +618,27 @@ class Job
     }
 
     /**
-     * Set status
+     * Set last result
      *
-     * @param string $status
+     * @param string $lastResult
      *
      * @return Job
      */
-    public function setStatus($status)
+    public function setLastResult($lastResult)
     {
-        $this->status = $status;
+        $this->lastResult = $lastResult;
 
         return $this;
     }
 
     /**
-     * Get status
+     * Get last result
      *
      * @return string
      */
-    public function getStatus()
+    public function getLastResult()
     {
-        return $this->status;
-    }
-
-    /**
-     * isRunning returns True if job is running
-     *
-     * @return boolean
-     */
-    public function isRunning()
-    {
-        if ('RUNNING' == $this->status){
-          return true;
-        } else {
-          return false;
-        }
+        return $this->lastResult;
     }
 
     /**

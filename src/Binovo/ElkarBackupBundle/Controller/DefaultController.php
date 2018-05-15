@@ -47,6 +47,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Binovo\ElkarBackupBundle\BinovoElkarBackupBundle;
+use Binovo\ElkarBackupBundle\Entity\Queue;
 
 class DefaultController extends Controller
 {
@@ -423,6 +424,10 @@ class DefaultController extends Controller
                 if ($client->getOwner() == null) {
                     $client->setOwner($this->get('security.context')->getToken()->getUser());
                 }
+                
+                if ($client->getMaxParallelJobs() < 1) {
+                    throw new Exception('Max parallel jobs parameter should be positive integer');
+                }
                 $em->persist($client);
                 $this->info(
                     'Save client %clientid%',
@@ -545,12 +550,12 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/client/{idClient}/job/{idJob}/run", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="runJob")
+     * @Route("/client/{idClient}/job/{idJob}/run", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="enqueueJob")
      *
      * @method ("POST")
      *         @Template()
      */
-    public function runJobAction(Request $request, $idClient, $idJob)
+    public function enqueueJobAction(Request $request, $idClient, $idJob)
     {
         $t = $this->get('translator');
         $user = $this->get('security.context')->getToken();
@@ -618,35 +623,35 @@ class DefaultController extends Controller
                     throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
                 }
             }
-            
             $em = $this->getDoctrine()->getManager();
-            $msg = new Message(
-                'DefaultController',
-                'TickCommand',
-                json_encode(array(
-                    'command' => 'elkarbackup:run_job',
-                    'client' => $idClient,
-                    'job' => $idJob
-                ))
-            );
-            
             $context = array(
                 'link' => $this->generateJobRoute($idJob, $idClient),
                 'source' => Globals::STATUS_REPORT
             );
             $status = 'QUEUED';
-            $job->setStatus($status);
+            $isQueueIn = $this->getDoctrine()
+            ->getRepository('BinovoElkarBackupBundle:Queue')
+            ->findBy(array('job' => $job));
+            if(! $isQueueIn) {
+                $queue = new Queue($job);
+                $em->persist($queue);
+                $response = new Response($t->trans(
+                    'Job execution requested successfully',
+                    array(),
+                    'BinovoElkarBackup'
+                ));
+            } else {
+                $response = new Response($t->trans(
+                    'One or more jobs were already enqueued, ignoring',
+                    array(),
+                    'BinovoElkarBackup'
+                ));
+            }
             $this->info($status, array(), $context);
-            $em->persist($msg);
             $em->flush();
-            $response = new Response($t->trans(
-                'Job execution requested successfully',
-                array(),
-                'BinovoElkarBackup'
-            ));
             $response->headers->set('Content-Type', 'text/plain');
             // TODO: change the response from text plain to JSON
-            
+
             return $response;
         }
     }
@@ -660,60 +665,32 @@ class DefaultController extends Controller
     public function runAbortAction(Request $request, $idClient, $idJob)
     {
         $t = $this->get('translator');
+        $manager = $this->getDoctrine()->getManager();
         
         $job = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Job')
             ->find($idJob);
+        $queue = $this->getDoctrine()
+            ->getRepository('BinovoElkarBackupBundle:Queue')
+            ->findOneBy(array('job' => $job));
         if (null == $job) {
             throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
         }
         
-        if ($job->getStatus() == 'RUNNING' or $job->getStatus() == 'QUEUED') {
-            $em = $this->getDoctrine()->getManager();
-            $msg = new Message(
-                'DefaultController',
-                'TickCommand',
-                json_encode(array(
-                    'command' => 'elkarbackup:stop_job',
-                    'client' => $idClient,
-                    'job' => $idJob
-                ))
-            );
-            
-            if ($job->getStatus() == "RUNNING") {
-                // Job is running, next TickCommand will kill the process
-                $newstatus = "ABORTING";
-            } else {
-                // Job is queued, next TickCommand will ignore it
-                $newstatus = "ABORTED";
-            }
-            $context = array(
-                'link' => $this->generateJobRoute($idJob, $idClient),
-                'source' => Globals::STATUS_REPORT
-            );
-            $job->setStatus($newstatus);
-            $this->info($newstatus, array(), $context);
-            $em->persist($msg);
-            $em->flush();
-            $response = new JsonResponse(array(
-                'error' => false,
-                'msg' => $t->trans(
-                    'Job stop requested: aborting job',
-                    array(),
-                    'BinovoElkarBackup'
-                ),
-                'action' => 'callbackJobAborting',
-                'data' => array($idJob)
-            ));
-            return $response;
-        } else {
-            $response = new JsonResponse(array(
-                'error' => true,
-                'msg' => $t->trans('Cannot abort job: not running', array(), 'BinovoElkarBackup')
-            ));
-            return $response;
-        }
+        $queue->setAborted(true);
+        $queue->setPriority(0);
         
+        $response = new JsonResponse(array(
+            'error' => false,
+            'msg' => $t->trans(
+                'Job stop requested: aborting job',
+                array(),
+                'BinovoElkarBackup'
+            ),
+            'action' => 'callbackJobAborting',
+            'data' => array($idJob)
+        ));
+        $manager->flush();
         return $response;
     }
 
@@ -1361,6 +1338,39 @@ class DefaultController extends Controller
             array('pagination' => $pagination,'fsDiskUsage' => $fsDiskUsage)
         );
     }
+    
+    /**
+     * @Route("/status", name="showStatus")
+     * @Template()
+     */
+    public function showStatusAction(Request $request)
+    {
+        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Queue');
+        $query = $repository
+            ->createQueryBuilder('c')
+            ->orderBy('c.date ASC, c.priority')
+            ->getQuery();
+        $clients = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client')->findAll();
+            
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->get('page', 1)/*page number*/,
+            $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
+            );
+        
+        $this->info(
+            'View backup status',
+            array(),
+            array('link' => $this->generateUrl('showStatus'))
+            );
+        $this->getDoctrine()->getManager()->flush();
+        
+        return $this->render(
+            'BinovoElkarBackupBundle:Default:status.html.twig',
+            array('pagination' => $pagination, 'clients' => $clients)
+        );
+    }
 
     /**
      * @Route("/scripts", name="showScripts")
@@ -1757,7 +1767,7 @@ EOF;
         $form->bind($request);
         $result = null;
         $location = $backupLocation->getEffectiveDir();
-        if (! is_dir($backupLocation->getEffectiveDir())) {
+        if (! is_dir($location)) {
             $form->addError(new FormError($t->trans(
                 'Warning: the directory does not exist',
                 array(),
@@ -1780,6 +1790,17 @@ EOF;
                 'BinovoElkarBackupBundle:Default:backuplocation.html.twig',
                 array('form' => $form->createView(),'id' => $id)
             );
+        } elseif ($backupLocation->getMaxParallelJobs() < 1) {
+            $form->addError(new FormError($t->trans(
+                'Max parallel jobs value must be a positive integer',
+                array(),
+                'BinovoElkarBackup'
+            )));
+            $result = $this->render(
+                'BinovoElkarBackupBundle:Default:backuplocation.html.twig',
+                array('form' => $form->createView(),'id' => $id)
+            );
+            
         } elseif ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($backupLocation);
@@ -1985,7 +2006,19 @@ EOF;
                 'type' => 'checkbox',
                 'required' => false,
                 'label' => $t->trans('Disable background', array(), 'BinovoElkarBackup')
-            )
+            ),
+            'max_parallel_jobs' => array(
+                'type' => 'integer',
+                'required' => true,
+                'attr' => array('class' => 'form-control'),
+                'label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup')
+            ),
+            'post_on_pre_fail' => array(
+                'type' => 'checkbox',
+                'required' => false,
+                'label' => $t->trans('Do post script on pre script failure', array(), 'BinovoElkarBackup')
+            ),
+            
         );
         $defaultData = array();
         foreach ($params as $paramName => $formField) {
@@ -2034,11 +2067,23 @@ EOF;
                     }
                 } else {
                     if ($paramValue != $this->container->getParameter($paramName)) {
-                        $ok = $this->setParameter(
-                            $paramName,
-                            $paramValue,
-                            'manageParameters'
-                        );
+                        if ('max_parallel_jobs' == $paramName) {
+                            if ($paramValue < 1) {
+                                $ok = false;
+                            } else {
+                                $ok = $this->setParameter(
+                                    $paramName,
+                                    $paramValue,
+                                    'manageParameters'
+                                );
+                            }
+                        } else {
+                            $ok = $this->setParameter(
+                                $paramName,
+                                $paramValue,
+                                'manageParameters'
+                            );
+                        }
                     }
                 }
                 if (! $ok) {
@@ -2660,7 +2705,7 @@ EOF;
                 $newjob = clone $job;
                 $newjob->setClient($client);
                 $newjob->setDiskUsage(0);
-                $newjob->setStatus('');
+                $newjob->setLastResult('');
                 $newem = $this->getDoctrine()->getManager();
                 $newem->persist($newjob);
                 $newem->flush();

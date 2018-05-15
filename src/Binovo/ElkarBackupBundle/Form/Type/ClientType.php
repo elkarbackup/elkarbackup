@@ -66,16 +66,19 @@ class ClientType extends AbstractType
                 ->add('isActive'      , 'checkbox'  , array('label'    => $t->trans('Is active', array(), 'BinovoElkarBackup'),
                                                             'required' => false))
                 ->add('owner'         , 'entity'    , array('label'    => $t->trans('Owner', array(), 'BinovoElkarBackup'),
-                                                                'property' => 'username',
-                                                                'attr'     => array('class'    => 'form-control'),
-                                                                'class'    => 'BinovoElkarBackupBundle:User'))
+                                                            'property' => 'username',
+                                                            'attr'     => array('class'    => 'form-control'),
+                                                            'class'    => 'BinovoElkarBackupBundle:User'))
+                ->add('maxParallelJobs', 'integer'   , array('label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup'),
+                                                            'attr'  => array('class'    => 'form-control'),
+                                                            'required' => true))
                 ->add('sshArgs'	      , 'text'      , array('label'    => $t->trans('SSH args', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class'     => 'form-control advanced-form-item'),
                                                             'required' => false))
                 ->add('rsyncShortArgs', 'text'      , array('label'    => $t->trans('Rsync short args', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class'     => 'form-control advanced-form-item'),
                                                             'required' => false))
-                ->add('rsyncLongArgs'	, 'text'      , array('label'    => $t->trans('Rsync long args', array(), 'BinovoElkarBackup'),
+                ->add('rsyncLongArgs'	, 'text'      , array('label'  => $t->trans('Rsync long args', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class'     => 'form-control advanced-form-item'),
                                                             'required' => false))
                 ->add('jobs'          , 'collection', array('type'         => new JobShortType(),

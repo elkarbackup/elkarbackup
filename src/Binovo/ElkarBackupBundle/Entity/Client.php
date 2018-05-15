@@ -8,6 +8,7 @@ namespace Binovo\ElkarBackupBundle\Entity;
 
 use Binovo\ElkarBackupBundle\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use \RuntimeException;
 
 /**
@@ -100,6 +101,53 @@ class Client
      * @ORM\Column(type="string",length=255, nullable=true)
      */
     protected $rsyncLongArgs;
+    
+    /**
+     * Variable to show the state in the queue
+     *
+     * @ORM\Column(type="string",length=255, nullable=false)
+     */
+    protected $state;
+    
+    /**
+     * Parallel jobs allowed for the client
+     *
+     * @ORM\Column(type="integer", nullable=false)
+     * @Assert\Regex(
+     *     pattern     = "/^[1-9]\d*$/i",
+     *     htmlPattern = "^[1-9]\d*$",
+     *     message="Max parallel jobs value must be a positive integer"
+     * )
+     */
+    protected $maxParallelJobs = 1;
+    
+    /**
+     * Data generated during the execution
+     *
+     * @ORM\Column(type="text")
+     */
+    protected $data;
+
+    /**
+     * Get max parallel jobs
+     *
+     * @return integer
+     */
+    public function getMaxParallelJobs()
+    {
+        return $this->maxParallelJobs;
+    }
+
+    /**
+     * Set max parallel jobs
+     *
+     * @param integer $maxParallelJobs
+     * @return Client
+     */
+    public function setMaxParallelJobs($maxParallelJobs)
+    {
+        $this->maxParallelJobs = $maxParallelJobs;
+    }
 
     /**
      * Constructor
@@ -107,6 +155,7 @@ class Client
     public function __construct()
     {
         $this->jobs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->state = "NOT READY";
     }
 
     /**
@@ -484,5 +533,49 @@ class Client
     public function getRsyncLongArgs()
     {
         return $this->rsyncLongArgs;
+    }
+    
+    /**
+     * Get state
+     * 
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+    
+    /**
+     * Set state
+     * @param string $state
+     * 
+     * @return Client
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+    }
+    
+    /**
+     * Get data
+     *
+     * @return array
+     */
+    public function getData()
+    {
+        $decodedData = json_decode($this->data, true);
+        return $decodedData;;
+    }
+    
+    /**
+     * Set data
+     *
+     * @param array $data
+     *
+     * @return Client
+     */
+    public function setData($data)
+    {
+        $this->data = json_encode($data);
     }
 }
