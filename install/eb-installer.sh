@@ -8,7 +8,7 @@
 
 # Config
 
-INSTALLER_VERSION="0.1.97"
+INSTALLER_VERSION="0.1.98"
 EB_PATH=/usr/local/elkarbackup
 TMP_PATH=/tmp
 
@@ -113,6 +113,13 @@ function ask_dbconfig_more
       [ "$dbadminpass" ] && break
     done
   fi
+}
+
+function add_missing_params ()
+{
+  # Add some missing parameters (due to upgrades)
+  param["max_parallel_jobs"]=1
+  param["post_on_pre_fail"]="true"
 }
 
 function check_webserver ()
@@ -600,6 +607,7 @@ create_directories
 # If we don't have a $customconfigfile, some db configuration parameters needed
 if [[ -z "$customconfigfile" ]];then
   ask_dbconfig
+  add_missing_params
   # Configure new params in parameters.yml
   for key in ${!param[@]}; do
     setup_parameters ${key} ${param[${key}]} ||
