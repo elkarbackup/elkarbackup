@@ -69,8 +69,9 @@ class ClientType extends AbstractType
                                                             'property' => 'username',
                                                             'attr'     => array('class'    => 'form-control'),
                                                             'class'    => 'BinovoElkarBackupBundle:User'))
-                ->add('maxParallelJobs', 'number'   , array('label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup'),
-                                                            'attr'  => array('class'    => 'form-control','min' => '1', 'step' => 'any')))
+                ->add('maxParallelJobs', 'integer'   , array('label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup'),
+                                                            'attr'  => array('class'    => 'form-control'),
+                                                            'required' => true))
                 ->add('sshArgs'	      , 'text'      , array('label'    => $t->trans('SSH args', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class'     => 'form-control advanced-form-item'),
                                                             'required' => false))

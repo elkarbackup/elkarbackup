@@ -424,6 +424,10 @@ class DefaultController extends Controller
                 if ($client->getOwner() == null) {
                     $client->setOwner($this->get('security.context')->getToken()->getUser());
                 }
+                
+                if ($client->getMaxParallelJobs() < 1) {
+                    throw new Exception('Max parallel jobs parameter should be positive integer');
+                }
                 $em->persist($client);
                 $this->info(
                     'Save client %clientid%',
@@ -1763,7 +1767,7 @@ EOF;
         $form->bind($request);
         $result = null;
         $location = $backupLocation->getEffectiveDir();
-        if (! is_dir($backupLocation->getEffectiveDir())) {
+        if (! is_dir($location)) {
             $form->addError(new FormError($t->trans(
                 'Warning: the directory does not exist',
                 array(),
@@ -1786,6 +1790,17 @@ EOF;
                 'BinovoElkarBackupBundle:Default:backuplocation.html.twig',
                 array('form' => $form->createView(),'id' => $id)
             );
+        } elseif ($backupLocation->getMaxParallelJobs() < 1) {
+            $form->addError(new FormError($t->trans(
+                'Max parallel jobs value must be a positive integer',
+                array(),
+                'BinovoElkarBackup'
+            )));
+            $result = $this->render(
+                'BinovoElkarBackupBundle:Default:backuplocation.html.twig',
+                array('form' => $form->createView(),'id' => $id)
+            );
+            
         } elseif ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($backupLocation);
@@ -1994,7 +2009,7 @@ EOF;
             ),
             'max_parallel_jobs' => array(
                 'type' => 'integer',
-                'required' => false,
+                'required' => true,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup')
             ),
@@ -2052,11 +2067,23 @@ EOF;
                     }
                 } else {
                     if ($paramValue != $this->container->getParameter($paramName)) {
-                        $ok = $this->setParameter(
-                            $paramName,
-                            $paramValue,
-                            'manageParameters'
-                        );
+                        if ('max_parallel_jobs' == $paramName) {
+                            if ($paramValue < 1) {
+                                $ok = false;
+                            } else {
+                                $ok = $this->setParameter(
+                                    $paramName,
+                                    $paramValue,
+                                    'manageParameters'
+                                );
+                            }
+                        } else {
+                            $ok = $this->setParameter(
+                                $paramName,
+                                $paramValue,
+                                'manageParameters'
+                            );
+                        }
                     }
                 }
                 if (! $ok) {

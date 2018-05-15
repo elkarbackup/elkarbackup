@@ -85,8 +85,14 @@ FROM BinovoElkarBackupBundle:Client c
 WHERE c.state != 'NOT READY' AND c.state != 'ERROR'
 EOF;
                     $clientCount = $this->manager->createQuery($dql)->getSingleScalarResult();
-                    
-                    while ($queueCount > 0 || $clientCount > 0) {
+
+                    $noCandidate = false;
+                    while (($queueCount > 0 && !$noCandidate) || $clientCount > 0) {
+                        /*
+                         * Make sure that we don't get stalled information by cleaning all
+                         * the entities in the manager. 
+                         */
+                        $this->manager->clear();
                         $this->processQueueElements($input, $output);
                         $this->processClients($input, $output);
                         $this->waitWithTimeout();
@@ -111,10 +117,12 @@ FROM BinovoElkarBackupBundle:Queue q
 WHERE q.state = 'QUEUED'
 EOF;
                         $queuedJobs = $this->manager->createQuery($dql)->getSingleScalarResult();
-                        
-                        if ($queuedJobs == $queueCount && $queueCount > 0) {
-                            $this->warn('There are no more candidate jobs to be run for this scheduler');
-                            $queueCount = 0;
+
+                        if ($queuedJobs == $queueCount && $noCandidate == false) {
+                            $this->warn('There are jobs remaining but their configuration does not allow to execute them');
+                            $noCandidate = true;
+                        } else {
+                            $noCandidate = false;
                         }
                     }
                     
@@ -569,7 +577,7 @@ EOF;
         $globalLimit = $this->getContainer()->getParameter('max_parallel_jobs');
         $perClientLimit = $myClient->getMaxParallelJobs();
         $perStorageLimit = $myLocation->getMaxParallelJobs();
-        
+
         $dql =<<<EOF
 SELECT q,j,c,bc
 FROM BinovoElkarBackupBundle:Queue q
