@@ -4,6 +4,11 @@ set -e
 # Source debconf library.
 . /usr/share/debconf/confmodule
 
+if [ ! -f /etc/elkarbackup/parameters.yml ]; then
+    echo "parameters.yml not found: creating it from template..."
+    cp /etc/elkarbackup/parameters.yml.dist /etc/elkarbackup/parameters.yml
+fi
+
 dbhost=`sed -n 's/^[ \t]*database_host:[ \t]*\([^ #\t]*\).*/\1/p' /etc/elkarbackup/parameters.yml`
 dbname=`sed -n 's/^[ \t]*database_name:[ \t]*\([^ #\t]*\).*/\1/p' /etc/elkarbackup/parameters.yml`
 dbusername=`sed -n 's/^[ \t]*database_user:[ \t]*\([^ #\t]*\).*/\1/p' /etc/elkarbackup/parameters.yml`
