@@ -594,7 +594,7 @@ class DefaultController extends Controller
 
         $backupLocation = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation')->find($idBackupLocation);
         // TODO: Check that the path is really a path in the requested job and client
-        $sourcePath = sprintf("%s/%s/%s/%s", $backupLocation->getDirectory(), $idClient, $idJob, $path);
+        $sourcePath = sprintf("%s/%s/%s/%s", $backupLocation->getDirectory(), sprintf('%04d', $idClient), sprintf('%04d', $idJob), $path);
 
         $clientRepo = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Client');
