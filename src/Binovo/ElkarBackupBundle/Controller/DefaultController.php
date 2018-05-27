@@ -22,6 +22,7 @@ use Binovo\ElkarBackupBundle\Form\Type\ClientType;
 use Binovo\ElkarBackupBundle\Form\Type\JobForSortType;
 use Binovo\ElkarBackupBundle\Form\Type\JobType;
 use Binovo\ElkarBackupBundle\Form\Type\PolicyType;
+use Binovo\ElkarBackupBundle\Form\Type\RestoreBackupType;
 use Binovo\ElkarBackupBundle\Form\Type\ScriptType;
 use Binovo\ElkarBackupBundle\Form\Type\UserType;
 use Binovo\ElkarBackupBundle\Form\Type\PreferencesType;
@@ -550,6 +551,78 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/client/{idClient}/job/{idJob}/restore/{idBackupLocation}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "idBackupLocation" = "\d+"}, defaults={"path" = "/", "idBackupLocation" = 0}, name="restoreJobBackup")
+     *
+     * @method ("GET")
+     */
+    public function restoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
+    {
+        $suggestedPath = mb_substr($path, mb_strpos($path, '/'));
+        $suggestedPath = mb_substr($suggestedPath, 0, mb_strrpos($suggestedPath, '/'));
+        $t = $this->get('translator');
+        $form = $this->createForm(
+            new RestoreBackupType(),
+            array('path' => $suggestedPath),
+            array('translator' => $t)
+            );
+        return $this->render('BinovoElkarBackupBundle:Default:restorebackup.html.twig',array(
+            'form' => $form->createView(),
+            'idClient' => $idClient,
+            'idJob' => $idJob,
+            'idBackupLocation' => $idBackupLocation,
+            'path' => $path));
+    }
+    
+    /**
+     * @Route("/client/{idClient}/job/{idJob}/restore/{idBackupLocation}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "idBackupLocation" = "\d+"}, defaults={"path" = "/", "idBackupLocation" = 0}, name="runRestoreJobBackup")
+     *
+     * @method ("POST")
+     */
+    public function runRestoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
+    {
+        $form = $this->createForm(new RestoreBackupType());
+        
+        $form->handleRequest($request);
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            //TODO handle error
+            return;
+        }
+        $data = $form->getData();
+        $targetPath = $data['path'];
+        $targetIdClient = $data['client'];
+        
+        
+        $backupLocation = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation')->find($idBackupLocation);
+        // TODO: Check that the path is really a path in the requested job and client
+        $sourcePath = sprintf("%s/%s/%s/%s", $backupLocation->getDirectory(), $idClient, $idJob, $path);
+        
+        $clientRepo = $this->getDoctrine()
+            ->getRepository('BinovoElkarBackupBundle:Client');
+        $targetClient = $clientRepo->find($targetIdClient);
+        $url = $targetClient->getUrl();
+        
+        $manager = $this->getDoctrine()->getManager();
+        $msg = new Message(
+            'DefaultController',
+            'TickCommand',
+            json_encode(array(
+                'command' => "elkarbackup:restore_backup",
+                'url' => $url,
+                'sourcePath' => $sourcePath,
+                'remotePath' => $path
+            ))
+            );
+        $manager->persist($msg);
+        $this->info(
+            'Client "%clientid%" restore started',
+            array('%clientid%' => $idClient),
+            array('link' => $this->generateClientRoute($idClient))
+            );
+        $manager->flush();
+        return $this->redirect($this->generateUrl('showClients'));
+    }
+
+    /**
      * @Route("/client/{idClient}/job/{idJob}/run", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="enqueueJob")
      *
      * @method ("POST")
@@ -852,7 +925,7 @@ class DefaultController extends Controller
         }
     }
 
-        /**
+    /**
      * @Route("/client/{idClient}/job/{idJob}/backup/{action}/{idBackupLocation}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "action" = "view|download|downloadzip", "idBackupLocation" = "\d+"}, defaults={"path" = "/", "idBackupLocation" = 0}, name="showJobBackup")
      *
      * @method ("GET")

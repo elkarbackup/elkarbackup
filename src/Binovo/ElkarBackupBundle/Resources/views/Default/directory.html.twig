@@ -68,9 +68,17 @@
                                           {% trans %}Download as .zip{% endtrans %}
                                         </b></a>
                                     {% endif %}
+                                    &nbsp;|&nbsp;
+                                    <a href="{{ path('restoreJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ file.0, idBackupLocation: backupDirectories[key][0].id}) }}"><b>
+                                        {% trans %}Restore to client{% endtrans %}
+                                    </b></a>
                                 {% else %}
                                     <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download', idBackupLocation: backupDirectories[key][0].id}) }}"><b>
                                       {% trans %}Download{% endtrans %}
+                                    </b></a>
+                                    &nbsp;|&nbsp;
+                                    <a href="{{ path('restoreJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ file.0, idBackupLocation: backupDirectories[key][0].id}) }}"><b>
+                                        {% trans %}Restore to client{% endtrans %}
                                     </b></a>
                                 {% endif %}
                             {% endif %}
