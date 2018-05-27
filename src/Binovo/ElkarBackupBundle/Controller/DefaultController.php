@@ -155,7 +155,7 @@ class DefaultController extends Controller
             'Content-Type' => 'text/plain',
             'Content-Disposition' => sprintf('attachment; filename="Publickey.pub"')
         );
-        
+
         return new Response(file_get_contents(
             $this->container->getParameter('public_key')),
             200,
@@ -175,22 +175,22 @@ class DefaultController extends Controller
         $db = $this->getDoctrine();
         $manager = $db->getManager();
         $msg = new Message(
-            'DefaultController', 
-            'TickCommand', 
+            'DefaultController',
+            'TickCommand',
             json_encode(array('command' => "elkarbackup:generate_keypair"))
         );
         $manager->persist($msg);
         $this->info('Public key generation requested');
         $manager->flush();
         $this->get('session')->getFlashBag()->add(
-            'manageParameters', 
+            'manageParameters',
             $t->trans(
-                'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise', 
-                array(), 
+                'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise',
+                array(),
                 'BinovoElkarBackup'
             )
         );
-        
+
         return $this->redirect($this->generateUrl('manageParameters'));
     }
 
@@ -211,7 +211,7 @@ class DefaultController extends Controller
         if ($access == False) {
             return $this->redirect($this->generateUrl('showClients'));
         }
-        
+
         $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Client');
@@ -220,8 +220,8 @@ class DefaultController extends Controller
         try {
             $manager->remove($client);
             $msg = new Message(
-                'DefaultController', 
-                'TickCommand', 
+                'DefaultController',
+                'TickCommand',
                 json_encode(array(
                     'command' => "elkarbackup:delete_job_backups",
                     'client' => (int) $id
@@ -243,7 +243,7 @@ class DefaultController extends Controller
                 )
             );
         }
-        
+
         return $this->redirect($this->generateUrl('showClients'));
     }
 
@@ -258,7 +258,7 @@ class DefaultController extends Controller
         $request = $this->getRequest();
         $session = $request->getSession();
         $t = $this->get('translator');
-        
+
         // get the login error if there is one
         if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
             $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
@@ -284,7 +284,7 @@ class DefaultController extends Controller
         } else {
             $disable_background = False;
         }
-        
+
         // Warning for Rsnapshot 1.3.1-4 in Debian Jessie
         $rsnapshot_jessie_md5 = '7d9eb926a1c4d6fcbf81d939d9f400ea';
         if (is_callable('shell_exec') && false === stripos(ini_get('disable_functions'), 'shell_exec')) {
@@ -310,7 +310,7 @@ class DefaultController extends Controller
         } else {
             $alert = NULL;
         }
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:login.html.twig',
             array(
@@ -338,7 +338,7 @@ class DefaultController extends Controller
             if ($access == False) {
                 return $this->redirect($this->generateUrl('showClients'));
             }
-            
+
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
             $client = $repository->find($id);
             if (null == $client) {
@@ -347,7 +347,7 @@ class DefaultController extends Controller
                 );
             }
         }
-        
+
         $form = $this->createForm(
             new ClientType(),
             $client,
@@ -359,7 +359,7 @@ class DefaultController extends Controller
             array('link' => $this->generateClientRoute($id))
         );
         $this->getDoctrine()->getManager()->flush();
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:client.html.twig',
             array('form' => $form->createView())
@@ -376,7 +376,7 @@ class DefaultController extends Controller
     {
         $user = $this->get('security.context')->getToken()->getUser();
         $actualuserid = $user->getId();
-        
+
         $t = $this->get('translator');
         if ("-1" === $id) {
             $client = new Client();
@@ -384,7 +384,7 @@ class DefaultController extends Controller
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
             $client = $repository->find($id);
         }
-        
+
         $form = $this->createForm(
             new ClientType(),
             $client,
@@ -400,8 +400,8 @@ class DefaultController extends Controller
                         $client->getJobs()->removeElement($job);
                         $em->remove($job);
                         $msg = new Message(
-                            'DefaultController', 
-                            'TickCommand', 
+                            'DefaultController',
+                            'TickCommand',
                             json_encode(array(
                                 'command' => "elkarbackup:delete_job_backups",
                                 'client' => (int) $id,
@@ -414,7 +414,7 @@ class DefaultController extends Controller
                             array(
                                 '%clientid%' => $client->getId(),
                                 '%jobid%' => $job->getId()
-                            ), 
+                            ),
                             array('link' => $this->generateJobRoute(
                                 $job->getId(),
                                 $client->getId()
@@ -425,7 +425,7 @@ class DefaultController extends Controller
                 if ($client->getOwner() == null) {
                     $client->setOwner($this->get('security.context')->getToken()->getUser());
                 }
-                
+
                 if ($client->getMaxParallelJobs() < 1) {
                     throw new Exception('Max parallel jobs parameter should be positive integer');
                 }
@@ -436,7 +436,7 @@ class DefaultController extends Controller
                     array('link' => $this->generateClientRoute($client->getId()))
                 );
                 $em->flush();
-                
+
                 return $this->redirect($this->generateUrl('showClients'));
             } catch (Exception $e) {
                 $this->get('session')->getFlashBag()->add(
@@ -446,14 +446,14 @@ class DefaultController extends Controller
                         'BinovoElkarBackup'
                     )
                 );
-                
+
                 return $this->redirect($this->generateUrl(
                     'editClient',
                     array('id' => $client->getId() == null ? 'new' : $client->getId())
                 ));
             }
         } else {
-            
+
             return $this->render(
                 'BinovoElkarBackupBundle:Default:client.html.twig',
                 array('form' => $form->createView())
@@ -474,7 +474,7 @@ class DefaultController extends Controller
         if ($access == False) {
             return $this->redirect($this->generateUrl('showClients'));
         }
-        
+
         $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Job');
@@ -501,7 +501,7 @@ class DefaultController extends Controller
                 'BinovoElkarBackup'
             ));
         }
-        
+
         return $this->redirect($this->generateUrl('showClients'));
     }
 
@@ -543,7 +543,7 @@ class DefaultController extends Controller
             array('link' => $this->generateJobRoute($idJob, $idClient))
         );
         $this->getDoctrine()->getManager()->flush();
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:job.html.twig',
             array('form' => $form->createView())
@@ -572,7 +572,7 @@ class DefaultController extends Controller
             'idBackupLocation' => $idBackupLocation,
             'path' => $path));
     }
-    
+
     /**
      * @Route("/client/{idClient}/job/{idJob}/restore/{idBackupLocation}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "idBackupLocation" = "\d+"}, defaults={"path" = "/", "idBackupLocation" = 0}, name="runRestoreJobBackup")
      *
@@ -581,7 +581,7 @@ class DefaultController extends Controller
     public function runRestoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
         $form = $this->createForm(new RestoreBackupType());
-        
+
         $form->handleRequest($request);
         if (!$form->isSubmitted() || !$form->isValid()) {
             //TODO handle error
@@ -590,17 +590,17 @@ class DefaultController extends Controller
         $data = $form->getData();
         $targetPath = $data['path'];
         $targetIdClient = $data['client'];
-        
-        
+
+
         $backupLocation = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation')->find($idBackupLocation);
         // TODO: Check that the path is really a path in the requested job and client
         $sourcePath = sprintf("%s/%s/%s/%s", $backupLocation->getDirectory(), $idClient, $idJob, $path);
-        
+
         $clientRepo = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Client');
         $targetClient = $clientRepo->find($targetIdClient);
         $url = $targetClient->getUrl();
-        
+
         $manager = $this->getDoctrine()->getManager();
         $msg = new Message(
             'DefaultController',
@@ -609,7 +609,7 @@ class DefaultController extends Controller
                 'command' => "elkarbackup:restore_backup",
                 'url' => $url,
                 'sourcePath' => $sourcePath,
-                'remotePath' => $path
+                'remotePath' => $targetPath
             ))
             );
         $manager->persist($msg);
@@ -633,7 +633,7 @@ class DefaultController extends Controller
         $t = $this->get('translator');
         $user = $this->get('security.context')->getToken();
         $trustable = false;
-        
+
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
             // Authenticated user
             $trustable = true;
@@ -672,7 +672,7 @@ class DefaultController extends Controller
                     // Invalid token
                     $trustable = false;
                 }
-                
+
                 if (! $trustable) {
                     $response = new JsonResponse(array(
                         'status' => 'false',
@@ -686,7 +686,7 @@ class DefaultController extends Controller
                 }
             }
         }
-        
+
         if ($trustable) {
             if (! isset($job)) {
                 $job = $this->getDoctrine()
@@ -739,7 +739,7 @@ class DefaultController extends Controller
     {
         $t = $this->get('translator');
         $manager = $this->getDoctrine()->getManager();
-        
+
         $job = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Job')
             ->find($idJob);
@@ -749,10 +749,10 @@ class DefaultController extends Controller
         if (null == $job) {
             throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
         }
-        
+
         $queue->setAborted(true);
         $queue->setPriority(0);
-        
+
         $response = new JsonResponse(array(
             'error' => false,
             'msg' => $t->trans(
@@ -775,7 +775,7 @@ class DefaultController extends Controller
      */
     public function showJobConfigAction(Request $request, $idClient, $idJob)
     {
-        $t = $this->get('translator');        
+        $t = $this->get('translator');
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
         $job = $repository->find($idJob);
         if (null == $job || $job->getClient()->getId() != $idClient) {
@@ -784,7 +784,7 @@ class DefaultController extends Controller
                     'Unable to find Job entity: ',
                     array(),
                     'BinovoElkarBackup'
-                ) 
+                )
                 . $idClient . " " . $idJob
             );
         }
@@ -832,7 +832,7 @@ class DefaultController extends Controller
         foreach ($job->getPostScripts() as $script) {
             $postCommand = $postCommand . "\n" . sprintf('/usr/bin/env ELKARBACKUP_LEVEL="JOB" ELKARBACKUP_EVENT="POST" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" sudo "%s" 2>&1', $url, $idJob, $job->getSnapshotRoot(), 0, $script->getScriptPath());
         }
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:rsnapshotconfig.txt.twig',
             array(
@@ -900,7 +900,7 @@ class DefaultController extends Controller
                     array(
                         '%clientid%' => $job->getClient()->getId(),
                         '%jobid%' => $job->getId()
-                    ), 
+                    ),
                     array('link' => $this->generateJobRoute(
                         $job->getId(),
                         $job->getClient()->getId()
@@ -914,10 +914,10 @@ class DefaultController extends Controller
                     'BinovoElkarBackup'
                 ));
             }
-            
+
             return $this->redirect($this->generateUrl('showClients'));
         } else {
-            
+
             return $this->render(
                 'BinovoElkarBackupBundle:Default:job.html.twig',
                 array('form' => $form->createView())
@@ -955,7 +955,7 @@ class DefaultController extends Controller
                 $job->getClient()->getId(),
                 $job->getId()
             );
-            
+
             $snapshotRoot = realpath($backupDir);
             $realPath = realpath($snapshotRoot . '/' . $path);
             $backupDirectories = array();
@@ -966,7 +966,7 @@ class DefaultController extends Controller
             if (file_exists($jobPath[1])) {
                 array_push($backupDirectories, $jobPath);
             }
-            
+
             if (false == $realPath) {
                 throw $this->createNotFoundException($t->trans(
                     'Path not found:',
@@ -1008,7 +1008,7 @@ class DefaultController extends Controller
                             'path' => $path
                         ))));
                     $this->getDoctrine()->getManager()->flush();
-                    
+
                     return new StreamedResponse($f, 200, $headers);
                 } elseif ('downloadzip' == $action) {
                     $headers = array(
@@ -1037,7 +1037,7 @@ class DefaultController extends Controller
                         )))
                         );
                     $this->getDoctrine()->getManager()->flush();
-                    
+
                     return new StreamedResponse($f, 200, $headers);
                 } else {
                     // Check if Zip is in the user path
@@ -1071,7 +1071,7 @@ class DefaultController extends Controller
                         )))
                         );
                     $this->getDoctrine()->getManager()->flush();
-                    
+
                     $params = array(
                         'dirContent' => $dirContent,
                         'job' => $job,
@@ -1087,7 +1087,7 @@ class DefaultController extends Controller
                 $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
                 $mimeType = finfo_file($finfo, $realPath);
                 finfo_close($finfo);
-                
+
                 $response = new BinaryFileResponse($realPath);
                 $contentDisposition = $response->headers->makeDisposition(
                     ResponseHeaderBag::DISPOSITION_ATTACHMENT,
@@ -1106,14 +1106,14 @@ class DefaultController extends Controller
                     'path' => $path
                 ))));
                 $this->getDoctrine()->getManager()->flush();
-                
+
                 return $response;
             }
         } else {
             // Check if Zip is in the user path
             exec('which zip', $cmdretval);
             $isZipInstalled = $cmdretval;
-            
+
             $backupDirectories = $this->findBackups($job);
             $dirContent = array();
             foreach ($backupDirectories as $backupDir) {
@@ -1143,7 +1143,7 @@ class DefaultController extends Controller
                 )))
             );
             $this->getDoctrine()->getManager()->flush();
-            
+
             $params = array(
                 'dirContent' => $dirContent,
                 'job' => $job,
@@ -1187,7 +1187,7 @@ class DefaultController extends Controller
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
-        
+
         $t = $this->get('translator');
         if ('new' === $id) {
             $policy = new Policy();
@@ -1203,11 +1203,11 @@ class DefaultController extends Controller
         );
         $this->info(
             'View policy %policyname%',
-            array('%policyname%' => $policy->getName()), 
+            array('%policyname%' => $policy->getName()),
             array('link' => $this->generatePolicyRoute($policy->getId()))
         );
         $this->getDoctrine()->getManager()->flush();
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:policy.html.twig',
             array('form' => $form->createView())
@@ -1226,7 +1226,7 @@ class DefaultController extends Controller
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
-        
+
         $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Policy');
@@ -1243,11 +1243,11 @@ class DefaultController extends Controller
         } catch (PDOException $e) {
             $this->get('session')->getFlashBag()->add('showPolicies', $t->trans(
                 'Removing the policy %name% failed. Check that it is not in use.',
-                array('%name%' => $policy->getName()), 
+                array('%name%' => $policy->getName()),
                 'BinovoElkarBackup'
             ));
         }
-        
+
         return $this->redirect($this->generateUrl('showPolicies'));
     }
 
@@ -1281,10 +1281,10 @@ class DefaultController extends Controller
                 array('link' => $this->generatePolicyRoute($id))
             );
             $em->flush();
-            
+
             return $this->redirect($this->generateUrl('showPolicies'));
         } else {
-            
+
             return $this->render(
                 'BinovoElkarBackupBundle:Default:policy.html.twig',
                 array('form' => $form->createView())
@@ -1300,10 +1300,10 @@ class DefaultController extends Controller
     {
         $user = $this->get('security.context')->getToken()->getUser();
         $actualuserid = $user->getId();
-        
+
         $t = $this->get('translator');
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
-        
+
         $query = $repository->createQueryBuilder('j')
             ->innerJoin('j.client', 'c')
             ->addOrderBy('j.priority', 'ASC');
@@ -1314,7 +1314,7 @@ class DefaultController extends Controller
         }
         $jobs = $query->getQuery()->getResult();
         ;
-        
+
         $formBuilder = $this->createFormBuilder(array('jobs' => $jobs));
         $formBuilder->add('jobs', 'collection', array('type' => new JobForSortType()));
         $form = $formBuilder->getForm();
@@ -1343,7 +1343,7 @@ class DefaultController extends Controller
                 array('form' => $form->createView())
             );
         }
-        
+
         return $result;
     }
 
@@ -1367,30 +1367,30 @@ class DefaultController extends Controller
     {
         $user = $this->get('security.context')->getToken()->getUser();
         $actualuserid = $user->getId();
-        
+
         $fsDiskUsage = (int) round(
             $this->getFsUsed('/') * 100 / $this->getFsSize('/'),
             0,
             PHP_ROUND_HALF_UP
         );
-        
+
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
         $query = $repository->createQueryBuilder('c')->addOrderBy('c.id', 'ASC');
-        
+
         if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
             // Limited view for non-admin users
             $query->where('c.owner = ?1'); // adding users and roles
             $query->setParameter(1, $actualuserid);
         }
         $query->getQuery();
-        
+
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        
+
         foreach ($pagination as $i => $client) {
             $client->setLogEntry($this->getLastLogForLink('%/client/' . $client->getId()));
             foreach ($client->getJobs() as $job) {
@@ -1405,13 +1405,13 @@ class DefaultController extends Controller
             array('link' => $this->generateUrl('showClients'))
         );
         $this->getDoctrine()->getManager()->flush();
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:clients.html.twig',
             array('pagination' => $pagination,'fsDiskUsage' => $fsDiskUsage)
         );
     }
-    
+
     /**
      * @Route("/status", name="showStatus")
      * @Template()
@@ -1424,21 +1424,21 @@ class DefaultController extends Controller
             ->orderBy('c.date ASC, c.priority')
             ->getQuery();
         $clients = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client')->findAll();
-            
+
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
             );
-        
+
         $this->info(
             'View backup status',
             array(),
             array('link' => $this->generateUrl('showStatus'))
             );
         $this->getDoctrine()->getManager()->flush();
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:status.html.twig',
             array('pagination' => $pagination, 'clients' => $clients)
@@ -1453,7 +1453,7 @@ class DefaultController extends Controller
     {
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Script');
         $query = $repository->createQueryBuilder('c')->getQuery();
-        
+
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
@@ -1466,7 +1466,7 @@ class DefaultController extends Controller
             array('link' => $this->generateUrl('showScripts'))
         );
         $this->getDoctrine()->getManager()->flush();
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:scripts.html.twig',
             array('pagination' => $pagination)
@@ -1492,7 +1492,7 @@ EOF;
         if (count($logs) > 0) {
             $lastLog = $logs[0];
         }
-        
+
         return $lastLog;
     }
 
@@ -1531,7 +1531,7 @@ EOF;
             }
         }
         $query = $queryBuilder->getQuery();
-        
+
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
@@ -1544,7 +1544,7 @@ EOF;
             array('link' => $this->generateUrl('showLogs'))
         );
         $this->getDoctrine()->getManager()->flush();
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:logs.html.twig',
             array(
@@ -1607,7 +1607,7 @@ EOF;
     {
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Policy');
         $query = $repository->createQueryBuilder('c')->getQuery();
-        
+
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
@@ -1620,7 +1620,7 @@ EOF;
             array('link' => $this->generateUrl('showPolicies'))
         );
         $this->getDoctrine()->getManager()->flush();
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:policies.html.twig',
             array('pagination' => $pagination)
@@ -1655,7 +1655,7 @@ EOF;
         );
         $response->headers->set('Content-Type', 'text/plain');
         $response->headers->set('Content-Disposition', 'attachment; filename="copyrepository.sh"');
-        
+
         return $response;
     }
 
@@ -1672,7 +1672,7 @@ EOF;
                 $keys[] = array('publicKey' => $matches[1],'comment' => $matches[2]);
             }
         }
-        
+
         return $keys;
     }
 
@@ -1703,7 +1703,7 @@ EOF;
             );
         }
         $backupScriptForm = $backupScriptFormBuilder->getForm();
-        
+
         $authorizedKeysFile = dirname(
             $this->container->getParameter('public_key')
         ) . '/authorized_keys';
@@ -1758,7 +1758,7 @@ EOF;
                 array('authorizedKeysForm' => $authorizedKeysForm->createView(), 'backupScriptForm' => $backupScriptForm->createView())
             );
         }
-        
+
         return $result;
     }
 
@@ -1772,7 +1772,7 @@ EOF;
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
-        
+
         $t = $this->get('translator');
         if ('new' === $id) {
             $backupLocation = new BackupLocation();
@@ -1780,29 +1780,29 @@ EOF;
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation');
             $backupLocation = $repository->find($id);
         }
-        
+
         $tahoe = $this->container->get('Tahoe');
         $tahoeInstalled = $tahoe->isInstalled();
         $tahoeOn = $backupLocation->getTahoe();
-        
+
         if (! $tahoeInstalled && $tahoeOn) {
             $tahoeOn = false;
             $backupLocation->setTahoe(false);
         }
-        
+
         $form = $this->createForm(
             new BackupLocationType($this->isAutoFsAvailable(), $tahoeInstalled),
             $backupLocation,
             array('translator' => $t)
         );
-        
+
         $this->info(
             'View location %backupLocationName%.',
             array('%backupLocationName%' => $backupLocation->getName()),
             array('link' => $this->generateBackupLocationRoute($id))
         );
         $this->getDoctrine()->getManager()->flush();
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:backuplocation.html.twig',
             array('form' => $form->createView(),'id' => $id)
@@ -1824,14 +1824,14 @@ EOF;
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation');
             $backupLocation = $repository->find($id);
         }
-        
+
         $tahoe = $this->container->get('Tahoe');
         $tahoeInstalled = $tahoe->isInstalled();
-        
+
         if ($backupLocation->getTahoe() == null) {
             $backupLocation->setTahoe(false);
         }
-        
+
         $form = $this->createForm(
             new BackupLocationType($this->isAutoFsAvailable(), $tahoeInstalled),
             $backupLocation,
@@ -1873,7 +1873,7 @@ EOF;
                 'BinovoElkarBackupBundle:Default:backuplocation.html.twig',
                 array('form' => $form->createView(),'id' => $id)
             );
-            
+
         } elseif ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($backupLocation);
@@ -1890,7 +1890,7 @@ EOF;
                 array('form' => $form->createView(),'id' => $id)
             );
         }
-        
+
         $this->clearCache();
         return $result;
     }
@@ -1907,7 +1907,7 @@ EOF;
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
-        
+
         $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:BackupLocation');
@@ -1931,7 +1931,7 @@ EOF;
                 )
             );
         }
-        
+
         return $this->redirect($this->generateUrl('manageBackupLocations'));
     }
 
@@ -1943,7 +1943,7 @@ EOF;
     {
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation');
         $query = $repository->createQueryBuilder('c')->getQuery();
-        
+
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
@@ -1956,7 +1956,7 @@ EOF;
             array('link' => $this->generateUrl('manageBackupLocations'))
         );
         $this->getDoctrine()->getManager()->flush();
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:backuplocations.html.twig',
             array('pagination' => $pagination)
@@ -2091,7 +2091,7 @@ EOF;
                 'required' => false,
                 'label' => $t->trans('Do post script on pre script failure', array(), 'BinovoElkarBackup')
             ),
-            
+
         );
         $defaultData = array();
         foreach ($params as $paramName => $formField) {
@@ -2191,7 +2191,7 @@ EOF;
         }
         $this->getDoctrine()->getManager()->flush();
         $this->clearCache();
-        
+
         return $result;
     }
 
@@ -2220,7 +2220,7 @@ EOF;
                 array('link' => $this->generateUrl($from))
             );
         }
-        
+
         return $ok;
     }
 
@@ -2260,7 +2260,7 @@ EOF;
             )
         )
         ->getForm();
-        
+
         if ($request->isMethod('POST')) {
             $form->bind($request);
             $data = $form->getData();
@@ -2309,10 +2309,10 @@ EOF;
                 );
                 $manager->flush();
             }
-            
+
             return $this->redirect($this->generateUrl('changePassword'));
         } else {
-            
+
             return $this->render(
                 'BinovoElkarBackupBundle:Default:password.html.twig',
                 array('form' => $form->createView())
@@ -2340,7 +2340,7 @@ EOF;
                 'BinovoElkarBackup'
             ));
         }
-        
+
         $response = new Response();
         if (is_file($log->getLogfilePath())) {
             // Logfile exists
@@ -2350,7 +2350,7 @@ EOF;
                 array('link' => $this->generateUrl('downloadLog', array('id' => $id)))
             );
             $manager->flush();
-            
+
             $response->setContent(file_get_contents($log->getLogfilePath()));
             $response->headers->set('Content-Type', 'application/octet-stream');
             $response->headers->set(
@@ -2368,7 +2368,7 @@ EOF;
                 array('link' => $this->generateUrl('downloadLog', array('id' => $id)))
             );
             $manager->flush();
-            
+
             $response->setContent(file_get_contents($log->getLogfilePath() . ".gz"));
             $response->headers->set('Content-Type', 'application/octet-stream');
             $response->headers->set(
@@ -2388,7 +2388,7 @@ EOF;
             $manager->flush();
             $response = $this->redirect($this->generateUrl('showLogs'));
         }
-        
+
         return $response;
     }
 
@@ -2404,7 +2404,7 @@ EOF;
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
-        
+
         $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Script');
@@ -2428,7 +2428,7 @@ EOF;
                 )
             );
         }
-        
+
         return $this->redirect($this->generateUrl('showScripts'));
     }
 
@@ -2468,7 +2468,7 @@ EOF;
                 $script->getName()
             )
         );
-        
+
         return $response;
     }
 
@@ -2484,7 +2484,7 @@ EOF;
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
-        
+
         $t = $this->get('translator');
         if ('new' === $id) {
             $script = new Script();
@@ -2506,7 +2506,7 @@ EOF;
             array('link' => $this->generateScriptRoute($id))
         );
         $this->getDoctrine()->getManager()->flush();
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:script.html.twig',
             array('form' => $form->createView())
@@ -2567,7 +2567,7 @@ EOF;
                 array('form' => $form->createView())
             );
         }
-        
+
         return $result;
     }
 
@@ -2592,7 +2592,7 @@ EOF;
             );
             $manager->flush();
         }
-        
+
         return $this->redirect($this->generateUrl('showUsers'));
     }
 
@@ -2618,7 +2618,7 @@ EOF;
             array('link' => $this->generateUserRoute($id))
         );
         $this->getDoctrine()->getManager()->flush();
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:user.html.twig',
             array('form' => $form->createView())
@@ -2657,10 +2657,10 @@ EOF;
                 array('link' => $this->generateUserRoute($id))
             );
             $em->flush();
-            
+
             return $this->redirect($this->generateUrl('showUsers'));
         } else {
-            
+
             return $this->render(
                 'BinovoElkarBackupBundle:Default:user.html.twig',
                 array('form' => $form->createView())
@@ -2675,7 +2675,7 @@ EOF;
     {
         $this->get('session')->set('_locale', $locale);
         $referer = $request->headers->get('referer');
-        
+
         return $this->redirect($referer);
     }
 
@@ -2687,7 +2687,7 @@ EOF;
     {
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:User');
         $query = $repository->createQueryBuilder('c')->getQuery();
-        
+
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
@@ -2700,7 +2700,7 @@ EOF;
             array('link' => $this->generateUrl('showUsers'))
         );
         $this->getDoctrine()->getManager()->flush();
-        
+
         return $this->render(
             'BinovoElkarBackupBundle:Default:users.html.twig',
             array('pagination' => $pagination)
@@ -2711,8 +2711,8 @@ EOF;
     {
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
         $client = $repository->find($idClient);
-        
-        if ($client->getOwner() == $this->get('security.context')->getToken()->getUser() || 
+
+        if ($client->getOwner() == $this->get('security.context')->getToken()->getUser() ||
             $this->get('security.context')->isGranted('ROLE_ADMIN')) {
             return True;
         } else {
@@ -2737,7 +2737,7 @@ EOF;
                 'BinovoElkarBackup'
             ) . $idClient);
         }
-        
+
         $clientrow = array();
         try {
             // CLONE CLIENT
@@ -2750,31 +2750,31 @@ EOF;
                     'BinovoElkarBackup'
                 ) . $client);
             }
-            
+
             $newname = $client->getName() . "-cloned1";
             while ($repository->findOneByName($newname)) {
                 $newname ++;
             }
-            
+
             $new = clone $client;
             $new->setName($newname);
             $newem = $this->getDoctrine()->getManager();
             $newem->persist($new);
             $newem->flush();
             $newem->detach($new);
-            
+
             $idnew = $new->getId();
-            
+
             // CLONE JOBS
-            
+
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
             $jobs = $repository->findBy(array('client' => $idoriginal
             ));
-            
+
             foreach ($jobs as $job) {
                 $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
                 $client = $repository->find($idnew);
-                
+
                 $newjob = clone $job;
                 $newjob->setClient($client);
                 $newjob->setDiskUsage(0);
@@ -2794,10 +2794,10 @@ EOF;
                 )
             );
         }
-        
+
         // $response = new Response($t->trans('Client cloned successfully', array(), 'BinovoElkarBackup'));
         // $response->headers->set('Content-Type', 'text/plain');
-        
+
         // Custom normalizer
         // $normalizers[] = new ClientNormalizer();
         // $normalizer = new ObjectNormalizer();
@@ -2809,7 +2809,7 @@ EOF;
         $encoders[] = new JsonEncoder();
         $encoders[] = new XmlEncoder();
         $serializer = new Serializer($normalizers, $encoders);
-        
+
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
         $client = $repository->find($idnew);
         // syslog(LOG_ERR, "Obtaining first job: ".$client->getJobs()[0]->getId());
@@ -2834,7 +2834,7 @@ EOF;
     {
         $t = $this->get('translator');
         $randtoken = md5(uniqid(rand(), true));
-        
+
         $response = new JsonResponse(array(
             'token' => $randtoken,
             'msg' => $t->trans('New Token have been generated', array(), 'BinovoElkarBackup')
@@ -2856,7 +2856,7 @@ EOF;
             $user,
             array('translator' => $t,'validation_groups' => array('preferences'))
         );
-        
+
         if ($request->isMethod('POST')) {
             $form->bind($request);
             $data = $form->getData();
@@ -2868,7 +2868,7 @@ EOF;
                 array('link' => $this->generateUserRoute($user->getId()))
             );
             $em->flush();
-            
+
             $language = $form['language']->getData();
             $this->setLanguage($request, $language);
             return $this->redirect($this->generateUrl('managePreferences'));
@@ -2879,7 +2879,7 @@ EOF;
                 array('link' => $this->generateUserRoute($user->getId()))
             );
             $this->getDoctrine()->getManager()->flush();
-            
+
             return $this->render(
                 'BinovoElkarBackupBundle:Default:preferences.html.twig',
                 array('form' => $form->createView())
@@ -2898,7 +2898,7 @@ EOF;
         }
         return $response;
     }
-    
+
     public function findBackups($job)
     {
         $em = $this->getDoctrine()->getManager();
@@ -2935,7 +2935,7 @@ EOF;
                 }
             }
         }
-        
+
         return $jobLocations;
     }
 }
