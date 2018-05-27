@@ -1011,17 +1011,7 @@ class DefaultController extends Controller
                     return $this->render('BinovoElkarBackupBundle:Default:directory.html.twig', $params);
                 }
             } else {
-                $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
-                $mimeType = finfo_file($finfo, $realPath);
-                finfo_close($finfo);
-                
                 $response = new BinaryFileResponse($realPath);
-                $contentDisposition = $response->headers->makeDisposition(
-                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                    basename($realPath)
-                    );
-                $response->headers->set('Content-Type', $mimeType);
-                $response->headers->set('Content-Disposition', $contentDisposition);
                 $this->info('Download backup file %clientid%, %jobid% %path%', array(
                     '%clientid%' => $idClient,
                     '%jobid%' => $idJob,
