@@ -694,20 +694,34 @@ class DefaultController extends Controller
         if (null == $job) {
             throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
         }
+        if (null == $queue) {
+            $response = new JsonResponse(array(
+                'error' => true,
+                'msg' => $t->trans(
+                    'The requested job does not exists, it has probably ended.',
+                    array(),
+                    'BinovoElkarBackup'
+                    ),
+                'action' => 'callbackJobAborting',
+                'data' => array($idJob)
+            ));
+        } else {
+            $queue->setAborted(true);
+            $queue->setPriority(0);
+            
+            $response = new JsonResponse(array(
+                'error' => false,
+                'msg' => $t->trans(
+                    'Job stop requested: aborting job',
+                    array(),
+                    'BinovoElkarBackup'
+                    ),
+                'action' => 'callbackJobAborting',
+                'data' => array($idJob)
+            ));
+        }
         
-        $queue->setAborted(true);
-        $queue->setPriority(0);
-        
-        $response = new JsonResponse(array(
-            'error' => false,
-            'msg' => $t->trans(
-                'Job stop requested: aborting job',
-                array(),
-                'BinovoElkarBackup'
-            ),
-            'action' => 'callbackJobAborting',
-            'data' => array($idJob)
-        ));
+
         $manager->flush();
         return $response;
     }
