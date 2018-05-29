@@ -321,8 +321,6 @@ function abortJob(path, id, msg, confirmed){
       // Abort job
       r = postRequest(path);
       // Callback will be executed
-      // if abortJob is done
-      okMsg('Job unqueued successfully');
     }
   }
 }
