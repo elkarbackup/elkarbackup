@@ -61,6 +61,16 @@ class DefaultController extends Controller
             $context
         );
     }
+    
+    protected function warn($msg, $translatorParams = array(), $context = array())
+    {
+        $logger = $this->get('BnvWebLogger');
+        $context = array_merge(array('source' => 'DefaultController'), $context);
+        $logger->warn(
+            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
+            $context
+        );
+    }
 
     protected function generateClientRoute($id)
     {
@@ -628,11 +638,11 @@ class DefaultController extends Controller
                 'link' => $this->generateJobRoute($idJob, $idClient),
                 'source' => Globals::STATUS_REPORT
             );
-            $status = 'QUEUED';
             $isQueueIn = $this->getDoctrine()
             ->getRepository('BinovoElkarBackupBundle:Queue')
             ->findBy(array('job' => $job));
             if(! $isQueueIn) {
+                $status = 'QUEUED';
                 $queue = new Queue($job);
                 $em->persist($queue);
                 $response = new Response($t->trans(
@@ -640,14 +650,17 @@ class DefaultController extends Controller
                     array(),
                     'BinovoElkarBackup'
                 ));
+                $this->info($status, array(), $context);
+                
             } else {
+                $status = 'The job has been already enqueued, it will not be enqueued again';
                 $response = new Response($t->trans(
-                    'One or more jobs were already enqueued, ignoring',
+                    'One or more jobs were already enqueued, they will not be enqueued again',
                     array(),
                     'BinovoElkarBackup'
                 ));
+                $this->warn($status, array(), $context);
             }
-            $this->info($status, array(), $context);
             $em->flush();
             $response->headers->set('Content-Type', 'text/plain');
             // TODO: change the response from text plain to JSON
