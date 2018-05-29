@@ -645,26 +645,31 @@ class DefaultController extends Controller
                 $status = 'QUEUED';
                 $queue = new Queue($job);
                 $em->persist($queue);
-                $response = new Response($t->trans(
-                    'Job execution requested successfully',
-                    array(),
-                    'BinovoElkarBackup'
+                $response = new JsonResponse(array(
+                    'error' => false,
+                    'msg' => $t->trans(
+                        'Job queued successfully. It will start running in less than a minute!',
+                        array(),
+                        'BinovoElkarBackup'
+                        ),
+                    'data' => array($idJob)
                 ));
                 $this->info($status, array(), $context);
                 
             } else {
                 $status = 'The job has been already enqueued, it will not be enqueued again';
-                $response = new Response($t->trans(
-                    'One or more jobs were already enqueued, they will not be enqueued again',
-                    array(),
-                    'BinovoElkarBackup'
+                $response = new JsonResponse(array(
+                    'error' => true,
+                    'msg' => $t->trans(
+                        'One or more jobs were already enqueued, they will not be enqueued again',
+                        array(),
+                        'BinovoElkarBackup'
+                        ),
+                    'data' => array($idJob)
                 ));
                 $this->warn($status, array(), $context);
             }
             $em->flush();
-            $response->headers->set('Content-Type', 'text/plain');
-            // TODO: change the response from text plain to JSON
-
             return $response;
         }
     }
