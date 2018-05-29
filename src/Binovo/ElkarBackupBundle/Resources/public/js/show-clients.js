@@ -184,11 +184,6 @@ function deleteClient(path, id, msg, confirmed){
       $("#deleteModal").modal('hide');
       // Delete client
       r = postRequest(path);
-      // If r is ok
-      // Delete all rows related to the client
-      $('tr.client-'+id).remove();
-      // Show feedback message
-      okMsg('Client deleted successfully');
     } else {
       return false;
     }
