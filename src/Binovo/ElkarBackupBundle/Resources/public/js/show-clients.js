@@ -443,7 +443,6 @@ $(document).ready(function(){
             if (!disabled){
               if (enqueueJob(path, jobid)){
                 // msg should be received from controller (translated)
-                okMsg('Job queued successfully. It will start running in less than a minute!');
               } else {
                 errorMsg('Error running job');
               }
