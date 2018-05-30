@@ -237,9 +237,7 @@ class DefaultController extends Controller
         $repository = $db->getRepository('BinovoElkarBackupBundle:Client');
         $manager = $db->getManager();
         $client = $repository->find($id);
-        $queue = $this->getDoctrine()
-        ->getRepository('BinovoElkarBackupBundle:Queue')
-        ->findAll();
+        $queue = $db->getRepository('BinovoElkarBackupBundle:Queue')->findAll();
         foreach ($queue as $item) {
             if ($item->getJob()->getClient()->getId() == $id) {
                 $response = new JsonResponse(array(
