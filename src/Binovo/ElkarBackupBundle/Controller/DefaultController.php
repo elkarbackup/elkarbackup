@@ -71,6 +71,16 @@ class DefaultController extends Controller
             $context
         );
     }
+    
+    protected function err($msg, $translatorParams = array(), $context = array())
+    {
+        $logger = $this->get('BnvWebLogger');
+        $context = array_merge(array('source' => 'DefaultController'), $context);
+        $logger->err(
+            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
+            $context
+        );
+    }
 
     protected function generateClientRoute($id)
     {
@@ -223,14 +233,37 @@ class DefaultController extends Controller
         
         $t = $this->get('translator');
         $db = $this->getDoctrine();
+        $manager = $db->getManager();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Client');
         $manager = $db->getManager();
         $client = $repository->find($id);
+        $queue = $db->getRepository('BinovoElkarBackupBundle:Queue')->findAll();
+        foreach ($queue as $item) {
+            if ($item->getJob()->getClient()->getId() == $id) {
+                $response = new JsonResponse(array(
+                    'error' => true,
+                    'msg' => $t->trans(
+                        'Could not delete client %clientName%, it has jobs enqueued.',
+                        array('%clientName%' => $client->getName()),
+                        'BinovoElkarBackup'
+                    ),
+                    'data' => array($id)
+                ));
+                $this->err(
+                    'Could not delete client %clientName%, it has jobs enqueued.',
+                    array('%clientName%' => $client->getName()),
+                    array('link' => $this->generateClientRoute($id))
+                );
+                $manager->flush();
+                return $response;
+            }
+        }
+        
         try {
             $manager->remove($client);
             $msg = new Message(
-                'DefaultController', 
-                'TickCommand', 
+                'DefaultController',
+                'TickCommand',
                 json_encode(array(
                     'command' => "elkarbackup:delete_job_backups",
                     'client' => (int) $id
@@ -243,17 +276,28 @@ class DefaultController extends Controller
                 array('link' => $this->generateClientRoute($id))
             );
             $manager->flush();
+            $response = new JsonResponse(array(
+                'error' => false,
+                'msg' => $t->trans(
+                    'Client %clientName% deleted successfully.',
+                    array('%clientName%' => $client->getName()),
+                    'BinovoElkarBackup'
+                ),
+                'action' => 'deleteClientRow',
+                'data' => array($id)
+            ));
+            
         } catch (Exception $e) {
-            $this->get('session')->getFlashBag()->add(
-                'clients',
-                $t->trans(
+            $response = new JsonResponse(array(
+                'error' => false,
+                'msg' => $t->trans(
                     'Unable to delete client: %extrainfo%',
-                    array('%extrainfo%' => $e->getMessage()), 'BinovoElkarBackup'
-                )
-            );
+                    array('%extrainfo%' => $e->getMessage()),
+                    'BinovoElkarBackup'
+                ),
+            ));
         }
-        
-        return $this->redirect($this->generateUrl('showClients'));
+        return $response;
     }
 
     /**
@@ -483,12 +527,33 @@ class DefaultController extends Controller
         if ($access == False) {
             return $this->redirect($this->generateUrl('showClients'));
         }
-        
         $t = $this->get('translator');
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Job');
         $manager = $db->getManager();
         $job = $repository->find($idJob);
+        $queue = $db->getRepository('BinovoElkarBackupBundle:Queue')->findAll();
+        foreach ($queue as $item) {
+            if ($item->getJob()->getId() == $idJob) {
+                $response = new JsonResponse(array(
+                    'error' => true,
+                    'msg' => $t->trans(
+                        'Could not delete job %jobName%, it is enqueued.',
+                        array('%jobName%' => $job->getName()),
+                        'BinovoElkarBackup'
+                    ),
+                    'data' => array($idJob)
+                ));
+                $this->err(
+                    'Could not delete job %jobName%, it is enqueued.',
+                    array('%jobName%' => $job->getName()),
+                    array('link' => $this->generateJobRoute($idJob, $idClient))
+                );
+                $manager->flush();
+                return $response;
+            }
+        }
+        
         try {
             $manager->remove($job);
             $msg = new Message('DefaultController', 'TickCommand', json_encode(array(
@@ -498,20 +563,32 @@ class DefaultController extends Controller
             )));
             $manager->persist($msg);
             $this->info(
-                'Delete client %clientid%, job "%jobid%"',
+                'Client %clientid%, job "%jobid%" deleted successfully.',
                 array('%clientid%' => $idClient,'%jobid%' => $idJob),
                 array('link' => $this->generateJobRoute($idJob, $idClient))
             );
             $manager->flush();
+            $response = new JsonResponse(array(
+                'error' => false,
+                'msg' => $t->trans(
+                    'Client %clientid%, job "%jobid%" deleted successfully.',
+                    array('%clientid%' => $idClient,'%jobid%' => $idJob),
+                    'BinovoElkarBackup'
+                    ),
+                'action' => 'deleteJobRow',
+                'data' => array($idJob)
+            ));
         } catch (Exception $e) {
-            $this->get('session')->getFlashBag()->add('client', $t->trans(
-                'Unable to delete job: %extrainfo%',
-                array('%extrainfo%' => $e->getMessage()),
-                'BinovoElkarBackup'
+            $response = new JsonResponse(array(
+                'error' => false,
+                'msg' => $t->trans(
+                    'Unable to delete job: %extrainfo%',
+                    array('%extrainfo%' => $e->getMessage()),
+                    'BinovoElkarBackup'
+                ),
             ));
         }
-        
-        return $this->redirect($this->generateUrl('showClients'));
+        return $response;
     }
 
     /**
