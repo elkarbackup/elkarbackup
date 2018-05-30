@@ -155,16 +155,21 @@ function deleteJob(path, id, msg, confirmed){
       $("#deleteModal").modal('hide');
       // Delete job
       r = postRequest(path);
-      // If r is ok
-      // Delete job row
-      jobtr = $('tr.job-'+id).remove();
-      // Show feedback message
-      okMsg('Job deleted succesfully');
     } else {
       return false;
     }
   }
-};
+}
+
+function deleteClientRow(id){
+	// Delete all rows related to the client
+	$('tr.client-'+id).remove();
+}
+
+function deleteJobRow(id){
+    // Delete job row
+    $('tr.job-'+id).remove();
+}
 
 function deleteClient(path, id, msg, confirmed){
   if (paranoidmode && !confirmed){
@@ -184,11 +189,6 @@ function deleteClient(path, id, msg, confirmed){
       $("#deleteModal").modal('hide');
       // Delete client
       r = postRequest(path);
-      // If r is ok
-      // Delete all rows related to the client
-      $('tr.client-'+id).remove();
-      // Show feedback message
-      okMsg('Client deleted successfully');
     } else {
       return false;
     }
@@ -321,8 +321,6 @@ function abortJob(path, id, msg, confirmed){
       // Abort job
       r = postRequest(path);
       // Callback will be executed
-      // if abortJob is done
-      okMsg('Job unqueued successfully');
     }
   }
 }
@@ -443,7 +441,6 @@ $(document).ready(function(){
             if (!disabled){
               if (enqueueJob(path, jobid)){
                 // msg should be received from controller (translated)
-                okMsg('Job queued successfully. It will start running in less than a minute!');
               } else {
                 errorMsg('Error running job');
               }

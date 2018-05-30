@@ -7,7 +7,6 @@
 
 {% block body %}
 
-</form>
 <form class="form-horizontal" action="{{ path('saveBackupLocation', {id: id}) }}" method="post" {{ form_enctype(form) }}>
     <h3>{% trans %}Edit backup location{% endtrans %}</h3>
     <div class="row">
