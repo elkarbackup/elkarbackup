@@ -6,34 +6,91 @@
 
 namespace Binovo\ElkarBackupBundle\Form\Type;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+
 class RestoreBackupType extends AbstractType
 {
-    
+
+  public function __construct($actualuserid,$granted)
+      {
+          $this->actualuserid = $actualuserid;
+          $this->granted = $granted;
+      }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $actualuserid = $this->actualuserid;
+        $granted = $this->granted;
+        //$actualuserid = $options['actualuserid'];
+        //$em = $options['entity_manager'];
+
+        /* $db = $em->getDoctrine();
+        $manager = $db->getManager();
+        $repository = $db->getRepository('BinovoElkarBackupBundle:Client');
+        $client = $repository->find($actualuserid);
+        */
+
         $t = $options['translator'];
-        $builder->add('client'         ,'entity'    , array('label'    => 'Client',
+
+        /*    $builder->add('client'         ,'entity'    , array('label'    => 'Client',
                                                                 'property' => 'client',
                                                                 'attr'     => array('class'    => 'form-control'),
                                                                 'class'    => 'BinovoElkarBackupBundle:Client',
+                                                                'query_builder' => function(EntityRepository $er ) use ( $actualuserid ) {
+                                                                  return $er->createQueryBuilder('c')
+                                                                            ->select('c')
+                                                                            ->where('c.owner = ?1')
+                                                                            ->setParameter(1, $actualuserid);
+                                                                },
                                                                 'choice_label' => 'name',
                                                                 'required' => true))
-                ->add('path'	      , 'text'      , array('label'    => 'Path',
+        */
+
+        $builder->add('client'       ,'entity'    , array('label'    => 'Restore host',
+                                                          'property' => 'client',
+                                                          'attr'     => array('class'    => 'form-control'),
+                                                          'class'    => 'BinovoElkarBackupBundle:Client',
+                                                          'query_builder' => function(EntityRepository $er ) use ( $actualuserid, $granted ) {
+                                                                  return  $this->getFilteredClients($er,$actualuserid,$granted);
+                                                            },
+                                                          'choice_label' => 'name',
+                                                          'required' => true))
+
+                ->add('source'	      ,'text'      , array('label'    => 'Source Path',
+                                                            'attr'     => array('class'     => 'form-control'),
+                                                            'read_only' =>'true',
+                                                            'required' => false))
+                ->add('path'          ,'text'      , array('label'    => 'Remote Path',
                                                             'attr'     => array('class'     => 'form-control'),
                                                             'required' => true));
+                
+
+
+
+    }
+
+    private function getFilteredClients(EntityRepository $er, $userId, $granted) {
+        if($granted){
+            return null;
+        }
+
+        return $er->createQueryBuilder('c')
+            ->where('c.owner = ?1')
+            ->setParameter(1, $userId);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'translator'         => null,
-            'scriptFileRequired' => false,
+
+         $resolver->setDefaults(array(
+            'translator'         => null
         ));
+
     }
 }

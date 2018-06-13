@@ -62,7 +62,7 @@ class DefaultController extends Controller
             $context
         );
     }
-    
+
     protected function warn($msg, $translatorParams = array(), $context = array())
     {
         $logger = $this->get('BnvWebLogger');
@@ -72,7 +72,7 @@ class DefaultController extends Controller
             $context
         );
     }
-    
+
     protected function err($msg, $translatorParams = array(), $context = array())
     {
         $logger = $this->get('BnvWebLogger');
@@ -259,7 +259,7 @@ class DefaultController extends Controller
                 return $response;
             }
         }
-        
+
         try {
             $manager->remove($client);
             $msg = new Message(
@@ -287,7 +287,7 @@ class DefaultController extends Controller
                 'action' => 'deleteClientRow',
                 'data' => array($id)
             ));
-            
+
         } catch (Exception $e) {
             $response = new JsonResponse(array(
                 'error' => false,
@@ -555,7 +555,7 @@ class DefaultController extends Controller
                 return $response;
             }
         }
-        
+
         try {
             $manager->remove($job);
             $msg = new Message('DefaultController', 'TickCommand', json_encode(array(
@@ -645,12 +645,37 @@ class DefaultController extends Controller
      */
     public function restoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $actualuserid = $user->getId();
+        $t = $this->get('translator');
+        $logger = $this->get('logger');
+        //$logger->info('I just got the logger');
+
         $suggestedPath = mb_substr($path, mb_strpos($path, '/'));
         $suggestedPath = mb_substr($suggestedPath, 0, mb_strrpos($suggestedPath, '/'));
-        $t = $this->get('translator');
+        var_dump($path);
+        var_dump($suggestedPath);
+
+
+
+        $access = $this->checkPermissions($idClient);
+        if ($access == False) {
+            return $this->redirect($this->generateUrl('showClients'));
+        }
+
+        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+        $query = $repository->createQueryBuilder('c')->addOrderBy('c.id', 'ASC');
+        $granted = $this->get('security.context')->isGranted('ROLE_ADMIN');
+        if (!$granted) {
+            // Limited view for non-admin users
+            $query->where('c.owner = ?1'); // adding users and roles
+            $query->setParameter(1, $actualuserid);
+        }
+        $clients = $query->getQuery()->getResult();
+
         $form = $this->createForm(
-            new RestoreBackupType(),
-            array('path' => $suggestedPath),
+            new RestoreBackupType($actualuserid,$granted),
+            array('path' => $suggestedPath, 'source' => $path),
             array('translator' => $t)
             );
         return $this->render('BinovoElkarBackupBundle:Default:restorebackup.html.twig',array(
@@ -659,6 +684,7 @@ class DefaultController extends Controller
             'idJob' => $idJob,
             'idBackupLocation' => $idBackupLocation,
             'path' => $path));
+
     }
 
     /**
@@ -668,7 +694,11 @@ class DefaultController extends Controller
      */
     public function runRestoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
-        $form = $this->createForm(new RestoreBackupType());
+      $user = $this->get('security.context')->getToken()->getUser();
+      $actualuserid = $user->getId();
+      $granted = $this->get('security.context')->isGranted('ROLE_ADMIN');
+
+        $form = $this->createForm(new RestoreBackupType($actualuserid,$granted));
 
         $form->handleRequest($request);
         if (!$form->isSubmitted() || !$form->isValid()) {
@@ -681,6 +711,8 @@ class DefaultController extends Controller
 
 
         $backupLocation = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation')->find($idBackupLocation);
+        // $originalbackuplocation = $backupLocation->getDirectory();
+
         // TODO: Check that the path is really a path in the requested job and client
         $sourcePath = sprintf("%s/%s/%s/%s", $backupLocation->getDirectory(), sprintf('%04d', $idClient), sprintf('%04d', $idJob), $path);
 
@@ -806,7 +838,7 @@ class DefaultController extends Controller
                     'data' => array($idJob)
                 ));
                 $this->info($status, array(), $context);
-                
+
             } else {
                 $status = 'The job has been already enqueued, it will not be enqueued again';
                 $response = new JsonResponse(array(
@@ -859,7 +891,7 @@ class DefaultController extends Controller
         } else {
             $queue->setAborted(true);
             $queue->setPriority(0);
-            
+
             $response = new JsonResponse(array(
                 'error' => false,
                 'msg' => $t->trans(
@@ -871,7 +903,7 @@ class DefaultController extends Controller
                 'data' => array($idJob)
             ));
         }
-        
+
 
         $manager->flush();
         return $response;
@@ -1042,6 +1074,7 @@ class DefaultController extends Controller
      */
     public function showJobBackupAction(Request $request, $idClient, $idJob, $action, $idBackupLocation, $path)
     {
+
         if ($this->checkPermissions($idClient) == False) {
             return $this->redirect($this->generateUrl('showClients'));
         }

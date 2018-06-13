@@ -28,13 +28,18 @@ class RemoteRestoreCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $container = $this->getContainer();
+        $manager = $container->get('doctrine')->getManager();
+
+        $volumes = $manager->getRepository('BinovoElkarBackupBundle:BackupLocation'); 
+
         $url = $input->getArgument(self::PARAM_URL);
         $sourcePath = $input->getArgument(self::PARAM_SOURCE_PATH);
         $remotePath = $input->getArgument(self::PARAM_REMOTE_PATH);
         // $publicKey = $this->getContainer()->getParameter('public_key');
 
         // $output->writeln("URL:$url\n $sourcePath\n $remotePath\n $public_key");
-
+        //$output->writeln("Volumen:$volumes\n");
         $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s:%s',$sourcePath,$url,$remotePath);
         $output->writeln($cmd);
         $process = new Process($cmd);
