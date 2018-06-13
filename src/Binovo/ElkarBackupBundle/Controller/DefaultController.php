@@ -647,31 +647,25 @@ class DefaultController extends Controller
     {
         $user = $this->get('security.context')->getToken()->getUser();
         $actualuserid = $user->getId();
+        $actualusername = $user->getUsername();
         $t = $this->get('translator');
-        $logger = $this->get('logger');
-        //$logger->info('I just got the logger');
 
         $suggestedPath = mb_substr($path, mb_strpos($path, '/'));
         $suggestedPath = mb_substr($suggestedPath, 0, mb_strrpos($suggestedPath, '/'));
-        var_dump($path);
-        var_dump($suggestedPath);
-
-
 
         $access = $this->checkPermissions($idClient);
         if ($access == False) {
+
+          $this->err(
+          'Unautorized access attempt by user: %username% into %path% by idclient: %clientid%. / idjob: %jobid%' ,
+          array('%username%' => $actualusername, '%path%' => $path, '%clientid%' => $idClient,'%jobid%' => $idJob )
+          );
+
+          $this->getDoctrine()->getManager()->flush();
             return $this->redirect($this->generateUrl('showClients'));
         }
 
-        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
-        $query = $repository->createQueryBuilder('c')->addOrderBy('c.id', 'ASC');
         $granted = $this->get('security.context')->isGranted('ROLE_ADMIN');
-        if (!$granted) {
-            // Limited view for non-admin users
-            $query->where('c.owner = ?1'); // adding users and roles
-            $query->setParameter(1, $actualuserid);
-        }
-        $clients = $query->getQuery()->getResult();
 
         $form = $this->createForm(
             new RestoreBackupType($actualuserid,$granted),

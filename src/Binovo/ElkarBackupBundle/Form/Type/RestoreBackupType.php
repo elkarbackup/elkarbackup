@@ -27,30 +27,8 @@ class RestoreBackupType extends AbstractType
     {
         $actualuserid = $this->actualuserid;
         $granted = $this->granted;
-        //$actualuserid = $options['actualuserid'];
-        //$em = $options['entity_manager'];
-
-        /* $db = $em->getDoctrine();
-        $manager = $db->getManager();
-        $repository = $db->getRepository('BinovoElkarBackupBundle:Client');
-        $client = $repository->find($actualuserid);
-        */
 
         $t = $options['translator'];
-
-        /*    $builder->add('client'         ,'entity'    , array('label'    => 'Client',
-                                                                'property' => 'client',
-                                                                'attr'     => array('class'    => 'form-control'),
-                                                                'class'    => 'BinovoElkarBackupBundle:Client',
-                                                                'query_builder' => function(EntityRepository $er ) use ( $actualuserid ) {
-                                                                  return $er->createQueryBuilder('c')
-                                                                            ->select('c')
-                                                                            ->where('c.owner = ?1')
-                                                                            ->setParameter(1, $actualuserid);
-                                                                },
-                                                                'choice_label' => 'name',
-                                                                'required' => true))
-        */
 
         $builder->add('client'       ,'entity'    , array('label'    => 'Restore host',
                                                           'property' => 'client',
@@ -69,7 +47,7 @@ class RestoreBackupType extends AbstractType
                 ->add('path'          ,'text'      , array('label'    => 'Remote Path',
                                                             'attr'     => array('class'     => 'form-control'),
                                                             'required' => true));
-                
+
 
 
 
