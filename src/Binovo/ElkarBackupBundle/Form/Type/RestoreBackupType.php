@@ -40,11 +40,11 @@ class RestoreBackupType extends AbstractType
                                                           'choice_label' => 'name',
                                                           'required' => true))
 
-                ->add('source'	      ,'text'      , array('label'    => 'Source path',
+                ->add('source'	      ,'text'      , array('label'    => $t->trans('Source path', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class'     => 'form-control'),
                                                             'read_only' =>'true',
                                                             'required' => false))
-                ->add('path'          ,'text'      , array('label'    => 'Remote path',
+                ->add('path'          ,'text'      , array('label'    => $t->trans('Remote path', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class'     => 'form-control'),
                                                             'required' => true));
 

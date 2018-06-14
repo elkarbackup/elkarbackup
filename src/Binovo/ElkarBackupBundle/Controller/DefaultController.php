@@ -688,16 +688,21 @@ class DefaultController extends Controller
       $user = $this->get('security.context')->getToken()->getUser();
       $actualuserid = $user->getId();
       $granted = $this->get('security.context')->isGranted('ROLE_ADMIN');
-      $t = $this->get('translator');
-
-        $form = $this->createForm(new RestoreBackupType($actualuserid,$granted),
-        array('translator' => $this->get('translator'));
+      $suggestedPath = mb_substr($path, mb_strpos($path, '/'));
+      $suggestedPath = mb_substr($suggestedPath, 0, mb_strrpos($suggestedPath, '/'));
+      
+         $form = $this->createForm(new RestoreBackupType($actualuserid,$granted),
+         array('path' => $suggestedPath,'source' => $path),
+         array('translator' => $this->get('translator'))
+        );
 
         $form->handleRequest($request);
+
         if (!$form->isSubmitted() || !$form->isValid()) {
             //TODO handle error
             return;
         }
+        
         $data = $form->getData();
         $targetPath = $data['path'];
         $targetIdClient = $data['client'];

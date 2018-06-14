@@ -40,11 +40,11 @@ class RemoteRestoreCommand extends ContainerAwareCommand
         $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s:%s',$sourcePath,$url,$remotePath);
         $process = new Process($cmd);
         $process->run();
-        $output->writeln($process->getOutput());
 
         if(!$process->isSuccessful()) {
           throw new ProcessFailedException($process);
         }
+        $output->writeln($process->getOutput());
 
 
     }
