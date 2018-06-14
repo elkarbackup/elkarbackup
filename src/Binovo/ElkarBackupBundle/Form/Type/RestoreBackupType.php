@@ -30,7 +30,7 @@ class RestoreBackupType extends AbstractType
 
         $t = $options['translator'];
 
-        $builder->add('client'       ,'entity'    , array('label'    => 'Restore host',
+        $builder->add('client'       ,'entity'    , array('label'    => $t->trans('Restore host', array(), 'BinovoElkarBackup'),
                                                           'property' => 'client',
                                                           'attr'     => array('class'    => 'form-control'),
                                                           'class'    => 'BinovoElkarBackupBundle:Client',
@@ -40,11 +40,11 @@ class RestoreBackupType extends AbstractType
                                                           'choice_label' => 'name',
                                                           'required' => true))
 
-                ->add('source'	      ,'text'      , array('label'    => 'Source Path',
+                ->add('source'	      ,'text'      , array('label'    => $t->trans('Source path', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class'     => 'form-control'),
                                                             'read_only' =>'true',
                                                             'required' => false))
-                ->add('path'          ,'text'      , array('label'    => 'Remote Path',
+                ->add('path'          ,'text'      , array('label'    => $t->trans('Remote path', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class'     => 'form-control'),
                                                             'required' => true));
 
