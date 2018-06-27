@@ -2,6 +2,7 @@
 namespace Binovo\ElkarBackupBundle\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -30,7 +31,11 @@ class RemoteRestoreCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
         $manager = $container->get('doctrine')->getManager();
-
+        
+        $logger = $this->getContainer()->get('BnvWebLogger');
+        $translator = $this->getContainer()->get('translator');
+        $context = array('source' => 'RestoreBackups');
+                
         $volumes = $manager->getRepository('BinovoElkarBackupBundle:BackupLocation'); 
 
         $url = $input->getArgument(self::PARAM_URL);
@@ -38,14 +43,20 @@ class RemoteRestoreCommand extends ContainerAwareCommand
         $remotePath = $input->getArgument(self::PARAM_REMOTE_PATH);
 
         $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s:%s',$sourcePath,$url,$remotePath);
+        $logger->info('Starting restore backups ',$context);
+        $manager->flush();
+
         $process = new Process($cmd);
         $process->run();
 
         if(!$process->isSuccessful()) {
-          throw new ProcessFailedException($process);
+          $logger->err('Error message ' . $process->getErrorOutput(), $context);
+          $manager->flush();
+          return;
+        } else {
+          $logger->info('Restored successfully',$context);
+          $manager->flush();
         }
-        $output->writeln($process->getOutput());
-
 
     }
 }
