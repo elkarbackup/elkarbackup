@@ -46,7 +46,11 @@ class RemoteRestoreCommand extends ContainerAwareCommand
         
         if($sshArgs !== ''){
           $port = preg_replace('/[^0-9]/', '', $sshArgs);
-          $sshArgs = '-p '.$port; 
+            if ($port !== ''){
+              $sshArgs = '-p '.$port;
+            } else {
+              $sshArgs = '-p 22';
+            }
           $logger->info('We ssh have arguments, take care of it!'.$sshArgs,$context);
           $manager->flush();
           $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s %s:%s',$sshArgs,$sourcePath,$url,$remotePath);
