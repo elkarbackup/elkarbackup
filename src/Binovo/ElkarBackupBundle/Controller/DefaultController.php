@@ -709,11 +709,7 @@ class DefaultController extends Controller
         $targetPath = $data['path'];
         $targetIdClient = $data['client'];
 
-
         $backupLocation = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation')->find($idBackupLocation);
-        // $originalbackuplocation = $backupLocation->getDirectory();
-
-        // TODO: Check that the path is really a path in the requested job and client
         $sourcePath = sprintf("%s/%s/%s/%s", $backupLocation->getDirectory(), sprintf('%04d', $idClient), sprintf('%04d', $idJob), $path);
 
         $clientRepo = $this->getDoctrine()
@@ -742,10 +738,8 @@ class DefaultController extends Controller
             );
         $manager->flush();
         
-        //$this->get('session')->getFlashBag()->add('success','hau mezu bat da');
         $this->get('session')->getFlashBag()->add('success',
             $t->trans('Your backup restore process has been enqueued', array(), 'BinovoElkarBackup'));
-            
         return $this->redirect($this->generateUrl('showClients'));
     }
 
