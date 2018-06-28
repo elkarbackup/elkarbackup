@@ -70,8 +70,19 @@
             </div>
         </div>
         <h3 id="legend">{% trans %}Jobs{% endtrans %}</h3>
-        {% for flashMessage in app.session.flashbag.get('clients') %}
-            <div class="controls help-block">
+        {% for flashMessage in app.session.flashbag.get('success') %}
+            <div class="controls help-block alert alert-success fade in" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                {{ flashMessage }}
+            </div>
+        {% endfor %}
+        {% for flashMessage in app.session.flashbag.get('error') %}
+            <div class="controls help-block alert alert-danger fade in" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
                 {{ flashMessage }}
             </div>
         {% endfor %}

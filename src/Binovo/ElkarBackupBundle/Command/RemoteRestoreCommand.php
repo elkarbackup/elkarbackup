@@ -16,6 +16,7 @@ class RemoteRestoreCommand extends ContainerAwareCommand
     const PARAM_URL = 'url';
     const PARAM_SOURCE_PATH = 'sourcePath';
     const PARAM_REMOTE_PATH = 'remotePath';
+    const PARAM_SSHARGS = 'sshArgs';
 
     protected function configure()
     {
@@ -24,7 +25,7 @@ class RemoteRestoreCommand extends ContainerAwareCommand
         $this->addArgument(self::PARAM_URL, InputArgument::REQUIRED,'The connection URL for the remote machine');
         $this->addArgument(self::PARAM_SOURCE_PATH, InputArgument::REQUIRED,'The source path to the directory or files that should be copied');
         $this->addArgument(self::PARAM_REMOTE_PATH, InputArgument::REQUIRED,'The remote path on which the directory or files should be retore');
-
+        $this->addArgument(self::PARAM_SSHARGS,InputArgument::OPTIONAL,'The remote machine extra ssh parameters');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -41,8 +42,17 @@ class RemoteRestoreCommand extends ContainerAwareCommand
         $url = $input->getArgument(self::PARAM_URL);
         $sourcePath = $input->getArgument(self::PARAM_SOURCE_PATH);
         $remotePath = $input->getArgument(self::PARAM_REMOTE_PATH);
-
-        $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s:%s',$sourcePath,$url,$remotePath);
+        $sshArgs = $input->getArgument(self::PARAM_SSHARGS);
+        
+        if($sshArgs !== ''){
+          $port = preg_replace('/[^0-9]/', '', $sshArgs);
+          $sshArgs = '-p '.$port; 
+          $logger->info('We ssh have arguments, take care of it!'.$sshArgs,$context);
+          $manager->flush();
+          $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s %s:%s',$sshArgs,$sourcePath,$url,$remotePath);
+        } else {
+          $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s:%s',$sourcePath,$url,$remotePath);
+        }
         $logger->info('Starting restore backups ',$context);
         $manager->flush();
 

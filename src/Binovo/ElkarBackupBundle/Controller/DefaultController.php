@@ -685,6 +685,7 @@ class DefaultController extends Controller
      */
     public function runRestoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
+      $t = $this->get('translator');
       $user = $this->get('security.context')->getToken()->getUser();
       $actualuserid = $user->getId();
       $granted = $this->get('security.context')->isGranted('ROLE_ADMIN');
@@ -699,8 +700,9 @@ class DefaultController extends Controller
         $form->handleRequest($request);
 
         if (!$form->isSubmitted() || !$form->isValid()) {
-            //TODO handle error
-            return;
+          $this->get('session')->getFlashBag()->add('error',
+              $t->trans('There was an error in your restore backup process', array(), 'BinovoElkarBackup'));
+          return $this->redirect($this->generateUrl('showClients'));
         }
         
         $data = $form->getData();
@@ -718,6 +720,7 @@ class DefaultController extends Controller
             ->getRepository('BinovoElkarBackupBundle:Client');
         $targetClient = $clientRepo->find($targetIdClient);
         $url = $targetClient->getUrl();
+        $sshArgs = $targetClient->getSshArgs();
 
         $manager = $this->getDoctrine()->getManager();
         $msg = new Message(
@@ -727,7 +730,8 @@ class DefaultController extends Controller
                 'command' => "elkarbackup:restore_backup",
                 'url' => $url,
                 'sourcePath' => $sourcePath,
-                'remotePath' => $targetPath
+                'remotePath' => $targetPath,
+                'sshArgs'    => $sshArgs
             ))
             );
         $manager->persist($msg);
@@ -737,6 +741,11 @@ class DefaultController extends Controller
             array('link' => $this->generateClientRoute($idClient))
             );
         $manager->flush();
+        
+        //$this->get('session')->getFlashBag()->add('success','hau mezu bat da');
+        $this->get('session')->getFlashBag()->add('success',
+            $t->trans('Your backup restore process has been enqueued', array(), 'BinovoElkarBackup'));
+            
         return $this->redirect($this->generateUrl('showClients'));
     }
 
