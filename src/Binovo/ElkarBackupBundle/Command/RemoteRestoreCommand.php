@@ -45,17 +45,15 @@ class RemoteRestoreCommand extends ContainerAwareCommand
         $sshArgs = $input->getArgument(self::PARAM_SSHARGS);
         
         if($sshArgs !== ''){
-             $port = preg_replace('/[^0-9]/', '', $sshArgs);
-             if ($port !== ''){
-                 $sshArgs = '-p '.$port;
-             } else {
-                 $sshArgs = '-p 22';
-             }
-        $logger->info('We ssh have arguments, take care of it!'.$sshArgs,$context);
-        $manager->flush();
-        $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s %s:%s',$sshArgs,$sourcePath,$url,$remotePath);
+               $port = preg_replace('/[^0-9]/', '', $sshArgs);
+               if ($port !== ''){
+                   $sshArgs = '-p '.$port;
+               } else {
+                   $sshArgs = '-p 22';
+               }
+               $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s %s:%s',$sshArgs,$sourcePath,$url,$remotePath);
         } else {
-            $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s:%s',$sourcePath,$url,$remotePath);
+               $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s:%s',$sourcePath,$url,$remotePath);
         }
         $logger->info('Starting restore job ',$context);
         $manager->flush();
@@ -64,12 +62,12 @@ class RemoteRestoreCommand extends ContainerAwareCommand
         $process->run();
 
         if(!$process->isSuccessful()) {
-            $logger->err('Error message ' . $process->getErrorOutput(), $context);
-            $manager->flush();
-            return;
+              $logger->err('Error message ' . $process->getErrorOutput(), $context);
+              $manager->flush();
+              return;
         } else {
-            $logger->info('Restored successfully',$context);
-            $manager->flush();
+              $logger->info('Restored successfully',$context);
+              $manager->flush();
         }
 
     }
