@@ -410,13 +410,13 @@ managebackups_help: |
  The maximum parallel jobs that are allowed to be executed for this backup location.
 managerestore_help: |
  <h4>Restore host</h4>
- The host name or IP address of which you want to restore your backup.
- <p>We recomend you configure a new host before start with this process.</p>
+ The host name or IP address of the host you want to restore your backup to.
+ <p>We suggest to configure a new host before starting this process.</p>
  <h4>Source path</h4>
- The full path in the local file system from where we would take the restore data.
+ The full path in the local elkarbackup host to restore data from.
  <h4>Remote path</h4>
- The full path on which we restore your backup remotly.
- <p>We don't recommend you to restore over the original data.</p> 
+ The full path on the remote host to restore data to.
+ <p>You're advised not to restore over the original data.</p> 
 script_help: |
  <h4>About the scripts</h4>
  The application invoques the script using the user for backups. The application sets the following enviroment variables before running any of the scripts:

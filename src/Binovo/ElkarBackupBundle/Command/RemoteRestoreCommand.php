@@ -21,11 +21,11 @@ class RemoteRestoreCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName('elkarbackup:restore_backup');
-        $this->setDescription('Restore a backup into remote machine.');
-        $this->addArgument(self::PARAM_URL, InputArgument::REQUIRED,'The connection URL for the remote machine');
+        $this->setDescription('Restore local elkarbackup host files to remote host.');
+        $this->addArgument(self::PARAM_URL, InputArgument::REQUIRED,'The connection URL for the remote host');
         $this->addArgument(self::PARAM_SOURCE_PATH, InputArgument::REQUIRED,'The source path to the directory or files that should be copied');
-        $this->addArgument(self::PARAM_REMOTE_PATH, InputArgument::REQUIRED,'The remote path on which the directory or files should be retore');
-        $this->addArgument(self::PARAM_SSHARGS,InputArgument::OPTIONAL,'The remote machine extra ssh parameters');
+        $this->addArgument(self::PARAM_REMOTE_PATH, InputArgument::REQUIRED,'Path in the remote host to restore the directory or files');
+        $this->addArgument(self::PARAM_SSHARGS,InputArgument::OPTIONAL,'Extra SSH parameters for connection to the remote host');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -45,31 +45,31 @@ class RemoteRestoreCommand extends ContainerAwareCommand
         $sshArgs = $input->getArgument(self::PARAM_SSHARGS);
         
         if($sshArgs !== ''){
-          $port = preg_replace('/[^0-9]/', '', $sshArgs);
-            if ($port !== ''){
-              $sshArgs = '-p '.$port;
-            } else {
-              $sshArgs = '-p 22';
-            }
-          $logger->info('We ssh have arguments, take care of it!'.$sshArgs,$context);
-          $manager->flush();
-          $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s %s:%s',$sshArgs,$sourcePath,$url,$remotePath);
+             $port = preg_replace('/[^0-9]/', '', $sshArgs);
+             if ($port !== ''){
+                 $sshArgs = '-p '.$port;
+             } else {
+                 $sshArgs = '-p 22';
+             }
+        $logger->info('We ssh have arguments, take care of it!'.$sshArgs,$context);
+        $manager->flush();
+        $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s %s:%s',$sshArgs,$sourcePath,$url,$remotePath);
         } else {
-          $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s:%s',$sourcePath,$url,$remotePath);
+            $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " %s %s:%s',$sourcePath,$url,$remotePath);
         }
-        $logger->info('Starting restore backups ',$context);
+        $logger->info('Starting restore job ',$context);
         $manager->flush();
 
         $process = new Process($cmd);
         $process->run();
 
         if(!$process->isSuccessful()) {
-          $logger->err('Error message ' . $process->getErrorOutput(), $context);
-          $manager->flush();
-          return;
+            $logger->err('Error message ' . $process->getErrorOutput(), $context);
+            $manager->flush();
+            return;
         } else {
-          $logger->info('Restored successfully',$context);
-          $manager->flush();
+            $logger->info('Restored successfully',$context);
+            $manager->flush();
         }
 
     }
