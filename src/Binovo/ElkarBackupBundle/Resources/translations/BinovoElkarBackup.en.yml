@@ -411,12 +411,11 @@ managebackups_help: |
 managerestore_help: |
  <h4>Restore host</h4>
  The host name or IP address of the host you want to restore your backup to.
- <p>We suggest to configure a new host before starting this process.</p>
  <h4>Source path</h4>
  The full path in the local elkarbackup host to restore data from.
  <h4>Remote path</h4>
  The full path on the remote host to restore data to.
- <p>You're advised not to restore over the original data.</p> 
+ <p>You're advised not to restore over the original data. For security reasons elkarbackup does not have original files ownership.</p> 
 script_help: |
  <h4>About the scripts</h4>
  The application invoques the script using the user for backups. The application sets the following enviroment variables before running any of the scripts:
