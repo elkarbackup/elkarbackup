@@ -22,6 +22,7 @@ use Binovo\ElkarBackupBundle\Form\Type\ClientType;
 use Binovo\ElkarBackupBundle\Form\Type\JobForSortType;
 use Binovo\ElkarBackupBundle\Form\Type\JobType;
 use Binovo\ElkarBackupBundle\Form\Type\PolicyType;
+use Binovo\ElkarBackupBundle\Form\Type\RestoreBackupType;
 use Binovo\ElkarBackupBundle\Form\Type\ScriptType;
 use Binovo\ElkarBackupBundle\Form\Type\UserType;
 use Binovo\ElkarBackupBundle\Form\Type\PreferencesType;
@@ -635,7 +636,113 @@ class DefaultController extends Controller
             array('form' => $form->createView())
         );
     }
+    
+    /**
+     * @Route("/client/{idClient}/job/{idJob}/restore/{idBackupLocation}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "idBackupLocation" = "\d+"}, defaults={"path" = "/", "idBackupLocation" = 0}, name="restoreJobBackup")
+     *
+     * @method ("GET")
+     */
+    public function restoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
+    {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $actualuserid = $user->getId();
+        $actualusername = $user->getUsername();
+        
+        $suggestedPath = mb_substr($path, mb_strpos($path, '/'));
+        $suggestedPath = mb_substr($suggestedPath, 0, mb_strrpos($suggestedPath, '/'));
 
+        $access = $this->checkPermissions($idClient);
+        if ($access == False) {
+
+            $this->err(
+            'Unautorized access attempt by user: %username% into %path% by idclient: %clientid%. / idjob: %jobid%' ,
+            array('%username%' => $actualusername, '%path%' => $path, '%clientid%' => $idClient,'%jobid%' => $idJob )
+            );
+
+            $this->getDoctrine()->getManager()->flush();
+            return $this->redirect($this->generateUrl('showClients'));
+        }
+
+        $granted = $this->get('security.context')->isGranted('ROLE_ADMIN');
+
+        $form = $this->createForm(
+            new RestoreBackupType($actualuserid,$granted),
+            array('path' => $suggestedPath,'source' => $path),
+            array('translator' => $this->get('translator'))
+            );
+        return $this->render('BinovoElkarBackupBundle:Default:restorebackup.html.twig',array(
+            'form' => $form->createView(),
+            'idClient' => $idClient,
+            'idJob' => $idJob,
+            'idBackupLocation' => $idBackupLocation,
+            'path' => $path));
+    }
+
+    /**
+     * @Route("/client/{idClient}/job/{idJob}/restore/{idBackupLocation}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "idBackupLocation" = "\d+"}, defaults={"path" = "/", "idBackupLocation" = 0}, name="runRestoreJobBackup")
+     *
+     * @method ("POST")
+     */
+    public function runRestoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
+    {
+       $t = $this->get('translator');
+       $user = $this->get('security.context')->getToken()->getUser();
+       $actualuserid = $user->getId();
+       $granted = $this->get('security.context')->isGranted('ROLE_ADMIN');
+       $suggestedPath = mb_substr($path, mb_strpos($path, '/'));
+       $suggestedPath = mb_substr($suggestedPath, 0, mb_strrpos($suggestedPath, '/'));
+      
+       $form = $this->createForm(new RestoreBackupType($actualuserid,$granted),
+       array('path' => $suggestedPath,'source' => $path),
+       array('translator' => $this->get('translator'))
+       );
+
+       $form->handleRequest($request);
+
+       if (!$form->isSubmitted() || !$form->isValid()) {
+           $this->get('session')->getFlashBag()->add('error',
+           $t->trans('There was an error in your restore backup process', array(), 'BinovoElkarBackup'));
+           return $this->redirect($this->generateUrl('showClients'));
+       }
+        
+       $data = $form->getData();
+       $targetPath = $data['path'];
+       $targetIdClient = $data['client'];
+
+       $backupLocation = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation')->find($idBackupLocation);
+       $sourcePath = sprintf("%s/%s/%s/%s", $backupLocation->getDirectory(), sprintf('%04d', $idClient), sprintf('%04d', $idJob), $path);
+
+       $clientRepo = $this->getDoctrine()
+            ->getRepository('BinovoElkarBackupBundle:Client');
+       $targetClient = $clientRepo->find($targetIdClient);
+       $url = $targetClient->getUrl();
+       $sshArgs = $targetClient->getSshArgs();
+
+       $manager = $this->getDoctrine()->getManager();
+       $msg = new Message(
+              'DefaultController',
+              'TickCommand',
+              json_encode(array(
+                  'command' => "elkarbackup:restore_backup",
+                  'url' => $url,
+                  'sourcePath' => $sourcePath,
+                  'remotePath' => $targetPath,
+                  'sshArgs'    => $sshArgs
+              ))
+        );
+        $manager->persist($msg);
+        $this->info(
+              'Client "%clientid%" restore started',
+              array('%clientid%' => $idClient),
+              array('link' => $this->generateClientRoute($idClient))
+        );
+        $manager->flush();
+        
+        $this->get('session')->getFlashBag()->add('success',
+              $t->trans('Your backup restore process has been enqueued', array(), 'BinovoElkarBackup'));
+        return $this->redirect($this->generateUrl('showClients'));
+    }
+    
     /**
      * @Route("/client/{idClient}/job/{idJob}/run", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="enqueueJob")
      *
