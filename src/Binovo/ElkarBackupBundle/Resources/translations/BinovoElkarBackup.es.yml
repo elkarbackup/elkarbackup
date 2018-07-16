@@ -1,4 +1,3 @@
----
 'A month': 'Un mes'
 'A year': 'Un año'
 'About': 'Acerca de'
@@ -13,6 +12,8 @@
 'All': 'Todos'
 'Back to client': 'Volver al cliente'
 'Back to job': 'Volver a la tarea'
+'Backup location': 'Ubicación de copia'
+'Backup Locations': 'Ubicaciones de copia'
 'Backup server login': 'Inicio'
 'Backups': 'Copias de seguridad'
 'Browse': 'Examinar'
@@ -67,7 +68,7 @@
 'Make weekly backups': 'Realizar copias semanales'
 'Make monthly backups': 'Realizar copias mensuales'
 'Make yearly backups': 'Realizar copias anuales'
-'Manage backups location': 'Gestionar ubicación de las copias'
+'Manage backup locations': 'Gestionar ubicaciones de las copias'
 'Manage parameters': 'Gestionar parámetros'
 'Message': 'Mensaje'
 'Modification date': 'Fecha de modificación'
