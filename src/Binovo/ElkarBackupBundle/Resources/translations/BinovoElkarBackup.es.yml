@@ -1,145 +1,98 @@
-'Repository backups script': 'Script de copia del repositorio'
-'No keys defined': 'No hay claves definidas'
-'Add key': 'Añadir clave'
-'Sort jobs': 'Ordenar tareas'
-'Edit script': 'Editar script'
-'File': 'Fichero'
-'Download': 'Descargar'
-'Currently not used': 'Actualmente no se utiliza'
-'Runs as before client script': 'Ejecutar como pre-script de clientes'
-'Runs as after client script': 'Ejecutar como post-script de clientes'
-'Runs as before job script': 'Ejecutar como pre-script de tareas'
-'Runs as after job script': 'Ejecutar como post-script de tareas'
-'Used by': 'Utilizado por'
-'Directory': 'Carpeta'
-'Hizkuntza': 'Idioma'
-'Manage parameters': 'Gestionar parámetros'
-'Manage backups location': 'Gestionar ubicación de las copias'
-'Repository backup script': 'Script de copia del repositorio'
-'One day': 'Un día'
-'One week': 'Una semana'
-'Two weeks': 'Dos semanas'
-'Three weeks': 'Tres semanas'
 'A month': 'Un mes'
-'Six months': 'Seis meses'
 'A year': 'Un año'
-'Two years': 'Dos años'
-'Three years': 'Tres años'
-'Four years': 'Cuatro años'
-'Five years': 'Cinco años'
-'Never': 'Nunca'
-
-'MySQL port': 'Puerto MYSQL'
-'MySQL host': 'Host MySQL'
-'MySQL DB name': 'Nombre BD MySQL'
-'MySQL user': 'usuario MySQL'
-'MySQL password': 'Contraseña MySQL'
-'Remove logs older than': 'Borrar logs más antiguos que'
-'Quota warning level': 'Nivel de alerta de Cuota'
-'Records per page': 'Número de registros por página'
-
-'Public key': 'Clave Pública'
-'Generate': 'Generar'
-'Run now': 'Ejecutar ahora'
-'Use local permissions': 'Utilizar permisos locales'
-'Quota': 'Cuota (GB)'
-'During the day': 'Durante el día'
-'Make backups during the day': 'Realizar copias durante el día'
-'Make daily backups': 'Realizar copias diarias'
-'Make weekly backups': 'Realizar copias semanales'
-'Make monthly backups': 'Realizar copias mensuales'
-'Make yearly backups': 'Realizar copias anuales'
-'Time of day': 'Horario'
-'Day of month': 'Día del mes'
-'Days of the week': 'Días de la semana'
-'Retention policy': 'Política de retención'
-'Number of copies to keep': 'Número de copias a mantenter'
-'Disk usage': 'Espacio en disco'
-'Session': 'Sesión'
-'Config': 'Configuración'
 'About': 'Acerca de'
 'Actions': 'Acciones'
 'active': 'activo'
 'Active': 'Activo'
 'Add job': 'Agregar tarea'
+'Add key': 'Añadir clave'
 'Add': 'Añadir'
 'Admin': 'Administración'
 'All messages': 'Todos los mensajes'
 'All': 'Todos'
 'Back to client': 'Volver al cliente'
 'Back to job': 'Volver a la tarea'
+'Backup location': 'Ubicación de copia'
+'Backup Locations': 'Ubicaciones de copia'
 'Backup server login': 'Inicio'
 'Backups': 'Copias de seguridad'
+'Browse': 'Examinar'
 'Change password': 'Cambiar contraseña'
 'Change': 'Cambiar'
-'Client "%clientid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%':
-'Client "%clientid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%':
-'Client "%clientid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.':
-'Client "%clientid%" post script error.':
-'Client "%clientid%" post script error.':
-'Client "%clientid%" post script ok.':
-'Client "%clientid%" post script ok.':
-'Client "%clientid%" pre script failed. Aborting backup.':
-'Client "%clientid%" pre script ok.':
-'Client "%clientid%", Job "%jobid%" error.':
-'Client "%clientid%", Job "%jobid%" ok.':
-'Clients': 'Clientes'
 'Client': 'Cliente'
-'Command %command% failed. Diagnostic information follows: %output%':
-'Command %command% succeeded with output: %output%':
+'Clients': 'Clientes'
+'Config': 'Configuración'
 'Confirm new password': 'Confirmar nueva contraseña'
+'Currently not used': 'Actualmente no se utiliza'
 'Daily': 'Diario'
 'Day of month:': 'Día del mes:'
 'Day of year:': 'Día del año:'
+'Days of the week': 'Días de la semana'
 'Delete': 'Borrar'
 'Description': 'Descripción'
+'Directory': 'Carpeta'
+'Disk usage': 'Espacio en disco'
 'Documentation will be available soon': 'La documentación estará disponible pronto'
 'Download as .tgz': 'Bajar como .tgz'
 'Download as .zip': 'Bajar como .zip'
+'Download': 'Descargar'
+'During the day': 'Durante el día'
 'Edit client': 'Editar cliente'
 'Edit Job': 'Editar Tarea'
 'Edit policy': 'Modificar la directiva'
+'Edit script': 'Editar script'
 'Edit User': 'Editar usuario'
 'Edit': 'Editar'
-'Email': 'Email'
-'Error closing config file %filename%.':
-'Error log for backup from job %joburl%':
-'Error opening config file %filename%. Aborting backup.':
-'Error unlinking config file %filename%.':
-'Error writing to config file %filename%. Aborting backup.':
 'Errors and up': 'Errores y superior'
 'Exclude': 'Excluir'
+'File': 'Fichero'
+'Five years': 'Cinco años'
+'Four years': 'Cuatro años'
 'Friday': 'Viernes'
 'Help': 'Ayuda'
 'Home': 'Inicio'
 'Hourly': 'Cada hora'
-'Id': 'Id'
 'Include': 'Incluir'
 'Invalid time specified.': 'El tiempo especificado no es válido.'
 'Is active': 'Está activo'
+'Job execution requested successfully': 'La ejecución de la tarea se ha puesto en cola correctamente'
 'Jobs': 'Tareas'
 'Language': Idioma
 'Last log entry': 'Último evento'
 'Level': 'Nivel'
 'Link': 'Enlace'
-'login': 'acceder'
 'Logout': 'Cerrar sesión'
 'Logs': 'Registros'
+'Make backups during the day': 'Realizar copias durante el día'
+'Make daily backups': 'Realizar copias diarias'
+'Make weekly backups': 'Realizar copias semanales'
+'Make monthly backups': 'Realizar copias mensuales'
+'Make yearly backups': 'Realizar copias anuales'
+'Manage backup locations': 'Gestionar ubicaciones de las copias'
+'Manage parameters': 'Gestionar parámetros'
 'Message': 'Mensaje'
 'Modification date': 'Fecha de modificación'
 'Monday': 'Lunes'
 'Monthly': 'Mensual'
+'MySQL DB name': 'Nombre BD MySQL'
+'MySQL host': 'Host MySQL'
+'MySQL password': 'Contraseña MySQL'
+'MySQL port': 'Puerto MYSQL'
+'MySQL user': 'usuario MySQL'
 'Name': 'Nombre'
+'Never': 'Nunca'
 'New password': 'Nueva contraseña'
 'New': 'Nuevo'
+'No keys defined': 'No hay claves definidas'
 'No script': 'Sin script'
 'None': 'Ninguno'
 'Nothing to run.': 'Nada para ejecutar.'
 'Notices and up': 'Avisos y superior'
 'Notify only': 'Notificar sólo'
-'Number of copies to keep': 'Número de copias a conservar'
 'Object': 'Objeto'
 'Old password': 'Contraseña anterior'
+'One day': 'Un día'
+'One week': 'Una semana'
 'Owner': 'Propietario'
 'Password changed': 'Contraseña cambiada'
 'Password': 'Contraseña'
@@ -150,32 +103,48 @@
 'Policy': 'Política'
 'Post script': 'Post-script'
 'Pre script': 'Pre-script'
+'Public key': 'Clave Pública'
+'Quota warning level': 'Nivel de alerta de Cuota'
+'Quota': 'Cuota (GB)'
+'Really delete client %name%? This will remove all related jobs and backups': '¿Quiere eliminar el cliente %name%? Se eliminarán todas sus tareas y backups'
+'Really delete job %name%? This will remove all related backups': '¿Quiere eliminar la tarea %name%? También se eliminarán sus backups'
+'Really delete policy %name%?': '¿Quiere eliminar la política %name%?'
+'Really delete script %name%?': '¿Quiere eliminar el script %name%?'
+'Records per page': 'Número de registros por página'
 'Removing the policy %name% failed. Check that it is not in use.': 'No se ha podido eliminar la política %name%. Compruebe que no esté en uso.'
 'Removing the script %name% failed. Check that it is not in use.': 'No se ha podido eliminar el script %name%. Compruebe que no esté en uso.'
-'Running %command%':
+'Repository backup script': 'Script de copia del repositorio'
+'Retention policy': 'Política de retención'
+'Run now': 'Ejecutar ahora'
 'Saturday': 'Sábado'
 'Save': 'Guardar'
 'Send notices to': 'Enviar avisos a'
 'Show home page': 'Mostrar página de inicio'
 'Show Logs': 'Mostrar registros'
 'Show': 'Mostrar'
+'Six months': 'Seis meses'
+'Sort jobs': 'Ordenar tareas'
 'Source': 'Origen'
 'Status': 'Estado'
 'Sunday': 'Domingo'
 'Sync first': 'Sincronizar primero'
+'Number of copies to keep': 'Número de copias a conservar'
 'The number of copies to make during the day': 'El número de copias a realizar durante el día'
 'There are no jobs': 'No hay tareas'
+'Three weeks': 'Tres semanas'
+'Three years': 'Tres años'
 'Thursday': 'Jueves'
-'TickCommand.php was unable to send the notification message: %exception%': 'TickCommand.php no pudo enviar los mensajes de notificación: %exception%'
 'Time': 'Tiempo'
-'TODO': 'TODO'
+'Time of day': 'Horario'
 'Tuesday': 'Martes'
+'Two weeks': 'Dos semanas'
+'Two years': 'Dos años'
 'Unable to find Client entity': 'No se puede encontrar la entidad del cliente:'
 'Unable to find Job entity:': 'No se puede encontrar la entidad de la tarea:'
 'Upload post script': 'Subir post-script'
 'Upload pre script': 'Subir pre-script'
-'Url': 'Url'
-'User %username% logged in.':
+'Use local permissions': 'Utilizar permisos locales'
+'Used by': 'Utilizado por'
 'User': 'Usuario'
 'Username': 'Nombre de usuario'
 'Username:': 'Nombre de Usuario:'
@@ -187,13 +156,8 @@
 'Wrong old password': 'Antigua contraseña incorrecta'
 'Yearly': 'Anual'
 'Yes': 'Sí'
-'Browse': 'Examinar'
+'You forgot to specify hours during the day': 'No has indicado horas durante el día'
 'Add client': 'Agregar cliente'
-'Job execution requested successfully': 'La ejecución de la tarea se ha puesto en cola correctamente'
-'Really delete client %name%? This will remove all related jobs and backups': '¿Quiere eliminar el cliente %name%? Se eliminarán todas sus tareas y backups'
-'Really delete job %name%? This will remove all related backups': '¿Quiere eliminar la tarea %name%? También se eliminarán sus backups'
-'Really delete policy %name%?': '¿Quiere eliminar la política %name%?'
-'Really delete script %name%?': '¿Quiere eliminar el script %name%?'
 'Backup not found': 'No hay backups'
 'Client has not yet been saved': 'El cliente no ha sido guardado'
 'Job has not yet been saved': 'La tarea no ha sido guardada'
@@ -203,139 +167,131 @@
 'Job': 'Tarea'
 'Before': 'Antes'
 'After': 'Después'
-
-'Size' : 'Tamaño'
-'Back to root' : 'Volver a la raíz'
+'Size': 'Tamaño'
+'Back to root': 'Volver a la raíz'
 'Preferences': 'Preferencias'
 'Manage preferences': 'Gestionar preferencias'
-'Actions': 'Acciones'
 'Abort': 'Abortar'
 'More': 'Más'
 'Clone': 'Clonar'
 'Abort job': 'Abortar tarea'
 'Test connection': 'Comprobar'
 policy_help: |
- <h4>Nombre</h4>
- Es el identificador de la política. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.
- <h4>Descripción</h4>
- Texto libre para describir la política. Introduce información que te sea útil.
- <h4>Excluir e Incluir</h4>
- La aplicación utilizará cada línea del campo Excluir como patrón para excluir ficheros, y de la misma forma utilizará cada línea del campo Incluir como patrón de inclusión. Utilizando estos campos de forma adecuada podrás definir los ficheros que quieres incluir en las copias. Estos campos intervienen con cada carpeta y fichero de la copia de la siguiente forma:
- <ol>
+  <h4>Nombre</h4>
+  Es el identificador de la política. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.
+  <h4>Descripción</h4>
+  Texto libre para describir la política. Introduce información que te sea útil.
+  <h4>Excluir e Incluir</h4>
+  La aplicación utilizará cada línea del campo Excluir como patrón para excluir ficheros, y de la misma forma utilizará cada línea del campo Incluir como patrón de inclusión. Utilizando estos campos de forma adecuada podrás definir los ficheros que quieres incluir en las copias. Estos campos intervienen con cada carpeta y fichero de la copia de la siguiente forma:
+  <ol>
   <li>Si el fichero o la carpeta coinciden con el patrón introducido en el campo Incluir, entonces se copian.</li>
   <li>Si el fichero o la carpeta coinciden con el patrón introducido en el campo Excluir, entonecs NO se copian. </li>
   <li>Si el fichero o la carpta no coinciden con los patrones de ninguno de los campos, entonces se copian.</li>
- </ol>
- Como puedes observar, según la configuración predefinida de la aplicación se copiarán todos los ficheros y carpetas, excluyendo aquellas que coincidan con los patrones del campo Excluir, siempre y cuando no coincidan con los patrones del campo Incluir. Ten en cuenta que cada tarea tiene sus propios campos Incluir y Excluir. Siempre tendrán mayor prioridad las reglas definidas a nivel de tarea.
-
- <h4>Sincronizar primero</h4>
- Cuando la opción Sincronizar primero está activada, el trabajo de sincronización se realiza en un paso previo. Incluso las ejecuciones hourly solo rotarán directorios, sin establecer conexión con el cliente. Esto asegura que los snapshots son consistentes con el coste de un snapshot adicional utilizado únicamente para la sincronización.
- <h4>Cada hora</h4>
- Copias que se realizan durante el día.
- <h4>Diaria</h4>
- Copias que se realizan una vez al día en la hora seleccionada.
- <h4>Semanal</h4>
- Copias que se realizan una vez por semana.
- <h4>Mensual</h4>
- Copias que se realizan una vezl al mes.
- <h4>Anual</h4>
- Copias que se realizan una vez al año.
+  </ol>
+  Como puedes observar, según la configuración predefinida de la aplicación se copiarán todos los ficheros y carpetas, excluyendo aquellas que coincidan con los patrones del campo Excluir, siempre y cuando no coincidan con los patrones del campo Incluir. Ten en cuenta que cada tarea tiene sus propios campos Incluir y Excluir. Siempre tendrán mayor prioridad las reglas definidas a nivel de tarea.
+  
+  <h4>Sincronizar primero</h4>
+  Cuando la opción Sincronizar primero está activada, el trabajo de sincronización se realiza en un paso previo. Incluso las ejecuciones hourly solo rotarán directorios, sin establecer conexión con el cliente. Esto asegura que los snapshots son consistentes con el coste de un snapshot adicional utilizado únicamente para la sincronización.
+  <h4>Cada hora</h4>
+  Copias que se realizan durante el día.
+  <h4>Diaria</h4>
+  Copias que se realizan una vez al día en la hora seleccionada.
+  <h4>Semanal</h4>
+  Copias que se realizan una vez por semana.
+  <h4>Mensual</h4>
+  Copias que se realizan una vezl al mes.
+  <h4>Anual</h4>
+  Copias que se realizan una vez al año.
 client_help: |
- <h4>Nombre</h4>
- Es el identificador del Cliente. Se mostrará en las listas y cuadros de selección. Cada cliente debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido. .
- <h4>Url</h4>
- Se utilizará para poder conectar con el cliente. La aplicación utilizará este valor junto con el Path o la ruta para generar la URL de la tarea. Los valores típicos de este campo son:
- <ul>
-   <li>Puede estar vacio. Puede ser útil cuando queremos copiar datos del sistema de ficheros local.</li>
-   <li><i>usuario@nombre.dominio</i> Se conectará a través de ssh con la máquina <i>domain.name</i> utilizando el usuario <i>user</i>.</li>
-   <li><i>usuario@nombre.dominio:</i> Atención a los dos puntos. Igual que en el punto anterior, pero en vez de utilizar una conexión ssh utilizará rsync para la comunicación con el cliente.</li>
- </ul>
- <h4>Cuota</h4>
- Espacio de disco disponible para los datos del cliente en GB. El valor -1 signfica "sin límite". Cuando se alcance el límite configurado (por defecto el 80%), la aplicación enviará un mensaje a las direcciones configuradas en las tareas que pertenecen a dicho cliente. Si se supera la cuota establecida para un cliente no se realizarán copias de sus tareas, y se generará un error mostrando la situación.
- <h4>Espacio en disco</h4>
- Espacio ocupado en estos momentos por los datos del cliente.
- <h4>Descripción</h4>
- Texto libre para describir al cliente. Introduce información que te sea útil.
- <h4>Está activo</h4>
- Si no está activado no se realizarán las copias.
- <h4>Pre y post scripts</h4>
- Scripts que se ejecutarán antes y después de la ejecución de este cliente. Por ejemplo, abrir conexiones VPN, montar carpetas de red, etc.
-
-
+  <h4>Nombre</h4>
+  Es el identificador del Cliente. Se mostrará en las listas y cuadros de selección. Cada cliente debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido. .
+  <h4>Url</h4>
+  Se utilizará para poder conectar con el cliente. La aplicación utilizará este valor junto con el Path o la ruta para generar la URL de la tarea. Los valores típicos de este campo son:
+  <ul>
+  <li>Puede estar vacio. Puede ser útil cuando queremos copiar datos del sistema de ficheros local.</li>
+  <li><i>usuario@nombre.dominio</i> Se conectará a través de ssh con la máquina <i>domain.name</i> utilizando el usuario <i>user</i>.</li>
+  <li><i>usuario@nombre.dominio:</i> Atención a los dos puntos. Igual que en el punto anterior, pero en vez de utilizar una conexión ssh utilizará rsync para la comunicación con el cliente.</li>
+  </ul>
+  <h4>Cuota</h4>
+  Espacio de disco disponible para los datos del cliente en GB. El valor -1 signfica "sin límite". Cuando se alcance el límite configurado (por defecto el 80%), la aplicación enviará un mensaje a las direcciones configuradas en las tareas que pertenecen a dicho cliente. Si se supera la cuota establecida para un cliente no se realizarán copias de sus tareas, y se generará un error mostrando la situación.
+  <h4>Espacio en disco</h4>
+  Espacio ocupado en estos momentos por los datos del cliente.
+  <h4>Descripción</h4>
+  Texto libre para describir al cliente. Introduce información que te sea útil.
+  <h4>Está activo</h4>
+  Si no está activado no se realizarán las copias.
+  <h4>Pre y post scripts</h4>
+  Scripts que se ejecutarán antes y después de la ejecución de este cliente. Por ejemplo, abrir conexiones VPN, montar carpetas de red, etc.
 client_job_help: |
- <h4>Tareas</h4>
- Aquí puedes editar los parámetros más importantes de una tarea. Recuerda que tras realizar los cambios debes guardarlos.
+  <h4>Tareas</h4>
+  Aquí puedes editar los parámetros más importantes de una tarea. Recuerda que tras realizar los cambios debes guardarlos.
 job_help: |
- <h4>Nombre</h4>
- Es el identificador de la Tarea. Se mostrará en las listas y cuadros de selección. Cada cliente debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido
- <h4>Path(ruta)</h4>
- La ruta (path) de la carpeta del cliente que queremos copiar, o el nombre de recurso rsync.
- <h4>Espacio en disco</h4>
- El espacio que ocupan en disco los datos de esta tarea.
- <h4>Descripción</h4>
- Texto libre para describir la tarea. Introduce información que te sea útil.
- <h4>Está activo</h4>
- Si no está activado no se realizarán las copias.
- <h4>Propietario</h4>
- De forma predeterminada, el usuario que ha creado la tarea es el propietario de la misma, y será a quien la aplicación envíe los mensajes asociados (más información en "Enviar avisos a" y "Notificar solo"). Solamente el administrador puede cambiar el propietario de una tarea.
- <h4>Enviar avisos a</h4>
- Aqui se define a que direcciones de correo electrónico se envían los avisos. La aplicación utilizará el valor del campo "Notificar sólo" para decidir qué tipo de avisos tiene que enviar. Existe también la opción de enviar las alertas a otra dirección de correo electrónico, simplemente hay que escribir la dirección en la caja de texto.
- <h4>Notificar sólo</h4>
- Elige el tipo de mensajes que quieres recibir a fin de reducir el número de mails.
- <h4>Pre y post scripts</h4>
- Scripts que se ejecutarán antes y después de la ejecución de esta tarea.
- <h4>Políticas</h4>
- Elige la política que se aplicará a esta tarea. Cada política define varios parámetros, entre ellos cuando se realizarán las copias, y cuantas copias guardarán. Si no se llena este campo, no se realizarán las copias.
- <h4>Utilizar permisos locales</h4>
- Rsnapshot siempre intenta mantener los permisos originales de los ficheros. Esto puede llegar a causar problemas con clientes Windows y con clientes Linux que utilizan ACLs. Si te ocurre algo así puedes activar esta opción, y de esta forma el servicio web no tendrá problemas de lectura de los ficheros.
- <h4>Excluir e Incluir</h4>
- La aplicación utilizará cada línea del campo Excluir como patrón para excluir ficheros, y de la misma forma utilizará cada línea del campo Incluir como patrón de inclusión. Utilizando estos campos de forma adecuada podrás definir los ficheros que quieres incluir en las copias. Estos campos intervienen con cada carpeta y fichero de la copia de la siguiente forma:
- <ol>
+  <h4>Nombre</h4>
+  Es el identificador de la Tarea. Se mostrará en las listas y cuadros de selección. Cada cliente debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido
+  <h4>Path(ruta)</h4>
+  La ruta (path) de la carpeta del cliente que queremos copiar, o el nombre de recurso rsync.
+  <h4>Espacio en disco</h4>
+  El espacio que ocupan en disco los datos de esta tarea.
+  <h4>Descripción</h4>
+  Texto libre para describir la tarea. Introduce información que te sea útil.
+  <h4>Está activo</h4>
+  Si no está activado no se realizarán las copias.
+  <h4>Propietario</h4>
+  De forma predeterminada, el usuario que ha creado la tarea es el propietario de la misma, y será a quien la aplicación envíe los mensajes asociados (más información en "Enviar avisos a" y "Notificar solo"). Solamente el administrador puede cambiar el propietario de una tarea.
+  <h4>Enviar avisos a</h4>
+  Aqui se define a que direcciones de correo electrónico se envían los avisos. La aplicación utilizará el valor del campo "Notificar sólo" para decidir qué tipo de avisos tiene que enviar. Existe también la opción de enviar las alertas a otra dirección de correo electrónico, simplemente hay que escribir la dirección en la caja de texto.
+  <h4>Notificar sólo</h4>
+  Elige el tipo de mensajes que quieres recibir a fin de reducir el número de mails.
+  <h4>Pre y post scripts</h4>
+  Scripts que se ejecutarán antes y después de la ejecución de esta tarea.
+  <h4>Políticas</h4>
+  Elige la política que se aplicará a esta tarea. Cada política define varios parámetros, entre ellos cuando se realizarán las copias, y cuantas copias guardarán. Si no se llena este campo, no se realizarán las copias.
+  <h4>Utilizar permisos locales</h4>
+  Rsnapshot siempre intenta mantener los permisos originales de los ficheros. Esto puede llegar a causar problemas con clientes Windows y con clientes Linux que utilizan ACLs. Si te ocurre algo así puedes activar esta opción, y de esta forma el servicio web no tendrá problemas de lectura de los ficheros.
+  <h4>Excluir e Incluir</h4>
+  La aplicación utilizará cada línea del campo Excluir como patrón para excluir ficheros, y de la misma forma utilizará cada línea del campo Incluir como patrón de inclusión. Utilizando estos campos de forma adecuada podrás definir los ficheros que quieres incluir en las copias. Estos campos intervienen con cada carpeta y fichero de la copia de la siguiente forma:
+  <ol>
   <li>Si el fichero o la carpeta coinciden con el patrón introducido en el campo Incluir, entonces se copian.</li>
   <li>Si el fichero o la carpeta coinciden con el patrón introducido en el campo Excluir, entonecs NO se copian. </li>
   <li>Si el fichero o la carpta no coinciden con los patrones de ninguno de los campos, entonces se copian.</li>
- </ol>
- Como puedes observar, según la configuración predefinida de la aplicación se copiarán todos los ficheros y carpetas, excluyendo aquellas que coincidan con los patrones del campo Excluir, siempre y cuando no coincidan con los patrones del campo Incluir. Cuando el campo Incluir está vacío, y solo entonces, el sistema utilizará el contenido del campo Incluir definido en la política. Esto mismo es aplicable al campo Excluir.
+  </ol>
+  Como puedes observar, según la configuración predefinida de la aplicación se copiarán todos los ficheros y carpetas, excluyendo aquellas que coincidan con los patrones del campo Excluir, siempre y cuando no coincidan con los patrones del campo Incluir. Cuando el campo Incluir está vacío, y solo entonces, el sistema utilizará el contenido del campo Incluir definido en la política. Esto mismo es aplicable al campo Excluir.
 user_help: |
- <h4>Nombre</h4>
- Es el identificador de Usuario. Se mostrará en las listas y cuadros de selección. Cada usuario debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido
- <h4>Contraseña</h4>
- En este campo no puedes ver la contrasañe, pero lo puedes utilizar para cambiarla. Si introduces algo en este campo, estarás cambiando la contraseña de usuario.
- <h4>Correo electrónico</h4>
- El correo electrónico es un dato importante. Se utilizará para enviar todas las notificaciones al usuario.
- <h4>Está activo</h4>
- Si esta opción no está marcada el usuario no podrá acceder al sistema.
-
+  <h4>Nombre</h4>
+  Es el identificador de Usuario. Se mostrará en las listas y cuadros de selección. Cada usuario debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido
+  <h4>Contraseña</h4>
+  En este campo no puedes ver la contrasañe, pero lo puedes utilizar para cambiarla. Si introduces algo en este campo, estarás cambiando la contraseña de usuario.
+  <h4>Correo electrónico</h4>
+  El correo electrónico es un dato importante. Se utilizará para enviar todas las notificaciones al usuario.
+  <h4>Está activo</h4>
+  Si esta opción no está marcada el usuario no podrá acceder al sistema.
 params_help: |
- <h4>Configuración MySQL</h4>
- En estos campos se configura la conexión con la BD. Cuidado, si cometes errores en esta parte la aplicación dará error y dejará de funcionar.
- <h4>Configuración del Mailer</h4>
- En estos campos se configura la parte del envío a través de correo electrónico. Cuidado, si cometes errores en esta parte no se podrán enviar los correos. Te puede ser útil la <a href="http://symfony.com/doc/current/cookbook/email/email.html">documentación del Proyecto Symfony</a>.
- <h4>Borrar logs más antiguos que</h4>
- Para que el registro de log no crezca demasiado la aplicación irá limpiandolo de vez en cuando. Se eliminarán las entradas que superen el valor introducido en este campo.
- <h4>Nivel de alerta de Cuota</h4>
- Se enviarán las alertas cuando un cliente supera en este % la cuota que se le ha establecido.
- <h4>Número de registros por página</h4>
- El máximo número de registros que se mostrán por página.
-
+  <h4>Configuración MySQL</h4>
+  En estos campos se configura la conexión con la BD. Cuidado, si cometes errores en esta parte la aplicación dará error y dejará de funcionar.
+  <h4>Configuración del Mailer</h4>
+  En estos campos se configura la parte del envío a través de correo electrónico. Cuidado, si cometes errores en esta parte no se podrán enviar los correos. Te puede ser útil la <a href="http://symfony.com/doc/current/cookbook/email/email.html">documentación del Proyecto Symfony</a>.
+  <h4>Borrar logs más antiguos que</h4>
+  Para que el registro de log no crezca demasiado la aplicación irá limpiandolo de vez en cuando. Se eliminarán las entradas que superen el valor introducido en este campo.
+  <h4>Nivel de alerta de Cuota</h4>
+  Se enviarán las alertas cuando un cliente supera en este % la cuota que se le ha establecido.
+  <h4>Número de registros por página</h4>
+  El máximo número de registros que se mostrán por página.
 backupscriptconfig_help: |
- <h4>Authorized keys</h4>
- Para poder realizar copias del repositorio tienes que añadir tu clave pública al fichero "authorized keys" de la aplicación
-
+  <h4>Authorized keys</h4>
+  Para poder realizar copias del repositorio tienes que añadir tu clave pública al fichero "authorized keys" de la aplicación
 managebackups_help: |
- <h4>Host</h4>
- Nombre o dirección IP del servidor NFS. Para utilizar el sistema de ficheros local este campo debe estar vacio.
- <p>Esta aplicación tiene dependencias con el paquete autofs para montar el sistema de ficheros remoto. Si autofs no está correctamente configurado, este campo no será editable.</p>
- <h4>Directorio</h4>
- Path completo del sistema de ficheros local, o nombre del export NFS. Siempre debe de comenzar con '/'. La aplicación guardará aquí todos los snapshots o copias que realiza, por lo que el usuario de sistema elkarbackup debe tener permisos de escritura.
- <h4>Almacenamiento Tahoe</h4>
- Activa el amacenamiento secundario Tahoe.  Si lo activa, recuerde configurar Tahoe.
- <p>Esta funcionalidad depende del paquete tahoe-lafs. Si tahoe-lafs no está instalado en su equipo la casilla aparecerá deshabilitada.</p>
-
+  <h4>Host</h4>
+  Nombre o dirección IP del servidor NFS. Para utilizar el sistema de ficheros local este campo debe estar vacio.
+  <p>Esta aplicación tiene dependencias con el paquete autofs para montar el sistema de ficheros remoto. Si autofs no está correctamente configurado, este campo no será editable.</p>
+  <h4>Directorio</h4>
+  Path completo del sistema de ficheros local, o nombre del export NFS. Siempre debe de comenzar con '/'. La aplicación guardará aquí todos los snapshots o copias que realiza, por lo que el usuario de sistema elkarbackup debe tener permisos de escritura.
+  <h4>Almacenamiento Tahoe</h4>
+  Activa el amacenamiento secundario Tahoe.  Si lo activa, recuerde configurar Tahoe.
+  <p>Esta funcionalidad depende del paquete tahoe-lafs. Si tahoe-lafs no está instalado en su equipo la casilla aparecerá deshabilitada.</p>
 script_help: |
- <h4>Acerca de los scripts</h4>
- La aplicación ejecuta los scripts utilizando el usuario para backups. Antes de la ejecución de los scripts, la aplicación modifica el valor de estas variables de entorno.
- <ul>
+  <h4>Acerca de los scripts</h4>
+  La aplicación ejecuta los scripts utilizando el usuario para backups. Antes de la ejecución de los scripts, la aplicación modifica el valor de estas variables de entorno.
+  <ul>
   <li>ELKARBACKUP_LEVEL:  su valor puede ser JOB o CLIENT</li>
   <li>ELKARBACKUP_EVENT:  su valor puede ser PRE o POST</li>
   <li>ELKARBACKUP_URL:    su valor será la URL completa de la tarea o del cliente</li>
@@ -354,26 +310,26 @@ script_help: |
   <li>ELKARBACKUP_JOB_STARTTIME: timestamp de inicio de backup de la tarea (solo disponible en post-job)</li>
   <li>ELKARBACKUP_JOB_ENDTIME: timestamp de fin de backup de la tarea (solo disponible en post-job)</li>
   <li>ELKARBACKUP_SSH_ARGS: argumentos avanzados para la conexión por ssh</li>
- </ul>
- Si un pre-script de un cliente devuelve un valor distinto a 0, la aplicación abortará la ejecución de las tareas de ese cliente. Cuando un pre-script a nivel de tarea devuelve un valor diferente a 0, la aplicación generará un aviso tipo WARNING (la copia continuará).
- <h4>Nombre</h4>
- Es el identificador del Script. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.
- <h4>Descripción</h4>
- Texto libre para describir el Script. Introduce información que te sea útil.
- <h4>Archivo</h4>
- Explora y selecciona el script que quieres subir.
- <h4>Ejecutar como pre-script de clientes</h4>
- Activa esta opción si este script esta diseñado para ser ejecutado antes de la ejecución de un cliente.
- <h4>Ejecutar como post-script de clientes</h4>
- Activa esta opción si este script esta diseñado para ser ejecutado después de la ejecución de un cliente.
- <h4>Ejecutar como pre-script de tareas</h4>
- Activa esta opción si este script esta diseñado para ser ejecutado antes de la ejecución de una tarea.
- <h4>Ejecutar como post-script de tareas</h4>
- Activa esta opción si este script esta diseñado para ser ejecutado después de la ejecución de una tarea.
+  </ul>
+  Si un pre-script de un cliente devuelve un valor distinto a 0, la aplicación abortará la ejecución de las tareas de ese cliente. Cuando un pre-script a nivel de tarea devuelve un valor diferente a 0, la aplicación generará un aviso tipo WARNING (la copia continuará).
+  <h4>Nombre</h4>
+  Es el identificador del Script. Se mostrará en las listas y cuadros de selección. Cada política debe tener un nombre distinto, la aplicación mostrará un error si se introduce un nombre repetido.
+  <h4>Descripción</h4>
+  Texto libre para describir el Script. Introduce información que te sea útil.
+  <h4>Archivo</h4>
+  Explora y selecciona el script que quieres subir.
+  <h4>Ejecutar como pre-script de clientes</h4>
+  Activa esta opción si este script esta diseñado para ser ejecutado antes de la ejecución de un cliente.
+  <h4>Ejecutar como post-script de clientes</h4>
+  Activa esta opción si este script esta diseñado para ser ejecutado después de la ejecución de un cliente.
+  <h4>Ejecutar como pre-script de tareas</h4>
+  Activa esta opción si este script esta diseñado para ser ejecutado antes de la ejecución de una tarea.
+  <h4>Ejecutar como post-script de tareas</h4>
+  Activa esta opción si este script esta diseñado para ser ejecutado después de la ejecución de una tarea.
 sort_jobs_help: |
- <h4>Ordenar tareas</h4>
- Puedes cambiar el orden de ejecución de las tareas. Es útil a la hora de priorizar tareas programadas a la misma hora.
- <p>Arrastra y suelta para cambiar el orden</p>
+  <h4>Ordenar tareas</h4>
+  Puedes cambiar el orden de ejecución de las tareas. Es útil a la hora de priorizar tareas programadas a la misma hora.
+  <p>Arrastra y suelta para cambiar el orden</p>
 preferences_help: |
   <h4>Gestión de preferencias de usuario</h4>
   Los cambios realizados aquí no afectarán al resto de usuarios
