@@ -1,5 +1,8 @@
 language: php
 
+services:
+  - mysql
+
 php:
 #  - 5.3  # Debian Squeeze => NOT SUPPORTED
 #  - 5.4  # Debian Wheezy  => NOT SUPPORTED
