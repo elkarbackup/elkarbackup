@@ -52,10 +52,8 @@ class RemoteRestoreCommand extends ContainerAwareCommand
                    $sshArgs = '-p 22';
                }
                $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\"  %s" "%s" "%s:%s"',$sshArgs,$sourcePath,$url,$remotePath);
-        $logger->info($cmd,$context);
         } else {
                $cmd = sprintf('rsync -azhv -e "ssh -o \\"StrictHostKeyChecking no\\" " "%s" "%s:%s"',$sourcePath,$url,$remotePath);
-        $logger->info($cmd,$context);
         }
         $logger->info('Starting restore job ',$context);
         $manager->flush();
