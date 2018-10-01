@@ -1,3 +1,18 @@
+## 1.3.0 (2018/10/01)
+Features:
+- Multiple backup locations (#273) --- Thanks @Igortxete7  :)
+- Multiple backups at a time (#286) --- Thanks @Igortxete7 :)
+- Added option to restore directly to a remote host (#301)
+- Updated translations from Crowdin (#305)
+
+Bugfixes:
+- Restore filenames with non-ascii chars (#281)
+- Fixed logrotate permission issue (#279)
+- Update parameters template (#289)
+- Username regular expression modified (#285)
+- Tahoe variable misspelling fixed (#269)
+- Fixed tahoe navar bug (#268)
+
 ## 1.2.7 (2017/12/20)
 Bugfixes:
   - Download files without memory limit (#246)
