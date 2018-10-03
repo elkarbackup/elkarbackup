@@ -158,7 +158,7 @@ class BaseScriptsCommand extends LoggingCommand
         
         $model['level']             = 'JOB';
         $model['type']              = $type; //must be PRE or POST
-        $model['clientUrl']         = $client->getUrl();
+        $model['clientUrl']         = $job->getUrl();
         $model['clientId']          = $client->getId();
         $model['jobRoot']           = $job->getSnapshotRoot();
         $model['clientName']        = $client->getName();
