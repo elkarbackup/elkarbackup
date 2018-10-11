@@ -931,7 +931,7 @@ class DefaultController extends Controller
                 . $idClient . " " . $idJob
             );
         }
-        $backupDir = $job->getEffectiveDir();
+        $backupDir = $job->getBackupLocation()->getEffectiveDir();
         $client = $job->getClient();
         $logDir = $this->container->get('kernel')->getLogDir();
         $tmpDir = $this->container->getParameter('tmp_dir');
