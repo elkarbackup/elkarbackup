@@ -15,7 +15,7 @@ class RunJobCommand extends LoggingCommand
     {
         parent::configure();
         $this->setName('elkarbackup:run_job')
-            ->setDescription('Runs specified job. Runs the lowest of all retains (the one that actually syncs)')
+            ->setDescription('Runs specified job (must be in the queue). Runs all pending retains')
             ->addArgument('job', InputArgument::REQUIRED, 'The ID of the job.');
     }
 
