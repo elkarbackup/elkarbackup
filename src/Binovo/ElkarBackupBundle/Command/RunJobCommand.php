@@ -344,12 +344,18 @@ class RunJobCommand extends LoggingCommand
         ->findOneBy(array('job' => $job));
         
         if (null == $queue) {
-            // This should not happen
+            // This should not happen, job must be in the queue!
             return $runnableRetains;
         }
         $time = $queue->getDate();
         $policy = $job->getPolicy();
         $runnableRetains = $policy->getRunnableRetains($time);
+        if (count($runnableRetains) == 0){
+            // Job has been enqueued on demand, not scheduled
+            // We will run the lowest of all retains (the one that actually syncs)
+            $retains = $policy->getRetains();
+            $runnableRetains = array($retains[0][0]);
+        }
         return $runnableRetains;
     }
 
