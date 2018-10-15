@@ -46,7 +46,7 @@ class RunJobCommand extends LoggingCommand
                 $this->warn('Policy %policyid% has no active retains', array('%policyid%' => $policy->getId()));
                 return self::ERR_CODE_NO_ACTIVE_RETAINS;
             }
-            $retainsToRun = array($retains[0][0]);
+            $retainsToRun = $this->getRunnableRetains($job);
             $result = $this->runJob($job, $retainsToRun);
             $manager->flush();
             
@@ -326,6 +326,29 @@ class RunJobCommand extends LoggingCommand
     protected function getNameForLogs()
     {
         return 'RunJobCommand';
+    }
+    
+    protected function getRunnableRetains($job)
+    {
+        $runnableRetains = array();
+        
+        $queue = $this->getContainer()
+        ->get('doctrine')
+        ->getRepository('BinovoElkarBackupBundle:Queue')
+        ->findOneBy(array('job' => $job));
+        
+        if (null == $queue) {
+            $this->warn(
+                'Job not found in queue!',
+                array(),
+                $context
+            );
+            return $runnableRetains;
+        }
+        $time = $queue->getDate();
+        $policy = $job->getPolicy();
+        $runnableRetains = $policy->getRunnableRetains($time);
+        return $runnableRetains;
     }
 
 }
