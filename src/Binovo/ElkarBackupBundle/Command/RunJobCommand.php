@@ -47,6 +47,12 @@ class RunJobCommand extends LoggingCommand
                 return self::ERR_CODE_NO_ACTIVE_RETAINS;
             }
             $retainsToRun = $this->getRunnableRetains($job);
+            if (count($retainsToRun) == 0) {
+                $this->warn('Job %jobid% not found in queue', array('%jobid%' => $jobId));
+                //Return unknown error code because this shouldn't happen
+                return self::ERR_CODE_UNKNOWN;
+            }
+            
             $result = $this->runJob($job, $retainsToRun);
             $manager->flush();
             
@@ -338,11 +344,7 @@ class RunJobCommand extends LoggingCommand
         ->findOneBy(array('job' => $job));
         
         if (null == $queue) {
-            $this->warn(
-                'Job not found in queue!',
-                array(),
-                $context
-            );
+            // This sould not happen
             return $runnableRetains;
         }
         $time = $queue->getDate();
