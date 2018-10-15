@@ -344,7 +344,7 @@ class RunJobCommand extends LoggingCommand
         ->findOneBy(array('job' => $job));
         
         if (null == $queue) {
-            // This sould not happen
+            // This should not happen
             return $runnableRetains;
         }
         $time = $queue->getDate();
