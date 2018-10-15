@@ -118,7 +118,7 @@ WHERE q.state = 'QUEUED'
 EOF;
                         $queuedJobs = $this->manager->createQuery($dql)->getSingleScalarResult();
 
-                        if ($queuedJobs == $queueCount && $noCandidate == false) {
+                        if ($queuedJobs == $queueCount > 0 && $noCandidate == false) {
                             $this->warn('There are jobs remaining but their configuration does not allow to execute them');
                             $noCandidate = true;
                         } else {
