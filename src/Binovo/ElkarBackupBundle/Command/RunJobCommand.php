@@ -15,7 +15,7 @@ class RunJobCommand extends LoggingCommand
     {
         parent::configure();
         $this->setName('elkarbackup:run_job')
-            ->setDescription('Runs specified job. Runs the lowest of all retains (the one that actually syncs)')
+            ->setDescription('Runs specified job (must be in the queue). Runs all pending retains')
             ->addArgument('job', InputArgument::REQUIRED, 'The ID of the job.');
     }
 
@@ -46,7 +46,13 @@ class RunJobCommand extends LoggingCommand
                 $this->warn('Policy %policyid% has no active retains', array('%policyid%' => $policy->getId()));
                 return self::ERR_CODE_NO_ACTIVE_RETAINS;
             }
-            $retainsToRun = array($retains[0][0]);
+            $retainsToRun = $this->getRunnableRetains($job);
+            if (count($retainsToRun) == 0) {
+                $this->warn('Job %jobid% not found in queue', array('%jobid%' => $jobId));
+                //Return unknown error code because this shouldn't happen
+                return self::ERR_CODE_UNKNOWN;
+            }
+            
             $result = $this->runJob($job, $retainsToRun);
             $manager->flush();
             
@@ -326,6 +332,31 @@ class RunJobCommand extends LoggingCommand
     protected function getNameForLogs()
     {
         return 'RunJobCommand';
+    }
+    
+    protected function getRunnableRetains($job)
+    {
+        $runnableRetains = array();
+        
+        $queue = $this->getContainer()
+        ->get('doctrine')
+        ->getRepository('BinovoElkarBackupBundle:Queue')
+        ->findOneBy(array('job' => $job));
+        
+        if (null == $queue) {
+            // This should not happen, job must be in the queue!
+            return $runnableRetains;
+        }
+        $time = $queue->getDate();
+        $policy = $job->getPolicy();
+        $runnableRetains = $policy->getRunnableRetains($time);
+        if (count($runnableRetains) == 0){
+            // Job has been enqueued on demand, not scheduled
+            // We will run the lowest of all retains (the one that actually syncs)
+            $retains = $policy->getRetains();
+            $runnableRetains = array($retains[0][0]);
+        }
+        return $runnableRetains;
     }
 
 }
