@@ -1,3 +1,10 @@
+## 1.3.1 (2018/10/16)
+Bugfixes:
+- Jobs remaining warning message (#328)
+- Run all the retains for scheduled jobs (#326)
+- Incorrect call to getEffectiveDir in Rsnapshotconfig (#323)
+- ELKARBACKUP_URL envvar with incorrect value (#321)
+
 ## 1.3.0 (2018/10/01)
 Features:
 - Multiple backup locations (#273) --- Thanks @Igortxete7  :)
