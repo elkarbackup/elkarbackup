@@ -237,6 +237,13 @@ class RunJobCommand extends LoggingCommand
             $data['ELKARBACKUP_JOB_STARTTIME']     = $job_starttime;
             $data['ELKARBACKUP_JOB_ENDTIME']       = $job_endtime;
             
+            // Renew the DB connection
+            $em = $this->getContainer()->get('doctrine')->getManager();
+            if ($em->getConnection()->ping() === false) {
+                $em->getConnection()->close();
+                $em->getConnection()->connect();
+            }
+            
             $queue = $container
             ->get('doctrine')
             ->getRepository('BinovoElkarBackupBundle:Queue')
