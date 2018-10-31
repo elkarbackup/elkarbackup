@@ -1650,34 +1650,34 @@ EOF;
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:LogRecord');
         $queryBuilder = $repository->createQueryBuilder('l')->addOrderBy('l.id', 'DESC');
         $queryParamCounter = 1;
-        //if ($request->get('filter')) {
-        if (true) {
-            $filter = $request->get('filter');
-            if (! $filter ){
-                $filter['gte']['l.level'] = "200";
+        
+        $filter = $request->get('filter');
+        if (! $filter ){
+            // Default log level = 200 (Notices and up)
+            $filter['gte']['l.level'] = Job::NOTIFICATION_LEVEL_INFO;
+        }
+        $queryBuilder->where("1 = 1");
+        foreach ($filter as $op => $filterValues) {
+            if (! in_array($op, array('gte','eq','like'))) {
+                $op = 'eq';
             }
-            $queryBuilder->where("1 = 1");
-            foreach ($filter as $op => $filterValues) {
-                if (! in_array($op, array('gte','eq','like'))) {
-                    $op = 'eq';
-                }
-                foreach ($filterValues as $columnName => $value) {
-                    if ($value) {
-                        $queryBuilder->andWhere($queryBuilder->expr()->$op(
-                            $columnName,
-                            "?$queryParamCounter"
-                        ));
-                        if ('like' == $op) {
-                            $queryBuilder->setParameter($queryParamCounter, '%' . $value . '%');
-                        } else {
-                            $queryBuilder->setParameter($queryParamCounter, $value);
-                        }
-                        ++ $queryParamCounter;
-                        $formValues["filter[$op][$columnName]"] = $value;
+            foreach ($filterValues as $columnName => $value) {
+                if ($value) {
+                    $queryBuilder->andWhere($queryBuilder->expr()->$op(
+                        $columnName,
+                        "?$queryParamCounter"
+                    ));
+                    if ('like' == $op) {
+                        $queryBuilder->setParameter($queryParamCounter, '%' . $value . '%');
+                    } else {
+                        $queryBuilder->setParameter($queryParamCounter, $value);
                     }
+                    ++ $queryParamCounter;
+                    $formValues["filter[$op][$columnName]"] = $value;
                 }
             }
         }
+        
         $query = $queryBuilder->getQuery();
         
         $paginator = $this->get('knp_paginator');
