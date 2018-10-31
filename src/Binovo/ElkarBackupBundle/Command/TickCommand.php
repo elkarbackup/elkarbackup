@@ -172,7 +172,7 @@ EOF;
             }
         }
         if (count($policies) == 0) {
-            $this->info('Nothing scheduled to run.');
+            $this->debug('Nothing scheduled to run.');
             return self::ERR_CODE_OK;
         }
         $policyQuery = array();
