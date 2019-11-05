@@ -6,6 +6,8 @@
 
 namespace Binovo\ElkarBackupBundle\Command;
 
+use Binovo\ElkarBackupBundle\Entity\User;
+use Binovo\ElkarBackupBundle\Entity\Job;
 use Binovo\ElkarBackupBundle\Entity\Client;
 use Binovo\ElkarBackupBundle\Entity\Message;
 use Binovo\ElkarBackupBundle\Entity\Queue;
@@ -19,6 +21,7 @@ use Symfony\Component\Filesystem\LockHandler;
 use DateInterval;
 use DateTime;
 use Exception;
+
 
 class TickCommand extends LoggingCommand
 {
@@ -302,6 +305,8 @@ EOF;
      */
     protected function processJobState($task)
     {
+
+        $logHandler = $this->getContainer()->get('BnvLoggerHandler');
         $state = $task->getState();
         $job = $task->getJob();
         $context = array('link' => $this->generateJobRoute(
@@ -470,8 +475,12 @@ EOF;
                         $this->manager->remove($task);
                     }
                 }
+                $clientMessages = $logHandler->getMessages();
+                $this->sendNotifications($job,$clientMessages);
+
                 break;
         }
+
         $this->manager->flush();
     }
     
@@ -564,6 +573,7 @@ EOF;
                 //Nothing to do, when the scheduler finishes the state will reset.
                 break;
         }
+
         $this->manager->flush();
     }
 
@@ -775,11 +785,12 @@ EOF;
         
         return true;
     }
+
+
     
     private function initializeQueue()
     {
-        $queue = $this->manager->getRepository('BinovoElkarBackupBundle:Queue')
-        ->findAll();
+        $queue = $this->manager->getRepository('BinovoElkarBackupBundle:Queue')->findAll();
         
         foreach ($queue as $task) {
             if (self::STATE_JOB_QUEUED != $task->getState()) {
@@ -794,4 +805,74 @@ EOF;
             }
         }
     }
+
+
+    /**
+     * Send email with error log data.
+     *
+     * @param Job              $job      The Job whose log we are about to send.
+     * @param array(LogRecord) $messages An array of LogRecords with the error information.
+     */
+    
+    private function sendNotifications(Job $job, $messages)
+    {
+
+        $container        = $this->getContainer();
+        $adminEmail       = $container->get('doctrine')->getRepository('BinovoElkarBackupBundle:User')->find(User::SUPERUSER_ID)->getEmail();
+
+        if ($container->hasParameter('mailer_from') && $container->getParameter('mailer_from') != "") {
+          $fromEmail      = $container->getParameter('mailer_from');
+        } else {
+          $fromEmail      = $adminEmail;
+        }
+
+        $idClient         = $job->getClient()->getId();
+        $idJob            = $job->getId();
+        $translator       = $container->get('translator');
+        $recipients       = array();
+        $engine           = $container->get('templating');
+        $filteredMessages = array();
+
+
+        foreach ($messages as $aMessage) {
+            if ($aMessage->getLevel() >= $job->getMinNotificationLevel()) {
+                $filteredMessages[] = $aMessage;
+            }
+        }
+
+        if (count($filteredMessages) && $job->getNotificationsTo()) { // we have something to send and people willing to receive it
+            foreach ($job->getNotificationsTo() as $recipient) { // decode emails
+                switch ($recipient) {
+                case Job::NOTIFY_TO_ADMIN:
+                    $recipients[] = $adminEmail;
+                    break;
+                case Job::NOTIFY_TO_OWNER:
+                    $recipients[] = $job->getClient()->getOwner()->getEmail();
+                    break;
+                case Job::NOTIFY_TO_EMAIL:
+                    $recipients[] = $job->getNotificationsEmail();
+                    break;
+                default:
+                    // do nothing
+                }
+            }
+
+            $message = \Swift_Message::newInstance()
+                ->setSubject($translator->trans('Log for backup from job %joburl%', array('%joburl%' => $job->getUrl()), 'BinovoElkarBackup'))
+                ->setFrom(array($fromEmail => 'ElkarBackup'))
+                ->setTo($recipients)
+                ->setBody($engine->render('BinovoElkarBackupBundle:Default:logreport.html.twig',
+                                          array('base'     => gethostname(),
+                                                'job'      => $job,
+                                                'messages' => $filteredMessages)),
+                          'text/html');
+            try {
+                $container->get('mailer')->send($message);
+            } catch (Exception $e) {
+                $this->err('Command was unable to send the notification message: %exception%', array('%exception%' => $e->getMessage()));
+            }
+        }
+    }
+
+
 }
