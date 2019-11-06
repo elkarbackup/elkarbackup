@@ -1,3 +1,8 @@
+## 1.3.2 (2019/11/6)
+Bugfixes:
+- Restore email notifications, deleted by error in v1.3 (#388)
+- Disable "nothing to schedule" log messages. Add debug type messages. (#342)
+
 ## 1.3.1 (2018/10/16)
 Bugfixes:
 - Jobs remaining warning message (#328)
