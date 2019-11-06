@@ -174,8 +174,9 @@ EOF;
                 $policies[$policy->getId()] = $retainsToRun;
             }
         }
-        if (count($policies) == 0) {
-            $this->debug('Nothing scheduled to run.');
+	    if (count($policies) == 0) {
+            //Debug message disabled (issue #341)
+            //$this->debug('Nothing scheduled to run.');
             return self::ERR_CODE_OK;
         }
         $policyQuery = array();
