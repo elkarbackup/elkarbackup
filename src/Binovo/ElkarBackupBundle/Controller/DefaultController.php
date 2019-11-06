@@ -82,6 +82,16 @@ class DefaultController extends Controller
             $context
         );
     }
+    
+    protected function debug($msg, $translatorParams = array(), $context = array())
+    {
+        $logger = $this->get('BnvWebLogger');
+        $context = array_merge(array('source' => 'DefaultController'), $context);
+        $logger->debug(
+            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
+            $context
+        );
+    }
 
     protected function generateClientRoute($id)
     {
@@ -407,7 +417,7 @@ class DefaultController extends Controller
             $client,
             array('translator' => $this->get('translator'))
         );
-        $this->info(
+        $this->debug(
             'View client %clientid%',
             array('%clientid%' => $id),
             array('link' => $this->generateClientRoute($id))
@@ -624,7 +634,7 @@ class DefaultController extends Controller
             $job,
             array('translator' => $this->get('translator'))
         );
-        $this->info(
+        $this->debug(
             'View client %clientid%, job %jobid%',
             array('%clientid%' => $idClient,'%jobid%' => $idJob),
             array('link' => $this->generateJobRoute($idJob, $idClient))
@@ -1202,7 +1212,7 @@ class DefaultController extends Controller
                         );
                     }
                     array_push($dirContent, $content);
-                    $this->info(
+                    $this->debug(
                         'View backup directory %clientid%, %jobid% %path%',
                         array('%clientid%' => $idClient,'%jobid%' => $idJob, '%idBackupLocation%' => $idBackupLocation, '%path%' => $path),
                         array('link' => $this->generateUrl('showJobBackup', array(
@@ -1266,7 +1276,7 @@ class DefaultController extends Controller
                 }
                 array_push($dirContent, $content);
             }
-            $this->info(
+            $this->debug(
                 'View backup directory %clientid%, %jobid% %path%',
                 array('%clientid%' => $idClient,'%jobid%' => $idJob),
                 array('link' => $this->generateUrl('showJobBackup', array(
@@ -1334,7 +1344,7 @@ class DefaultController extends Controller
             $policy,
             array('translator' => $t)
         );
-        $this->info(
+        $this->debug(
             'View policy %policyname%',
             array('%policyname%' => $policy->getName()), 
             array('link' => $this->generatePolicyRoute($policy->getId()))
@@ -1532,7 +1542,7 @@ class DefaultController extends Controller
                 ));
             }
         }
-        $this->info(
+        $this->debug(
             'View clients',
             array(),
             array('link' => $this->generateUrl('showClients'))
@@ -1565,7 +1575,7 @@ class DefaultController extends Controller
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
             );
         
-        $this->info(
+        $this->debug(
             'View backup status',
             array(),
             array('link' => $this->generateUrl('showStatus'))
@@ -1593,7 +1603,7 @@ class DefaultController extends Controller
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->info(
+        $this->debug(
             'View scripts',
             array(),
             array('link' => $this->generateUrl('showScripts'))
@@ -1640,29 +1650,34 @@ EOF;
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:LogRecord');
         $queryBuilder = $repository->createQueryBuilder('l')->addOrderBy('l.id', 'DESC');
         $queryParamCounter = 1;
-        if ($request->get('filter')) {
-            $queryBuilder->where("1 = 1");
-            foreach ($request->get('filter') as $op => $filterValues) {
-                if (! in_array($op, array('gte','eq','like'))) {
-                    $op = 'eq';
-                }
-                foreach ($filterValues as $columnName => $value) {
-                    if ($value) {
-                        $queryBuilder->andWhere($queryBuilder->expr()->$op(
-                            $columnName,
-                            "?$queryParamCounter"
-                        ));
-                        if ('like' == $op) {
-                            $queryBuilder->setParameter($queryParamCounter, '%' . $value . '%');
-                        } else {
-                            $queryBuilder->setParameter($queryParamCounter, $value);
-                        }
-                        ++ $queryParamCounter;
-                        $formValues["filter[$op][$columnName]"] = $value;
+        
+        $filter = $request->get('filter');
+        if (! $filter ){
+            // Default log level = 200 (Notices and up)
+            $filter['gte']['l.level'] = Job::NOTIFICATION_LEVEL_INFO;
+        }
+        $queryBuilder->where("1 = 1");
+        foreach ($filter as $op => $filterValues) {
+            if (! in_array($op, array('gte','eq','like'))) {
+                $op = 'eq';
+            }
+            foreach ($filterValues as $columnName => $value) {
+                if ($value) {
+                    $queryBuilder->andWhere($queryBuilder->expr()->$op(
+                        $columnName,
+                        "?$queryParamCounter"
+                    ));
+                    if ('like' == $op) {
+                        $queryBuilder->setParameter($queryParamCounter, '%' . $value . '%');
+                    } else {
+                        $queryBuilder->setParameter($queryParamCounter, $value);
                     }
+                    ++ $queryParamCounter;
+                    $formValues["filter[$op][$columnName]"] = $value;
                 }
             }
         }
+        
         $query = $queryBuilder->getQuery();
         
         $paginator = $this->get('knp_paginator');
@@ -1671,7 +1686,7 @@ EOF;
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->info(
+        $this->debug(
             'View logs',
             array(),
             array('link' => $this->generateUrl('showLogs'))
@@ -1747,7 +1762,7 @@ EOF;
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->info(
+        $this->debug(
             'View policies',
             array(),
             array('link' => $this->generateUrl('showPolicies'))
@@ -1929,7 +1944,7 @@ EOF;
             array('translator' => $t)
         );
         
-        $this->info(
+        $this->debug(
             'View location %backupLocationName%.',
             array('%backupLocationName%' => $backupLocation->getName()),
             array('link' => $this->generateBackupLocationRoute($id))
@@ -2083,7 +2098,7 @@ EOF;
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->info(
+        $this->debug(
             'View backup locations',
             array(),
             array('link' => $this->generateUrl('manageBackupLocations'))
@@ -2633,7 +2648,7 @@ EOF;
                 'translator' => $t
             )
         );
-        $this->info(
+        $this->debug(
             'View script %scriptname%.',
             array('%scriptname%' => $script->getName()),
             array('link' => $this->generateScriptRoute($id))
@@ -2745,7 +2760,7 @@ EOF;
             $user = $repository->find($id);
         }
         $form = $this->createForm(new UserType(), $user, array('translator' => $t));
-        $this->info(
+        $this->debug(
             'View user %username%.',
             array('%username%' => $user->getUsername()),
             array('link' => $this->generateUserRoute($id))
@@ -2827,7 +2842,7 @@ EOF;
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->info(
+        $this->debug(
             'View users',
             array(),
             array('link' => $this->generateUrl('showUsers'))
