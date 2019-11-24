@@ -25,3 +25,5 @@ parameters:
     mailer_from: null
     tahoe_active: false
     home: /var/lib/elkarbackup
+    max_parallel_jobs: 1
+    post_on_pre_fail: true

@@ -40,7 +40,10 @@ class BackupLocationType extends AbstractType
                                                         'attr' => array('class' => 'form-control')))
                 ->add('tahoe'       , 'checkbox', array('required' => false,
                                                         'label' => $t->trans('Turn on Tahoe storage', array(), 'BinovoElkarTahoe'),
-                                                        'disabled' => !$this->tahoeInstalled));
+                                                        'disabled' => !$this->tahoeInstalled))
+                ->add('maxParallelJobs', 'integer', array('label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup'),
+                                                         'attr'  => array('class'    => 'form-control'),
+                                                         'required' => true));
     }
 
     public function configureOptions(OptionsResolver $resolver)

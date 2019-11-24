@@ -44,6 +44,7 @@ rm .debian/usr/share/elkarbackup/web/.htaccess
 # setup cache, session and log directories in var
 mkdir -p .debian/var/cache/elkarbackup
 mkdir -p .debian/var/log/elkarbackup
+mkdir -p .debian/var/log/elkarbackup/jobs
 mkdir -p .debian/var/lib/elkarbackup/sessions
 ln -s /var/cache/elkarbackup        .debian/usr/share/elkarbackup/app/cache
 ln -s /var/log/elkarbackup          .debian/usr/share/elkarbackup/app/logs

@@ -4,6 +4,11 @@ set -e
 # Source debconf library.
 . /usr/share/debconf/confmodule
 
+if [ ! -f /etc/elkarbackup/parameters.yml ]; then
+    echo "parameters.yml not found: creating it from template..."
+    cp /etc/elkarbackup/parameters.yml.dist /etc/elkarbackup/parameters.yml
+fi
+
 dbhost=`sed -n 's/^[ \t]*database_host:[ \t]*\([^ #\t]*\).*/\1/p' /etc/elkarbackup/parameters.yml`
 dbname=`sed -n 's/^[ \t]*database_name:[ \t]*\([^ #\t]*\).*/\1/p' /etc/elkarbackup/parameters.yml`
 dbusername=`sed -n 's/^[ \t]*database_user:[ \t]*\([^ #\t]*\).*/\1/p' /etc/elkarbackup/parameters.yml`
@@ -96,6 +101,18 @@ then
     echo                    >> /etc/elkarbackup/parameters.yml
     echo "    home: /var/lib/elkarbackup" >> /etc/elkarbackup/parameters.yml
 fi
+if test "x`grep max_parallel_jobs /etc/elkarbackup/parameters.yml`" = x
+then
+    echo "    Add max_parallel_jobs"
+    echo                    >> /etc/elkarbackup/parameters.yml
+    echo "    max_parallel_jobs: 1" >> /etc/elkarbackup/parameters.yml
+fi
+if test "x`grep post_on_pre_fail /etc/elkarbackup/parameters.yml`" = x
+then
+    echo "    Add post_on_pre_fail"
+    echo                    >> /etc/elkarbackup/parameters.yml
+    echo "    post_on_pre_fail: true" >> /etc/elkarbackup/parameters.yml
+fi
 
 echo Delete cache content
 rm -fR /var/cache/elkarbackup/*
@@ -112,7 +129,7 @@ rm -rf /var/lib/elkarbackup/sessions/*
 
 username="elkarbackup"
 sed -i "s/www-data/$username/" /etc/cron.d/elkarbackup
-if test x`grep $username /etc/passwd` = x
+if test x`grep ^$username\: /etc/passwd` = x
 then
     adduser --system --home /var/lib/elkarbackup --shell /bin/bash --group $username
     chown -R elkarbackup.elkarbackup /var/lib/elkarbackup &>/dev/null
@@ -124,13 +141,21 @@ then
     sed -i "s#public_key:.*#public_key: /var/lib/elkarbackup/.ssh/id_rsa.pub#" /etc/elkarbackup/parameters.yml
     chown -R $username.$username /var/lib/elkarbackup
 fi
+
+# let's create /var/log/elkarbackup/jobs directory (it should be already created)
+if [ ! -d /var/log/elkarbackup/jobs ]
+then
+    mkdir -p /var/log/elkarbackup/jobs
+fi
+
 # set rwx permissions for www-data and the backup user in the cache and log directories
 # as described in http://symfony.com/doc/current/book/installation.html#configuration-and-setup
 setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/cache/elkarbackup 2>/dev/null || ( echo "ACLs not supported. Remount with ACL and reconfigure with 'dpkg --configure --pending'" && false )
 setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/cache/elkarbackup 2>/dev/null
 setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/log/elkarbackup 2>/dev/null
 setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/log/elkarbackup 2>/dev/null
-chown -R $username.$username /var/cache/elkarbackup /var/log/elkarbackup /var/spool/elkarbackup
+chown -R $username.$username /var/cache/elkarbackup /var/spool/elkarbackup
+chown -R $username.root /var/log/elkarbackup
 chown -R www-data.www-data /var/lib/elkarbackup/sessions /etc/elkarbackup/parameters.yml /var/spool/elkarbackup/uploads
 
 uploadsdir="/var/spool/elkarbackup/uploads"

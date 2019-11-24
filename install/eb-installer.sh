@@ -8,7 +8,7 @@
 
 # Config
 
-INSTALLER_VERSION="0.1.97"
+INSTALLER_VERSION="0.1.99"
 EB_PATH=/usr/local/elkarbackup
 TMP_PATH=/tmp
 
@@ -112,6 +112,23 @@ function ask_dbconfig_more
       read -s -p "DB admin password: " dbadminpass
       [ "$dbadminpass" ] && break
     done
+  fi
+}
+
+function add_missing_params ()
+{
+  # Add some missing parameters (due to upgrades)
+  configfile="$EB_PATH/app/config/parameters.yml.dist"
+  
+  if test "x`grep max_parallel_jobs $configfile`" = x
+  then
+    echo "Add max_parallel_jobs"
+    echo "    max_parallel_jobs: 1" >> "$configfile"
+  fi
+  if test "x`grep post_on_pre_fail $configfile`" = x
+  then
+    echo "Add post_on_pre_fail"
+    echo "    post_on_pre_fail: true" >> "$configfile"
   fi
 }
 
@@ -605,6 +622,7 @@ if [[ -z "$customconfigfile" ]];then
     setup_parameters ${key} ${param[${key}]} ||
     { echo "ERROR: cannot change parameter ${key}"; exit 1; };
   done
+  add_missing_params
 else
   # If we have a config file, let's use it
   if [[ ! -z "$customconfigfile" && -f "$customconfigfile" ]];then

@@ -1,9 +1,12 @@
 language: php
 
+services:
+  - mysql
+
 php:
 #  - 5.3  # Debian Squeeze => NOT SUPPORTED
 #  - 5.4  # Debian Wheezy  => NOT SUPPORTED
-  - 5.5  # Ubuntu Trusty
+#  - 5.5  # Ubuntu Trusty
   - 5.6  # Debian Jessie
   - 7.0  # Debian Stretch / Ubuntu Xenial
   - 7.1  # Ubuntu Bionic

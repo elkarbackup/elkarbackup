@@ -124,6 +124,10 @@ class Builder implements ContainerAwareInterface
                             'route'    => 'showClients',
                             'class'    => 'Clients',
                             'icon'     => '<i></i><span>'.$t->trans('Jobs', array(), 'BinovoElkarBackup').'</span></a>'),
+                      array('label'    => $t->trans('Status', array(), 'BinovoElkarBackup'),
+                            'route'    => 'showStatus',
+                            'class'    => 'Queue',
+                            'icon'     => '<i></i><span>'.$t->trans('Status', array(), 'BinovoElkarBackup').'</span></a>'),
                       array('label'    => $t->trans('Policies', array(), 'BinovoElkarBackup'),
                             'route'    => 'showPolicies',
                             'class'    => 'Policies',
@@ -178,7 +182,7 @@ class Builder implements ContainerAwareInterface
             );
         if ($this->container->get('Tahoe')->isInstalled()) {
             $label = $t->trans('Manage Tahoe storage', array(), 'BinovoElkarTahoe');
-            $menu[5]['children'][] = array('label'    => $label,
+            $menu[6]['children'][] = array('label'    => $label,
                 'route'    => 'tahoeConfig',
                 'class'    => 'tahoeConfig',
                 'icon'     => "<i class='glyphicon glyphicon-cloud-upload'></i><span>$label</span></a>");

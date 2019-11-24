@@ -15,6 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -76,6 +77,9 @@ class ClientType extends AbstractType
                                                                 'choice_label' => 'username',
                                                                 'attr'     => array('class'    => 'form-control'),
                                                                 'class'    => 'BinovoElkarBackupBundle:User'))
+                ->add('maxParallelJobs', IntegerType::class   , array('label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup'),
+                                                            'attr'  => array('class'    => 'form-control'),
+                                                            'required' => true))
                 ->add('sshArgs'	      , TextType::class      , array('label'    => $t->trans('SSH args', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class'     => 'form-control advanced-form-item'),
                                                             'required' => false))

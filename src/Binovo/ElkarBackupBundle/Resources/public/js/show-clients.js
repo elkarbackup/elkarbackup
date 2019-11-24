@@ -84,9 +84,9 @@ function addJobRow(job, client){
     clone.find(':button[eb-action="showJobBackup"]').attr('eb-path', context+'/client/'+c.id+'/job/'+j.id+'/backup/view');
     clone.find(':button[eb-action="showJobBackup"]').attr('eb-jobid', j.id);
     clone.find(':button[eb-action="showJobBackup"]').addClass('disabled');
-    //    runJob a
-    clone.find('a[eb-action="runJob"]').attr('eb-path', context+'/client/'+c.id+'/job/'+j.id+'/run');
-    clone.find('a[eb-action="runJob"]').attr('eb-jobid', j.id);
+    //    enqueueJob a
+    clone.find('a[eb-action="enqueueJob"]').attr('eb-path', context+'/client/'+c.id+'/job/'+j.id+'/run');
+    clone.find('a[eb-action="enqueueJob"]').attr('eb-jobid', j.id);
     //    abortJob a
     clone.find('a[eb-action="abortJob"]').attr('eb-path', '');
     clone.find('a[eb-action="abortJob"]').attr('eb-jobid', j.id);
@@ -111,7 +111,7 @@ function changeClientStatus(clientid, status){
 function changeJobStatus(jobid, status){
   id = jobid;
   $('tr#job-'+id).addClass(status);
-  $('tr#job-'+id).find('td.status').html('<span class="label label-success">' + status + '</span>');
+  $('tr#job-'+id).find('td.status').html('<span class="label label-warning">' + status + '</span>');
 }
 
 /*
@@ -134,7 +134,7 @@ function callbackClonedClient(data){
  * callbackJobAborted will be executed
  */
 function callbackJobAborting(jobid){
-  changeJobStatus(jobid, 'ABORTING');
+  $('tr#job-'+jobid).find('td.button').html('<span class="label label-warning">ABORTING</span>');
 }
 
 function deleteJob(path, id, msg, confirmed){
@@ -155,16 +155,21 @@ function deleteJob(path, id, msg, confirmed){
       $("#deleteModal").modal('hide');
       // Delete job
       r = postRequest(path);
-      // If r is ok
-      // Delete job row
-      jobtr = $('tr.job-'+id).remove();
-      // Show feedback message
-      okMsg('Job deleted succesfully');
     } else {
       return false;
     }
   }
-};
+}
+
+function deleteClientRow(id){
+	// Delete all rows related to the client
+	$('tr.client-'+id).remove();
+}
+
+function deleteJobRow(id){
+    // Delete job row
+    $('tr.job-'+id).remove();
+}
 
 function deleteClient(path, id, msg, confirmed){
   if (paranoidmode && !confirmed){
@@ -184,11 +189,6 @@ function deleteClient(path, id, msg, confirmed){
       $("#deleteModal").modal('hide');
       // Delete client
       r = postRequest(path);
-      // If r is ok
-      // Delete all rows related to the client
-      $('tr.client-'+id).remove();
-      // Show feedback message
-      okMsg('Client deleted successfully');
     } else {
       return false;
     }
@@ -199,10 +199,10 @@ function runClient(clientid){
   if (clientid){
     $('tr.client-'+clientid).each(function(){
       // Jobs
-      path = $(this).find('a[eb-action="runJob"]').attr('eb-path');
-      jobid = $(this).find('a[eb-action="runJob"]').attr('eb-jobid');
+      path = $(this).find('a[eb-action="enqueueJob"]').attr('eb-path');
+      jobid = $(this).find('a[eb-action="enqueueJob"]').attr('eb-jobid');
       if (path && jobid){
-        runJob(path, jobid);
+        enqueueJob(path, jobid);
       }
       $(this).addClass('queued');
     });
@@ -226,14 +226,14 @@ function runSelected(){
       // This will add the class "queued" to the rows
     } else {
       // Job-row
-      path = tr.find('a[eb-action="runJob"]').attr('eb-path');
-      jobid = tr.find('a[eb-action="runJob"]').attr('eb-jobid');
+      path = tr.find('a[eb-action="enqueueJob"]').attr('eb-path');
+      jobid = tr.find('a[eb-action="enqueueJob"]').attr('eb-jobid');
       if (tr.hasClass('queued')){
         // Job is already queued
         console.log('Job already queued');
       } else {
         // Job available
-        r = runJob(path, jobid);
+        r = enqueueJob(path, jobid);
       }
     }
   });
@@ -293,10 +293,9 @@ function cloneClient(path, clientId){
   postRequest(path);
 };
 
-function runJob(path, id){
+function enqueueJob(path, id){
   if (path && id){
     r = postRequest(path);
-    $('tr#job-'+id).find('td.status').html('<span class="label label-info">QUEUED</span>');
     return true;
   } else {
     return false;
@@ -322,7 +321,6 @@ function abortJob(path, id, msg, confirmed){
       // Abort job
       r = postRequest(path);
       // Callback will be executed
-      // if abortJob is done
     }
   }
 }
@@ -397,7 +395,7 @@ $(document).ready(function(){
       //
       // Listeners, they work even for the dynamically created buttons
       //
-      $("#jobs-container, #deleteModal, #abortModal").on("click", ":button[eb-action], a[eb-action]", function(e){
+      $(".eb-actions, #jobs-container, #deleteModal, #abortModal").on("click", ":button[eb-action], a[eb-action]", function(e){
         var action = $(this).attr("eb-action");
         var path = $(this).attr("eb-path");
         var clientid = $(this).attr("eb-clientid");
@@ -439,11 +437,10 @@ $(document).ready(function(){
             // Dangerous: ask confirmation
             r = deleteJob(path, jobid, message, confirmed);
             break;
-          case 'runJob':
+          case 'enqueueJob':
             if (!disabled){
-              if (runJob(path, jobid)){
+              if (enqueueJob(path, jobid)){
                 // msg should be received from controller (translated)
-                okMsg('Job queued successfully. It will start running in less than a minute!');
               } else {
                 errorMsg('Error running job');
               }

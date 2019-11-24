@@ -8,6 +8,7 @@ namespace Binovo\ElkarBackupBundle\Entity;
 
 use Binovo\ElkarBackupBundle\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use \RuntimeException;
 
 /**
@@ -44,6 +45,39 @@ class BackupLocation
      * @ORM\Column(type="boolean")
      */
     protected $tahoe;
+    
+    /**
+     * Parallel jobs allowed for the location
+     *
+     * @ORM\Column(type="integer", nullable=false)
+     * @Assert\Regex(
+     *     pattern     = "/^[1-9]\d*$/i",
+     *     htmlPattern = "^[1-9]\d*$",
+     *     message="Max parallel jobs value must be a positive integer"
+     * )
+     */
+    protected $maxParallelJobs = 1;
+    
+    /**
+     * Get max parallel jobs
+     *
+     * @return integer
+     */
+    public function getMaxParallelJobs()
+    {
+        return $this->maxParallelJobs;
+    }
+    
+    /**
+     * Set max parallel jobs
+     *
+     * @param integer $maxParallelJobs
+     * @return Client
+     */
+    public function setMaxParallelJobs($maxParallelJobs)
+    {
+        $this->maxParallelJobs = $maxParallelJobs;
+    }
 
     /**
      * Get id

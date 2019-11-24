@@ -1,10 +1,10 @@
-elkarbackup (1.2.7) stable; urgency=medium
+elkarbackup (1.3.2) stable; urgency=medium
 
   [ Xabi Ezpeleta ]
-  Bugfixes:
-  * Download files without memory limit (#246)
-  * Debug information in prod (#256)
-  * Get job errors from log file (#257 #250 #221)
+  
+  Bugfixes
+  * Restore email notifications, deleted by error in v1.3 (#388)
+  * Disable "nothing to schedule" log messages. Add debug type messages. (#342)
 
 
- --  <>  Wed, 20 Dec 2017 19:27:10 +0000
+ --  <>  Mon, 6 Nov 2019 08:00:10 +0000

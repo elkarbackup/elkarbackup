@@ -1,9 +1,9 @@
 Package: elkarbackup
-Version: 1.2.7
+Version: 1.3.2-1
 Section: admin
 Priority: optional
 Architecture: all
-Depends: acl, debconf, php5, php5-cli, rsnapshot, mysql-client, php5-mysql, sudo, apache2
+Depends: acl, debconf, php | php5, php-cli | php5-cli, rsnapshot, default-mysql-client | mysql-client, php-mysql | php5-mysql, sudo, apache2
 Suggests: autofs5, bzip2, zip, mysql-server, tahoe-lafs
 Maintainer: Xabi Ezpeleta <xezpeleta@gmail.com>
 Description: backup solution with an easy-to-use web interface based on Rsync / RSnapshot
