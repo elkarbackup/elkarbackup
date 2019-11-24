@@ -7,10 +7,13 @@
 namespace Binovo\ElkarBackupBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class Builder extends ContainerAware
+class Builder implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+    
     /**
      * Generates the appropiate onClick handler for the dijit/MenuItem leaf menu items.
      *
@@ -114,7 +117,7 @@ class Builder extends ContainerAware
 
 	$doctrine = $this->container->get('doctrine');
 		$em = $doctrine->getManager();
-	if($this->container->get('security.context')->isGranted('ROLE_ADMIN')){
+	if($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
 
         $t = $this->container->get('translator');
         $menu = array(array('label'    => $t->trans('Jobs', array(), 'BinovoElkarBackup'),
