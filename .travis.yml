@@ -73,7 +73,7 @@ before_script:
 
 # Run script and log coverage in the "build" directory
 script:
-  - $COMPOSER_BIN_DIR/phpunit --coverage-text --coverage-clover build/coverage-clover.xml -c app
+  - $COMPOSER_BIN_DIR/phpunit --coverage-text --coverage-clover build/coverage-clover.xml
 
 # TODO: enable coveralls
 #after_success: |
