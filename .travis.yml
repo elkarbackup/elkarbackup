@@ -23,7 +23,7 @@ cache:
 
 env:
   global:
-  - COMPOSER_BIN_DIR=bin
+  - COMPOSER_BIN_DIR=./vendor/bin
   - SYMFONY_VERSION=2.8.x
   - DB=pdo_mysql DB_PATH=null
 
