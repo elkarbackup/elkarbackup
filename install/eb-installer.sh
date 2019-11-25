@@ -392,24 +392,24 @@ function update_db
 
   # Update DB (delete a buggy diff)
   rm -f $EB_PATH/app/DoctrineMigrations/Version20130306101349.php
-  php $EB_PATH/app/console doctrine:migrations:migrate --no-interaction >/dev/null || return 1
+  php $EB_PATH/bin/console doctrine:migrations:migrate --no-interaction >/dev/null || return 1
   echo -e "\nDB updated"
 }
 
 function create_root_user
 {
-  php $EB_PATH/app/console elkarbackup:create_admin >/dev/null || return 1
+  php $EB_PATH/bin/console elkarbackup:create_admin >/dev/null || return 1
   echo -e "\nElkarbackup admin user created"
 }
 
 function clear_cache
 {
-  php $EB_PATH/app/console cache:clear --env=prod >/dev/null || return 1
+  php $EB_PATH/bin/console cache:clear --env=prod >/dev/null || return 1
 }
 
 function dump_assets
 {
-  php $EB_PATH/app/console assetic:dump --env=prod >/dev/null || return 1
+  php $EB_PATH/bin/console assetic:dump --env=prod >/dev/null || return 1
 }
 
 function invalidate_sessions
