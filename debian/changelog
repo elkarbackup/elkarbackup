@@ -1,10 +1,9 @@
-elkarbackup (1.3.2) stable; urgency=medium
+elkarbackup (1.3.3) stable; urgency=medium
 
   [ Xabi Ezpeleta ]
   
-  Bugfixes
-  * Restore email notifications, deleted by error in v1.3 (#388)
-  * Disable "nothing to schedule" log messages. Add debug type messages. (#342)
+  Bugfixes:
+  * Updated to Symfony 2.8.52 (fix CVE-2019-10909) #396
 
 
- --  <>  Mon, 6 Nov 2019 08:00:10 +0000
+ --  <>  Mon, 25 Nov 2019 20:00:10 +0000

@@ -1,3 +1,7 @@
+## 1.3.3 (2019/11/26)
+Bugfixes:
+- Updated to Symfony 2.8.52 (fix CVE-2019-10909) #396
+
 ## 1.3.2 (2019/11/6)
 Bugfixes:
 - Restore email notifications, deleted by error in v1.3 (#388)
