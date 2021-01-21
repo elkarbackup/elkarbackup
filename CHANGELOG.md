@@ -1,3 +1,7 @@
+## 1.3.4 (2020/12/06)
+Bugfixes:
+- Fix XSS in policy list reported by Vyshnav Vizz (partially closes #419)
+
 ## 1.3.3 (2019/11/26)
 Bugfixes:
 - Updated to Symfony 2.8.52 (fix CVE-2019-10909) #396
