@@ -26,6 +26,7 @@
                     {# sorting of properties based on query components #}
                     <th>{% trans %}Id{% endtrans %}</th>
                     <th>{% trans %}Name{% endtrans %}</th>
+                    <th>{% trans %}Client{% endtrans %}</th>
                     <th>{% trans %}Queued{% endtrans %}</th>
                     <th>{% trans %}Status{% endtrans %}</th>
                     <th>{% trans %}Running Since{% endtrans %}</th>
@@ -38,6 +39,7 @@
                         <td class="vert-align id" align="center" onclick="document.location.href='{{ path('editJob', {idClient: queue.job.client.id, idJob: queue.job.id}) }}'" class="ids">
                             <a href="{{ path('editJob', {idClient: queue.job.client.id, idJob: queue.job.id}) }}">{{queue.job.client.id}}.{{ queue.job.id }}</a></td>
                         <td class="vert-align name" align="center">{{ queue.job.name }}</td>
+                        <td class="vert-align name" align="center">{{ queue.job.client.name}}</td>
                         <td class="vert-align date" align="center">{{ queue.date|date('Y-m-d H:i:s') }}</td>
                         <td class="vert-align status" align="center">
                             {% if queue.state == 'QUEUED' %}
