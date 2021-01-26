@@ -2,6 +2,9 @@
 Enhancement:
 - Show client column in status (Closes issue #408)
 
+Bugfixes:
+- Change delivery address of swiftmailer in config_dev to "example@example.com"(closes #411)
+
 ## 1.3.4 (2020/12/06)
 Bugfixes:
 - Fix XSS in policy list reported by Vyshnav Vizz (partially closes #419)
