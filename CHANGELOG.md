@@ -1,3 +1,7 @@
+## 1.3.5
+Enhancement:
+- Show client column in status (Closes issue #408)
+
 ## 1.3.4 (2020/12/06)
 Bugfixes:
 - Fix XSS in policy list reported by Vyshnav Vizz (partially closes #419)
