@@ -1,6 +1,8 @@
 ## 1.3.4 (2020/12/06)
 Bugfixes:
 - Fix XSS in policy list reported by Vyshnav Vizz (partially closes #419)
+Bugfixes:
+- Changed swiftmail delivery_address of config_dev.yml to example@example.com
 
 ## 1.3.3 (2019/11/26)
 Bugfixes:
