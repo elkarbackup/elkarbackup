@@ -549,7 +549,7 @@ class Job
     }
     public function __construct()
     {
-        $this->postScript = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->postScripts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->preScripts = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -561,7 +561,7 @@ class Job
      */
     public function addPostScript(Script $postScript)
     {
-        $this->postScript[] = $postScript;
+        $this->postScripts[] = $postScript;
         return $this;
     }
 
@@ -572,7 +572,7 @@ class Job
      */
     public function removePostScript(Script $postScript)
     {
-        $this->postScript->removeElement($postScript);
+        $this->postScripts->removeElement($postScript);
     }
 
     /**
