@@ -255,14 +255,14 @@ class DefaultController extends Controller
                     'error' => true,
                     'msg' => $t->trans(
                         'Could not delete client %clientName%, it has jobs enqueued.',
-                        array('%clientName%' => $view->escape($client->getName())),
+                        array('%clientName%' => $client->getName()),
                         'BinovoElkarBackup'
                     ),
                     'data' => array($id)
                 ));
                 $this->err(
                     'Could not delete client %clientName%, it has jobs enqueued.',
-                    array('%clientName%' => $view->escape($client->getName())),
+                    array('%clientName%' => $client->getName()),
                     array('link' => $this->generateClientRoute($id))
                 );
                 $manager->flush();
@@ -291,7 +291,7 @@ class DefaultController extends Controller
                 'error' => false,
                 'msg' => $t->trans(
                     'Client %clientName% deleted successfully.',
-                    array('%clientName%' => $view->escape($client->getName())),
+                    array('%clientName%' => $client->getName()),
                     'BinovoElkarBackup'
                 ),
                 'action' => 'deleteClientRow',
