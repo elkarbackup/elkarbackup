@@ -167,7 +167,7 @@
                                     <li><a href="#" eb-action="runClient" eb-clientid="{{client.id}}">{% trans %}Enqueue now{% endtrans %}</a></li>
                                     <li><a href="#" eb-action="cloneClient" eb-path="{{ path('cloneClient', {idClient: client.id}) }}" eb-clientid="{{client.id}}">{% trans %}Clone{% endtrans %}</a></li>
                                     <li role="separator" class="divider"></li>
-                                    <li><a href="#" eb-action="deleteClient" eb-path="{{ path('deleteClient', {id: client.id}) }}" eb-clientid="{{client.id}}" eb-message="{{ 'Really delete client <strong>%name%</strong>? <br><br>This will remove all related jobs and backups' | trans({'%name%': client.name}) | raw }}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
+                                    <li><a href="#" eb-action="deleteClient" eb-path="{{ path('deleteClient', {id: client.id}) }}" eb-clientid="{{client.id}}" eb-message="{{ 'Really delete client <strong>%name%</strong>? <br><br>This will remove all related jobs and backups' | trans({'%name%': client.name}) | raw | e('js')}}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -226,7 +226,7 @@
                                     <ul class="dropdown-menu dropright" aria-labelledby="btnGroupDrop1">
                                         <li {% if (job.lastResult == 'RUNNING') or (job.lastResult == 'QUEUED') %}class="disabled"{% endif %}><a href="#" eb-action="enqueueJob" eb-path="{{ path('enqueueJob', {idJob: job.id, idClient: client.id}) }}" eb-jobid="{{job.id}}">{% trans %}Enqueue now{% endtrans %}</a></li>
                                         <li role="separator" class="divider"></li>
-                                        <li><a href="#" eb-action="deleteJob" eb-path="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" eb-clientid="{{client.id}}" eb-message="{{ 'Really delete job <strong>%name%</strong>?<br><br>This will remove all related backups' | trans({'%name%': job.name}) | raw }}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
+                                        <li><a href="#" eb-action="deleteJob" eb-path="{{ path('deleteJob', {idClient: client.id, idJob:job.id}) }}" eb-jobid="{{job.id}}" eb-clientid="{{client.id}}" eb-message="{{ 'Really delete job <strong>%name%</strong>?<br><br>This will remove all related backups' | trans({'%name%': job.name}) | raw | e('js')}}" class="danger">{% trans %}Delete{% endtrans %}</a></li>
                                     </ul>
                                 </div>
                             </div>
