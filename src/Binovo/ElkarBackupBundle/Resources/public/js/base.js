@@ -18,7 +18,7 @@ function okMsg(msg){
    // Print new message
    $("#legend").after('<div class="controls help-block alert alert-success fade in" role="alert">' +
        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-       '<span aria-hidden="true">&times;</span></button>' + msg + '</div>');
+       '<span aria-hidden="true">&times;</span></button>' + htmlEncode(msg)+ '</div>');
 }
 
 function errorMsg(msg){
@@ -27,7 +27,16 @@ function errorMsg(msg){
    // Print new message
    $("#legend").after('<div class="controls help-block alert alert-danger fade in" role="alert">' +
        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-       '<span aria-hidden="true">&times;</span></button>' + msg + '</div>');
+       '<span aria-hidden="true">&times;</span></button>' + htmlEncode(msg) + '</div>');
+}
+
+/*
+ * Escape html string
+ */
+function htmlEncode(str){
+  return String(str).replace(/[^\w. ]/gi, function(c){
+     return '&#'+c.charCodeAt(0)+';';
+  });
 }
 
 /*

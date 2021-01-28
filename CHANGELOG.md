@@ -7,7 +7,6 @@ Bugfixes:
 - Fix postscript handling in Job entity (closes #400)
 - Fixed XSS in Job and Client lists (closes #427)
 
-
 ## 1.3.4 (2020/12/06)
 Bugfixes:
 - Fix XSS in policy list reported by Vyshnav Vizz (partially closes #419)
