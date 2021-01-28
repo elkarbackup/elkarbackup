@@ -4,7 +4,7 @@ Enhancement:
 
 Bugfixes:
 - Change delivery address of swiftmailer in config_dev to "example@example.com"(closes #411)
-- Name consistency problems fixed on Job entity functions (closes #400)
+- Fix postscript handling in Job entity (closes #400)
 
 ## 1.3.4 (2020/12/06)
 Bugfixes:
