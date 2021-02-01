@@ -1,11 +1,13 @@
-## 1.3.5
+## 1.3.5 (2021/01/01)
+Security fix:
+- Fixed XSS in Job and Client lists reported by Doronizg (closes #427)
+
 Enhancement:
 - Show client column in status (Closes issue #408)
 
 Bugfixes:
 - Change delivery address of swiftmailer in config_dev to "example@example.com"(closes #411)
 - Fix postscript handling in Job entity (closes #400)
-- Fixed XSS in Job and Client lists (closes #427)
 - Fix path for the log files to download (closes #313)
 
 ## 1.3.4 (2020/12/06)
