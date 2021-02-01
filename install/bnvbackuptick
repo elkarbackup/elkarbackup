@@ -1,4 +1,0 @@
-#!/bin/bash
-
-exit 0
-/srv/web/tknikabackups-devel/app/console backups:tick '2010-01-04 12:00'
