@@ -1,0 +1,30 @@
+# parameters.yml.dist is a template
+parameters:
+    database_driver: '%database.driver%'
+    database_path: '%database.path%'
+    database_host: '%database.host%'
+    database_port: '%database.port%'
+    database_name: '%database.name%'
+    database_user: '%database.user%'
+    database_password: '%database.password%'
+    mailer_transport: '%mailer.transport%'
+    mailer_host: '%mailer.host%'
+    mailer_user: '%mailer.user%'
+    mailer_password: '%mailer.password%'
+    mailer_from: '%mailer.from%'
+    locale: en
+    secret: '%eb.secret%'
+    upload_dir: '%eb.upload.dir%'
+    backup_dir: '%eb.backup.dir%'
+    public_key: '%eb.public.key%'
+    max_log_age: P1Y
+    tmp_dir: '%eb.tmp.dir%'
+    rsnapshot: /usr/bin/rsnapshot
+    warning_load_level: 0.8
+    pagination_lines_per_page: 20
+    url_prefix: '%eb.url.prefix%'
+    disable_background: false
+    tahoe_active: '%eb.tahoe.active%'
+    home: /app/elkarbackup
+    max_parallel_jobs: '%eb.max.parallel.jobs%'
+    post_on_pre_fail: '%eb.post.on.pre.fail%'
