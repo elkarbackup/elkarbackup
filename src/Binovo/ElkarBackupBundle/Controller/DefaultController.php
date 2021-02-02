@@ -38,7 +38,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use steevanb\SSH2Bundle\Entity\Profile;
 use steevanb\SSH2Bundle\Entity\Connection;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -324,15 +326,15 @@ class DefaultController extends Controller
         $t = $this->get('translator');
         
         // get the login error if there is one
-        if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
-            $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
+        if ($request->attributes->has(Security::AUTHENTICATION_ERROR)) {
+            $error = $request->attributes->get(Security::AUTHENTICATION_ERROR);
         } else {
-            $error = $session->get(SecurityContext::AUTHENTICATION_ERROR);
-            $session->remove(SecurityContext::AUTHENTICATION_ERROR);
+            $error = $session->get(Security::AUTHENTICATION_ERROR);
+            $session->remove(Security::AUTHENTICATION_ERROR);
         }
         $this->info(
             'Log in attempt with user: %username%',
-            array('%username%' => $session->get(SecurityContext::LAST_USERNAME))
+            array('%username%' => $session->get(Security::LAST_USERNAME))
         );
         $this->getDoctrine()->getManager()->flush();
         $locales = $this->container->getParameter('supported_locales');
@@ -378,7 +380,7 @@ class DefaultController extends Controller
         return $this->render(
             'BinovoElkarBackupBundle:Default:login.html.twig',
             array(
-                'last_username' => $session->get(SecurityContext::LAST_USERNAME),
+                'last_username' => $session->get(Security::LAST_USERNAME),
                 'error' => $error,
                 'supportedLocales' => $localesWithNames,
                 'disable_background' => $disable_background,
@@ -438,7 +440,7 @@ class DefaultController extends Controller
      */
     public function saveClientAction(Request $request, $id)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $actualuserid = $user->getId();
         
         $t = $this->get('translator');
@@ -487,7 +489,7 @@ class DefaultController extends Controller
                     }
                 }
                 if ($client->getOwner() == null) {
-                    $client->setOwner($this->get('security.context')->getToken()->getUser());
+                    $client->setOwner($this->get('security.token_storage')->getToken()->getUser());
                 }
                 
                 if ($client->getMaxParallelJobs() < 1) {
@@ -654,7 +656,7 @@ class DefaultController extends Controller
      */
     public function restoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $actualuserid = $user->getId();
         $actualusername = $user->getUsername();
         
@@ -673,7 +675,7 @@ class DefaultController extends Controller
             return $this->redirect($this->generateUrl('showClients'));
         }
 
-        $granted = $this->get('security.context')->isGranted('ROLE_ADMIN');
+        $granted = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
 
         $form = $this->createForm(
             new RestoreBackupType($actualuserid,$granted),
@@ -696,9 +698,9 @@ class DefaultController extends Controller
     public function runRestoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
        $t = $this->get('translator');
-       $user = $this->get('security.context')->getToken()->getUser();
+       $user = $this->get('security.token_storage')->getToken()->getUser();
        $actualuserid = $user->getId();
-       $granted = $this->get('security.context')->isGranted('ROLE_ADMIN');
+       $granted = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
        $suggestedPath = mb_substr($path, mb_strpos($path, '/'));
        $suggestedPath = mb_substr($suggestedPath, 0, mb_strrpos($suggestedPath, '/'));
       
@@ -762,7 +764,7 @@ class DefaultController extends Controller
     public function enqueueJobAction(Request $request, $idClient, $idJob)
     {
         $t = $this->get('translator');
-        $user = $this->get('security.context')->getToken();
+        $user = $this->get('security.token_storage')->getToken();
         $trustable = false;
         
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -1326,7 +1328,7 @@ class DefaultController extends Controller
      */
     public function editPolicyAction(Request $request, $id = 'new')
     {
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
@@ -1365,7 +1367,7 @@ class DefaultController extends Controller
      */
     public function deletePolicyAction(Request $request, $id)
     {
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
@@ -1441,7 +1443,7 @@ class DefaultController extends Controller
      */
     public function sortJobsAction(Request $request)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $actualuserid = $user->getId();
         
         $t = $this->get('translator');
@@ -1450,7 +1452,7 @@ class DefaultController extends Controller
         $query = $repository->createQueryBuilder('j')
             ->innerJoin('j.client', 'c')
             ->addOrderBy('j.priority', 'ASC');
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // Non-admin users only can sort their own jobs
             $query->where('j.isActive <> 0 AND c.isActive <> 0 AND c.owner = ?1'); // adding users and roles
             $query->setParameter(1, $actualuserid);
@@ -1508,7 +1510,7 @@ class DefaultController extends Controller
      */
     public function showClientsAction(Request $request)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $actualuserid = $user->getId();
         
         $fsDiskUsage = (int) round(
@@ -1520,7 +1522,7 @@ class DefaultController extends Controller
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
         $query = $repository->createQueryBuilder('c')->addOrderBy('c.id', 'ASC');
         
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // Limited view for non-admin users
             $query->where('c.owner = ?1'); // adding users and roles
             $query->setParameter(1, $actualuserid);
@@ -1916,7 +1918,7 @@ EOF;
      */
     public function editBackupLocationAction(Request $request, $id = 'new')
     {
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
@@ -2051,7 +2053,7 @@ EOF;
      */
     public function deleteBackupLocationAction(Request $request, $id)
     {
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
@@ -2412,7 +2414,7 @@ EOF;
         if ($request->isMethod('POST')) {
             $form->bind($request);
             $data = $form->getData();
-            $user = $this->get('security.context')->getToken()->getUser();
+            $user = $this->get('security.token_storage')->getToken()->getUser();
             $encoder = $this->get('security.encoder_factory')->getEncoder($user);
             $ok = true;
             if (empty($data['newPassword']) || $data['newPassword'] !== $data['newPassword2']) {
@@ -2548,7 +2550,7 @@ EOF;
      */
     public function deleteScriptAction(Request $request, $id)
     {
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
@@ -2628,7 +2630,7 @@ EOF;
      */
     public function editScriptAction(Request $request, $id)
     {
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
@@ -2860,8 +2862,8 @@ EOF;
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
         $client = $repository->find($idClient);
         
-        if ($client->getOwner() == $this->get('security.context')->getToken()->getUser() || 
-            $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if ($client->getOwner() == $this->get('security.token_storage')->getToken()->getUser() || 
+            $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             return True;
         } else {
             return False;
@@ -2998,7 +3000,7 @@ EOF;
     {
         $t = $this->get('translator');
         // Get current user
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $form = $this->createForm(
             new PreferencesType(),
             $user,
@@ -3038,7 +3040,7 @@ EOF;
     private function getUserPreference(Request $request, $param)
     {
         $response = null;
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         if ($param == 'language') {
             $response = $user->getLanguage();
         } elseif ($param == 'linesperpage') {
