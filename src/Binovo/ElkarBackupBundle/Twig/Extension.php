@@ -11,8 +11,8 @@ class Extension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('filterSelect', array($this, 'is_safe' => array('html'))),
-            new \Twig_SimpleFunction('filterText', array($this, 'is_safe' => array('html'))),
+            new \Twig\TwigFunction('filterSelect', array($this, 'is_safe' => array('html'))),
+            new \Twig\TwigFunction('filterText', array($this, 'is_safe' => array('html'))),
         );
     }
 
