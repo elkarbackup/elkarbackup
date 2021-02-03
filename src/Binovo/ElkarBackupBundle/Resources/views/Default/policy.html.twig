@@ -23,7 +23,7 @@ font-size: 14px;
 
 {% block body %}
 
-<form id="form" class="form-horizontal" action="{{ path('savePolicy', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
+<form id="form" class="form-horizontal" action="{{ path('savePolicy', {id: form.vars.value.id}) }}" method="post" {{ form_start(form) }}>
     <fieldset>
         <h3>{% trans %}Edit policy{% endtrans %}</h3>
         <div class="row">

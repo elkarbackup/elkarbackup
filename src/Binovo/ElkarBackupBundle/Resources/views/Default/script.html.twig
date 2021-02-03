@@ -15,7 +15,7 @@
     <button class="btn btn-default" {% if not form.vars.value.id %}disabled="true" {% else %} onclick="window.location.href='{{path('downloadScript', {id: form.vars.value.id}) }}'" {% endif %}><span class="glyphicon glyphicon-download-alt"></span> {% trans %}Download{% endtrans %}</button>
   </div>
 </div>
-<form class="form-horizontal" action="{{ path('saveScript', {id: form.vars.value.id}) }}" method="post" {{ form_enctype(form) }}>
+<form class="form-horizontal" action="{{ path('saveScript', {id: form.vars.value.id}) }}" method="post" {{ form_start(form) }}>
     <h3 id="legend">{% trans %}Edit script{% endtrans %}</h3>
     <div class="row">
         <div class="col-md-6">

@@ -456,7 +456,7 @@ class DefaultController extends Controller
             $client,
             array('translator' => $t)
         );
-        $form->bind($request);
+        $form->handleRequest($request);
         if ($form->isValid()) {
             $client = $form->getData();
             $em = $this->getDoctrine()->getManager();
@@ -1044,7 +1044,7 @@ class DefaultController extends Controller
             $job,
             array('translator' => $t)
         );
-        $form->bind($request);
+        $form->handleRequest($request);
         if ($form->isValid()) {
             $job = $form->getData();
             try {
@@ -1416,7 +1416,7 @@ class DefaultController extends Controller
             $policy,
             array('translator' => $t)
         );
-        $form->bind($request);
+        $form->handleRequest($request);
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($policy);
@@ -1872,7 +1872,7 @@ EOF;
         );
         $authorizedKeysForm = $authorizedKeysFormBuilder->getForm();
         if ($request->isMethod('POST')) {
-            $authorizedKeysForm->bind($request);
+            $authorizedKeysForm->handleRequest($request);
             $data = $authorizedKeysForm->getData();
             $serializedKeys = '';
             foreach ($data['publicKeys'] as $key) {
@@ -1987,7 +1987,7 @@ EOF;
             $backupLocation,
             array('translator' => $t)
         );
-        $form->bind($request);
+        $form->handleRequest($request);
         $result = null;
         $location = $backupLocation->getEffectiveDir();
         if (! is_dir($location)) {
@@ -2260,7 +2260,7 @@ EOF;
         $result = null;
         $form = $formBuilder->getForm();
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
             $data = $form->getData();
             $allOk = true;
             foreach ($data as $paramName => $paramValue) {
@@ -2412,7 +2412,7 @@ EOF;
         ->getForm();
         
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
             $data = $form->getData();
             $user = $this->get('security.token_storage')->getToken()->getUser();
             $encoder = $this->get('security.encoder_factory')->getEncoder($user);
@@ -2686,7 +2686,7 @@ EOF;
                 'translator' => $t
             )
         );
-        $form->bind($request);
+        $form->handleRequest($request);
         $result = null;
         if ($form->isValid()) {
             if ("-1" == $id && null == $script->getScriptFile()) { // it is a new script but no file was uploaded
@@ -2791,7 +2791,7 @@ EOF;
             $user = $repository->find($id);
         }
         $form = $this->createForm(new UserType(), $user, array('translator' => $t));
-        $form->bind($request);
+        $form->handleRequest($request);
         if ($form->isValid()) {
             if ($user->newPassword) {
                 $factory = $this->get('security.encoder_factory');
@@ -3008,7 +3008,7 @@ EOF;
         );
         
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
             $data = $form->getData();
             $em = $this->getDoctrine()->getManager();
             $em->persist($data);
