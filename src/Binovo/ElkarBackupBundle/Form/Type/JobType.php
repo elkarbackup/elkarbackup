@@ -7,8 +7,14 @@
 namespace Binovo\ElkarBackupBundle\Form\Type;
 
 use Binovo\ElkarBackupBundle\Entity\Job;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class JobType extends AbstractType
@@ -16,27 +22,27 @@ class JobType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $t = $options['translator'];
-        $builder->add('name'                , 'text'    , array('label' => $t->trans('Name', array(), 'BinovoElkarBackup'),
+        $builder->add('name'                , TextType::class    , array('label' => $t->trans('Name', array(), 'BinovoElkarBackup'),
                                                                 'attr'  => array('class'    => 'form-control')))
-                ->add('description'         , 'textarea', array('label' => $t->trans('Description', array(), 'BinovoElkarBackup'),
+                ->add('description'         , TextareaType::class, array('label' => $t->trans('Description', array(), 'BinovoElkarBackup'),
                                                                 'required' => false,
                                                                 'attr'  => array('class'    => 'form-control','rows' => '3')))
-                ->add('policy'              , 'entity'  , array('label' => $t->trans('Policy', array(), 'BinovoElkarBackup'),
+                ->add('policy'              , EntityType::class  , array('label' => $t->trans('Policy', array(), 'BinovoElkarBackup'),
                                                                 'attr'     => array('class'    => 'form-control'),
                                                                 'required' => true,
                                                                 'class'    => 'BinovoElkarBackupBundle:Policy',
                                                                 'property' => 'name'))
-                ->add('useLocalPermissions' , 'checkbox', array('label'    => $t->trans('Use local permissions', array(), 'BinovoElkarBackup'),
+                ->add('useLocalPermissions' , CheckboxType::class, array('label'    => $t->trans('Use local permissions', array(), 'BinovoElkarBackup'),
                                                                 'required' => false))
-                ->add('exclude'             , 'textarea', array('label' => $t->trans('Exclude', array(), 'BinovoElkarBackup'),
+                ->add('exclude'             , TextareaType::class, array('label' => $t->trans('Exclude', array(), 'BinovoElkarBackup'),
                                                                 'required' => false,
                                                                 'attr' => array('class'    => 'form-control','rows' => '3')))
-                ->add('include'             , 'textarea', array('label' => $t->trans('Include', array(), 'BinovoElkarBackup'),
+                ->add('include'             , TextareaType::class, array('label' => $t->trans('Include', array(), 'BinovoElkarBackup'),
                                                                 'required' => false,
                                                                 'attr' => array('class'    => 'form-control','rows' => '3')))
-                ->add('path'                , 'text'    , array('label' => $t->trans('Path', array(), 'BinovoElkarBackup'),
+                ->add('path'                , TextType::class    , array('label' => $t->trans('Path', array(), 'BinovoElkarBackup'),
                                                                 'attr'  => array('class'    => 'form-control')))
-                ->add('notificationsTo'     , 'choice'  , array('label'    => $t->trans('Send notices to', array(), 'BinovoElkarBackup'),
+                ->add('notificationsTo'     , ChoiceType::class  , array('label'    => $t->trans('Send notices to', array(), 'BinovoElkarBackup'),
                                                                 'required' => false,
                                                                 'attr'     => array('class'    => 'form-control-no'),
                                                                 'choices'  => array(Job::NOTIFY_TO_ADMIN => $t->trans('Admin', array(), 'BinovoElkarBackup'),
@@ -44,9 +50,9 @@ class JobType extends AbstractType
                                                                                     Job::NOTIFY_TO_EMAIL => $t->trans('Email', array(), 'BinovoElkarBackup')),
                                                                 'multiple' => true,
                                                                 'expanded' => true,))
-                ->add('notificationsEmail'  , 'email'  , array('label'    => ' ',
+                ->add('notificationsEmail'  , EmailType::class , array('label'    => ' ',
                                                                'required' => false))
-                ->add('minNotificationLevel', 'choice'  , array('label'       => $t->trans('Notify only', array(), 'BinovoElkarBackup'),
+                ->add('minNotificationLevel', ChoiceType::class  , array('label'       => $t->trans('Notify only', array(), 'BinovoElkarBackup'),
                                                                 'attr'        => array('class'    => 'form-control'),
                                                                 'empty_value' => false,
                                                                 'required'    => false,
@@ -54,7 +60,7 @@ class JobType extends AbstractType
                                                                                         Job::NOTIFICATION_LEVEL_WARNING => $t->trans('Warnings and up', array(), 'BinovoElkarBackup'),
                                                                                         Job::NOTIFICATION_LEVEL_ERROR   => $t->trans('Errors and up'  , array(), 'BinovoElkarBackup'),
                                                                                         Job::NOTIFICATION_LEVEL_NONE    => $t->trans('None'           , array(), 'BinovoElkarBackup'))))
-                ->add('preScripts'          , 'entity'  , array('label' => $t->trans('Pre script', array(), 'BinovoElkarBackup'),
+                ->add('preScripts'          , EntityType::class  , array('label' => $t->trans('Pre script', array(), 'BinovoElkarBackup'),
                                                                 'attr'     => array('class' => 'autoheight form-control','data-dojo-type' => 'dojox.form.CheckedMultiSelect'),
                                                                 'required' => false,
                                                                 'multiple' => true,
@@ -64,7 +70,7 @@ class JobType extends AbstractType
                                                                         ->where('s.isJobPre = 1');
                                                                 },
                                                                 'property' => 'name'))
-                ->add('postScripts'         , 'entity'  , array('label' => $t->trans('Post script', array(), 'BinovoElkarBackup'),
+                ->add('postScripts'         , EntityType::class  , array('label' => $t->trans('Post script', array(), 'BinovoElkarBackup'),
                                                                 'attr'     => array('class' => 'autoheight form-control','data-dojo-type' => 'dojox.form.CheckedMultiSelect'),
                                                                 'required' => false,
                                                                 'multiple' => true,
@@ -75,13 +81,12 @@ class JobType extends AbstractType
                                                                 },
                                                                 'class'    => 'BinovoElkarBackupBundle:Script',
                                                                 'property' => 'name'))
-                ->add('isActive'            , 'checkbox', array('label'    => $t->trans('Is active', array(), 'BinovoElkarBackup'),
+                ->add('isActive'            , CheckboxType::class, array('label'    => $t->trans('Is active', array(), 'BinovoElkarBackup'),
                                                                 'required' => false))
-                ->add('token'               , 'text'    , array('label' => $t->trans('Token', array(), 'BinovoElkarBackup'),
-                                                                'read_only' => true,
+                ->add('token'               , TextType::class    , array('label' => $t->trans('Token', array(), 'BinovoElkarBackup'),
                                                                 'required'  => false,
-                                                                'attr'  => array('class'    => 'form-control')))
-                ->add('backupLocation'       , 'entity'    , array('label' => $t->trans('Backup location', array(), 'BinovoElkarBackup'),
+                                                                'attr'  => array('class'    => 'form-control', 'read_only' => true)))
+                ->add('backupLocation'       , EntityType::class    , array('label' => $t->trans('Backup location', array(), 'BinovoElkarBackup'),
                                                                  'required' => true,
                                                                  'attr'     => array('class'    => 'form-control'),
                                                                  'class'    => 'BinovoElkarBackupBundle:BackupLocation',

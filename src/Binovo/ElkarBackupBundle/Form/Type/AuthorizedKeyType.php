@@ -8,6 +8,7 @@ namespace Binovo\ElkarBackupBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AuthorizedKeyType extends AbstractType
@@ -21,9 +22,9 @@ class AuthorizedKeyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $t = $options['translator'];
-        $builder->add('publicKey', 'text', array('required' => true , 'label' => '',
+        $builder->add('publicKey', TextType::class, array('required' => true , 'label' => '',
                                                  'attr' => array('placeholder' => $t->trans('Key', array(), 'BinovoElkarBackup'))))
-                ->add('comment'  , 'text', array('required' => false, 'label' => '',
+                ->add('comment'  , TextType::class, array('required' => false, 'label' => '',
                                                  'attr' => array('placeholder' => $t->trans('Comment', array(), 'BinovoElkarBackup'))));
 
     }

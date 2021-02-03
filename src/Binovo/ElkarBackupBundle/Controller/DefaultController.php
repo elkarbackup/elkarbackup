@@ -33,6 +33,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -1461,7 +1462,7 @@ class DefaultController extends Controller
         ;
         
         $formBuilder = $this->createFormBuilder(array('jobs' => $jobs));
-        $formBuilder->add('jobs', 'collection', array('type' => new JobForSortType()));
+        $formBuilder->add('jobs', CollectionType::class, array('type' => new JobForSortType()));
         $form = $formBuilder->getForm();
         if ($request->isMethod('POST')) {
             $i = 1;
@@ -1835,7 +1836,7 @@ EOF;
         $t = $this->get('translator');
         $params = array(
             'backup_script' => array(
-                'type' => 'entity',
+                'type' => EntityType::class,
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Backup Script', array(), 'BinovoElkarBackup'),
@@ -1861,7 +1862,7 @@ EOF;
         $authorizedKeysFormBuilder = $this->createFormBuilder(array('publicKeys' => $keys));
         $authorizedKeysFormBuilder->add(
             'publicKeys',
-            'collection',
+            CollectionType::class,
             array(
                 'type' => new AuthorizedKeyType($t),
                 'allow_add' => true,
@@ -2122,37 +2123,37 @@ EOF;
         $t = $this->get('translator');
         $params = array(
             'database_host' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL host', array(), 'BinovoElkarBackup')
             ),
             'database_port' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL port', array(), 'BinovoElkarBackup')
             ),
             'database_name' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL DB name', array(), 'BinovoElkarBackup')
             ),
             'database_user' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL user', array(), 'BinovoElkarBackup')
             ),
             'database_password' => array(
-                'type' => 'password',
+                'type' => PasswordType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL password', array(), 'BinovoElkarBackup')
             ),
             'mailer_transport' => array(
-                'type' => 'choice',
+                'type' => ChoiceType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'choices' => array(
@@ -2164,31 +2165,31 @@ EOF;
                 'label' => $t->trans('Mailer transport', array(), 'BinovoElkarBackup')
             ),
             'mailer_host' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer host', array(), 'BinovoElkarBackup')
             ),
             'mailer_user' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer user', array(), 'BinovoElkarBackup')
             ),
             'mailer_password' => array(
-                'type' => 'password',
+                'type' => PasswordType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer password', array(), 'BinovoElkarBackup')
             ),
             'mailer_from' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer from', array(), 'BinovoElkarBackup')
             ),
             'max_log_age' => array(
-                'type' => 'choice',
+                'type' => ChoiceType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'choices' => array(
@@ -2214,30 +2215,30 @@ EOF;
                 'label' => $t->trans('Quota warning level', array(), 'BinovoElkarBackup')
             ),
             'pagination_lines_per_page' => array(
-                'type' => 'integer',
+                'type' => IntegerType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Records per page', array(), 'BinovoElkarBackup')
             ),
             'url_prefix' => array(
-                'type' => 'text',
+                'type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Url prefix', array(), 'BinovoElkarBackup')
             ),
             'disable_background' => array(
-                'type' => 'checkbox',
+                'type' => CheckboxType::class,
                 'required' => false,
                 'label' => $t->trans('Disable background', array(), 'BinovoElkarBackup')
             ),
             'max_parallel_jobs' => array(
-                'type' => 'integer',
+                'type' => IntegerType::class,
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup')
             ),
             'post_on_pre_fail' => array(
-                'type' => 'checkbox',
+                'type' => CheckboxType::class,
                 'required' => false,
                 'label' => $t->trans('Do post script on pre script failure', array(), 'BinovoElkarBackup')
             ),
@@ -2384,7 +2385,7 @@ EOF;
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)->add(
             'oldPassword',
-            'password',
+            PasswordType::class,
             array(
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
@@ -2393,7 +2394,7 @@ EOF;
         )
         ->add(
             'newPassword',
-            'password',
+            PasswordType::class,
             array(
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
@@ -2402,7 +2403,7 @@ EOF;
         )
         ->add(
             'newPassword2',
-            'password',
+            PasswordType::class,
             array(
                 'required' => true,
                 'attr' => array('class' => 'form-control'),

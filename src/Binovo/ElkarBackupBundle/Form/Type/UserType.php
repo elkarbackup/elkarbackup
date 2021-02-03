@@ -8,6 +8,13 @@ namespace Binovo\ElkarBackupBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserType extends AbstractType
@@ -15,13 +22,13 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $t = $options['translator'];
-        $builder->add('username'    , 'text'    , array('label' => $t->trans('Name'     , array(), 'BinovoElkarBackup'),
+        $builder->add('username'    , TextType::class    , array('label' => $t->trans('Name'     , array(), 'BinovoElkarBackup'),
                                                         'attr'  => array('class'    => 'form-control')))
-                ->add('email'       , 'email'   , array('label' => $t->trans('Email'    , array(), 'BinovoElkarBackup'),
+                ->add('email'       , EmailType::class   , array('label' => $t->trans('Email'    , array(), 'BinovoElkarBackup'),
                                                         'attr'  => array('class'    => 'form-control')))
-                ->add('isActive'    , 'checkbox', array('label' => $t->trans('Is active', array(), 'BinovoElkarBackup'),
+                ->add('isActive'    , CheckboxType::class, array('label' => $t->trans('Is active', array(), 'BinovoElkarBackup'),
                                                         'required' => false))
-                ->add('roles'      , 'collection', array('type' => 'choice',
+                ->add('roles'      , CollectionType::class, array('type' => ChoiceType::class,
                                              //'label' => 'Profile type',
                                              //'attr' => array('class' => 'form-control'),
                                              'options' => array(
@@ -32,7 +39,7 @@ class UserType extends AbstractType
                                                 ),
                                              ),
                                           ))
-                ->add('newPassword', 'repeated', array('type' => 'password',
+                ->add('newPassword', RepeatedType::class, array('type' => PasswordType::class,
 			                                                 'options' => array('attr' => array('class' => 'password-field form-control')),
 			                                                 'required' => false,
 			                                                 'first_options'  => array('label' => $t->trans('New password' , array(), 'BinovoElkarBackup')),

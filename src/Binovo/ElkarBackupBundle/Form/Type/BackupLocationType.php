@@ -8,6 +8,9 @@ namespace Binovo\ElkarBackupBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Binovo\ElkarBackupBundle\Controller\DefaultController;
 use Binovo\ElkarTahoeBundle\Utils\TahoeBackup;
@@ -28,20 +31,20 @@ class BackupLocationType extends AbstractType
     {
         $t = $options['translator'];
 
-        $builder->add('name'        , 'text'    , array('label' => $t->trans('Name', array(), 'BinovoElkarBackup'),
+        $builder->add('name'        , TextType::class    , array('label' => $t->trans('Name', array(), 'BinovoElkarBackup'),
                                                         'required' => true,
                                                         'attr' => array('class' => 'form-control')))
-                ->add('host'        , 'text'    , array('label' => $t->trans('Host', array(), 'BinovoElkarBackup'),
+                ->add('host'        , TextType::class    , array('label' => $t->trans('Host', array(), 'BinovoElkarBackup'),
                                                         'required' => false,
                                                         'attr' => array('class' => 'form-control'),
                                                         'disabled' => !$this->fs))
-                ->add('directory'   , 'text'    , array('label' => $t->trans('Directory', array(), 'BinovoElkarBackup'),
+                ->add('directory'   , TextType::class    , array('label' => $t->trans('Directory', array(), 'BinovoElkarBackup'),
                                                         'required' => true,
                                                         'attr' => array('class' => 'form-control')))
-                ->add('tahoe'       , 'checkbox', array('required' => false,
+                ->add('tahoe'       , CheckboxType::class, array('required' => false,
                                                         'label' => $t->trans('Turn on Tahoe storage', array(), 'BinovoElkarTahoe'),
                                                         'disabled' => !$this->tahoeInstalled))
-                ->add('maxParallelJobs', 'integer', array('label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup'),
+                ->add('maxParallelJobs', IntegerType::class, array('label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup'),
                                                          'attr'  => array('class'    => 'form-control'),
                                                          'required' => true));
     }
