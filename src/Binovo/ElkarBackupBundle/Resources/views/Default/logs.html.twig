@@ -15,14 +15,14 @@
         {# sorting of properties based on query components #}
         <th>{% trans %}Time{% endtrans %}</th>
         <th style="width: 160px;">{% trans %}Level{% endtrans %}<br />
-            {{ filterSelect(levels, {style: "width: 150px;"}) }}</th>
+            {{ filterSelect(levels, {style: "width: 150px;"}) | raw}}</th>
         <th>{% trans %}Source{% endtrans %}<br />
-            {{ filterSelect(source, {style: "width: 150px;"}) }}</th>
+            {{ filterSelect(source, {style: "width: 150px;"}) | raw}}</th>
         <th>{% trans %}User{% endtrans %}</th>
         <th>{% trans %}Message{% endtrans %}</th>
         <th></th>
         <th>{% trans %}Object{% endtrans %}<br />
-            {{ filterText(object, {style: "width: 150px;"}) }}</th>
+            {{ filterText(object, {style: "width: 150px;"}) | raw}}</th>
     </tr>
 
     {# table body #}
