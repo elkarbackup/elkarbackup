@@ -67,7 +67,7 @@ class DefaultController extends Controller
                     $data['storageenabled'] = false;
                 }
             } catch (Exception $e) {
-                $this->get('BnvWebLogger')->warn('Warning: the file could not be read. Default settings will be displayed', $context);
+                $this->get('BnvWebLogger')->warning('Warning: the file could not be read. Default settings will be displayed', $context);
             }
         } else {
             $data['nickname'] = 'elkarbackup_node';
@@ -295,7 +295,7 @@ class DefaultController extends Controller
             $logger->info('Code update pending', $context);
             $manager->flush();
         } catch (Exception $e) {
-            $logger->err('Error: ' . $e->getMessage(), $context);
+            $logger->error('Error: ' . $e->getMessage(), $context);
         }
     }
 
@@ -454,7 +454,7 @@ class DefaultController extends Controller
                 $status         = 0;
                 exec($command, $commandOutput, $status);
                 if (0 != $status) {
-                    $logger->err('Error: Tahoe cannot retrieve that directory from the grid - ' . $file, $context);
+                    $logger->error('Error: Tahoe cannot retrieve that directory from the grid - ' . $file, $context);
                     return $this->redirect($this->generateUrl('showJobTahoeBackup', array('action' => 'view', 'file' => $father)));
                 }
 
@@ -482,7 +482,7 @@ class DefaultController extends Controller
             }
 
         } else {
-            $logger->err('Error: Tahoe is not configured', $context);
+            $logger->error('Error: Tahoe is not configured', $context);
         }
         return $this->redirect($this->generateUrl('tahoeConfig'));
     }

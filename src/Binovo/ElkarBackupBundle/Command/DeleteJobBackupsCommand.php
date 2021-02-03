@@ -51,7 +51,7 @@ class DeleteJobBackupsCommand extends ContainerAwareCommand
                 if (Globals::delTree($removeDir)) {
                     $logger->info('Directory deleted: ' . $removeDir, array('source' => 'DeleteJobBackupsCommand'));
                 } else {
-                    $logger->err('Error deleting directory: ' . $removeDir, array('source' => 'DeleteJobBackupsCommand'));
+                    $logger->error('Error deleting directory: ' . $removeDir, array('source' => 'DeleteJobBackupsCommand'));
                     $allOk = 1;
                 }
             } else {

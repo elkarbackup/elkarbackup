@@ -45,7 +45,7 @@ class TahoeBackup
         $status         = 0;
         exec($command, $commandOutput, $status);
         if (0!=$status) {
-            $this->_logger->err('Cannot access to Tahoe storage [fullRetain_ls]: ' . implode("\n", $commandOutput), $this->_context);
+            $this->_logger->error('Cannot access to Tahoe storage [fullRetain_ls]: ' . implode("\n", $commandOutput), $this->_context);
             return $status;
         }
         $i = count($commandOutput);
@@ -55,7 +55,7 @@ class TahoeBackup
             $status         = 0;
             exec($command, $commandOutput, $status);
             if (0!=$status) {
-                $this->_logger->err('Cannot access to Tahoe storage [no_rot_unlink]: ' . implode("\n", $commandOutput), $this->_context);
+                $this->_logger->error('Cannot access to Tahoe storage [no_rot_unlink]: ' . implode("\n", $commandOutput), $this->_context);
                 return $status;
             }
             return 0;
@@ -173,7 +173,7 @@ class TahoeBackup
     protected function _runJob(Pair $pair)
     {
         if (!file_exists(self::NODE_DIR_NAME . self::READY_FILE)) {
-            $this->_logger->err('Cannot perform backup on Tahoe storage: Tahoe configuration not properly set', $this->_context);
+            $this->_logger->error('Cannot perform backup on Tahoe storage: Tahoe configuration not properly set', $this->_context);
             return false;
         }
 
@@ -191,7 +191,7 @@ class TahoeBackup
         if (!$job->getPolicy()->isRotation($retain)) { //no rotation
             $backupDir = $this->_getJobPath($job);
             if (false==$backupDir) {
-                $this->_logger->err('Cannot perform backup on Tahoe storage [no_rot_getDir]: Cannot obtain source directory', $this->_context);
+                $this->_logger->error('Cannot perform backup on Tahoe storage [no_rot_getDir]: Cannot obtain source directory', $this->_context);
                 return false;
             }
             $backupDir .= $retain . '.0';
@@ -199,7 +199,7 @@ class TahoeBackup
             $command = self::TAHOE_ALIAS . ' backup ' . $backupDir . ' ' . $this->_getJobTahoePath($job) . ' 2>&1';
             exec($command, $commandOutput, $status);
             if (0!=$status) {
-                $this->_logger->err('Cannot perform backup on Tahoe storage [no_rot_backup]: ' . implode("\n", $commandOutput), $this->_context);
+                $this->_logger->error('Cannot perform backup on Tahoe storage [no_rot_backup]: ' . implode("\n", $commandOutput), $this->_context);
                 return false;
             }
 
@@ -208,7 +208,7 @@ class TahoeBackup
             $status         = 0;
             exec($command, $commandOutput, $status);
             if (0!=$status) {
-                $this->_logger->err('Cannot access to Tahoe storage [no_rot_ls1]: ' . implode("\n", $commandOutput), $this->_context);
+                $this->_logger->error('Cannot access to Tahoe storage [no_rot_ls1]: ' . implode("\n", $commandOutput), $this->_context);
                 return false;
             }
 
@@ -220,7 +220,7 @@ class TahoeBackup
             $status         = 0;
             exec($command, $commandOutput, $status);
             if (0!=$status) {
-                $this->_logger->err('Cannot access to Tahoe storage [no_rot_mv]: ' . implode("\n", $commandOutput), $this->_context);
+                $this->_logger->error('Cannot access to Tahoe storage [no_rot_mv]: ' . implode("\n", $commandOutput), $this->_context);
                 return false;
             }
 
@@ -255,7 +255,7 @@ class TahoeBackup
                 $status         = 0;
                 exec($command, $commandOutput, $status);
                 if (0!=$status) {
-                    $this->_logger->err('Cannot access to Tahoe storage [rot_cp]: ' . implode("\n", $commandOutput), $this->_context);
+                    $this->_logger->error('Cannot access to Tahoe storage [rot_cp]: ' . implode("\n", $commandOutput), $this->_context);
                     return false;
                 }
 
@@ -270,7 +270,7 @@ class TahoeBackup
                 }
                 $this->_logger->info('Tahoe backup done - ' . $retain . ' rotation', $this->_context);
             } else {
-                $this->_logger->warn('Backup rotation was tried but no items were found in the previous retain level', $this->_context);
+                $this->_logger->warning('Backup rotation was tried but no items were found in the previous retain level', $this->_context);
                 return false;
             }
         }

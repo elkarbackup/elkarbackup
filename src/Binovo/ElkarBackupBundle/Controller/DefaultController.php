@@ -69,7 +69,7 @@ class DefaultController extends Controller
     {
         $logger = $this->get('BnvWebLogger');
         $context = array_merge(array('source' => 'DefaultController'), $context);
-        $logger->warn(
+        $logger->warning(
             $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
             $context
         );
@@ -79,7 +79,7 @@ class DefaultController extends Controller
     {
         $logger = $this->get('BnvWebLogger');
         $context = array_merge(array('source' => 'DefaultController'), $context);
-        $logger->err(
+        $logger->error(
             $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
             $context
         );
