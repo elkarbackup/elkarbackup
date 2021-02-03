@@ -57,7 +57,7 @@ class ClientType extends AbstractType
                                                                 return $er->createQueryBuilder('s')
                                                                     ->where('s.isClientPre = 1');
                                                             },
-                                                            'property' => 'name'))
+                                                            'choice_label' => 'name'))
                 ->add('postScripts'   , EntityType::class    , array('label' => $t->trans('Post script', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class' => 'multiselect autoheight form-control'),
                                                             'required' => false,
@@ -69,11 +69,11 @@ class ClientType extends AbstractType
                                                                     ->where('s.isClientPost = 1');
                                                             },
                                                             'class'    => 'BinovoElkarBackupBundle:Script',
-                                                            'property' => 'name'))
+                                                            'choice_label' => 'name'))
                 ->add('isActive'      , CheckboxType::class  , array('label'    => $t->trans('Is active', array(), 'BinovoElkarBackup'),
                                                             'required' => false))
                 ->add('owner'         , EntityType::class    , array('label'    => $t->trans('Owner', array(), 'BinovoElkarBackup'),
-                                                            'property' => 'username',
+                                                            'choice_label' => 'username',
                                                             'attr'     => array('class'    => 'form-control'),
                                                             'class'    => 'BinovoElkarBackupBundle:User'))
                 ->add('maxParallelJobs', IntegerType::class   , array('label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup'),
@@ -88,7 +88,7 @@ class ClientType extends AbstractType
                 ->add('rsyncLongArgs'	, TextType::class      , array('label'  => $t->trans('Rsync long args', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class'     => 'form-control advanced-form-item'),
                                                             'required' => false))
-                ->add('jobs'          , CollectionType::class, array('type'         => new JobShortType(),
+                ->add('jobs'          , CollectionType::class, array('entry_type'         => JobShortType::class,
                                                             'allow_delete' => true,
                                                             'label'        => $t->trans('Jobs', array(), 'BinovoElkarBackup')));
     }

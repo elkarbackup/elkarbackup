@@ -31,7 +31,7 @@ class JobType extends AbstractType
                                                                 'attr'     => array('class'    => 'form-control'),
                                                                 'required' => true,
                                                                 'class'    => 'BinovoElkarBackupBundle:Policy',
-                                                                'property' => 'name'))
+                                                                'choice_label' => 'name'))
                 ->add('useLocalPermissions' , CheckboxType::class, array('label'    => $t->trans('Use local permissions', array(), 'BinovoElkarBackup'),
                                                                 'required' => false))
                 ->add('exclude'             , TextareaType::class, array('label' => $t->trans('Exclude', array(), 'BinovoElkarBackup'),
@@ -69,7 +69,7 @@ class JobType extends AbstractType
                                                                     return $er->createQueryBuilder('s')
                                                                         ->where('s.isJobPre = 1');
                                                                 },
-                                                                'property' => 'name'))
+                                                                'choice_label' => 'name'))
                 ->add('postScripts'         , EntityType::class  , array('label' => $t->trans('Post script', array(), 'BinovoElkarBackup'),
                                                                 'attr'     => array('class' => 'autoheight form-control','data-dojo-type' => 'dojox.form.CheckedMultiSelect'),
                                                                 'required' => false,
@@ -80,7 +80,7 @@ class JobType extends AbstractType
                                                                         ->where('s.isJobPost = 1');
                                                                 },
                                                                 'class'    => 'BinovoElkarBackupBundle:Script',
-                                                                'property' => 'name'))
+                                                                'choice_label' => 'name'))
                 ->add('isActive'            , CheckboxType::class, array('label'    => $t->trans('Is active', array(), 'BinovoElkarBackup'),
                                                                 'required' => false))
                 ->add('token'               , TextType::class    , array('label' => $t->trans('Token', array(), 'BinovoElkarBackup'),
@@ -90,7 +90,7 @@ class JobType extends AbstractType
                                                                  'required' => true,
                                                                  'attr'     => array('class'    => 'form-control'),
                                                                  'class'    => 'BinovoElkarBackupBundle:BackupLocation',
-                                                                 'property' => 'name'));
+                                                                 'choice_label' => 'name'));
     }
 
     public function configureOptions(OptionsResolver $resolver)

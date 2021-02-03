@@ -28,15 +28,16 @@ class UserType extends AbstractType
                                                         'attr'  => array('class'    => 'form-control')))
                 ->add('isActive'    , CheckboxType::class, array('label' => $t->trans('Is active', array(), 'BinovoElkarBackup'),
                                                         'required' => false))
-                ->add('roles'      , CollectionType::class, array('type' => ChoiceType::class,
+                ->add('roles'      , CollectionType::class, array('entry_type' => ChoiceType::class,
                                              //'label' => 'Profile type',
                                              //'attr' => array('class' => 'form-control'),
-                                             'options' => array(
+                                             'entry_options' => array(
                                                 'expanded' => false,
                                                 'choices' => array(
-                                                        'ROLE_ADMIN' => 'Admin',
-                                                        'ROLE_USER' => 'User',
+                                                        'Admin' => 'ROLE_ADMIN',
+                                                        'User' => 'ROLE_USER',
                                                 ),
+                                                'choices_as_values' => true
                                              ),
                                           ))
                 ->add('newPassword', RepeatedType::class, array('type' => PasswordType::class,

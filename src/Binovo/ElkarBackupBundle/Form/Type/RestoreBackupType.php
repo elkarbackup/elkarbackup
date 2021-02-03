@@ -28,7 +28,7 @@ class RestoreBackupType extends AbstractType
         $t = $options['translator'];
 
         $builder->add('client'       ,EntityType::class    , array('label'    => $t->trans('Restore host', array(), 'BinovoElkarBackup'),
-                                                          'property' => 'client',
+                                                          'choice_label' => 'client',
                                                           'attr'     => array('class'    => 'form-control'),
                                                           'class'    => 'BinovoElkarBackupBundle:Client',
                                                           'query_builder' => function(EntityRepository $er ) use ( $actualuserid, $granted ) {
