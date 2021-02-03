@@ -415,7 +415,7 @@ class DefaultController extends Controller
         }
         
         $form = $this->createForm(
-            new ClientType(),
+            ClientType::class,
             $client,
             array('translator' => $this->get('translator'))
         );
@@ -452,7 +452,7 @@ class DefaultController extends Controller
         }
         
         $form = $this->createForm(
-            new ClientType(),
+            ClientType::class,
             $client,
             array('translator' => $t)
         );
@@ -632,7 +632,7 @@ class DefaultController extends Controller
             }
         }
         $form = $this->createForm(
-            new JobType(),
+            JobType::class,
             $job,
             array('translator' => $this->get('translator'))
         );
@@ -1040,7 +1040,7 @@ class DefaultController extends Controller
             $job = $repository->find($idJob);
         }
         $form = $this->createForm(
-            new JobType(),
+            JobType::class,
             $job,
             array('translator' => $t)
         );
@@ -1342,7 +1342,7 @@ class DefaultController extends Controller
                 ->find($id);
         }
         $form = $this->createForm(
-            new PolicyType(),
+            PolicyType::class,
             $policy,
             array('translator' => $t)
         );
@@ -1412,7 +1412,7 @@ class DefaultController extends Controller
             $policy = $repository->find($id);
         }
         $form = $this->createForm(
-            new PolicyType(),
+            PolicyType::class,
             $policy,
             array('translator' => $t)
         );
@@ -2643,7 +2643,7 @@ EOF;
             $script = $repository->find($id);
         }
         $form = $this->createForm(
-            new ScriptType(),
+            ScriptType::class,
             $script,
             array(
                 'scriptFileRequired' => ! $script->getScriptFileExists(),
@@ -2679,7 +2679,7 @@ EOF;
             $script = $repository->find($id);
         }
         $form = $this->createForm(
-            new ScriptType(),
+            ScriptType::class,
             $script,
             array(
                 'scriptFileRequired' => ! $script->getScriptFileExists(),
@@ -2761,7 +2761,7 @@ EOF;
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:User');
             $user = $repository->find($id);
         }
-        $form = $this->createForm(new UserType(), $user, array('translator' => $t));
+        $form = $this->createForm(UserType::class, $user, array('translator' => $t));
         $this->debug(
             'View user %username%.',
             array('%username%' => $user->getUsername()),
@@ -2790,7 +2790,7 @@ EOF;
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:User');
             $user = $repository->find($id);
         }
-        $form = $this->createForm(new UserType(), $user, array('translator' => $t));
+        $form = $this->createForm(UserType::class, $user, array('translator' => $t));
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($user->newPassword) {
@@ -3002,7 +3002,7 @@ EOF;
         // Get current user
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $form = $this->createForm(
-            new PreferencesType(),
+            PreferencesType::class,
             $user,
             array('translator' => $t,'validation_groups' => array('preferences'))
         );
