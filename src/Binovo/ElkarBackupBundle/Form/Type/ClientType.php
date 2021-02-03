@@ -100,9 +100,4 @@ class ClientType extends AbstractType
           'translator' => null,
         ));
     }
-
-    public function getName()
-    {
-        return 'Client';
-    }
 }

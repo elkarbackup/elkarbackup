@@ -57,9 +57,4 @@ class BackupLocationType extends AbstractType
           'scriptFileRequired' => false,
         ));
     }
-
-    public function getName()
-    {
-        return 'BackupLocation';
-    }
 }

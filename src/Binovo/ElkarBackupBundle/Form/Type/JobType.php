@@ -45,21 +45,23 @@ class JobType extends AbstractType
                 ->add('notificationsTo'     , ChoiceType::class  , array('label'    => $t->trans('Send notices to', array(), 'BinovoElkarBackup'),
                                                                 'required' => false,
                                                                 'attr'     => array('class'    => 'form-control-no'),
-                                                                'choices'  => array(Job::NOTIFY_TO_ADMIN => $t->trans('Admin', array(), 'BinovoElkarBackup'),
-                                                                                    Job::NOTIFY_TO_OWNER => $t->trans('Client owner', array(), 'BinovoElkarBackup'),
-                                                                                    Job::NOTIFY_TO_EMAIL => $t->trans('Email', array(), 'BinovoElkarBackup')),
+                                                                'choices'  => array($t->trans('Admin', array(), 'BinovoElkarBackup')        => Job::NOTIFY_TO_ADMIN,
+                                                                                    $t->trans('Client owner', array(), 'BinovoElkarBackup') => Job::NOTIFY_TO_OWNER,
+                                                                                    $t->trans('Email', array(), 'BinovoElkarBackup')        => Job::NOTIFY_TO_EMAIL),
+                                                                'choices_as_values' => true,
                                                                 'multiple' => true,
                                                                 'expanded' => true,))
                 ->add('notificationsEmail'  , EmailType::class , array('label'    => ' ',
                                                                'required' => false))
                 ->add('minNotificationLevel', ChoiceType::class  , array('label'       => $t->trans('Notify only', array(), 'BinovoElkarBackup'),
                                                                 'attr'        => array('class'    => 'form-control'),
-                                                                'empty_value' => false,
+                                                                'placeholder' => false,
                                                                 'required'    => false,
-                                                                'choices'      => array(Job::NOTIFICATION_LEVEL_ALL     => $t->trans('All messages'   , array(), 'BinovoElkarBackup'),
-                                                                                        Job::NOTIFICATION_LEVEL_WARNING => $t->trans('Warnings and up', array(), 'BinovoElkarBackup'),
-                                                                                        Job::NOTIFICATION_LEVEL_ERROR   => $t->trans('Errors and up'  , array(), 'BinovoElkarBackup'),
-                                                                                        Job::NOTIFICATION_LEVEL_NONE    => $t->trans('None'           , array(), 'BinovoElkarBackup'))))
+                                                                'choices'      => array($t->trans('All messages'   , array(), 'BinovoElkarBackup') => Job::NOTIFICATION_LEVEL_ALL,
+                                                                                        $t->trans('Warnings and up', array(), 'BinovoElkarBackup') => Job::NOTIFICATION_LEVEL_WARNING,
+                                                                                        $t->trans('Errors and up'  , array(), 'BinovoElkarBackup') => Job::NOTIFICATION_LEVEL_ERROR,
+                                                                                        $t->trans('None'           , array(), 'BinovoElkarBackup') => Job::NOTIFICATION_LEVEL_NONE),
+                                                                'choices_as_values' => true))
                 ->add('preScripts'          , EntityType::class  , array('label' => $t->trans('Pre script', array(), 'BinovoElkarBackup'),
                                                                 'attr'     => array('class' => 'autoheight form-control','data-dojo-type' => 'dojox.form.CheckedMultiSelect'),
                                                                 'required' => false,
@@ -99,10 +101,5 @@ class JobType extends AbstractType
           'data_class' => 'Binovo\ElkarBackupBundle\Entity\Job',
           'translator' => null,
         ));
-    }
-
-    public function getName()
-    {
-        return 'Job';
     }
 }

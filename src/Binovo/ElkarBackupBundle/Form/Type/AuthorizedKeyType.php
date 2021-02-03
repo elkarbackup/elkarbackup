@@ -35,9 +35,4 @@ class AuthorizedKeyType extends AbstractType
           'translator' => $this->translator,
         ));
     }
-
-    public function getName()
-    {
-        return 'AuthorizedKey';
-    }
 }

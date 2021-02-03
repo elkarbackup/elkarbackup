@@ -45,9 +45,4 @@ class ScriptType extends AbstractType
           'scriptFileRequired' => false,
         ));
     }
-
-    public function getName()
-    {
-        return 'Script';
-    }
 }

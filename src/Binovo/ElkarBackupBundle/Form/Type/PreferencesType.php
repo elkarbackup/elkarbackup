@@ -41,9 +41,4 @@ class PreferencesType extends AbstractType
           'translator' => null,
         ));
     }
-
-    public function getName()
-    {
-        return 'Preferences';
-    }
 }

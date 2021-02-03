@@ -56,9 +56,4 @@ class UserType extends AbstractType
           'translator' => null,
         ));
     }
-
-    public function getName()
-    {
-        return 'User';
-    }
 }

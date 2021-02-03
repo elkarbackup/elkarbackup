@@ -67,9 +67,4 @@ class PolicyType extends AbstractType
           'translator' => null,
         ));
     }
-
-    public function getName()
-    {
-        return 'Policy';
-    }
 }

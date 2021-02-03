@@ -34,9 +34,4 @@ class JobShortType extends AbstractType
           'data_class' => 'Binovo\ElkarBackupBundle\Entity\Job',
         ));
     }
-
-    public function getName()
-    {
-        return 'JobShort';
-    }
 }

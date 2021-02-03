@@ -1462,7 +1462,7 @@ class DefaultController extends Controller
         ;
         
         $formBuilder = $this->createFormBuilder(array('jobs' => $jobs));
-        $formBuilder->add('jobs', CollectionType::class, array('type' => new JobForSortType()));
+        $formBuilder->add('jobs', CollectionType::class, array('entry_type' => JobForSortType::class));
         $form = $formBuilder->getForm();
         if ($request->isMethod('POST')) {
             $i = 1;
@@ -1836,7 +1836,7 @@ EOF;
         $t = $this->get('translator');
         $params = array(
             'backup_script' => array(
-                'type' => EntityType::class,
+                'entry_type' => EntityType::class,
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Backup Script', array(), 'BinovoElkarBackup'),
@@ -1849,8 +1849,8 @@ EOF;
         foreach ($params as $paramName => $formField) {
             $backupScriptFormBuilder->add(
                 $paramName,
-                $formField['type'],
-                array_diff_key($formField, array('type' => true))
+                $formField['entry_type'],
+                array_diff_key($formField, array('entry_type' => true))
             );
         }
         $backupScriptForm = $backupScriptFormBuilder->getForm();
@@ -1864,11 +1864,11 @@ EOF;
             'publicKeys',
             CollectionType::class,
             array(
-                'type' => new AuthorizedKeyType($t),
+                'entry_type' => new AuthorizedKeyType($t),
                 'allow_add' => true,
                 'allow_delete' => true,
                 'attr' => array('class' => 'form-control'),
-                'options' => array('required' => false,'attr' => array('class' => 'span10'))
+                'entry_options' => array('required' => false,'attr' => array('class' => 'span10'))
             )
         );
         $authorizedKeysForm = $authorizedKeysFormBuilder->getForm();
@@ -2123,37 +2123,37 @@ EOF;
         $t = $this->get('translator');
         $params = array(
             'database_host' => array(
-                'type' => TextType::class,
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL host', array(), 'BinovoElkarBackup')
             ),
             'database_port' => array(
-                'type' => TextType::class,
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL port', array(), 'BinovoElkarBackup')
             ),
             'database_name' => array(
-                'type' => TextType::class,
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL DB name', array(), 'BinovoElkarBackup')
             ),
             'database_user' => array(
-                'type' => TextType::class,
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL user', array(), 'BinovoElkarBackup')
             ),
             'database_password' => array(
-                'type' => PasswordType::class,
+                'entry_type' => PasswordType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL password', array(), 'BinovoElkarBackup')
             ),
             'mailer_transport' => array(
-                'type' => ChoiceType::class,
+                'entry_type' => ChoiceType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'choices' => array(
@@ -2165,31 +2165,31 @@ EOF;
                 'label' => $t->trans('Mailer transport', array(), 'BinovoElkarBackup')
             ),
             'mailer_host' => array(
-                'type' => TextType::class,
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer host', array(), 'BinovoElkarBackup')
             ),
             'mailer_user' => array(
-                'type' => TextType::class,
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer user', array(), 'BinovoElkarBackup')
             ),
             'mailer_password' => array(
-                'type' => PasswordType::class,
+                'entry_type' => PasswordType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer password', array(), 'BinovoElkarBackup')
             ),
             'mailer_from' => array(
-                'type' => TextType::class,
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer from', array(), 'BinovoElkarBackup')
             ),
             'max_log_age' => array(
-                'type' => ChoiceType::class,
+                'entry_type' => ChoiceType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'choices' => array(
@@ -2209,36 +2209,36 @@ EOF;
                 'label' => $t->trans('Remove logs older than', array(), 'BinovoElkarBackup')
             ),
             'warning_load_level' => array(
-                'type' => 'percent',
+                'entry_type' => 'percent',
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Quota warning level', array(), 'BinovoElkarBackup')
             ),
             'pagination_lines_per_page' => array(
-                'type' => IntegerType::class,
+                'entry_type' => IntegerType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Records per page', array(), 'BinovoElkarBackup')
             ),
             'url_prefix' => array(
-                'type' => TextType::class,
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Url prefix', array(), 'BinovoElkarBackup')
             ),
             'disable_background' => array(
-                'type' => CheckboxType::class,
+                'entry_type' => CheckboxType::class,
                 'required' => false,
                 'label' => $t->trans('Disable background', array(), 'BinovoElkarBackup')
             ),
             'max_parallel_jobs' => array(
-                'type' => IntegerType::class,
+                'entry_type' => IntegerType::class,
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup')
             ),
             'post_on_pre_fail' => array(
-                'type' => CheckboxType::class,
+                'entry_type' => CheckboxType::class,
                 'required' => false,
                 'label' => $t->trans('Do post script on pre script failure', array(), 'BinovoElkarBackup')
             ),
@@ -2246,7 +2246,7 @@ EOF;
         );
         $defaultData = array();
         foreach ($params as $paramName => $formField) {
-            if ('password' != $formField['type']) {
+            if ('password' != $formField['entry_type']) {
                 $defaultData[$paramName] = $this->container->getParameter($paramName);
             }
         }
@@ -2254,8 +2254,8 @@ EOF;
         foreach ($params as $paramName => $formField) {
             $formBuilder->add(
                 $paramName,
-                $formField['type'],
-                array_diff_key($formField, array('type' => true))
+                $formField['entry_type'],
+                array_diff_key($formField, array('entry_type' => true))
             );
         }
         $result = null;
@@ -2266,7 +2266,7 @@ EOF;
             $allOk = true;
             foreach ($data as $paramName => $paramValue) {
                 $ok = true;
-                if ('password' == $params[$paramName]['type']) {
+                if ('password' == $params[$paramName]['entry_type']) {
                     if (! empty($paramValue)) {
                         $ok = $this->setParameter(
                             $paramName,
@@ -2274,7 +2274,7 @@ EOF;
                             'manageParameters'
                         );
                     }
-                } elseif ('checkbox' == $params[$paramName]['type']) {
+                } elseif ('checkbox' == $params[$paramName]['entry_type']) {
                     // Workaround to store value in boolean format
                     if (! empty($paramValue)) {
                         $ok = $this->setParameter(
