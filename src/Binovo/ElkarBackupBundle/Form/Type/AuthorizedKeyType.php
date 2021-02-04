@@ -13,14 +13,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AuthorizedKeyType extends AbstractType
 {
-    private $translator;
 
-    public function __construct($translator = null)
-    {
-        $this->translator = $translator;
-    }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $this->translator = $options['translator'];
         $t = $options['translator'];
         $builder->add('publicKey', TextType::class, array('required' => true , 'label' => '',
                                                  'attr' => array('placeholder' => $t->trans('Key', array(), 'BinovoElkarBackup'))))
@@ -32,7 +28,7 @@ class AuthorizedKeyType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-          'translator' => $this->translator,
+          'translator' => null,
         ));
     }
 }

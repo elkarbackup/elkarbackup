@@ -13,15 +13,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RestoreBackupType extends AbstractType
 {
-
-  public function __construct($actualuserid,$granted)
-      {
-          $this->actualuserid = $actualuserid;
-          $this->granted = $granted;
-      }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $this->actualuserid = $options['actualuserid'];
+        $this->granted = $options['granted'];
         $actualuserid = $this->actualuserid;
         $granted = $this->granted;
 
@@ -64,6 +59,8 @@ class RestoreBackupType extends AbstractType
 
          $resolver->setDefaults(array(
             'translator' => null,
+            'actualuserid' => null,
+            'granted' => null
         ));
 
     }

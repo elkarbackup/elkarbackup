@@ -17,19 +17,11 @@ use Binovo\ElkarTahoeBundle\Utils\TahoeBackup;
 
 class BackupLocationType extends AbstractType
 {
-    private $fs;
-    private $tahoeInstalled;
-    
-    
-    public function __construct($fs, $tahoeInstalled)
-    {
-        $this->tahoeInstalled = $tahoeInstalled;
-        $this->fs = $fs;
-    }
-    
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $t = $options['translator'];
+        $this->tahoeInstalled = $options['tahoeInstalled'];
+        $this->fs = $options['fs'];
 
         $builder->add('name'        , TextType::class    , array('label' => $t->trans('Name', array(), 'BinovoElkarBackup'),
                                                         'required' => true,
@@ -55,6 +47,8 @@ class BackupLocationType extends AbstractType
           'data_class'         => 'Binovo\ElkarBackupBundle\Entity\BackupLocation',
           'translator'         => null,
           'scriptFileRequired' => false,
+          'tahoeInstalled'     => null,
+          'fs'                 => null
         ));
     }
 }

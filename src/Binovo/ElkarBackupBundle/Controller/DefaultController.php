@@ -30,10 +30,16 @@ use Binovo\ElkarBackupBundle\Lib\Globals;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\PercentType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -322,7 +328,7 @@ class DefaultController extends Controller
      */
     public function loginAction(Request $request)
     {
-        $request = $this->getRequest();
+        $request = $this->container->get('request_stack')->getCurrentRequest();
         $session = $request->getSession();
         $t = $this->get('translator');
         
@@ -679,10 +685,9 @@ class DefaultController extends Controller
         $granted = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
 
         $form = $this->createForm(
-            new RestoreBackupType($actualuserid,$granted),
+            RestoreBackupType::class,
             array('path' => $suggestedPath,'source' => $path),
-            array('translator' => $this->get('translator'))
-            );
+            array('translator' => $this->get('translator'), 'actualuserid' => $actualuserid, 'granted' => $granted));
         return $this->render('BinovoElkarBackupBundle:Default:restorebackup.html.twig',array(
             'form' => $form->createView(),
             'idClient' => $idClient,
@@ -705,11 +710,11 @@ class DefaultController extends Controller
        $suggestedPath = mb_substr($path, mb_strpos($path, '/'));
        $suggestedPath = mb_substr($suggestedPath, 0, mb_strrpos($suggestedPath, '/'));
       
-       $form = $this->createForm(new RestoreBackupType($actualuserid,$granted),
-       array('path' => $suggestedPath,'source' => $path),
-       array('translator' => $this->get('translator'))
-       );
-
+       
+        $form = $this->createForm(
+            RestoreBackupType::class,
+            array('path' => $suggestedPath,'source' => $path),
+            array('translator' => $this->get('translator'), 'actualuserid' => $actualuserid, 'granted' => $granted));
        $form->handleRequest($request);
 
        if (!$form->isSubmitted() || !$form->isValid()) {
@@ -789,7 +794,7 @@ class DefaultController extends Controller
                 $job = $repository->findOneById($idJob);
                 if ($token == $job->getToken()) {
                     // Valid token, but let's require HTTPS
-                    if ($this->getRequest()->isSecure()) {
+                    if ($this->container->get('request_stack')->getCurrentRequest()->isSecure()) {
                         $trustable = true;
                     } else {
                         $response = new JsonResponse(array(
@@ -1841,7 +1846,7 @@ EOF;
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Backup Script', array(), 'BinovoElkarBackup'),
                 'class'    => 'BinovoElkarBackupBundle:BackupLocation',
-                'property' => 'name'
+                'choice_label' => 'name'
             )
         );
         $defaultData = array();
@@ -1864,11 +1869,11 @@ EOF;
             'publicKeys',
             CollectionType::class,
             array(
-                'entry_type' => new AuthorizedKeyType($t),
+                'entry_type' => AuthorizedKeyType::class,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'attr' => array('class' => 'form-control'),
-                'entry_options' => array('required' => false,'attr' => array('class' => 'span10'))
+                'entry_options' => array('required' => false,'attr' => array('class' => 'span10'), 'translator' => $t)
             )
         );
         $authorizedKeysForm = $authorizedKeysFormBuilder->getForm();
@@ -1942,9 +1947,9 @@ EOF;
         }
         
         $form = $this->createForm(
-            new BackupLocationType($this->isAutoFsAvailable(), $tahoeInstalled),
+            BackupLocationType::class,
             $backupLocation,
-            array('translator' => $t)
+            array( 'fs' => $this->isAutoFsAvailable(), 'tahoeInstalled' => $tahoeInstalled, 'translator' => $t)
         );
         
         $this->debug(
@@ -1984,9 +1989,9 @@ EOF;
         }
         
         $form = $this->createForm(
-            new BackupLocationType($this->isAutoFsAvailable(), $tahoeInstalled),
+            BackupLocationType::class,
             $backupLocation,
-            array('translator' => $t)
+            array( 'fs' => $this->isAutoFsAvailable(), 'tahoeInstalled' => $tahoeInstalled, 'translator' => $t)
         );
         $form->handleRequest($request);
         $result = null;
@@ -2162,6 +2167,7 @@ EOF;
                     'sendmail' => 'sendmail',
                     'smtp' => 'smtp'
                 ),
+                'choices_as_values' => true,
                 'label' => $t->trans('Mailer transport', array(), 'BinovoElkarBackup')
             ),
             'mailer_host' => array(
@@ -2193,23 +2199,24 @@ EOF;
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'choices' => array(
-                    'P1D' => $t->trans('One day', array(), 'BinovoElkarBackup'),
-                    'P1W' => $t->trans('One week', array(), 'BinovoElkarBackup'),
-                    'P2W' => $t->trans('Two weeks', array(), 'BinovoElkarBackup'),
-                    'P3W' => $t->trans('Three weeks', array(), 'BinovoElkarBackup'),
-                    'P1M' => $t->trans('A month', array(), 'BinovoElkarBackup'),
-                    'P6M' => $t->trans('Six months', array(), 'BinovoElkarBackup'),
-                    'P1Y' => $t->trans('A year', array(), 'BinovoElkarBackup'),
-                    'P2Y' => $t->trans('Two years', array(), 'BinovoElkarBackup'),
-                    'P3Y' => $t->trans('Three years', array(), 'BinovoElkarBackup'),
-                    'P4Y' => $t->trans('Four years', array(), 'BinovoElkarBackup'),
-                    'P5Y' => $t->trans('Five years', array(), 'BinovoElkarBackup'),
-                    '' => $t->trans('Never', array(), 'BinovoElkarBackup')
+                    $t->trans('One day', array(), 'BinovoElkarBackup') => 'P1D',
+                    $t->trans('One week', array(), 'BinovoElkarBackup') => 'P1W',
+                    $t->trans('Two weeks', array(), 'BinovoElkarBackup') => 'P2W',
+                    $t->trans('Three weeks', array(), 'BinovoElkarBackup') => 'P3W',
+                    $t->trans('A month', array(), 'BinovoElkarBackup') => 'P1M',
+                    $t->trans('Six months', array(), 'BinovoElkarBackup') => 'P6M',
+                    $t->trans('A year', array(), 'BinovoElkarBackup') => 'P1Y',
+                    $t->trans('Two years', array(), 'BinovoElkarBackup') => 'P2Y',
+                    $t->trans('Three years', array(), 'BinovoElkarBackup') => 'P3Y',
+                    $t->trans('Four years', array(), 'BinovoElkarBackup') => 'P4Y',
+                    $t->trans('Five years', array(), 'BinovoElkarBackup') => 'P5Y',
+                    $t->trans('Never', array(), 'BinovoElkarBackup') => ''
                 ),
+                'choices_as_values' => true,
                 'label' => $t->trans('Remove logs older than', array(), 'BinovoElkarBackup')
             ),
             'warning_load_level' => array(
-                'entry_type' => 'percent',
+                'entry_type' => PercentType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Quota warning level', array(), 'BinovoElkarBackup')
