@@ -67,4 +67,9 @@ class PolicyType extends AbstractType
           'translator' => null,
         ));
     }
+
+    public function getBlockPrefix()
+    {
+        return 'Policy';
+    }
 }
