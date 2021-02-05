@@ -28,7 +28,7 @@ class RunJobCommand extends LoggingCommand
             
             $jobId = $input->getArgument('job');
             if (! ctype_digit($jobId)) {
-                $this->err('Input argument not valid');
+                $this->error('Input argument not valid');
                 return self::ERR_CODE_INPUT_ARG;
             }
             $job = $container
@@ -36,7 +36,7 @@ class RunJobCommand extends LoggingCommand
             ->getRepository('BinovoElkarBackupBundle:Job')
             ->find($jobId);
             if (null == $job) {
-                $this->err('Job not found');
+                $this->error('Job not found');
                 return self::ERR_CODE_ENTITY_NOT_FOUND;
             }
             
@@ -59,7 +59,7 @@ class RunJobCommand extends LoggingCommand
             return $result;
             
         } catch (Exception $e) {
-            $this->err('Unknown exception\n'.$e->getMessage());
+            $this->error('Unknown exception\n'.$e->getMessage());
             return self::ERR_CODE_UNKNOWN;
         }
 
@@ -123,12 +123,12 @@ class RunJobCommand extends LoggingCommand
         
         $fd = @fopen($confFileName, 'w');
         if (false === $fd) {
-            $this->err('Error opening config file %filename%. Aborting backup.', array('%filename%' => $confFileName), $context);
+            $this->error('Error opening config file %filename%. Aborting backup.', array('%filename%' => $confFileName), $context);
             return self::ERR_CODE_OPEN_FILE;
         }
         $bytesWriten = fwrite($fd, $content);
         if (false === $bytesWriten) {
-            $this->err('Error writing to config file %filename%. Aborting backup.', array('%filename%' => $confFileName), $context);
+            $this->error('Error writing to config file %filename%. Aborting backup.', array('%filename%' => $confFileName), $context);
             return self::ERR_CODE_WRITE_FILE;
         }
         $ok = fclose($fd);
@@ -138,7 +138,7 @@ class RunJobCommand extends LoggingCommand
         if (!is_dir($job->getSnapshotRoot())) {
             $ok = @mkdir($job->getSnapshotRoot(), 0777, true);
             if (false === $ok) {
-                $this->err('Error creating snapshot root %filename%. Aborting backup.', array('%filename%' => $job->getSnapshotRoot()), $context);
+                $this->error('Error creating snapshot root %filename%. Aborting backup.', array('%filename%' => $job->getSnapshotRoot()), $context);
                 return self::ERR_CODE_CREATE_FILE;
             }
         }
@@ -183,7 +183,7 @@ class RunJobCommand extends LoggingCommand
                         $context['logfile'] = basename($joblogfile);
                     }
                     
-                    $this->err(
+                    $this->error(
                         'Command failed: %output%',
                         array('%output%'  => $commandOutputString),
                         $context
