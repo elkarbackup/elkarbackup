@@ -1,18 +1,22 @@
-# Symfony2 default gitignore #
+# Symfony3 default gitignore #
 ##############################
-/app/bootstrap.php.cache
-/app/cache/*
-!app/cache/.gitkeep
-#/app/config/parameters.yml
-/app/logs/*
-!app/logs/.gitkeep
-/app/phpunit.xml
-/bin/
-/composer.phar
-/vendor/
-/web/bundles/
+/.web-server-pid
+/app/config/parameters.yml
+/build/
+/phpunit.xml
+/var/*
+!/var/cache
+/var/cache/*
+!var/cache/.gitkeep
+!/var/logs
+/var/logs/*
+!var/logs/.gitkeep
+!/var/sessions
+/var/sessions/*
+!var/sessions/.gitkeep
+!var/SymfonyRequirements.php
 
-# Symfony2 personal gitignore #
+# Symfony3 personal gitignore #
 ###############################
 /web/js/
 !/web/js/dojo-release
@@ -22,7 +26,6 @@
 !/web/js/bootstrap/.gitkeep
 !/web/js/moment/moment.min.js
 /web/fonts/glyphicons-*
-/app/sessions/*
 
 # Makepackage #
 ###############
