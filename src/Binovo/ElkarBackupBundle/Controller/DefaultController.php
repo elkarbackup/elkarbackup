@@ -164,10 +164,7 @@ class DefaultController extends Controller
     protected function clearCache()
     {
         $realCacheDir = $this->container->getParameter('kernel.cache_dir');
-        $oldCacheDir = $realCacheDir . '_old';
         $this->container->get('cache_clearer')->clear($realCacheDir);
-        rename($realCacheDir, $oldCacheDir);
-        $this->container->get('filesystem')->remove($oldCacheDir);
     }
 
     /**

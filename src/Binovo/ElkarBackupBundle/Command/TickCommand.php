@@ -735,8 +735,8 @@ EOF;
             //Return unknown error code because this shouldn't happen
             exit(self::ERR_CODE_UNKNOWN);
         } elseif ($pid == 0) {
-            $rootDir = $this->container->get('kernel')->getRootDir();
-            $consoleCmd = $rootDir.'/console';
+            $rootDir = $this->container->get('kernel')->getProjectDir();
+            $consoleCmd = $rootDir.'/bin/console';
             
             if ('run_post_job_scripts' == $command) {
                 pcntl_exec($consoleCmd, array('elkarbackup:'.$command, $id, $status));
