@@ -16,7 +16,7 @@ framework:
     default_locale:  %locale%
     #trust_proxy_headers: false # Whether or not the Request object should trust proxy headers (X_FORWARDED_FOR/HTTP_CLIENT_IP)
     session:
-        save_path: %kernel.root_dir%/sessions
+        save_path: "%kernel.root_dir%/../var/sessions/%kernel.environment%"
 
 # Twig Configuration
 twig:
