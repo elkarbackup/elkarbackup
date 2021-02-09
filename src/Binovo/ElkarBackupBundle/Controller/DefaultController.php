@@ -2250,7 +2250,7 @@ EOF;
         );
         $defaultData = array();
         foreach ($params as $paramName => $formField) {
-            if ('password' != $formField['entry_type']) {
+            if (PasswordType::class != $formField['entry_type']) {
                 $defaultData[$paramName] = $this->container->getParameter($paramName);
             }
         }
@@ -2270,7 +2270,7 @@ EOF;
             $allOk = true;
             foreach ($data as $paramName => $paramValue) {
                 $ok = true;
-                if ('password' == $params[$paramName]['entry_type']) {
+                if (PasswordType::class == $params[$paramName]['entry_type']) {
                     if (! empty($paramValue)) {
                         $ok = $this->setParameter(
                             $paramName,
@@ -2278,7 +2278,7 @@ EOF;
                             'manageParameters'
                         );
                     }
-                } elseif ('checkbox' == $params[$paramName]['entry_type']) {
+                } elseif (CheckboxType::class == $params[$paramName]['entry_type']) {
                     // Workaround to store value in boolean format
                     if (! empty($paramValue)) {
                         $ok = $this->setParameter(
