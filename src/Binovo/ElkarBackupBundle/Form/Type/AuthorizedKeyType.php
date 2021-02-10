@@ -16,7 +16,6 @@ class AuthorizedKeyType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->translator = $options['translator'];
         $t = $options['translator'];
         $builder->add('publicKey', TextType::class, array('required' => true , 'label' => '',
                                                  'attr' => array('placeholder' => $t->trans('Key', array(), 'BinovoElkarBackup'))))

@@ -15,10 +15,8 @@ class RestoreBackupType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->actualuserid = $options['actualuserid'];
-        $this->granted = $options['granted'];
-        $actualuserid = $this->actualuserid;
-        $granted = $this->granted;
+        $actualuserid = $options['actualuserid'];
+        $granted = $options['granted'];
 
         $t = $options['translator'];
 
