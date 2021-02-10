@@ -1,3 +1,0 @@
-jms_di_extra:
-    locations:
-        directories: ["%kernel.root_dir%/Traits"]
