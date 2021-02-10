@@ -32,7 +32,7 @@ class GenerateKeyPairCommand extends LoggingCommand
         $status        = 0;
         exec($command, $commandOutput, $status);
         if (0 != $status) {
-            $this->error('Command %command% failed. Diagnostic information follows: %output%',
+            $this->err('Command %command% failed. Diagnostic information follows: %output%',
                        array('%command%' => $command,
                              '%output%'  => "\n" . implode("\n", $commandOutput)));
 
