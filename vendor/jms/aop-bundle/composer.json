@@ -1,0 +1,30 @@
+{
+    "name": "jms/aop-bundle",
+    "description": "Adds AOP capabilities to Symfony2",
+    "keywords": ["annotations","aop"],
+    "type": "symfony-bundle",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Johannes M. Schmitt",
+            "email": "schmittjoh@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.9",
+        "symfony/framework-bundle": "^2.3 || ^3.0 || ^4.0",
+        "jms/cg": "^1.1"
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^2.7 || ^4.0",
+        "phpunit/phpunit": "^4.8.36 | ^5.0"
+    },
+    "autoload": {
+        "psr-4": { "JMS\\AopBundle\\": "" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1.x-dev"
+        }
+    }
+}

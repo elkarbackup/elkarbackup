@@ -1,0 +1,47 @@
+crud_controller_add:
+    path: /add
+    defaults:
+        _controller: TestBundle:Crud:add
+
+crud_controller_edit:
+    path: /edit
+    defaults:
+        _controller: TestBundle:Crud:edit
+
+post_controller_add:
+    path: /post/add
+    defaults:
+        _controller: TestBundle:Post:newPost
+
+post_controller_edit:
+    path: /post/edit/{id}
+    defaults:
+        _controller: TestBundle:Post:editPost
+
+post_controller_list:
+    path: /post/list
+    defaults:
+        _controller: TestBundle:Post:listPost
+
+post_controller_foo:
+    path: /post/foo
+    defaults:
+        _controller: TestBundle:Post:fooPost
+
+form_login_bundle:
+    resource: "@FormLoginBundle/Resources/config/routing.yml"
+
+foo_foo:
+    path: /foo/foo
+    defaults:
+        _controller: TestBundle:Foo:foo
+
+foo_bar:
+    path: /foo/bar
+    defaults:
+        _controller: TestBundle:Foo:bar
+
+foo_exception:
+    path: /foo/exception
+    defaults:
+        _controller: TestBundle:Foo:exception

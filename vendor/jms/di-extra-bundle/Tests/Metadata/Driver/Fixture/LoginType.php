@@ -1,0 +1,48 @@
+<?php
+
+/*
+ * Copyright 2011 Johannes M. Schmitt <schmittjoh@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+namespace JMS\DiExtraBundle\Tests\Metadata\Driver\Fixture;
+
+use JMS\DiExtraBundle as DI;
+use Security\SecurityContext;
+use Symfony\Component\Form\AbstractType; // Use this alias in order to not have this class picked up by the finder
+
+/**
+ * @DI\Annotation\FormType
+ *
+ * @author Johannes M. Schmitt <schmittjoh@gmail.com>
+ */
+class LoginType extends AbstractType
+{
+    private $securityContext;
+
+    public function __construct(SecurityContext $context)
+    {
+        $this->securityContext = $context;
+    }
+
+    public function getName()
+    {
+        return $this->getBlockPrefix();
+    }
+
+    public function getBlockPrefix()
+    {
+        return 'login';
+    }
+}

@@ -1,0 +1,42 @@
+language: php
+
+sudo: false
+
+cache:
+  directories:
+    - "$HOME/.composer/cache/files"
+
+env:
+    global:
+        SYMFONY_DEPRECATIONS_HELPER: weak
+
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+
+matrix:
+  include:
+    - php: 5.3
+      env: COMPOSER_FLAGS="--prefer-lowest"
+    - php: 5.6
+      env: SYMFONY_VERSION="2.7.*"
+    - php: 5.6
+      env: SYMFONY_VERSION="2.8.*"
+    - php: 5.6
+      env: SYMFONY_VERSION="3.0.*"
+  allow_failures:
+    # Must be removed once JMSDiExtraBundle is compatible with symfony 3
+    - env: SYMFONY_VERSION="3.0.*"
+
+before_install:
+    - composer self-update
+    - if [ "$SYMFONY_VERSION" != "" ]; then composer require --no-update symfony/symfony:${SYMFONY_VERSION}; fi
+
+install: composer update $COMPOSER_FLAGS
+
+script: phpunit --coverage-clover clover
+
+after_success: curl -sL https://bit.ly/artifact-uploader | php

@@ -1,0 +1,13 @@
+TestBundle:
+    type: annotation
+    resource: '@JMSDiExtraTestBundle/Controller/'
+
+hello:
+    path: /hello
+    defaults:
+        _controller: controller.extended_hello:helloAction
+
+invoke:
+    path: /invoke
+    defaults:
+        _controller: controller.invokable

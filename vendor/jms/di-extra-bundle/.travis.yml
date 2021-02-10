@@ -1,0 +1,56 @@
+language: php
+dist: trusty
+
+php:
+  - 5.5
+  - 5.6
+  - 7.0
+  - 7.1
+  - 7.2
+
+branches:
+    only:
+        - master
+        - /^\d+\.\d+$/
+
+env: SYMFONY_DEPRECATIONS_HELPER=weak_vendors
+
+sudo: false
+
+cache:
+    directories:
+        - .phpunit
+        - $HOME/.composer/cache
+
+matrix:
+    fast_finish: true
+    include:
+        - php: 5.3
+          dist: precise
+        - php: 5.3
+          dist: precise
+          env: SYMFONY_DEPRECATIONS_HELPER COMPOSER_FLAGS="--prefer-lowest"
+        - php: 5.4
+        - php: 7.0
+          env: SYMFONY_DEPRECATIONS_HELPER=weak_vendors SYMFONY_VERSION=2.7.*
+        - php: 7.0
+          env: SYMFONY_DEPRECATIONS_HELPER=weak_vendors SYMFONY_VERSION=2.8.* COVERAGE=true
+        - php: 7.0
+          env: SYMFONY_DEPRECATIONS_HELPER=weak_vendors SYMFONY_VERSION=3.2.*
+        - php: 7.1
+          env: ~
+    allow_failures:
+        - php: 7.1
+          env: ~
+
+before_script:
+    - if [ "$COVERAGE" != "true" ]; then phpenv config-rm xdebug.ini; fi
+    - composer self-update
+    - if [ "$SYMFONY_VERSION" != "" ]; then composer require --dev --no-update symfony/symfony=$SYMFONY_VERSION; fi
+    - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+    - composer update $COMPOSER_FLAGS --prefer-dist --no-interaction
+
+script: if [ "$COVERAGE" == "true" ]; then vendor/bin/phpunit --coverage-clover=clover; else vendor/bin/phpunit; fi
+
+after_success:
+    - if [ "$COVERAGE" == "true" ]; then curl -sL https://bit.ly/artifact-uploader | php; fi
