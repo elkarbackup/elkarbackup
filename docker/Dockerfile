@@ -2,7 +2,7 @@
 ## Bootstrap & Build elkarbackup
 ##
 
-FROM php:7.1-cli-alpine
+FROM php:7.3-cli-alpine
 
 RUN apk add --no-cache \
       git \
@@ -86,7 +86,7 @@ RUN set -ex; \
 ##
 
 
-FROM php:7.1-apache
+FROM php:7.3-apache
 RUN apt-get update && apt-get install -y \
       default-mysql-client \
       acl \
