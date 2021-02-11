@@ -41,10 +41,10 @@ done
 cd "${EB_DIR}"
 
 # Create/update database
-php app/console doctrine:database:create
-php app/console doctrine:migrations:migrate --no-interaction
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate --no-interaction
 # Create admin user
-php app/console elkarbackup:create_admin
+php bin/console elkarbackup:create_admin
 
 # Set permissions
 setfacl -R -m u:www-data:rwX app/cache app/sessions app/logs
@@ -55,8 +55,8 @@ if [ ! -z "$SYMFONY__EB__PUBLIC__KEY" ] && [ ! -f "$SYMFONY__EB__PUBLIC__KEY" ];
 fi
 
 # Clear cache and sessions, build assetics...
-php app/console cache:clear
-php app/console assetic:dump
+php bin/console cache:clear
+php bin/console assetic:dump
 
 # Empty sessions
 rm -rf app/sessions/*
@@ -65,7 +65,7 @@ rm -rf app/cache/*
 apache2-foreground &
 
 ### Force tick execution and set permissions (again)
-php app/console elkarbackup:tick --env=prod > /var/log/output.log
+php bin/console elkarbackup:tick --env=prod > /var/log/output.log
 setfacl -R -m u:www-data:rwX app/cache app/sessions app/logs
 setfacl -dR -m u:www-data:rwX app/cache app/sessions app/logs
 
@@ -73,7 +73,7 @@ setfacl -dR -m u:www-data:rwX app/cache app/sessions app/logs
 if [ "${EB_CRON}" == "enabled" ]; then
   echo -e "\n\nEB_CRON is enabled. Running tick command every minute..."
   while true; do
-    php app/console elkarbackup:tick --env=prod &>/var/log/output.log &
+    php bin/console elkarbackup:tick --env=prod &>/var/log/output.log &
     sleep 60
   done
 fi
