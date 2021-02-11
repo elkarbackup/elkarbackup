@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 # https://stackoverflow.com/questions/40466819/symfony-parameters-in-environment-variable-not-found
 $_SERVER = array_merge($_SERVER, $_ENV);
 
-$loader = require_once __DIR__.'/../app/bootstrap.php.cache';
+$loader = require_once __DIR__.'/../var/bootstrap.php.cache';
 
 // Enable APC for autoloading to improve performance.
 // You should change the ApcClassLoader first argument to a unique prefix
