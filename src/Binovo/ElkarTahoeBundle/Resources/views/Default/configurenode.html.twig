@@ -16,7 +16,7 @@
 
 {% block body %}
 
-<form class="form-horizontal" action="{{ path('tahoeConfig') }}" method="post" {{ form_enctype(form) }}>
+<form class="form-horizontal" action="{{ path('tahoeConfig') }}" method="post" {{ form_start(form) }}>
     {% if newWritecap is not empty %}
         <div class="row text-center">
             <h4>

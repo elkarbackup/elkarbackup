@@ -6,27 +6,22 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 
 class RestoreBackupType extends AbstractType
 {
-
-  public function __construct($actualuserid,$granted)
-      {
-          $this->actualuserid = $actualuserid;
-          $this->granted = $granted;
-      }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $actualuserid = $this->actualuserid;
-        $granted = $this->granted;
+        $actualuserid = $options['actualuserid'];
+        $granted = $options['granted'];
 
         $t = $options['translator'];
 
-        $builder->add('client'       ,'entity'    , array('label'    => $t->trans('Restore host', array(), 'BinovoElkarBackup'),
-                                                          'property' => 'client',
+        $builder->add('client'       ,EntityType::class    , array('label'    => $t->trans('Restore host', array(), 'BinovoElkarBackup'),
+                                                          'choice_label' => 'client',
                                                           'attr'     => array('class'    => 'form-control'),
                                                           'class'    => 'BinovoElkarBackupBundle:Client',
                                                           'query_builder' => function(EntityRepository $er ) use ( $actualuserid, $granted ) {
@@ -35,11 +30,10 @@ class RestoreBackupType extends AbstractType
                                                           'choice_label' => 'name',
                                                           'required' => true))
 
-                ->add('source'	      ,'text'      , array('label'    => $t->trans('Source path', array(), 'BinovoElkarBackup'),
-                                                            'attr'     => array('class'     => 'form-control'),
-                                                            'read_only' =>'true',
+                ->add('source'	      ,TextType::class      , array('label'    => $t->trans('Source path', array(), 'BinovoElkarBackup'),
+                                                            'attr'     => array('class'     => 'form-control', 'read_only' =>'true'),
                                                             'required' => false))
-                ->add('path'          ,'text'      , array('label'    => $t->trans('Remote path', array(), 'BinovoElkarBackup'),
+                ->add('path'          ,TextType::class      , array('label'    => $t->trans('Remote path', array(), 'BinovoElkarBackup'),
                                                             'attr'     => array('class'     => 'form-control'),
                                                             'required' => true));
 
@@ -63,6 +57,8 @@ class RestoreBackupType extends AbstractType
 
          $resolver->setDefaults(array(
             'translator' => null,
+            'actualuserid' => null,
+            'granted' => null
         ));
 
     }

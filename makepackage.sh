@@ -21,9 +21,9 @@ then
         mkdir -p .debian/usr/share/elkarbackup
         composer install
     fi
-    php app/console assetic:dump --env=prod
-    php app/console cache:clear --env=prod --no-debug
-    php app/console cache:clear --env=dev  --no-debug
+    php bin/console assetic:dump --env=prod
+    php bin/console cache:clear --env=prod --no-debug
+    php bin/console cache:clear --env=dev  --no-debug
     mkdir -p .debian/usr/share/elkarbackup
     cp -a * .debian/usr/share/elkarbackup
 fi
@@ -32,7 +32,7 @@ find .debian -type d -name ".svn" | xargs rm -rf
 find .debian -type f -name "*.deb"| xargs rm -rf
 find .debian/usr/share/elkarbackup/web/js/dojo-release-1.8.1 -name "*.uncompressed.js"|xargs rm -f
 find .debian -name ".git*" -o -name "*~" -o -name "*#*"| xargs rm -rf
-rm -rf .debian/usr/share/elkarbackup/app/{cache,logs,sessions} .debian/usr/share/elkarbackup/backups .debian/usr/share/elkarbackup/debian
+rm -rf .debian/usr/share/elkarbackup/var/{cache,logs,sessions} .debian/usr/share/elkarbackup/backups .debian/usr/share/elkarbackup/debian
 # fix or delete some files so that lintian doesn't complain (so much)
 rm -fR .debian/usr/share/elkarbackup/vendor/twbs/bootstrap/docs/
 rm -fR .debian/usr/share/elkarbackup/vendor/twbs/bootstrap/test-infra/
@@ -46,9 +46,9 @@ mkdir -p .debian/var/cache/elkarbackup
 mkdir -p .debian/var/log/elkarbackup
 mkdir -p .debian/var/log/elkarbackup/jobs
 mkdir -p .debian/var/lib/elkarbackup/sessions
-ln -s /var/cache/elkarbackup        .debian/usr/share/elkarbackup/app/cache
-ln -s /var/log/elkarbackup          .debian/usr/share/elkarbackup/app/logs
-ln -s /var/lib/elkarbackup/sessions .debian/usr/share/elkarbackup/app/sessions
+ln -s /var/cache/elkarbackup        .debian/usr/share/elkarbackup/var/cache
+ln -s /var/log/elkarbackup          .debian/usr/share/elkarbackup/var/logs
+ln -s /var/lib/elkarbackup/sessions .debian/usr/share/elkarbackup/var/sessions
 # setup configuraiton in /etc
 mv .debian/usr/share/elkarbackup/app/config .debian/etc/elkarbackup
 ln -s  /etc/elkarbackup .debian/usr/share/elkarbackup/app/config
@@ -80,14 +80,14 @@ chmod 0755 .debian/DEBIAN/config .debian/DEBIAN/postinst .debian/DEBIAN/postrm .
 
 
 # use prod environment in console by default
-sed -i "s#'dev'#'prod'#"                                                   .debian/usr/share/elkarbackup/app/console
-chmod a+x .debian/usr/share/elkarbackup/app/console
+sed -i "s#'dev'#'prod'#"                                                   .debian/usr/share/elkarbackup/bin/console
+chmod a+x .debian/usr/share/elkarbackup/bin/console
 VERSION=$(cat debian/DEBIAN/control | grep 'Version' | sed -e 's/Version: //' -e 's/ *//')
 mkdir -p .debian/var/spool/elkarbackup/backups
 mkdir -p .debian/var/spool/elkarbackup/uploads
 # clean up /usr/share/elkarbackup
 pushd .debian/usr/share/elkarbackup
-ls | egrep -v 'app|extra|src|vendor|web'|xargs rm -rf
+ls | egrep -v 'app|extra|src|var|vendor|web'|xargs rm -rf
 popd
 
 #

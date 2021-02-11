@@ -8,6 +8,8 @@ namespace Binovo\ElkarBackupBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PreferencesType extends AbstractType
@@ -22,12 +24,12 @@ class PreferencesType extends AbstractType
 	  'Deutsch'  => 'de',
         );
 
-        $builder->add('language'    , 'choice'      , array('label'   => $t->trans('Language', array(), 'BinovoElkarBackup'),
+        $builder->add('language'    , ChoiceType::class      , array('label'   => $t->trans('Language', array(), 'BinovoElkarBackup'),
                                                           'attr'    => array('class'    => 'form-control'),
                                                           'choices' => $languages,
                                                           'choices_as_values' => true,
                                                           ))
-	              ->add('linesperpage', 'integer'   , array('label'   => $t->trans('Records per page', array(), 'BinovoElkarBackup'),
+	              ->add('linesperpage', IntegerType::class   , array('label'   => $t->trans('Records per page', array(), 'BinovoElkarBackup'),
                                                           'attr'    => array('class'    => 'form-control')));
     }
 
@@ -38,10 +40,5 @@ class PreferencesType extends AbstractType
           'validation_groups' => array('preferences'),
           'translator' => null,
         ));
-    }
-
-    public function getName()
-    {
-        return 'Preferences';
     }
 }

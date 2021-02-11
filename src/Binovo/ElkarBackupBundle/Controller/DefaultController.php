@@ -30,15 +30,24 @@ use Binovo\ElkarBackupBundle\Lib\Globals;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\PercentType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use steevanb\SSH2Bundle\Entity\Profile;
 use steevanb\SSH2Bundle\Entity\Connection;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -67,7 +76,7 @@ class DefaultController extends Controller
     {
         $logger = $this->get('BnvWebLogger');
         $context = array_merge(array('source' => 'DefaultController'), $context);
-        $logger->warn(
+        $logger->warning(
             $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
             $context
         );
@@ -77,7 +86,7 @@ class DefaultController extends Controller
     {
         $logger = $this->get('BnvWebLogger');
         $context = array_merge(array('source' => 'DefaultController'), $context);
-        $logger->err(
+        $logger->error(
             $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
             $context
         );
@@ -155,10 +164,7 @@ class DefaultController extends Controller
     protected function clearCache()
     {
         $realCacheDir = $this->container->getParameter('kernel.cache_dir');
-        $oldCacheDir = $realCacheDir . '_old';
         $this->container->get('cache_clearer')->clear($realCacheDir);
-        rename($realCacheDir, $oldCacheDir);
-        $this->container->get('filesystem')->remove($oldCacheDir);
     }
 
     /**
@@ -319,20 +325,20 @@ class DefaultController extends Controller
      */
     public function loginAction(Request $request)
     {
-        $request = $this->getRequest();
+        $request = $this->container->get('request_stack')->getCurrentRequest();
         $session = $request->getSession();
         $t = $this->get('translator');
         
         // get the login error if there is one
-        if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
-            $error = $request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
+        if ($request->attributes->has(Security::AUTHENTICATION_ERROR)) {
+            $error = $request->attributes->get(Security::AUTHENTICATION_ERROR);
         } else {
-            $error = $session->get(SecurityContext::AUTHENTICATION_ERROR);
-            $session->remove(SecurityContext::AUTHENTICATION_ERROR);
+            $error = $session->get(Security::AUTHENTICATION_ERROR);
+            $session->remove(Security::AUTHENTICATION_ERROR);
         }
         $this->info(
             'Log in attempt with user: %username%',
-            array('%username%' => $session->get(SecurityContext::LAST_USERNAME))
+            array('%username%' => $session->get(Security::LAST_USERNAME))
         );
         $this->getDoctrine()->getManager()->flush();
         $locales = $this->container->getParameter('supported_locales');
@@ -378,7 +384,7 @@ class DefaultController extends Controller
         return $this->render(
             'BinovoElkarBackupBundle:Default:login.html.twig',
             array(
-                'last_username' => $session->get(SecurityContext::LAST_USERNAME),
+                'last_username' => $session->get(Security::LAST_USERNAME),
                 'error' => $error,
                 'supportedLocales' => $localesWithNames,
                 'disable_background' => $disable_background,
@@ -413,7 +419,7 @@ class DefaultController extends Controller
         }
         
         $form = $this->createForm(
-            new ClientType(),
+            ClientType::class,
             $client,
             array('translator' => $this->get('translator'))
         );
@@ -438,7 +444,7 @@ class DefaultController extends Controller
      */
     public function saveClientAction(Request $request, $id)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $actualuserid = $user->getId();
         
         $t = $this->get('translator');
@@ -450,11 +456,11 @@ class DefaultController extends Controller
         }
         
         $form = $this->createForm(
-            new ClientType(),
+            ClientType::class,
             $client,
             array('translator' => $t)
         );
-        $form->bind($request);
+        $form->handleRequest($request);
         if ($form->isValid()) {
             $client = $form->getData();
             $em = $this->getDoctrine()->getManager();
@@ -487,7 +493,7 @@ class DefaultController extends Controller
                     }
                 }
                 if ($client->getOwner() == null) {
-                    $client->setOwner($this->get('security.context')->getToken()->getUser());
+                    $client->setOwner($this->get('security.token_storage')->getToken()->getUser());
                 }
                 
                 if ($client->getMaxParallelJobs() < 1) {
@@ -630,7 +636,7 @@ class DefaultController extends Controller
             }
         }
         $form = $this->createForm(
-            new JobType(),
+            JobType::class,
             $job,
             array('translator' => $this->get('translator'))
         );
@@ -654,7 +660,7 @@ class DefaultController extends Controller
      */
     public function restoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $actualuserid = $user->getId();
         $actualusername = $user->getUsername();
         
@@ -673,13 +679,12 @@ class DefaultController extends Controller
             return $this->redirect($this->generateUrl('showClients'));
         }
 
-        $granted = $this->get('security.context')->isGranted('ROLE_ADMIN');
+        $granted = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
 
         $form = $this->createForm(
-            new RestoreBackupType($actualuserid,$granted),
+            RestoreBackupType::class,
             array('path' => $suggestedPath,'source' => $path),
-            array('translator' => $this->get('translator'))
-            );
+            array('translator' => $this->get('translator'), 'actualuserid' => $actualuserid, 'granted' => $granted));
         return $this->render('BinovoElkarBackupBundle:Default:restorebackup.html.twig',array(
             'form' => $form->createView(),
             'idClient' => $idClient,
@@ -696,17 +701,17 @@ class DefaultController extends Controller
     public function runRestoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
        $t = $this->get('translator');
-       $user = $this->get('security.context')->getToken()->getUser();
+       $user = $this->get('security.token_storage')->getToken()->getUser();
        $actualuserid = $user->getId();
-       $granted = $this->get('security.context')->isGranted('ROLE_ADMIN');
+       $granted = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
        $suggestedPath = mb_substr($path, mb_strpos($path, '/'));
        $suggestedPath = mb_substr($suggestedPath, 0, mb_strrpos($suggestedPath, '/'));
       
-       $form = $this->createForm(new RestoreBackupType($actualuserid,$granted),
-       array('path' => $suggestedPath,'source' => $path),
-       array('translator' => $this->get('translator'))
-       );
-
+       
+        $form = $this->createForm(
+            RestoreBackupType::class,
+            array('path' => $suggestedPath,'source' => $path),
+            array('translator' => $this->get('translator'), 'actualuserid' => $actualuserid, 'granted' => $granted));
        $form->handleRequest($request);
 
        if (!$form->isSubmitted() || !$form->isValid()) {
@@ -762,7 +767,7 @@ class DefaultController extends Controller
     public function enqueueJobAction(Request $request, $idClient, $idJob)
     {
         $t = $this->get('translator');
-        $user = $this->get('security.context')->getToken();
+        $user = $this->get('security.token_storage')->getToken();
         $trustable = false;
         
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -786,7 +791,7 @@ class DefaultController extends Controller
                 $job = $repository->findOneById($idJob);
                 if ($token == $job->getToken()) {
                     // Valid token, but let's require HTTPS
-                    if ($this->getRequest()->isSecure()) {
+                    if ($this->container->get('request_stack')->getCurrentRequest()->isSecure()) {
                         $trustable = true;
                     } else {
                         $response = new JsonResponse(array(
@@ -1038,11 +1043,11 @@ class DefaultController extends Controller
             $job = $repository->find($idJob);
         }
         $form = $this->createForm(
-            new JobType(),
+            JobType::class,
             $job,
             array('translator' => $t)
         );
-        $form->bind($request);
+        $form->handleRequest($request);
         if ($form->isValid()) {
             $job = $form->getData();
             try {
@@ -1326,7 +1331,7 @@ class DefaultController extends Controller
      */
     public function editPolicyAction(Request $request, $id = 'new')
     {
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
@@ -1340,7 +1345,7 @@ class DefaultController extends Controller
                 ->find($id);
         }
         $form = $this->createForm(
-            new PolicyType(),
+            PolicyType::class,
             $policy,
             array('translator' => $t)
         );
@@ -1365,7 +1370,7 @@ class DefaultController extends Controller
      */
     public function deletePolicyAction(Request $request, $id)
     {
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
@@ -1410,11 +1415,11 @@ class DefaultController extends Controller
             $policy = $repository->find($id);
         }
         $form = $this->createForm(
-            new PolicyType(),
+            PolicyType::class,
             $policy,
             array('translator' => $t)
         );
-        $form->bind($request);
+        $form->handleRequest($request);
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($policy);
@@ -1441,7 +1446,7 @@ class DefaultController extends Controller
      */
     public function sortJobsAction(Request $request)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $actualuserid = $user->getId();
         
         $t = $this->get('translator');
@@ -1450,7 +1455,7 @@ class DefaultController extends Controller
         $query = $repository->createQueryBuilder('j')
             ->innerJoin('j.client', 'c')
             ->addOrderBy('j.priority', 'ASC');
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // Non-admin users only can sort their own jobs
             $query->where('j.isActive <> 0 AND c.isActive <> 0 AND c.owner = ?1'); // adding users and roles
             $query->setParameter(1, $actualuserid);
@@ -1459,7 +1464,7 @@ class DefaultController extends Controller
         ;
         
         $formBuilder = $this->createFormBuilder(array('jobs' => $jobs));
-        $formBuilder->add('jobs', 'collection', array('type' => new JobForSortType()));
+        $formBuilder->add('jobs', CollectionType::class, array('entry_type' => JobForSortType::class));
         $form = $formBuilder->getForm();
         if ($request->isMethod('POST')) {
             $i = 1;
@@ -1508,7 +1513,7 @@ class DefaultController extends Controller
      */
     public function showClientsAction(Request $request)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $actualuserid = $user->getId();
         
         $fsDiskUsage = (int) round(
@@ -1520,7 +1525,7 @@ class DefaultController extends Controller
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
         $query = $repository->createQueryBuilder('c')->addOrderBy('c.id', 'ASC');
         
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // Limited view for non-admin users
             $query->where('c.owner = ?1'); // adding users and roles
             $query->setParameter(1, $actualuserid);
@@ -1833,12 +1838,12 @@ EOF;
         $t = $this->get('translator');
         $params = array(
             'backup_script' => array(
-                'type' => 'entity',
+                'entry_type' => EntityType::class,
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Backup Script', array(), 'BinovoElkarBackup'),
                 'class'    => 'BinovoElkarBackupBundle:BackupLocation',
-                'property' => 'name'
+                'choice_label' => 'name'
             )
         );
         $defaultData = array();
@@ -1846,8 +1851,8 @@ EOF;
         foreach ($params as $paramName => $formField) {
             $backupScriptFormBuilder->add(
                 $paramName,
-                $formField['type'],
-                array_diff_key($formField, array('type' => true))
+                $formField['entry_type'],
+                array_diff_key($formField, array('entry_type' => true))
             );
         }
         $backupScriptForm = $backupScriptFormBuilder->getForm();
@@ -1859,18 +1864,18 @@ EOF;
         $authorizedKeysFormBuilder = $this->createFormBuilder(array('publicKeys' => $keys));
         $authorizedKeysFormBuilder->add(
             'publicKeys',
-            'collection',
+            CollectionType::class,
             array(
-                'type' => new AuthorizedKeyType($t),
+                'entry_type' => AuthorizedKeyType::class,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'attr' => array('class' => 'form-control'),
-                'options' => array('required' => false,'attr' => array('class' => 'span10'))
+                'entry_options' => array('required' => false,'attr' => array('class' => 'span10'), 'translator' => $t)
             )
         );
         $authorizedKeysForm = $authorizedKeysFormBuilder->getForm();
         if ($request->isMethod('POST')) {
-            $authorizedKeysForm->bind($request);
+            $authorizedKeysForm->handleRequest($request);
             $data = $authorizedKeysForm->getData();
             $serializedKeys = '';
             foreach ($data['publicKeys'] as $key) {
@@ -1916,7 +1921,7 @@ EOF;
      */
     public function editBackupLocationAction(Request $request, $id = 'new')
     {
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
@@ -1939,9 +1944,9 @@ EOF;
         }
         
         $form = $this->createForm(
-            new BackupLocationType($this->isAutoFsAvailable(), $tahoeInstalled),
+            BackupLocationType::class,
             $backupLocation,
-            array('translator' => $t)
+            array( 'fs' => $this->isAutoFsAvailable(), 'tahoeInstalled' => $tahoeInstalled, 'translator' => $t)
         );
         
         $this->debug(
@@ -1981,11 +1986,11 @@ EOF;
         }
         
         $form = $this->createForm(
-            new BackupLocationType($this->isAutoFsAvailable(), $tahoeInstalled),
+            BackupLocationType::class,
             $backupLocation,
-            array('translator' => $t)
+            array( 'fs' => $this->isAutoFsAvailable(), 'tahoeInstalled' => $tahoeInstalled, 'translator' => $t)
         );
-        $form->bind($request);
+        $form->handleRequest($request);
         $result = null;
         $location = $backupLocation->getEffectiveDir();
         if (! is_dir($location)) {
@@ -2051,7 +2056,7 @@ EOF;
      */
     public function deleteBackupLocationAction(Request $request, $id)
     {
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
@@ -2120,37 +2125,37 @@ EOF;
         $t = $this->get('translator');
         $params = array(
             'database_host' => array(
-                'type' => 'text',
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL host', array(), 'BinovoElkarBackup')
             ),
             'database_port' => array(
-                'type' => 'text',
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL port', array(), 'BinovoElkarBackup')
             ),
             'database_name' => array(
-                'type' => 'text',
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL DB name', array(), 'BinovoElkarBackup')
             ),
             'database_user' => array(
-                'type' => 'text',
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL user', array(), 'BinovoElkarBackup')
             ),
             'database_password' => array(
-                'type' => 'password',
+                'entry_type' => PasswordType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('MySQL password', array(), 'BinovoElkarBackup')
             ),
             'mailer_transport' => array(
-                'type' => 'choice',
+                'entry_type' => ChoiceType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'choices' => array(
@@ -2159,83 +2164,85 @@ EOF;
                     'sendmail' => 'sendmail',
                     'smtp' => 'smtp'
                 ),
+                'choices_as_values' => true,
                 'label' => $t->trans('Mailer transport', array(), 'BinovoElkarBackup')
             ),
             'mailer_host' => array(
-                'type' => 'text',
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer host', array(), 'BinovoElkarBackup')
             ),
             'mailer_user' => array(
-                'type' => 'text',
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer user', array(), 'BinovoElkarBackup')
             ),
             'mailer_password' => array(
-                'type' => 'password',
+                'entry_type' => PasswordType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer password', array(), 'BinovoElkarBackup')
             ),
             'mailer_from' => array(
-                'type' => 'text',
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Mailer from', array(), 'BinovoElkarBackup')
             ),
             'max_log_age' => array(
-                'type' => 'choice',
+                'entry_type' => ChoiceType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'choices' => array(
-                    'P1D' => $t->trans('One day', array(), 'BinovoElkarBackup'),
-                    'P1W' => $t->trans('One week', array(), 'BinovoElkarBackup'),
-                    'P2W' => $t->trans('Two weeks', array(), 'BinovoElkarBackup'),
-                    'P3W' => $t->trans('Three weeks', array(), 'BinovoElkarBackup'),
-                    'P1M' => $t->trans('A month', array(), 'BinovoElkarBackup'),
-                    'P6M' => $t->trans('Six months', array(), 'BinovoElkarBackup'),
-                    'P1Y' => $t->trans('A year', array(), 'BinovoElkarBackup'),
-                    'P2Y' => $t->trans('Two years', array(), 'BinovoElkarBackup'),
-                    'P3Y' => $t->trans('Three years', array(), 'BinovoElkarBackup'),
-                    'P4Y' => $t->trans('Four years', array(), 'BinovoElkarBackup'),
-                    'P5Y' => $t->trans('Five years', array(), 'BinovoElkarBackup'),
-                    '' => $t->trans('Never', array(), 'BinovoElkarBackup')
+                    $t->trans('One day', array(), 'BinovoElkarBackup') => 'P1D',
+                    $t->trans('One week', array(), 'BinovoElkarBackup') => 'P1W',
+                    $t->trans('Two weeks', array(), 'BinovoElkarBackup') => 'P2W',
+                    $t->trans('Three weeks', array(), 'BinovoElkarBackup') => 'P3W',
+                    $t->trans('A month', array(), 'BinovoElkarBackup') => 'P1M',
+                    $t->trans('Six months', array(), 'BinovoElkarBackup') => 'P6M',
+                    $t->trans('A year', array(), 'BinovoElkarBackup') => 'P1Y',
+                    $t->trans('Two years', array(), 'BinovoElkarBackup') => 'P2Y',
+                    $t->trans('Three years', array(), 'BinovoElkarBackup') => 'P3Y',
+                    $t->trans('Four years', array(), 'BinovoElkarBackup') => 'P4Y',
+                    $t->trans('Five years', array(), 'BinovoElkarBackup') => 'P5Y',
+                    $t->trans('Never', array(), 'BinovoElkarBackup') => ''
                 ),
+                'choices_as_values' => true,
                 'label' => $t->trans('Remove logs older than', array(), 'BinovoElkarBackup')
             ),
             'warning_load_level' => array(
-                'type' => 'percent',
+                'entry_type' => PercentType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Quota warning level', array(), 'BinovoElkarBackup')
             ),
             'pagination_lines_per_page' => array(
-                'type' => 'integer',
+                'entry_type' => IntegerType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Records per page', array(), 'BinovoElkarBackup')
             ),
             'url_prefix' => array(
-                'type' => 'text',
+                'entry_type' => TextType::class,
                 'required' => false,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Url prefix', array(), 'BinovoElkarBackup')
             ),
             'disable_background' => array(
-                'type' => 'checkbox',
+                'entry_type' => CheckboxType::class,
                 'required' => false,
                 'label' => $t->trans('Disable background', array(), 'BinovoElkarBackup')
             ),
             'max_parallel_jobs' => array(
-                'type' => 'integer',
+                'entry_type' => IntegerType::class,
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup')
             ),
             'post_on_pre_fail' => array(
-                'type' => 'checkbox',
+                'entry_type' => CheckboxType::class,
                 'required' => false,
                 'label' => $t->trans('Do post script on pre script failure', array(), 'BinovoElkarBackup')
             ),
@@ -2243,7 +2250,7 @@ EOF;
         );
         $defaultData = array();
         foreach ($params as $paramName => $formField) {
-            if ('password' != $formField['type']) {
+            if (PasswordType::class != $formField['entry_type']) {
                 $defaultData[$paramName] = $this->container->getParameter($paramName);
             }
         }
@@ -2251,19 +2258,19 @@ EOF;
         foreach ($params as $paramName => $formField) {
             $formBuilder->add(
                 $paramName,
-                $formField['type'],
-                array_diff_key($formField, array('type' => true))
+                $formField['entry_type'],
+                array_diff_key($formField, array('entry_type' => true))
             );
         }
         $result = null;
         $form = $formBuilder->getForm();
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
             $data = $form->getData();
             $allOk = true;
             foreach ($data as $paramName => $paramValue) {
                 $ok = true;
-                if ('password' == $params[$paramName]['type']) {
+                if (PasswordType::class == $params[$paramName]['entry_type']) {
                     if (! empty($paramValue)) {
                         $ok = $this->setParameter(
                             $paramName,
@@ -2271,7 +2278,7 @@ EOF;
                             'manageParameters'
                         );
                     }
-                } elseif ('checkbox' == $params[$paramName]['type']) {
+                } elseif (CheckboxType::class == $params[$paramName]['entry_type']) {
                     // Workaround to store value in boolean format
                     if (! empty($paramValue)) {
                         $ok = $this->setParameter(
@@ -2382,7 +2389,7 @@ EOF;
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)->add(
             'oldPassword',
-            'password',
+            PasswordType::class,
             array(
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
@@ -2391,7 +2398,7 @@ EOF;
         )
         ->add(
             'newPassword',
-            'password',
+            PasswordType::class,
             array(
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
@@ -2400,7 +2407,7 @@ EOF;
         )
         ->add(
             'newPassword2',
-            'password',
+            PasswordType::class,
             array(
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
@@ -2410,9 +2417,9 @@ EOF;
         ->getForm();
         
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
             $data = $form->getData();
-            $user = $this->get('security.context')->getToken()->getUser();
+            $user = $this->get('security.token_storage')->getToken()->getUser();
             $encoder = $this->get('security.encoder_factory')->getEncoder($user);
             $ok = true;
             if (empty($data['newPassword']) || $data['newPassword'] !== $data['newPassword2']) {
@@ -2548,7 +2555,7 @@ EOF;
      */
     public function deleteScriptAction(Request $request, $id)
     {
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
@@ -2628,7 +2635,7 @@ EOF;
      */
     public function editScriptAction(Request $request, $id)
     {
-        if (! $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             // only allow to admins to do this task
             return $this->redirect($this->generateUrl('showClients'));
         }
@@ -2641,7 +2648,7 @@ EOF;
             $script = $repository->find($id);
         }
         $form = $this->createForm(
-            new ScriptType(),
+            ScriptType::class,
             $script,
             array(
                 'scriptFileRequired' => ! $script->getScriptFileExists(),
@@ -2677,14 +2684,14 @@ EOF;
             $script = $repository->find($id);
         }
         $form = $this->createForm(
-            new ScriptType(),
+            ScriptType::class,
             $script,
             array(
                 'scriptFileRequired' => ! $script->getScriptFileExists(),
                 'translator' => $t
             )
         );
-        $form->bind($request);
+        $form->handleRequest($request);
         $result = null;
         if ($form->isValid()) {
             if ("-1" == $id && null == $script->getScriptFile()) { // it is a new script but no file was uploaded
@@ -2759,7 +2766,7 @@ EOF;
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:User');
             $user = $repository->find($id);
         }
-        $form = $this->createForm(new UserType(), $user, array('translator' => $t));
+        $form = $this->createForm(UserType::class, $user, array('translator' => $t));
         $this->debug(
             'View user %username%.',
             array('%username%' => $user->getUsername()),
@@ -2788,8 +2795,8 @@ EOF;
             $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:User');
             $user = $repository->find($id);
         }
-        $form = $this->createForm(new UserType(), $user, array('translator' => $t));
-        $form->bind($request);
+        $form = $this->createForm(UserType::class, $user, array('translator' => $t));
+        $form->handleRequest($request);
         if ($form->isValid()) {
             if ($user->newPassword) {
                 $factory = $this->get('security.encoder_factory');
@@ -2860,8 +2867,8 @@ EOF;
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
         $client = $repository->find($idClient);
         
-        if ($client->getOwner() == $this->get('security.context')->getToken()->getUser() || 
-            $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+        if ($client->getOwner() == $this->get('security.token_storage')->getToken()->getUser() || 
+            $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             return True;
         } else {
             return False;
@@ -2998,15 +3005,15 @@ EOF;
     {
         $t = $this->get('translator');
         // Get current user
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $form = $this->createForm(
-            new PreferencesType(),
+            PreferencesType::class,
             $user,
             array('translator' => $t,'validation_groups' => array('preferences'))
         );
         
         if ($request->isMethod('POST')) {
-            $form->bind($request);
+            $form->handleRequest($request);
             $data = $form->getData();
             $em = $this->getDoctrine()->getManager();
             $em->persist($data);
@@ -3038,7 +3045,7 @@ EOF;
     private function getUserPreference(Request $request, $param)
     {
         $response = null;
-        $user = $this->get('security.context')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         if ($param == 'language') {
             $response = $user->getLanguage();
         } elseif ($param == 'linesperpage') {

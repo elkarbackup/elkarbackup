@@ -62,7 +62,7 @@ class RemoteRestoreCommand extends ContainerAwareCommand
         $process->run();
 
         if(!$process->isSuccessful()) {
-              $logger->err('Error message ' . $process->getErrorOutput(), $context);
+              $logger->error('Error message ' . $process->getErrorOutput(), $context);
               $manager->flush();
               return;
         } else {

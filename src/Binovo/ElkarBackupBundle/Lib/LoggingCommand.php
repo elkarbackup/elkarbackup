@@ -66,7 +66,7 @@ abstract class LoggingCommand extends ContainerAwareCommand
         $logger = $this->getContainer()->get('BnvWebLogger');
         $translator = $this->getContainer()->get('translator');
         $context = array_merge(array('source' => $this->getNameForLogs()), $context);
-        $logger->err($translator->trans($msg, $translatorParams, 'BinovoElkarBackup'), $context);
+        $logger->error($translator->trans($msg, $translatorParams, 'BinovoElkarBackup'), $context);
     }
 
     protected function info($msg, $translatorParams = array(), $context = array())
@@ -82,7 +82,7 @@ abstract class LoggingCommand extends ContainerAwareCommand
         $logger = $this->getContainer()->get('BnvWebLogger');
         $translator = $this->getContainer()->get('translator');
         $context = array_merge(array('source' => $this->getNameForLogs()), $context);
-        $logger->warn($translator->trans($msg, $translatorParams, 'BinovoElkarBackup'), $context);
+        $logger->warning($translator->trans($msg, $translatorParams, 'BinovoElkarBackup'), $context);
     }
     
     protected function debug($msg, $translatorParams = array(), $context = array())
