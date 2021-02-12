@@ -77,23 +77,23 @@ services:
         class: Symfony\Bridge\Monolog\Logger
         arguments: [BnvWeb]
         calls:
-            - [pushProcessor, [@BnvWebUserLoggerProcessor]]
-            - [pushHandler,   [@StreamHandler]]
-            - [pushHandler,   [@BnvLoggerHandler]]
+            - [pushProcessor, ['@BnvWebUserLoggerProcessor']]
+            - [pushHandler,   ['@StreamHandler']]
+            - [pushHandler,   ['@BnvLoggerHandler']]
     BnvLoggerHandler:
         class: Binovo\ElkarBackupBundle\Logger\LoggerHandler
         calls:
-            - [setContainer,  [@service_container] ]
+            - [setContainer,  ['@service_container'] ]
     StreamHandler:
         class: Monolog\Handler\StreamHandler
         ## 200 = INFO, see Monolog::Logger for the values of log levels
         arguments: [php://stderr, 200]
         calls:
-            - [setFormatter, [@BnvWebLoggerFormatter]]
+            - [setFormatter, ['@BnvWebLoggerFormatter']]
     BnvWebUserLoggerProcessor:
         class: Binovo\ElkarBackupBundle\Logger\WebUserLoggerProcessor
         calls:
-            - [setContainer, [@service_container] ]
+            - [setContainer, ['@service_container'] ]
     BnvWebLoggerFormatter:
         class: Monolog\Formatter\LineFormatter
         arguments: ["[%%datetime%%] %%channel%%.%%level_name%%: %%message%% %%context%% %%extra.user_name%% %%extra.user_email%%\n"]
