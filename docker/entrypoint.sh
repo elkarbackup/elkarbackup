@@ -59,8 +59,8 @@ php bin/console cache:clear
 php bin/console assetic:dump
 
 # Empty sessions
-rm -rf app/sessions/*
-rm -rf app/cache/*
+rm -rf var/sessions/*
+rm -rf var/cache/*
 
 apache2-foreground &
 
