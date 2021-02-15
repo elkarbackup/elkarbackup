@@ -15,7 +15,6 @@ parameters:
     locale: en
     secret: '%eb.secret%'
     upload_dir: '%eb.upload.dir%'
-    backup_dir: '%eb.backup.dir%'
     public_key: '%eb.public.key%'
     max_log_age: P1Y
     tmp_dir: '%eb.tmp.dir%'
