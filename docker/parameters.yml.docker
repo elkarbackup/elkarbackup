@@ -1,29 +1,29 @@
 # parameters.yml.dist is a template
 parameters:
-    database_driver: '%database.driver%'
-    database_path: '%database.path%'
-    database_host: '%database.host%'
-    database_port: '%database.port%'
-    database_name: '%database.name%'
-    database_user: '%database.user%'
-    database_password: '%database.password%'
-    mailer_transport: '%mailer.transport%'
-    mailer_host: '%mailer.host%'
-    mailer_user: '%mailer.user%'
-    mailer_password: '%mailer.password%'
-    mailer_from: '%mailer.from%'
+    database_driver: '%env(SYMFONY__DATABASE__DRIVER)%'
+    database_path: '%env(SYMFONY__DATABASE__PATH)%'
+    database_host: '%env(SYMFONY__DATABASE__HOST)%'
+    database_port: '%env(SYMFONY__DATABASE__PORT)%'
+    database_name: '%env(SYMFONY__DATABASE__NAME)%'
+    database_user: '%env(SYMFONY__DATABASE__USER)%'
+    database_password: '%env(SYMFONY__DATABASE__PASSWORD)%'
+    mailer_transport: '%env(SYMFONY__MAILER__TRANSPORT)%'
+    mailer_host: '%env(SYMFONY__MAILER__HOST)%'
+    mailer_user: '%env(SYMFONY__MAILER__USER)%'
+    mailer_password: '%env(SYMFONY__MAILER__PASSWORD)%'
+    mailer_from: '%env(SYMFONY__MAILER__FROM)%'
     locale: en
-    secret: '%eb.secret%'
-    upload_dir: '%eb.upload.dir%'
-    public_key: '%eb.public.key%'
+    secret: '%env(SYMFONY__EB__SECRET)%'
+    upload_dir: '%env(SYMFONY__EB__UPLOAD__DIR)%'
+    public_key: '%env(SYMFONY__EB__BACKUP__DIR)%'
     max_log_age: P1Y
-    tmp_dir: '%eb.tmp.dir%'
+    tmp_dir: '%env(SYMFONY__EB__TMP__DIR)%'
     rsnapshot: /usr/bin/rsnapshot
     warning_load_level: 0.8
     pagination_lines_per_page: 20
-    url_prefix: '%eb.url.prefix%'
+    url_prefix: '%env(SYMFONY__EB__URL__PREFIX)%'
     disable_background: false
-    tahoe_active: '%eb.tahoe.active%'
+    tahoe_active: '%env(SYMFONY__EB__TAHOE__ACTIVE)%'
     home: /app/elkarbackup
-    max_parallel_jobs: '%eb.max.parallel.jobs%'
-    post_on_pre_fail: '%eb.post.on.pre.fail%'
+    max_parallel_jobs: '%env(SYMFONY__EB__MAX__PARALLEL__JOBS)%'
+    post_on_pre_fail: '%env(SYMFONY__EB__POST__ON__PRE__FAIL)%'

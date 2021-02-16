@@ -33,6 +33,7 @@ ENV DOCKERDIR=./docker/
 COPY . /app/elkarbackup
 RUN set -ex; \
       cd /app/elkarbackup; \
+      rm app/config/parameters.yml; \
       mkdir -p var/cache var/sessions var/logs; \
       # This doctrine migration file was provoking an error as it was trying to
       # copy a file to a hardcoded path it does not exist in this docker image.
@@ -75,9 +76,12 @@ COPY $DOCKERDIR/app_dev.php /app/elkarbackup/web/app_dev.php
 ## Disable "Manage parameters" menu item
 COPY $DOCKERDIR/src/Builder.php /app/elkarbackup/src/Binovo/ElkarBackupBundle/Menu/Builder.php
 
+COPY $DOCKERDIR/envars.sh /app/elkarbackup/app/envars.sh
 ## Composer install
 RUN set -ex; \
       cd /app/elkarbackup; \
+      chmod +x app/envars.sh;\
+      source app/envars.sh; \
       composer install --no-interaction
 
 
