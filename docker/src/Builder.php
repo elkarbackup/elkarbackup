@@ -117,7 +117,7 @@ class Builder implements ContainerAwareInterface
 
 	$doctrine = $this->container->get('doctrine');
 		$em = $doctrine->getManager();
-	if($this->container->get('security.context')->isGranted('ROLE_ADMIN')){
+	if($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
 
         $t = $this->container->get('translator');
         $menu = array(array('label'    => $t->trans('Jobs', array(), 'BinovoElkarBackup'),
