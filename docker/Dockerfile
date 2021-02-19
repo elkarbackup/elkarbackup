@@ -33,7 +33,6 @@ ENV DOCKERDIR=./docker/
 COPY . /app/elkarbackup
 RUN set -ex; \
       cd /app/elkarbackup; \
-      rm app/config/parameters.yml; \
       mkdir -p var/cache var/sessions var/logs; \
       # This doctrine migration file was provoking an error as it was trying to
       # copy a file to a hardcoded path it does not exist in this docker image.
