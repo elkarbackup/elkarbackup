@@ -1,5 +1,3 @@
-#! /bin/bash
-
 # Default environment variables
 
 export SYMFONY_ENV=${SYMFONY_ENV:=prod}

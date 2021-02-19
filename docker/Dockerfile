@@ -80,7 +80,6 @@ COPY $DOCKERDIR/envars.sh /app/elkarbackup/app/envars.sh
 ## Composer install
 RUN set -ex; \
       cd /app/elkarbackup; \
-      chmod +x app/envars.sh;\
       source app/envars.sh; \
       composer install --no-interaction
 
