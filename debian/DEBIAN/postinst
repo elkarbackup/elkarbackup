@@ -117,13 +117,13 @@ fi
 echo Delete cache content
 rm -fR /var/cache/elkarbackup/*
 echo Update DB
-php /usr/share/elkarbackup/app/console doctrine:migrations:migrate --no-interaction >/dev/null || true
+php /usr/share/elkarbackup/bin/console doctrine:migrations:migrate --no-interaction >/dev/null || true
 echo Create root user
-php /usr/share/elkarbackup/app/console elkarbackup:create_admin >/dev/null || true
+php /usr/share/elkarbackup/bin/console elkarbackup:create_admin >/dev/null || true
 echo Clean cache
-php /usr/share/elkarbackup/app/console cache:clear >/dev/null || true
+php /usr/share/elkarbackup/bin/console cache:clear >/dev/null || true
 echo Dump assests
-php /usr/share/elkarbackup/app/console assetic:dump >/dev/null || true
+php /usr/share/elkarbackup/bin/console assetic:dump >/dev/null || true
 echo Invalidate sessions
 rm -rf /var/lib/elkarbackup/sessions/*
 

@@ -87,7 +87,7 @@ mkdir -p .debian/var/spool/elkarbackup/backups
 mkdir -p .debian/var/spool/elkarbackup/uploads
 # clean up /usr/share/elkarbackup
 pushd .debian/usr/share/elkarbackup
-ls | egrep -v 'app|extra|src|var|vendor|web'|xargs rm -rf
+ls | egrep -v 'app|bin|extra|src|var|vendor|web'|xargs rm -rf
 popd
 
 #
