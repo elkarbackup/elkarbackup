@@ -2,7 +2,7 @@
 ## Bootstrap & Build elkarbackup
 ##
 
-FROM php:7.1-cli-alpine
+FROM php:7.3-cli-alpine
 
 RUN apk add --no-cache \
       git \
@@ -33,7 +33,7 @@ ENV DOCKERDIR=./docker/
 COPY . /app/elkarbackup
 RUN set -ex; \
       cd /app/elkarbackup; \
-      mkdir -p app/cache app/sessions app/logs; \
+      mkdir -p var/cache var/sessions var/logs; \
       # This doctrine migration file was provoking an error as it was trying to
       # copy a file to a hardcoded path it does not exist in this docker image.
       # We can disable it without negative consequences
@@ -75,9 +75,11 @@ COPY $DOCKERDIR/app_dev.php /app/elkarbackup/web/app_dev.php
 ## Disable "Manage parameters" menu item
 COPY $DOCKERDIR/src/Builder.php /app/elkarbackup/src/Binovo/ElkarBackupBundle/Menu/Builder.php
 
+COPY $DOCKERDIR/envars.sh /app/elkarbackup/app/envars.sh
 ## Composer install
 RUN set -ex; \
       cd /app/elkarbackup; \
+      source app/envars.sh; \
       composer install --no-interaction
 
 
@@ -86,7 +88,7 @@ RUN set -ex; \
 ##
 
 
-FROM php:7.1-apache
+FROM php:7.3-apache
 RUN apt-get update && apt-get install -y \
       default-mysql-client \
       acl \
