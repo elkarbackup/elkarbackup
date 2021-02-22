@@ -16,7 +16,7 @@ framework:
     default_locale:  %locale%
     #trust_proxy_headers: false # Whether or not the Request object should trust proxy headers (X_FORWARDED_FOR/HTTP_CLIENT_IP)
     session:
-        save_path: %kernel.root_dir%/sessions
+        save_path: "%kernel.root_dir%/../var/sessions/%kernel.environment%"
 
 # Twig Configuration
 twig:
@@ -77,29 +77,29 @@ services:
         class: Symfony\Bridge\Monolog\Logger
         arguments: [BnvWeb]
         calls:
-            - [pushProcessor, [@BnvWebUserLoggerProcessor]]
-            - [pushHandler,   [@StreamHandler]]
-            - [pushHandler,   [@BnvLoggerHandler]]
+            - [pushProcessor, ["@BnvWebUserLoggerProcessor"]]
+            - [pushHandler,   ["@StreamHandler"]]
+            - [pushHandler,   ["@BnvLoggerHandler"]]
     BnvLoggerHandler:
         class: Binovo\ElkarBackupBundle\Logger\LoggerHandler
         calls:
-            - [setContainer,  [@service_container] ]
+            - [setContainer,  ["@service_container"] ]
     StreamHandler:
         class: Monolog\Handler\StreamHandler
         ## 200 = INFO, see Monolog::Logger for the values of log levels
         arguments: [php://stderr, 200]
         calls:
-            - [setFormatter, [@BnvWebLoggerFormatter]]
+            - [setFormatter, ["@BnvWebLoggerFormatter"]]
     BnvWebUserLoggerProcessor:
         class: Binovo\ElkarBackupBundle\Logger\WebUserLoggerProcessor
         calls:
-            - [setContainer, [@service_container] ]
+            - [setContainer, ["@service_container"] ]
     BnvWebLoggerFormatter:
         class: Monolog\Formatter\LineFormatter
         arguments: ["[%%datetime%%] %%channel%%.%%level_name%%: %%message%% %%context%% %%extra.user_name%% %%extra.user_email%%\n"]
     LoginListener:
         class: Binovo\ElkarBackupBundle\Listener\LoginListener
-        arguments: [@service_container]
+        arguments: ["@service_container"]
         tags:
             - { name: kernel.event_listener, event: security.interactive_login }
     BnvTwigDebug:
