@@ -48,7 +48,6 @@ class JobType extends AbstractType
                                                                 'choices'  => array($t->trans('Admin', array(), 'BinovoElkarBackup')        => Job::NOTIFY_TO_ADMIN,
                                                                                     $t->trans('Client owner', array(), 'BinovoElkarBackup') => Job::NOTIFY_TO_OWNER,
                                                                                     $t->trans('Email', array(), 'BinovoElkarBackup')        => Job::NOTIFY_TO_EMAIL),
-                                                                'choices_as_values' => true,
                                                                 'multiple' => true,
                                                                 'expanded' => true,))
                 ->add('notificationsEmail'  , EmailType::class , array('label'    => ' ',
@@ -60,8 +59,7 @@ class JobType extends AbstractType
                                                                 'choices'      => array($t->trans('All messages'   , array(), 'BinovoElkarBackup') => Job::NOTIFICATION_LEVEL_ALL,
                                                                                         $t->trans('Warnings and up', array(), 'BinovoElkarBackup') => Job::NOTIFICATION_LEVEL_WARNING,
                                                                                         $t->trans('Errors and up'  , array(), 'BinovoElkarBackup') => Job::NOTIFICATION_LEVEL_ERROR,
-                                                                                        $t->trans('None'           , array(), 'BinovoElkarBackup') => Job::NOTIFICATION_LEVEL_NONE),
-                                                                'choices_as_values' => true))
+                                                                                        $t->trans('None'           , array(), 'BinovoElkarBackup') => Job::NOTIFICATION_LEVEL_NONE)))
                 ->add('preScripts'          , EntityType::class  , array('label' => $t->trans('Pre script', array(), 'BinovoElkarBackup'),
                                                                 'attr'     => array('class' => 'autoheight form-control','data-dojo-type' => 'dojox.form.CheckedMultiSelect'),
                                                                 'required' => false,

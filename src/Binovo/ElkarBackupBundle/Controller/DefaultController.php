@@ -2164,7 +2164,6 @@ EOF;
                     'sendmail' => 'sendmail',
                     'smtp' => 'smtp'
                 ),
-                'choices_as_values' => true,
                 'label' => $t->trans('Mailer transport', array(), 'BinovoElkarBackup')
             ),
             'mailer_host' => array(
@@ -2209,7 +2208,6 @@ EOF;
                     $t->trans('Five years', array(), 'BinovoElkarBackup') => 'P5Y',
                     $t->trans('Never', array(), 'BinovoElkarBackup') => ''
                 ),
-                'choices_as_values' => true,
                 'label' => $t->trans('Remove logs older than', array(), 'BinovoElkarBackup')
             ),
             'warning_load_level' => array(

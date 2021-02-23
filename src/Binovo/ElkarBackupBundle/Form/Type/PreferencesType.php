@@ -27,7 +27,6 @@ class PreferencesType extends AbstractType
         $builder->add('language'    , ChoiceType::class      , array('label'   => $t->trans('Language', array(), 'BinovoElkarBackup'),
                                                           'attr'    => array('class'    => 'form-control'),
                                                           'choices' => $languages,
-                                                          'choices_as_values' => true,
                                                           ))
 	              ->add('linesperpage', IntegerType::class   , array('label'   => $t->trans('Records per page', array(), 'BinovoElkarBackup'),
                                                           'attr'    => array('class'    => 'form-control')));
