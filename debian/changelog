@@ -2,9 +2,12 @@ elkarbackup (1.4.0~rc1) stable; urgency=medium
 
   [ Uxue Anabitarte ]
   * Upgrade to Symfony 3.5 and needed dependencies (closes #271)
+  * Upgrade monolog to remove PHP Warnings
   
   [ Eneko Lacunza ] 
   * Debian 10 support (closes #431)
+  * Ubuntu 20.04 support (closes #432)
+  * Remove installation script (#436)
 
 
  --  <>  Thu, 1 Feb 2021 12:25:00 +0100

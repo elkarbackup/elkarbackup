@@ -1,3 +1,11 @@
+## 1.4.0~rc1 (2021/02/23)
+  * Upgrade to Symfony 3.5 and needed dependencies (closes #271)
+  * Upgrade monolog to remove PHP Warnings
+  * Debian 10 support (closes #431)
+  * Ubuntu 20.04 support (closes #432)
+  * Remove installation script (#436)
+  * Remove all distro/version support except Debian 10, Ubuntu 20.04 and docker image.
+
 ## 1.3.5 (2021/01/01)
 Security fix:
 - Fixed XSS in Job and Client lists reported by Doronizg (closes #427)
