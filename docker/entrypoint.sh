@@ -54,13 +54,13 @@ if [ ! -z "$SYMFONY__EB__PUBLIC__KEY" ] && [ ! -f "$SYMFONY__EB__PUBLIC__KEY" ];
   ssh-keygen -t rsa -N "" -C "Web requested key for elkarbackup." -f "${SYMFONY__EB__PUBLIC__KEY%.*}";
 fi
 
-# Clear cache and sessions, build assetics...
-php bin/console cache:clear
-php bin/console assetic:dump
-
 # Empty sessions
 rm -rf var/sessions/*
 rm -rf var/cache/*
+
+# Clear cache and sessions, build assetics...
+php bin/console cache:clear
+php bin/console assetic:dump
 
 apache2-foreground &
 
