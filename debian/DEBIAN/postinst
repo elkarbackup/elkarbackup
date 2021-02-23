@@ -49,7 +49,8 @@ then
     else
         user="'$dbusername'"
     fi
-    echo "GRANT ALL ON \`$dbname\`.* TO $user IDENTIFIED BY '$dbuserpassword';" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost" || true
+    echo "CREATE USER $user IDENTIFIED BY '$dbuserpassword';" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost" || true
+    echo "GRANT ALL ON \`$dbname\`.* TO $user;" | mysql -u"$dbadminusername" -p"$dbadminpassword" -h"$dbhost" || true
     echo 'Configure parameters'
     sed -i "s#database_host:.*#database_host: $dbhost#"                 /etc/elkarbackup/parameters.yml
     sed -i "s#database_name:.*#database_name: $dbname#"                 /etc/elkarbackup/parameters.yml
