@@ -1,3 +1,6 @@
+## 1.4.0~rc2 (2021/02/24)
+  * Fix critical bug in elkarbackup:tick that fails running client pre-scripts, aborting all backup jobs.
+
 ## 1.4.0~rc1 (2021/02/23)
   * Upgrade to Symfony 3.5 and needed dependencies (closes #271)
   * Upgrade monolog to remove PHP Warnings
