@@ -89,6 +89,8 @@ mkdir -p .debian/var/spool/elkarbackup/uploads
 pushd .debian/usr/share/elkarbackup
 ls | egrep -v 'app|bin|extra|src|var|vendor|web'|xargs rm -rf
 popd
+# Symfony 3.4 wants composer.json for detecting project directory
+cp -a composer.json .debian/usr/share/elkarbackup
 
 #
 # build an verify
