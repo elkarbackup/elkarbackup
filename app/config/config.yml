@@ -114,5 +114,9 @@ services:
     Tahoe:
         class: Binovo\ElkarTahoeBundle\Utils\TahoeBackup
         arguments: ["@BnvWebLogger", '%home%']
+    Binovo\ElkarBackupBundle\Menu\Builder:
+        arguments: ["@knp_menu.factory", "@doctrine.orm.entity_manager", "@security.authorization_checker", "@translator.data_collector", "@Tahoe"]
+        tags:
+            - { name: knp_menu.menu_builder, method: mainMenu, alias: main }
 parameters:
     supported_locales: [es, en, eu, de]

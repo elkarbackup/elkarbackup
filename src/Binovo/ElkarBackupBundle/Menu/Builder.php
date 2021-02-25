@@ -7,8 +7,12 @@
 namespace Binovo\ElkarBackupBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Translation\DataCollectorTranslator;
+use Binovo\ElkarTahoeBundle\Utils\TahoeBackup;
 
 class Builder implements ContainerAwareInterface
 {
@@ -26,6 +30,21 @@ class Builder implements ContainerAwareInterface
      */
 
     use ContainerAwareTrait;
+
+    private $factory;
+    private $em;
+    private $auth;
+    private $t;
+    private $tahoe;
+
+    public function __construct(FactoryInterface $factory, EntityManager $entity, AuthorizationCheckerInterface $auth, DataCollectorTranslator $t, TahoeBackup $tahoe)
+    {
+        $this->factory = $factory;
+        $this->em = $entity;
+        $this->auth = $auth;
+        $this->t = $t;
+        $this->tahoe = $tahoe;
+    }
 
     protected function generateOnClickHandler($controller, array $params = array(), $absolute = false)
     {
@@ -79,9 +98,9 @@ class Builder implements ContainerAwareInterface
      * @return object             The menu bar.
      *
      */
-    protected function generateMenuBar(FactoryInterface $factory, array $description)
+    protected function generateMenuBar(array $description)
     {
-        $menuBar = $factory->createItem('root');
+        $menuBar = $this->factory->createItem('root');
     	  $menuBar->setChildrenAttribute('class', 'nav navbar-nav');
 
         foreach ($description as $itemDescription) {
@@ -113,14 +132,12 @@ class Builder implements ContainerAwareInterface
      * Call from a template using the knp_menu_render function.
      *
      */
-    public function mainMenu(FactoryInterface $factory, array $options)
+    public function mainMenu(array $options)
     {
 
-	$doctrine = $this->container->get('doctrine');
-		$em = $doctrine->getManager();
-	if($this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
+	if($this->auth->isGranted('ROLE_ADMIN')){
 
-        $t = $this->container->get('translator');
+        $t = $this->t;
         $menu = array(array('label'    => $t->trans('Jobs', array(), 'BinovoElkarBackup'),
                             'route'    => 'showClients',
                             'class'    => 'Clients',
@@ -181,7 +198,7 @@ class Builder implements ContainerAwareInterface
 
 
             );
-        if ($this->container->get('Tahoe')->isInstalled()) {
+        if ($this->tahoe->isInstalled()) {
             $label = $t->trans('Manage Tahoe storage', array(), 'BinovoElkarTahoe');
             $menu[6]['children'][] = array('label'    => $label,
                 'route'    => 'tahoeConfig',
@@ -190,7 +207,7 @@ class Builder implements ContainerAwareInterface
         }
 	} else {
 
-		$t = $this->container->get('translator');
+		$t = $this->t;
         $menu = array(array('label'    => $t->trans('Jobs', array(), 'BinovoElkarBackup'),
                             'route'    => 'showClients',
                             'class'    => 'Clients',
@@ -232,16 +249,15 @@ class Builder implements ContainerAwareInterface
             );
 
 	 }
-        return $this->generateMenuBar($factory, $menu);
+        return $this->generateMenuBar($menu);
     }
 
     private function getLanguageMenuEntries()
     {
-        $t = $this->container->get('translator');
         $locales = $this->container->getParameter('supported_locales');
         $menus = array();
         foreach ($locales as $locale) {
-            $menus[] = array('label'           => $t->trans("language_$locale", array(), 'BinovoElkarBackup'),
+            $menus[] = array('label'           => $this->t->trans("language_$locale", array(), 'BinovoElkarBackup'),
                              'route'           => 'setLocale',
                              'routeParameters' => array('locale' => $locale));
         }
