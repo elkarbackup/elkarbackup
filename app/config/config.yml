@@ -1,7 +1,8 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
-
+    - { resource: legacy_aliases.yml }
+    
 framework:
     #esi:             ~
     translator:      { fallback: '%locale%' }
@@ -73,46 +74,41 @@ monolog:
             level: info
 
 services:
-    BnvWebLogger:
-        class: Symfony\Bridge\Monolog\Logger
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+    Symfony\Bridge\Monolog\Logger:
         arguments: [BnvWeb]
         calls:
             - [pushProcessor, ["@BnvWebUserLoggerProcessor"]]
             - [pushHandler,   ["@StreamHandler"]]
             - [pushHandler,   ["@BnvLoggerHandler"]]
-    BnvLoggerHandler:
-        class: Binovo\ElkarBackupBundle\Logger\LoggerHandler
+    Binovo\ElkarBackupBundle\Logger\LoggerHandler:
         calls:
             - [setContainer,  ["@service_container"] ]
-    StreamHandler:
-        class: Monolog\Handler\StreamHandler
+    Monolog\Handler\StreamHandler:
         # 200 = INFO, see Monolog::Logger for the values of log levels
         arguments: ['%kernel.logs_dir%/BnvLog.log', 200]
         calls:
             - [setFormatter, ["@BnvWebLoggerFormatter"]]
-    BnvWebUserLoggerProcessor:
-        class: Binovo\ElkarBackupBundle\Logger\WebUserLoggerProcessor
+    Binovo\ElkarBackupBundle\Logger\WebUserLoggerProcessor:
         calls:
             - [setContainer, ["@service_container"] ]
-    BnvWebLoggerFormatter:
-        class: Monolog\Formatter\LineFormatter
+    Monolog\Formatter\LineFormatter:
         arguments: ["[%%datetime%%] '%%channel%%.%%level_name%%: '%%message%% '%%context%% '%%extra.user_name%% '%%extra.user_email%%\n"]
-    LoginListener:
-        class: Binovo\ElkarBackupBundle\Listener\LoginListener
+    Binovo\ElkarBackupBundle\Listener\LoginListener:
         arguments: ["@service_container"]
         tags:
             - { name: kernel.event_listener, event: security.interactive_login }
-    BnvTwigExtension:
-        class: Binovo\ElkarBackupBundle\Twig\Extension
+    Binovo\ElkarBackupBundle\Twig\Extension:
         tags:
             - { name: 'twig.extension' }
-    kernel.listener.LocaleListener:
-        class: Binovo\ElkarBackupBundle\Listener\LocaleListener
+    Binovo\ElkarBackupBundle\Listener\LocaleListener:
         arguments: ['%kernel.default_locale%']
         tags:
             - { name: kernel.event_subscriber }
-    Tahoe:
-        class: Binovo\ElkarTahoeBundle\Utils\TahoeBackup
+    Binovo\ElkarTahoeBundle\Utils\TahoeBackup:
         arguments: ["@BnvWebLogger", '%home%']
     Binovo\ElkarBackupBundle\Menu\Builder:
         arguments: ["@knp_menu.factory", "@doctrine.orm.entity_manager", "@security.authorization_checker", "@translator.data_collector", "@Tahoe"]

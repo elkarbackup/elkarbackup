@@ -1,0 +1,16 @@
+# app/config/legacy_aliases.yml
+services:
+    _defaults:
+        public: true
+    # aliases so that the old service ids can still be accessed
+    # remove these if/when you are not fetching these directly
+    # from the container via $container->get()
+    BnvWebLogger: '@Symfony\Bridge\Monolog\Logger'
+    BnvLoggerHandler: '@Binovo\ElkarBackupBundle\Logger\LoggerHandler'
+    StreamHandler: '@Monolog\Handler\StreamHandler'
+    BnvWebUserLoggerProcessor: '@Binovo\ElkarBackupBundle\Logger\WebUserLoggerProcessor'
+    BnvWebLoggerFormatter: '@Monolog\Formatter\LineFormatter'
+    LoginListener: '@Binovo\ElkarBackupBundle\Listener\LoginListener'
+    BnvTwigExtension: '@Binovo\ElkarBackupBundle\Twig\Extension'
+    kernel.listener.LocaleListener: '@Binovo\ElkarBackupBundle\Listener\LocaleListener'
+    Tahoe: '@Binovo\ElkarTahoeBundle\Utils\TahoeBackup'
