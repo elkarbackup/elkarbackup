@@ -2,7 +2,7 @@
 
 ## Images
 Latest stable version with Apache and PHP7
-- 1.3.5, **latest (default)**
+- 1.4.0~rc1, **latest (default)**
 
 ## How to use this image
 
