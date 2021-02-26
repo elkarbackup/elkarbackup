@@ -7,7 +7,7 @@
  vendor/symfony/symfony/src/Symfony/Bridge/Twig/Resources/views/Form/
 #}
 {% block form_row %}
-{% spaceless %}
+{% apply spaceless%}
   {% if form.vars.block_prefixes.1 == 'percent' %}
     <div class="form-group has-feedback">
   {% else %}
@@ -19,11 +19,11 @@
           {{ form_widget(form) }}
         </div>
     </div>
-{% endspaceless %}
+{% endapply %}
 {% endblock form_row %}
 
 {% block form_label %}
-{% spaceless %}
+{% apply spaceless%}
     {% if not compound %}
         {% set label_attr = label_attr|merge({'for': id}) %}
     {% endif %}
@@ -37,7 +37,7 @@
     <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %}
       <span class="required" title="{% trans %}This field is required{% endtrans %}">*</span>
     {% endif %}</label>
-{% endspaceless %}
+{% endapply %}
 {% endblock form_label %}
 
 {% block percent_widget %}
@@ -46,7 +46,7 @@
 {% endblock %}
 
 {% block form_widget_simple %}
-{% spaceless %}
+{% apply spaceless%}
     {% set type = type|default('text') %}
     {% if type == 'file' %}
     <div class="input-group">
@@ -75,21 +75,21 @@
     {% else %}
       <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
     {% endif %}
-{% endspaceless %}
+{% endapply %}
 {% endblock form_widget_simple %}
 
 {% block choice_widget_expanded %}
-{% spaceless %}
+{% apply spaceless %}
     <div {{ block('widget_container_attributes') }}>
     {% for child in form %}
         {{ form_widget(child) }} {{child.vars.label}}<br />
     {% endfor %}
     </div>
-{% endspaceless %}
+{% endapply %}
 {% endblock choice_widget_expanded %}
 
 {% block form_errors %}
-{% spaceless %}
+{% apply spaceless%}
     {% if errors|length > 0 %}
 <div class="control-group error-top">
     <div class="alert alert-danger">
@@ -103,5 +103,5 @@
     </div>
 </div>
     {% endif %}
-{% endspaceless %}
+{% endapply %}
 {% endblock form_errors %}
