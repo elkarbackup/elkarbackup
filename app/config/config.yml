@@ -78,6 +78,9 @@ services:
         autowire: true
         autoconfigure: true
         public: false
+    Binovo\ElkarBackupBundle\:
+        resource: '../../src/Binovo/ElkarBackupBundle/*'
+        exclude: '../../src/Binovo/ElkarBackupBundle/{Controller,Entity,Repository}'
     Symfony\Bridge\Monolog\Logger:
         arguments: [BnvWeb]
         calls:
