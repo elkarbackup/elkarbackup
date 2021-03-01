@@ -1,4 +1,3 @@
-
 security:
     encoders:
         Binovo\ElkarBackupBundle\Entity\User: sha512
