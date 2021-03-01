@@ -33,6 +33,7 @@ jobs:
           #context: ./docker
           file: ./docker/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           tags: |
             elkarbackup/elkarbackup:${{ steps.get_version.outputs.VERSION }}
             ghcr.io/elkarbackup/elkarbackup:${{ steps.get_version.outputs.VERSION }}
