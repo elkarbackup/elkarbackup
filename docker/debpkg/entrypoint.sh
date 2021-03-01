@@ -16,14 +16,18 @@ set -e
 #			REPO="https://github.com/xezpeleta/elkarbackup.git -b fix-issue-79"
 
 DATA_DIR="/data/elkarbackup"
+TMP_DIR="/tmp/elkarbackup"
 EXPORT_DIR="/export"
 
-mkdir -p "$DATA_DIR" && cd "$DATA_DIR/.."
+mkdir -p "$TMP_DIR" && cd "$TMP_DIR/.."
 
 # Select version
 if [ -z "$GIT_REPO" ];then
 	if [ -d "$DATA_DIR/.git" ];then
 		echo "Detected (ElkarBackup?) Git repository. Trying to build deb package."
+		
+		## Making a new copy to avoid writing files directly on the mounted volume
+		cp -rT $DATA_DIR $TMP_DIR
 	else
 		GIT_REPO="https://github.com/elkarbackup/elkarbackup.git"
 		echo "Version not specified. Using current Elkarbackup git repo: $GIT_REPO"
@@ -36,14 +40,16 @@ else
 	git clone $GIT_REPO
 fi
 
-cd $DATA_DIR
+cd $TMP_DIR
 ./bootstrap.sh
 ./makepackage.sh
 
 DEB_FILE=`ls *deb`
+LINTIAN_LOG="lintian.log"
 
 mkdir -p "$EXPORT_DIR/build"
 mv "$DEB_FILE" "$EXPORT_DIR/build/"
+mv "$LINTIAN_LOG" "$EXPORT_DIR/build/"
 
 ## Set correct permissions
 if [ ! -z "$UID" ];
