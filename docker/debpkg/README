@@ -1,0 +1,13 @@
+## Build deb package
+
+A Docker image to quickly build the Elkarbackup debian package (deb)
+
+Usage:
+
+```bash
+./run.sh
+```
+
+After running the above command, the deb package will be created in the "/build"
+directory
+
