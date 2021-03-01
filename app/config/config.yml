@@ -68,7 +68,7 @@ services:
         public: false
     Binovo\ElkarBackupBundle\:
         resource: '../../src/Binovo/ElkarBackupBundle/*'
-        exclude: '../../src/Binovo/ElkarBackupBundle/{Controller,Entity,Repository}'
+        exclude: '../../src/Binovo/ElkarBackupBundle/{Controller,Entity,Lib,Repository}'
     Symfony\Bridge\Monolog\Logger:
         arguments: [BnvWeb]
         calls:
