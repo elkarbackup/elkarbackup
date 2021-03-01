@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
-docker run --rm --name ebname \
+docker build -t elkarbackup/debpkg .
+
+docker run --rm \
 	   -v $(pwd)/../..:/data/elkarbackup \
 	   -v $(pwd):/export \
 		 -e UID=$(id -u) \
 		 -e GID=$(id -g) \
-		 elkarbackup/deb:latest
+		 elkarbackup/debpkg
