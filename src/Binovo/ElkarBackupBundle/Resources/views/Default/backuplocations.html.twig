@@ -5,9 +5,7 @@ http://www.opensource.org/licenses/bsd-license.php New-BSD #}
 
 {% block scripts %}
     {{ parent() }}
-    {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/show-policies.js' %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+        <script type="text/javascript" src="{{ asset('js/show-policies.js') }}"></script>
 {% endblock %}
 
 {% block body %}

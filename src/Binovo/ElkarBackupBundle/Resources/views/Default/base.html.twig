@@ -14,9 +14,7 @@
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" media="screen" />
 
         <!-- @ChristianGR elkarbackup theme -->
-        {% stylesheets '@BinovoElkarBackupBundle/Resources/public/css/elkarbackup.css' %}
-          <link rel="stylesheet" href="{{ asset_url }}" media="screen" />
-        {% endstylesheets %}
+        <link rel="stylesheet" href="{{ asset('css/elkarbackup.css') }}" media="screen" />
 
         {% block scripts %}
         <!-- jQuery -->
@@ -25,9 +23,7 @@
         <script type="text/javascript" src="{{ asset('js/dojo-release/dojo/dojo.js') }}" data-dojo-config="async: true"></script>
         <!-- Bootstrap and Elkarbackup js -->
         <script type="text/javascript" src="{{ asset('js/bootstrap/bootstrap.min.js') }}" ></script>
-            {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/base.js' %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-            {% endjavascripts %}
+        <script type="text/javascript" src="{{ asset('js/base.js') }}"></script>
 	<script type="text/javascript">var context="{{url_prefix}}";</script>
         {% endblock %}
 

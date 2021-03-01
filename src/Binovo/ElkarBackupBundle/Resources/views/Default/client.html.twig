@@ -7,9 +7,7 @@
 
 {% block scripts %}
     {{ parent() }}
-    {% javascripts '@BinovoElkarBackupBundle/Resources/public/js/edit-client.js' %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+    <script type="text/javascript" src="{{ asset('js/edit-client.js') }}"></script>
 {% endblock %}
 
 {% block body %}
