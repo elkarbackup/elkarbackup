@@ -17,7 +17,8 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\LockHandler;
+use Symfony\Component\Lock\Store\FlockStore;
+use Symfony\Component\Lock\Factory;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -69,10 +70,11 @@ class TickCommand extends LoggingCommand
         $logHandler = $this->container->get('BnvLoggerHandler');
         $logHandler->startRecordingMessages();
         
-        $lockHandler = new LockHandler('tick.lock');
+        $store    = new FlockStore(sys_get_temp_dir());
+        $factory  = new Factory($store);
+        $lockHandler = $factory->createLock('tick.lock');
         
-        try {
-            if ($lockHandler->lock()) {
+            if ($lockHandler->acquire()) {
                 try {
                     $this->initializeClients();
                     $this->initializeQueue();
@@ -152,9 +154,6 @@ EOF;
             $this->info('Tick Command skipped, scheduler already executing');
             $this->manager->flush();
             return self::ERR_CODE_OK;
-        } finally {
-            $lockHandler->release();
-        }
     }
     
     protected function enqueueScheduledBackups(InputInterface $input, OutputInterface $output)
