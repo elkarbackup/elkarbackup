@@ -9,11 +9,13 @@ use \DateTime;
 use \Exception;
 use \PDOException;
 use \RuntimeException;
+use Binovo\ElkarBackupBundle\BinovoElkarBackupBundle;
 use Binovo\ElkarBackupBundle\Entity\Client;
 use Binovo\ElkarBackupBundle\Entity\BackupLocation;
 use Binovo\ElkarBackupBundle\Entity\Job;
 use Binovo\ElkarBackupBundle\Entity\Message;
 use Binovo\ElkarBackupBundle\Entity\Policy;
+use Binovo\ElkarBackupBundle\Entity\Queue;
 use Binovo\ElkarBackupBundle\Entity\Script;
 use Binovo\ElkarBackupBundle\Entity\User;
 use Binovo\ElkarBackupBundle\Form\Type\AuthorizedKeyType;
@@ -56,8 +58,7 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-use Binovo\ElkarBackupBundle\BinovoElkarBackupBundle;
-use Binovo\ElkarBackupBundle\Entity\Queue;
+
 
 class DefaultController extends Controller
 {
@@ -1934,19 +1935,11 @@ EOF;
             $backupLocation = $repository->find($id);
         }
         
-        $tahoe = $this->container->get('Tahoe');
-        $tahoeInstalled = $tahoe->isInstalled();
-        $tahoeOn = $backupLocation->getTahoe();
-        
-        if (! $tahoeInstalled && $tahoeOn) {
-            $tahoeOn = false;
-            $backupLocation->setTahoe(false);
-        }
         
         $form = $this->createForm(
             BackupLocationType::class,
             $backupLocation,
-            array( 'fs' => $this->isAutoFsAvailable(), 'tahoeInstalled' => $tahoeInstalled, 'translator' => $t)
+            array( 'fs' => $this->isAutoFsAvailable(), 'translator' => $t)
         );
         
         $this->debug(
@@ -1978,17 +1971,11 @@ EOF;
             $backupLocation = $repository->find($id);
         }
         
-        $tahoe = $this->container->get('Tahoe');
-        $tahoeInstalled = $tahoe->isInstalled();
-        
-        if ($backupLocation->getTahoe() == null) {
-            $backupLocation->setTahoe(false);
-        }
         
         $form = $this->createForm(
             BackupLocationType::class,
             $backupLocation,
-            array( 'fs' => $this->isAutoFsAvailable(), 'tahoeInstalled' => $tahoeInstalled, 'translator' => $t)
+            array( 'fs' => $this->isAutoFsAvailable(), 'translator' => $t)
         );
         $form->handleRequest($request);
         $result = null;
@@ -1999,19 +1986,6 @@ EOF;
                 array(),
                 'BinovoElkarBackup'
             )));
-            $result = $this->render(
-                'BinovoElkarBackupBundle:Default:backuplocation.html.twig',
-                array('form' => $form->createView(),'id' => $id)
-            );
-        } elseif (! $tahoe->isReady() and $backupLocation->getTahoe()) {
-            $this->get('session')->getFlashBag()->add(
-                'manageParameters',
-                $t->trans(
-                    'Warning: tahoe is not properly configured and will not work',
-                    array(),
-                    'BinovoElkarTahoe'
-                )
-            );
             $result = $this->render(
                 'BinovoElkarBackupBundle:Default:backuplocation.html.twig',
                 array('form' => $form->createView(),'id' => $id)
