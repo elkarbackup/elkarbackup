@@ -29,7 +29,6 @@ http://www.opensource.org/licenses/bsd-license.php New-BSD #}
                 <th>{% trans %}Name{% endtrans %}</th>
                 <th>{% trans %}Host{% endtrans %}</th>
                 <th>{% trans %}Directory{% endtrans %}</th>
-                <th>{% trans %}Tahoe{% endtrans %}</th>
                 <th>{% trans %}Max parallel jobs{% endtrans %}</th>
                 {% if is_granted('ROLE_ADMIN') %}
                 <th>{% trans %}Actions{% endtrans %}</th>
@@ -44,7 +43,6 @@ http://www.opensource.org/licenses/bsd-license.php New-BSD #}
                 <td>{{ backupLocation.name }}</td>
                 <td>{{ backupLocation.host }}</td>
                 <td>{{ backupLocation.directory }}</td>
-                <td>{% if backupLocation.tahoe %} Active {% else %} Not active {% endif %}</td>
                 <td>{{ backupLocation.maxParallelJobs }}
                 {% if is_granted('ROLE_ADMIN') %}
                 <td class="actions" style="width: 20%; text-align: center">
