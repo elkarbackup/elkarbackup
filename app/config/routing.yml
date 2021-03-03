@@ -1,8 +1,0 @@
-binovo_elkar_backups:
-    resource: "@BinovoElkarBackupBundle/Controller/"
-    type:     annotation
-    prefix:   /
-login_check:
-    path:   /login_check
-logout:
-    path: /logout
