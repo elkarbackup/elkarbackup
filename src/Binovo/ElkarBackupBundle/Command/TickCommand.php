@@ -131,11 +131,7 @@ EOF;
                         } else {
                             $noCandidate = false;
                         }
-                    }
-                    
-                    //last but not least, backup @tahoe
-                    $this->getContainer()->get('Tahoe')->runAllQueuedJobs();
-                    
+                    }                    
                     $this->initializeClients();
                     
                 } catch (Exception $e) {
