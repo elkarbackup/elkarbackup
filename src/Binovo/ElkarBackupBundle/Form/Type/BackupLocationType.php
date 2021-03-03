@@ -13,14 +13,12 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Binovo\ElkarBackupBundle\Controller\DefaultController;
-use Binovo\ElkarTahoeBundle\Utils\TahoeBackup;
 
 class BackupLocationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $t = $options['translator'];
-        $this->tahoeInstalled = $options['tahoeInstalled'];
         $this->fs = $options['fs'];
 
         $builder->add('name'        , TextType::class    , array('label' => $t->trans('Name', array(), 'BinovoElkarBackup'),
@@ -33,9 +31,6 @@ class BackupLocationType extends AbstractType
                 ->add('directory'   , TextType::class    , array('label' => $t->trans('Directory', array(), 'BinovoElkarBackup'),
                                                         'required' => true,
                                                         'attr' => array('class' => 'form-control')))
-                ->add('tahoe'       , CheckboxType::class, array('required' => false,
-                                                        'label' => $t->trans('Turn on Tahoe storage', array(), 'BinovoElkarTahoe'),
-                                                        'disabled' => !$this->tahoeInstalled))
                 ->add('maxParallelJobs', IntegerType::class, array('label' => $t->trans('Max parallel jobs', array(), 'BinovoElkarBackup'),
                                                          'attr'  => array('class'    => 'form-control'),
                                                          'required' => true));
@@ -47,7 +42,6 @@ class BackupLocationType extends AbstractType
           'data_class'         => 'Binovo\ElkarBackupBundle\Entity\BackupLocation',
           'translator'         => null,
           'scriptFileRequired' => false,
-          'tahoeInstalled'     => null,
           'fs'                 => null
         ));
     }
