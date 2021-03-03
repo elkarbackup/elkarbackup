@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -33,6 +33,7 @@ jobs:
           #context: ./docker
           file: ./docker/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           tags: |
             elkarbackup/elkarbackup:${{ steps.get_version.outputs.VERSION }}
             ghcr.io/elkarbackup/elkarbackup:${{ steps.get_version.outputs.VERSION }}
