@@ -12,7 +12,6 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Translation\DataCollectorTranslator;
-use Binovo\ElkarTahoeBundle\Utils\TahoeBackup;
 
 class Builder implements ContainerAwareInterface
 {
@@ -35,15 +34,13 @@ class Builder implements ContainerAwareInterface
     private $em;
     private $auth;
     private $t;
-    private $tahoe;
 
-    public function __construct(FactoryInterface $factory, EntityManager $entity, AuthorizationCheckerInterface $auth, DataCollectorTranslator $t, TahoeBackup $tahoe)
+    public function __construct(FactoryInterface $factory, EntityManager $entity, AuthorizationCheckerInterface $auth, DataCollectorTranslator $t)
     {
         $this->factory = $factory;
         $this->em = $entity;
         $this->auth = $auth;
         $this->t = $t;
-        $this->tahoe = $tahoe;
     }
 
     protected function generateOnClickHandler($controller, array $params = array(), $absolute = false)
@@ -198,13 +195,6 @@ class Builder implements ContainerAwareInterface
 
 
             );
-        if ($this->tahoe->isInstalled()) {
-            $label = $t->trans('Manage Tahoe storage', array(), 'BinovoElkarTahoe');
-            $menu[6]['children'][] = array('label'    => $label,
-                'route'    => 'tahoeConfig',
-                'class'    => 'tahoeConfig',
-                'icon'     => "<i class='glyphicon glyphicon-cloud-upload'></i><span>$label</span></a>");
-        }
 	} else {
 
 		$t = $this->t;
