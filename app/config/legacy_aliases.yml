@@ -13,4 +13,3 @@ services:
     LoginListener: '@Binovo\ElkarBackupBundle\Listener\LoginListener'
     BnvTwigExtension: '@Binovo\ElkarBackupBundle\Twig\Extension'
     kernel.listener.LocaleListener: '@Binovo\ElkarBackupBundle\Listener\LocaleListener'
-    Tahoe: '@Binovo\ElkarTahoeBundle\Utils\TahoeBackup'
