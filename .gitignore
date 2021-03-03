@@ -1,37 +1,22 @@
-# Symfony3 default gitignore #
+# Symfony4 default gitignore #
 ##############################
-/.web-server-pid
-/app/config/parameters.yml
-/build/
-/phpunit.xml
-/var/*
-!/var/cache
-/var/cache/*
-!var/cache/.gitkeep
-!/var/logs
-/var/logs/*
-!var/logs/.gitkeep
-!/var/sessions
-/var/sessions/*
-!var/sessions/.gitkeep
-!var/SymfonyRequirements.php
-/vendor/
 
-# Symfony3 personal gitignore #
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+# Symfony4 personal gitignore #
 ###############################
-/web/js/
-!/web/js/dojo-release
-!/web/js/dojo-release-*
-/web/css/*
-!/web/css/.gitkeep
-!/web/js/bootstrap/.gitkeep
-!/web/js/moment/moment.min.js
-/web/fonts/glyphicons-*
 
 # Makepackage #
 ###############
 .debian
-build
 
 # OS generated files #
 ######################
