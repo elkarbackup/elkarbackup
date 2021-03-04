@@ -2,3 +2,4 @@
 swiftmailer:
     # send all emails to a specific address
     #delivery_addresses: ['me@example.com']
+    delivery_address: example@example.com
