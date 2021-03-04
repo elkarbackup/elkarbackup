@@ -1,12 +1,19 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
-
+        driver:   '%database_driver%'
+        host:     '%database_host%'
+        port:     '%database_port%'
+        dbname:   '%database_name%'
+        user:     '%database_user%'
+        password: '%database_password%'
+        charset:  UTF8
+        server_version: '8.0'
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
         #server_version: '13'
     orm:
-        auto_generate_proxy_classes: true
+        auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
