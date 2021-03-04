@@ -14,3 +14,6 @@ monolog:
             type: console
             process_psr_3_messages: false
             channels: ["!event", "!doctrine"]
+        firephp:
+            type:  firephp
+            level: info
