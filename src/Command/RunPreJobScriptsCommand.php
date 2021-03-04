@@ -1,11 +1,11 @@
 <?php
-namespace Binovo\ElkarBackupBundle\Command;
+namespace App\Command;
 
-use Binovo\ElkarBackupBundle\Lib\BaseScriptsCommand;
+use App\Lib\BaseScriptsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
+use App\Lib\LoggingCommand;
 
 class RunPreJobScriptsCommand extends BaseScriptsCommand
 {

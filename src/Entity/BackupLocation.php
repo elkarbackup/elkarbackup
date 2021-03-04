@@ -4,9 +4,9 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Entity;
+namespace App\Entity;
 
-use Binovo\ElkarBackupBundle\Lib\Globals;
+use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use \RuntimeException;

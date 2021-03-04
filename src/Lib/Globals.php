@@ -4,7 +4,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Lib;
+namespace App\Lib;
 
 class Globals
 {

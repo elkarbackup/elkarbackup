@@ -1,8 +1,8 @@
 <?php
-namespace Binovo\ElkarBackupBundle\Command;
+namespace App\Command;
 
 use Symfony\Component\Console\Command\Command;
-use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
+use App\Lib\LoggingCommand;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;

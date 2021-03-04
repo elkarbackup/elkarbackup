@@ -4,9 +4,9 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Command;
+namespace App\Command;
 
-use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
+use App\Lib\LoggingCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

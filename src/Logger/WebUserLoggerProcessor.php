@@ -4,7 +4,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Logger;
+namespace App\Logger;
 
 use Monolog\Processor\WebProcessor;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;

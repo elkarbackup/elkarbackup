@@ -4,7 +4,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Listener;
+namespace App\Listener;
 
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\DependencyInjection\ContainerInterface;

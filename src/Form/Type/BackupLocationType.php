@@ -4,7 +4,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Form\Type;
+namespace App\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Binovo\ElkarBackupBundle\Controller\DefaultController;
+use App\Controller\DefaultController;
 
 class BackupLocationType extends AbstractType
 {
@@ -39,7 +39,7 @@ class BackupLocationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-          'data_class'         => 'Binovo\ElkarBackupBundle\Entity\BackupLocation',
+          'data_class'         => 'App\Entity\BackupLocation',
           'translator'         => null,
           'scriptFileRequired' => false,
           'fs'                 => null

@@ -4,9 +4,9 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Entity;
+namespace App\Entity;
 
-use Binovo\ElkarBackupBundle\Lib\Globals;
+use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
 use Monolog\Logger;
 use \RuntimeException;
@@ -257,10 +257,10 @@ class Job
     /**
      * Set client
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Client $client
+     * @param App\Entity\Client $client
      * @return Job
      */
-    public function setClient(\Binovo\ElkarBackupBundle\Entity\Client $client = null)
+    public function setClient(\App\Entity\Client $client = null)
     {
         $this->client = $client;
 
@@ -270,7 +270,7 @@ class Job
     /**
      * Get client
      *
-     * @return Binovo\ElkarBackupBundle\Entity\Client
+     * @return App\Entity\Client
      */
     public function getClient()
     {
@@ -344,10 +344,10 @@ class Job
     /**
      * Set policy
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Policy $policy
+     * @param App\Entity\Policy $policy
      * @return Job
      */
-    public function setPolicy(\Binovo\ElkarBackupBundle\Entity\Policy $policy = null)
+    public function setPolicy(\App\Entity\Policy $policy = null)
     {
         $this->policy = $policy;
 
@@ -357,7 +357,7 @@ class Job
     /**
      * Get policy
      *
-     * @return Binovo\ElkarBackupBundle\Entity\Policy
+     * @return App\Entity\Policy
      */
     public function getPolicy()
     {
@@ -556,7 +556,7 @@ class Job
     /**
      * Add postScript
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Script $postScript
+     * @param App\Entity\Script $postScript
      * @return Job
      */
     public function addPostScript(Script $postScript)
@@ -568,7 +568,7 @@ class Job
     /**
      * Remove postScript
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Script $postScript
+     * @param App\Entity\Script $postScript
      */
     public function removePostScript(Script $postScript)
     {
@@ -578,7 +578,7 @@ class Job
     /**
      * Add preScripts
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Script $preScripts
+     * @param App\Entity\Script $preScripts
      * @return Job
      */
     public function addPreScript(Script $preScripts)
@@ -590,7 +590,7 @@ class Job
     /**
      * Remove preScripts
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Script $preScripts
+     * @param App\Entity\Script $preScripts
      */
     public function removePreScript(Script $preScripts)
     {
@@ -667,7 +667,7 @@ class Job
 
     /**
      * Get backupLocation
-     * @return Binovo\ElkarBackupBundle\Entity\BackupLocation
+     * @return App\Entity\BackupLocation
      */
     public function getBackupLocation()
     {
@@ -677,7 +677,7 @@ class Job
     /**
      * Set backupLocation
      * 
-     * @param Binovo\ElkarBackupBundle\Entity\BackupLocation $backupLocation
+     * @param App\Entity\BackupLocation $backupLocation
      * @return Job
      */
     public function setBackupLocation($backupLocation)

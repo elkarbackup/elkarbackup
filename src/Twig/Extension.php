@@ -4,7 +4,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Twig;
+namespace App\Twig;
 
 class Extension extends \Twig_Extension
 {

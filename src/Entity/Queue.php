@@ -4,7 +4,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Entity;
+namespace App\Entity;
 
 use \DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -83,7 +83,7 @@ class Queue
 
     /**
      * Get job
-     * @return Binovo\ElkarBackupBundle\Entity\Job
+     * @return App\Entity\Job
      */
     public function getJob()
     {
@@ -93,7 +93,7 @@ class Queue
     /**
      * Set job
      * 
-     * @param Binovo\ElkarBackupBundle\Entity\Job $job
+     * @param App\Entity\Job $job
      * @return Queue
      */
     public function setJob($job)

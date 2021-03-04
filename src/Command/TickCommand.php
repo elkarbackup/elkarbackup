@@ -4,15 +4,15 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Command;
+namespace App\Command;
 
-use Binovo\ElkarBackupBundle\Entity\User;
-use Binovo\ElkarBackupBundle\Entity\Job;
-use Binovo\ElkarBackupBundle\Entity\Client;
-use Binovo\ElkarBackupBundle\Entity\Message;
-use Binovo\ElkarBackupBundle\Entity\Queue;
-use Binovo\ElkarBackupBundle\Lib\Globals;
-use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
+use App\Entity\User;
+use App\Entity\Job;
+use App\Entity\Client;
+use App\Entity\Message;
+use App\Entity\Queue;
+use App\Lib\Globals;
+use App\Lib\LoggingCommand;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

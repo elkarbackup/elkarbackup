@@ -4,10 +4,10 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Logger;
+namespace App\Logger;
 
-use Binovo\ElkarBackupBundle\Entity\Job;
-use Binovo\ElkarBackupBundle\Entity\LogRecord;
+use App\Entity\Job;
+use App\Entity\LogRecord;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;

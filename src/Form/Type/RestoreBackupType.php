@@ -1,5 +1,5 @@
 <?php
-namespace Binovo\ElkarBackupBundle\Form\Type;
+namespace App\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;

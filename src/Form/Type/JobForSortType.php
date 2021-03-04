@@ -4,9 +4,9 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Form\Type;
+namespace App\Form\Type;
 
-use Binovo\ElkarBackupBundle\Entity\Job;
+use App\Entity\Job;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;

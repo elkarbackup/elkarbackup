@@ -1,8 +1,8 @@
 <?php
-namespace Binovo\ElkarBackupBundle\Lib;
+namespace App\Lib;
 
-use Binovo\ElkarBackupBundle\Entity\Client;
-use Binovo\ElkarBackupBundle\Entity\Job;
+use App\Entity\Client;
+use App\Entity\Job;
 
 class BaseScriptsCommand extends LoggingCommand
 {

@@ -4,9 +4,9 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Entity;
+namespace App\Entity;
 
-use Binovo\ElkarBackupBundle\Lib\Globals;
+use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use \RuntimeException;
@@ -263,10 +263,10 @@ class Client
     /**
      * Add jobs
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Job $jobs
+     * @param App\Entity\Job $jobs
      * @return Client
      */
-    public function addJob(\Binovo\ElkarBackupBundle\Entity\Job $jobs)
+    public function addJob(\App\Entity\Job $jobs)
     {
         $this->jobs[] = $jobs;
 
@@ -276,9 +276,9 @@ class Client
     /**
      * Remove jobs
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Job $jobs
+     * @param App\Entity\Job $jobs
      */
-    public function removeJob(\Binovo\ElkarBackupBundle\Entity\Job $jobs)
+    public function removeJob(\App\Entity\Job $jobs)
     {
         $this->jobs->removeElement($jobs);
     }
@@ -378,7 +378,7 @@ class Client
     /**
      * Add postScripts
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Script $postScripts
+     * @param App\Entity\Script $postScripts
      * @return Client
      */
     public function addPostScript(Script $postScripts)
@@ -390,7 +390,7 @@ class Client
     /**
      * Remove postScripts
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Script $postScripts
+     * @param App\Entity\Script $postScripts
      */
     public function removePostScript(Script $postScripts)
     {
@@ -410,7 +410,7 @@ class Client
     /**
      * Add preScripts
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Script $preScripts
+     * @param App\Entity\Script $preScripts
      * @return Client
      */
     public function addPreScript(Script $preScripts)
@@ -422,7 +422,7 @@ class Client
     /**
      * Remove preScripts
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Script $preScripts
+     * @param App\Entity\Script $preScripts
      */
     public function removePreScript(Script $preScripts)
     {
@@ -442,11 +442,11 @@ class Client
     /**
      * Set owner
      *
-     * @param \Binovo\ElkarBackupBundle\Entity\User $owner
+     * @param \App\Entity\User $owner
      *
      * @return Client
      */
-    public function setOwner(\Binovo\ElkarBackupBundle\Entity\User $owner = null)
+    public function setOwner(\App\Entity\User $owner = null)
     {
         $this->owner = $owner;
 
@@ -456,7 +456,7 @@ class Client
     /**
      * Get owner
      *
-     * @return \Binovo\ElkarBackupBundle\Entity\User
+     * @return \App\Entity\User
      */
     public function getOwner()
     {

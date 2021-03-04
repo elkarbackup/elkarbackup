@@ -4,7 +4,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Entity;
+namespace App\Entity;
 
 use \DateTime;
 use Doctrine\ORM\Mapping as ORM;

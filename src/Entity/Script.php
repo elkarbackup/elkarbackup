@@ -4,10 +4,10 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Entity;
+namespace App\Entity;
 
 use \RuntimeException;
-use Binovo\ElkarBackupBundle\Lib\Globals;
+use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -360,7 +360,7 @@ class Script
     /**
      * Add postClients
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Client $postClients
+     * @param App\Entity\Client $postClients
      * @return Script
      */
     public function addPostClient(Client $postClients)
@@ -372,7 +372,7 @@ class Script
     /**
      * Remove postClients
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Client $postClients
+     * @param App\Entity\Client $postClients
      */
     public function removePostClient(Client $postClients)
     {
@@ -392,7 +392,7 @@ class Script
     /**
      * Add postJobs
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Job $postJobs
+     * @param App\Entity\Job $postJobs
      * @return Script
      */
     public function addPostJob(Job $postJobs)
@@ -404,7 +404,7 @@ class Script
     /**
      * Remove postJobs
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Job $postJobs
+     * @param App\Entity\Job $postJobs
      */
     public function removePostJob(Job $postJobs)
     {
@@ -424,7 +424,7 @@ class Script
     /**
      * Add preClients
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Client $preClients
+     * @param App\Entity\Client $preClients
      * @return Script
      */
     public function addPreClient(Client $preClients)
@@ -436,7 +436,7 @@ class Script
     /**
      * Remove preClients
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Client $preClients
+     * @param App\Entity\Client $preClients
      */
     public function removePreClient(Client $preClients)
     {
@@ -456,7 +456,7 @@ class Script
     /**
      * Add preJobs
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Job $preJobs
+     * @param App\Entity\Job $preJobs
      * @return Script
      */
     public function addPreJob(Job $preJobs)
@@ -468,7 +468,7 @@ class Script
     /**
      * Remove preJobs
      *
-     * @param Binovo\ElkarBackupBundle\Entity\Job $preJobs
+     * @param App\Entity\Job $preJobs
      */
     public function removePreJob(Job $preJobs)
     {

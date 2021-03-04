@@ -4,7 +4,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Menu;
+namespace App\Menu;
 
 use Knp\Menu\FactoryInterface;
 use Doctrine\ORM\EntityManager;

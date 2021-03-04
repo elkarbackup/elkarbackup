@@ -3,32 +3,32 @@
  * @copyright 2012,2013 Binovo it Human Project, S.L.
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
-namespace Binovo\ElkarBackupBundle\Controller;
+namespace App\Controller;
 
 use \DateTime;
 use \Exception;
 use \PDOException;
 use \RuntimeException;
-use Binovo\ElkarBackupBundle\BinovoElkarBackupBundle;
-use Binovo\ElkarBackupBundle\Entity\Client;
-use Binovo\ElkarBackupBundle\Entity\BackupLocation;
-use Binovo\ElkarBackupBundle\Entity\Job;
-use Binovo\ElkarBackupBundle\Entity\Message;
-use Binovo\ElkarBackupBundle\Entity\Policy;
-use Binovo\ElkarBackupBundle\Entity\Queue;
-use Binovo\ElkarBackupBundle\Entity\Script;
-use Binovo\ElkarBackupBundle\Entity\User;
-use Binovo\ElkarBackupBundle\Form\Type\AuthorizedKeyType;
-use Binovo\ElkarBackupBundle\Form\Type\BackupLocationType;
-use Binovo\ElkarBackupBundle\Form\Type\ClientType;
-use Binovo\ElkarBackupBundle\Form\Type\JobForSortType;
-use Binovo\ElkarBackupBundle\Form\Type\JobType;
-use Binovo\ElkarBackupBundle\Form\Type\PolicyType;
-use Binovo\ElkarBackupBundle\Form\Type\RestoreBackupType;
-use Binovo\ElkarBackupBundle\Form\Type\ScriptType;
-use Binovo\ElkarBackupBundle\Form\Type\UserType;
-use Binovo\ElkarBackupBundle\Form\Type\PreferencesType;
-use Binovo\ElkarBackupBundle\Lib\Globals;
+use App\BinovoElkarBackupBundle;
+use App\Entity\Client;
+use App\Entity\BackupLocation;
+use App\Entity\Job;
+use App\Entity\Message;
+use App\Entity\Policy;
+use App\Entity\Queue;
+use App\Entity\Script;
+use App\Entity\User;
+use App\Form\Type\AuthorizedKeyType;
+use App\Form\Type\BackupLocationType;
+use App\Form\Type\ClientType;
+use App\Form\Type\JobForSortType;
+use App\Form\Type\JobType;
+use App\Form\Type\PolicyType;
+use App\Form\Type\RestoreBackupType;
+use App\Form\Type\ScriptType;
+use App\Form\Type\UserType;
+use App\Form\Type\PreferencesType;
+use App\Lib\Globals;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;

@@ -1,9 +1,9 @@
 <?php
-namespace Binovo\ElkarBackupBundle\Command;
+namespace App\Command;
 
 use Assetic\Exception\Exception;
-use Binovo\ElkarBackupBundle\Entity\Job;
-use Binovo\ElkarBackupBundle\Lib\LoggingCommand;
+use App\Entity\Job;
+use App\Lib\LoggingCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

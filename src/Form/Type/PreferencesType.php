@@ -4,7 +4,7 @@
  * @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  */
 
-namespace Binovo\ElkarBackupBundle\Form\Type;
+namespace App\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -35,7 +35,7 @@ class PreferencesType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-          'data_class' => 'Binovo\ElkarBackupBundle\Entity\User',
+          'data_class' => 'App\Entity\User',
           'validation_groups' => array('preferences'),
           'translator' => null,
         ));

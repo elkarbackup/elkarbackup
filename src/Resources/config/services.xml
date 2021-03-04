@@ -6,7 +6,7 @@
 
     <!--
     <parameters>
-        <parameter key="binovo_elkar_backups.example.class">Binovo\ElkarBackupBundle\Example</parameter>
+        <parameter key="binovo_elkar_backups.example.class">App\Example</parameter>
     </parameters>
 
     <services>
