@@ -9,7 +9,7 @@ namespace App\Logger;
 use Monolog\Processor\WebProcessor;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
+use Symfony\Component\Security\Core\Security;
 /**
  * Injects url/method and remote IP of the current web request in all records
  *
@@ -17,11 +17,17 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class WebUserLoggerProcessor extends WebProcessor implements ContainerAwareInterface
 {
+    private $security;
     private $container;
     /**
      * @param  array $record
      * @return array
      */
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     public function __invoke(array $record)
     {
         $record = parent::__invoke($record);
@@ -35,7 +41,7 @@ class WebUserLoggerProcessor extends WebProcessor implements ContainerAwareInter
                 )
             );
         $user = null;
-        $token = $this->container->get('security.token_storage')->getToken();
+        $token = $this->security->getToken();
         if ($token) {
             $user = $token->getUser();
         }

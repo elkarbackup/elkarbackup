@@ -49,7 +49,6 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use steevanb\SSH2Bundle\Entity\Profile;
 use steevanb\SSH2Bundle\Entity\Connection;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -59,10 +58,14 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 
-
 class DefaultController extends Controller
 {
+    private $security;
 
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
     protected function info($msg, $translatorParams = array(), $context = array())
     {
         $logger = $this->get('BnvWebLogger');
@@ -445,7 +448,7 @@ class DefaultController extends Controller
      */
     public function saveClientAction(Request $request, $id)
     {
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->security->getToken()->getUser();
         $actualuserid = $user->getId();
         
         $t = $this->get('translator');
@@ -494,7 +497,7 @@ class DefaultController extends Controller
                     }
                 }
                 if ($client->getOwner() == null) {
-                    $client->setOwner($this->get('security.token_storage')->getToken()->getUser());
+                    $client->setOwner($this->security->getToken()->getUser());
                 }
                 
                 if ($client->getMaxParallelJobs() < 1) {
@@ -661,7 +664,7 @@ class DefaultController extends Controller
      */
     public function restoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->security->getToken()->getUser();
         $actualuserid = $user->getId();
         $actualusername = $user->getUsername();
         
@@ -702,7 +705,7 @@ class DefaultController extends Controller
     public function runRestoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
        $t = $this->get('translator');
-       $user = $this->get('security.token_storage')->getToken()->getUser();
+       $user = $this->security->getToken()->getUser();
        $actualuserid = $user->getId();
        $granted = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
        $suggestedPath = mb_substr($path, mb_strpos($path, '/'));
@@ -768,7 +771,7 @@ class DefaultController extends Controller
     public function enqueueJobAction(Request $request, $idClient, $idJob)
     {
         $t = $this->get('translator');
-        $user = $this->get('security.token_storage')->getToken();
+        $user = $this->security->getToken();
         $trustable = false;
         
         if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -1447,7 +1450,7 @@ class DefaultController extends Controller
      */
     public function sortJobsAction(Request $request)
     {
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->security->getToken()->getUser();
         $actualuserid = $user->getId();
         
         $t = $this->get('translator');
@@ -1514,7 +1517,7 @@ class DefaultController extends Controller
      */
     public function showClientsAction(Request $request)
     {
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->security->getToken()->getUser();
         $actualuserid = $user->getId();
         
         $fsDiskUsage = (int) round(
@@ -2391,7 +2394,7 @@ EOF;
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
             $data = $form->getData();
-            $user = $this->get('security.token_storage')->getToken()->getUser();
+            $user = $this->security->getToken()->getUser();
             $encoder = $this->get('security.encoder_factory')->getEncoder($user);
             $ok = true;
             if (empty($data['newPassword']) || $data['newPassword'] !== $data['newPassword2']) {
@@ -2839,7 +2842,7 @@ EOF;
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
         $client = $repository->find($idClient);
         
-        if ($client->getOwner() == $this->get('security.token_storage')->getToken()->getUser() || 
+        if ($client->getOwner() == $this->security->getToken()->getUser() || 
             $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
             return True;
         } else {
@@ -2977,7 +2980,7 @@ EOF;
     {
         $t = $this->get('translator');
         // Get current user
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->security->getToken()->getUser();
         $form = $this->createForm(
             PreferencesType::class,
             $user,
@@ -3017,7 +3020,7 @@ EOF;
     private function getUserPreference(Request $request, $param)
     {
         $response = null;
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->security->getToken()->getUser();
         if ($param == 'language') {
             $response = $user->getLanguage();
         } elseif ($param == 'linesperpage') {
