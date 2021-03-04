@@ -1,0 +1,133 @@
+{##
+ # @copyright 2012,2013 Binovo it Human Project, S.L.
+ # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ #}
+{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoElkarBackup' %}
+
+{% block body %}
+
+<div class="top-action-buttons pull-right">
+  <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnDownloadScriptDisabled'">
+          {% trans %}Script has not yet been saved{% endtrans %}
+  </div>
+  <div class="btn-group inline" {% if not form.vars.value.id %}id="btnDownloadScriptDisabled"{% endif %}>
+    <button class="btn btn-default" {% if not form.vars.value.id %}disabled="true" {% else %} onclick="window.location.href='{{path('downloadScript', {id: form.vars.value.id}) }}'" {% endif %}><span class="glyphicon glyphicon-download-alt"></span> {% trans %}Download{% endtrans %}</button>
+  </div>
+</div>
+<form class="form-horizontal" action="{{ path('saveScript', {id: form.vars.value.id}) }}" method="post" {{ form_start(form) }}>
+    <h3 id="legend">{% trans %}Edit script{% endtrans %}</h3>
+    <div class="row">
+        <div class="col-md-6">
+{% for flashMessage in app.session.flashbag.get('editScript') %}
+            <div class="controls help-block">
+                {{ flashMessage }}
+            </div>
+{% endfor %}
+            {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
+            <div class="controls">
+            </div>
+
+       <div class="form-group">
+          <label class="required control-label col-xs-12 col-md-3">{% trans %}Name{% endtrans %}</label>
+          <div class="col-xs-12 col-md-9"> {{ form_widget(form.name) }}</div>
+       </div>
+       <div class="form-group">
+          <label class="control-label col-xs-12 col-md-3">{% trans %}Description{% endtrans %}</label>
+          <div class="col-xs-12 col-md-9"> {{ form_widget(form.description) }}</div>
+       </div>
+       <div class="form-group">
+          <label class="required control-label col-xs-12 col-md-3">{% trans %}File{% endtrans %}</label>
+          <div class="col-xs-12 col-md-9"> {{ form_widget(form.scriptFile) }}</div>
+       </div>
+
+      <div class="form-group">
+  		    <label class="control-label col-xs-12 col-md-3">{% trans %}Run as{% endtrans %}</label>
+          <div class="col-xs-12 col-md-9">
+            <table class="table table-condensed text-center">
+              <tr>
+                <th></th>
+                <th class="text-center">{% trans %}Before{% endtrans %}</th>
+                <th class="text-center">{% trans %}After{% endtrans %}</th>
+              </tr>
+              <tr>
+               <th>{% trans %}Client{% endtrans %}</th>
+               <td>{{ form_widget(form.isClientPre) }}</td>
+               <td>{{ form_widget(form.isClientPost) }}</td>
+             </tr>
+              <tr>
+               <th>{% trans %}Job{% endtrans %}</th>
+               <td>{{ form_widget(form.isJobPre) }}</td>
+               <td>{{ form_widget(form.isJobPost) }}</td>
+             </tr>
+            </table>
+          </div>
+      </div>
+
+	     {{ form_widget(form._token) }}
+
+            <div class="control-group">
+                <div class="controls">
+                    <input class="btn btn-default pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
+                </div>
+            </div>
+
+            <div class="control-group col-md-12 col-xs-12">
+              <h3>{% trans %}Used by{% endtrans %}</h3>
+                <div class="controls col-md-12 col-xs-12">
+{% if form.vars.value.isUsed %}
+
+<table class="table table-condensed text-center">
+              <tr>
+                <th class="text-center">{% trans %}Client{% endtrans %}</th>
+                <th class="text-center">{% trans %}Job{% endtrans %}</th>
+                <th class="text-center">{% trans %}Run as{% endtrans %}</th>
+              </tr>
+
+
+
+
+
+    {% for client in form.vars.value.postClients %}
+                <tr>
+		 <td><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
+		 <td> - </td>
+		 <td>{% trans %}After{% endtrans %}</td>
+		</tr>
+    {% endfor %}
+    {% for client in form.vars.value.preClients %}
+                <tr>
+		 <td><a href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
+		 <td> - </td>
+		 <td>{% trans %}Before{% endtrans %}</td>
+		</tr>
+    {% endfor %}
+    {% for job in form.vars.value.postJobs %}
+                <tr>
+		 <td>{{ job.client.name }}</td>
+		 <td><a href="{{ path('editJob', {idClient: job.client.id, idJob: job.id}) }}">{{ job.name}}</a> </td>
+		 <td>{% trans %}After{% endtrans %}</td>
+		</tr>
+    {% endfor %}
+    {% for job in form.vars.value.preJobs %}
+                <tr>
+		 <td>{{ job.client.name }}</td>
+		 <td><a href="{{ path('editJob', {idClient: job.client.id, idJob: job.id}) }}">{{ job.name}}</a> </td>
+		 <td>{% trans %}Before{% endtrans %}</td>
+		</tr>
+    {% endfor %}
+	</table>
+{% else %}
+    {% trans %}Currently not used{% endtrans %}
+{% endif %}
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            {% trans %}script_help{% endtrans %}
+        </div>
+    </div>
+</form>
+
+{% endblock %}

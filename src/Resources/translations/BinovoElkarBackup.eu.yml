@@ -1,0 +1,385 @@
+---
+'A month': 'Hilabete bat'
+'A year': 'Urte bat'
+'About': 'Honi buruz'
+'Actions': 'Ekintzak'
+'active': 'aktibo'
+'Active': 'Aktibo'
+'Add job': 'Lan bat gehitu'
+'Add key': 'Gakoa gehitu'
+'Add': 'Gehitu'
+'All messages': 'Mezu guztiak'
+'All': 'Guztia'
+'Authorized keys': 'Baimendutako gakoak'
+'Authorized_keys file (%filename%) updated.': 'Authorized_keys fitxategia (%filename%) eguneratuta.'
+'Back to client': 'Bezerora bueltatu'
+'Back to job': 'Lanera bueltatu'
+'Backup location': 'Backup kokapena'
+'Backup Locations': 'Backup Kokapenak'
+'Backup script': 'Backup scripta'
+'Backup server login': 'Saioa hasi'
+'Backups dir': 'Backup karpeta'
+'Backups': 'Backupak'
+'Browse': 'Arakatu'
+'Can not have the retention count of the first backup level set to 1, and have a second backup level': 'Ezin duzu aldi berean lehen mailako retentzio kopurua 1era finkatu eta bigarren backup maila bat izan'
+'Change password': 'Pasahitza aldatu'
+'Change': 'Aldatu'
+'Client "%clientid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%': '"%clientid%" bezeroaren "%scriptname%" %scripttype% scriptak huts egin du. Jarrian xehetasun gehiago: %output%'
+'Client "%clientid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%': '"%clientid%" bezeroaren "%scriptname%" %scripttype% scripta behar bezala bukatu da. Jarrian xehetasun gehiago: %output%'
+'Client "%clientid%", Job "%jobid%" du begin.': 'Bezeroa "%clientid%", Kana "%jobid%" du hasiera.'
+'Client "%clientid%", Job "%jobid%" du end.': 'Bezeroa "%clientid%", Lana "%jobid%" du bukaera.'
+'Client "%clientid%", Job "%jobid%" error.': 'Bezeroa "%clientid%", Lana "%jobid%" errorea.'
+'Client "%clientid%", Job "%jobid%" ok.': 'Bezeroa "%clientid%", Lana "%jobid%" ok.'
+'Client': 'Bezeroa'
+'Clients': 'Bezeroak'
+'Comment': 'Iruzkina'
+'Config': 'Konfigurazioa'
+'Confirm new password': 'Pasahitz berria baieztatu'
+'Currently not used': 'Gaur egun erabili gabe'
+'Daily': 'Egunero'
+'Day of month:': 'Hileko eguna:'
+'Day of week:': 'Aste-eguna:'
+'Day of year:': 'Urteko eguna:'
+'Days of the week': 'Astegunak'
+'Delete client %clientid%, job %jobid%': 'Ezabatu %clientid% bezeroa, %jobid% lana'
+'Delete script %scriptname%': 'Ezabatu %scriptname% scripta'
+'Delete': 'Ezabatu'
+'Description': 'Azalpena'
+'Directory': 'Karpeta'
+'Disk usage': 'Diskoaren erabilera'
+'Documentation will be available soon': 'Laster izango duzu dokumentazioa'
+'Download as .tgz': '.tgz bezala deskargatu'
+'Download as .zip': '.zip bezala deskargatu'
+'Download': 'Deskargatu'
+'During the day': 'Egunean zehar'
+'Edit client': 'Bezeroa editatu'
+'Edit Job': 'Lana editatu'
+'Edit policy': 'Politika editatu'
+'Edit script': 'Scripta editatu'
+'Edit User': 'Erabiltzailea editatu'
+'Edit': 'Editatu'
+'Email': 'Posta helbidea'
+'Error closing config file %filename%.': 'Akatsa %filename% konfigurazio fitxategia istean.'
+'Error log for backup from job %joburl%': '%joburl% lanaren errore loga'
+'Error opening config file %filename%. Aborting backup.': 'Akatsa %filename% konfigurazio fitxategia zabaltzean. Backupa bertan behera uzten.'
+'Error saving parameter "%param%"': 'Akatsa "%param%" parametroa gordetzen'
+'Error unlinking config file %filename%.': 'Akatsa %filename% konfigurazio fitxategia ezabatzen.'
+'Error updating authorized_keys file (%filename%)': 'Akatsa authorized_keys fitxategia eguneratzen (%filename%)'
+'Error writing to config file %filename%. Aborting backup.': 'Akatsa %filename% konfigurazio fitxategian idazten. Backupa bertan behera uzten.'
+'Errors and up': 'Erroreak eta gorago'
+'Exclude': 'Baztertu'
+'File': 'Fitxategia'
+'Five years': 'Bost urte'
+'Four years': 'Lau urte'
+'Friday': 'Ostirala'
+'Help': 'Laguntza'
+'Home': 'Hasiera'
+'Hourly': 'Orduro'
+'Hours': 'Orduak'
+'Id': 'Id-a'
+'Inactive': 'Ezgaituta'
+'Include': 'Sartu'
+'Invalid time specified.': 'Zehaztutako ordua ez da zuzena.'
+'Is active': 'Aktibo dago'
+'Job %jobid% has no policy': '%jobid% lanak ez du politikarik'
+'Job execution requested successfully': 'Atazaren exekuzioa ilaran ondo gehitu da'
+'Jobs': 'Lanak'
+'Key file updated. The update should be effective in less than 2 minutes.': 'Gako fitxategia aldatu da. Aldaketa bi minututan aplikatu eta aurrerantzean erabilgarri egongo da.'
+'Key': 'Gakoa'
+'Language': Hizkuntza
+'language_en': Ingelera
+'language_es': Gaztelera
+'language_eu': Euskara
+'Last log entry': 'Azken log sarrera'
+'Level': 'Maila'
+'Link': 'Esteka'
+'Logout': 'Saioa amaitu'
+'Logs': 'Logak'
+'Make backups during the day': 'Egin kopiak egunean zehar'
+'Make daily backups': 'Egin eguneko kopiak'
+'Make weekly backups': 'Egin asteko kopiak'
+'Make monthly backups': 'Egin hileko kopiak'
+'Make yearly backups': 'Egin urteko kopiak'
+'Manage backup locations': 'Backup kokapenak kudeatu'
+'Manage parameters': 'Parametroak kudeatu'
+'Message': 'Mezua'
+'Modification date': 'Aldaketa data'
+'Monday': 'Astelehena'
+'Monthly': 'Hilero'
+'MySQL DB name': 'MySQL DB izena'
+'MySQL host': 'MySQL zerbitzaria'
+'MySQL password': 'MySQL pasahitza'
+'MySQL port': 'MySQL portua'
+'MySQL user': 'MySQL erabiltzailea'
+'Name': 'Izena'
+'Never': 'Inoiz ez'
+'New password': 'Pasahitz berria'
+'New': 'Berria'
+'No keys defined': 'Gakoak definitu gabe'
+'None': 'Batere ez'
+'Nothing to run.': 'Ez dago ezer exekutatzeko.'
+'Notify only': 'Bidaliko diren mezuak'
+'Object': 'Objetua'
+'Old password': 'Pasahitz zaharra'
+'One day': 'Egun bat'
+'One week': 'Aste bete'
+'Owner': 'Jabea'
+'Parameters updated': 'Parametroak aldatu dira'
+'Password changed': 'Pasahitza aldatu da'
+'Password': 'Pasahitza'
+'Password:': 'Pasahitza:'
+'Passwords do not match': 'Pasahitzak ez datoz bat'
+'Policies': 'Politikak'
+'Policy': 'Politika'
+'Post script': 'Post scripta'
+'Pre script': 'Pre scripta'
+'Public key generation requested': 'Gako publikoaren sorrera agindu da'
+'Public key': 'Gako publikoa'
+'Quota warning level': 'Kuota abisuen maila'
+'Quota': 'Kuota (GB)'
+'Really delete client %name%? This will remove all related jobs and backups': '%name% bezeroa ezabatu nahi duzu? Bere ataza eta backup guztiak ere ezabatuko dira.'
+'Really delete job %name%? This will remove all related backups': '%name% ataza ezabatu nahi duzu? Bere backup guztiak ezabatuko dira.'
+'Really delete policy %name%?': '%name% politika ezabatu nahi duzu?'
+'Really delete script %name%?': '%name% scripta ezabatu nahi duzu?'
+'Records per page': 'Orrialdeko erregistro kopurua'
+'Removing the policy %name% failed. Check that it is not in use.': 'Ezin izan da %name% politika ezabatu. Konprobatu ez dagoela erabiltzen.'
+'Removing the script %name% failed. Check that it is not in use.': 'Ezin izan da %name% scripta ezabatu. Konprobatu ez dagoela erabiltzen.'
+'Repository backup script': 'Biltegiaren kopia egiteko scripta'
+'Restore': 'Berreskuratu'
+'Retention policy': 'Erretentzio politika'
+'Run now': 'Exekutatu orain'
+'Running %command%': '%command% exekutatzen'
+'Saturday': 'Larunbata'
+'Save client %clientid%': 'Gorde %clientid% bezeroa'
+'Save': 'Gorde'
+'Saved': 'Gordeta'
+'Script "%id%" not found': '"%id%" scripta ez da aurkitu'
+'Scripts': 'Scriptak'
+'Send notices to': 'Mezuak nori bidali'
+'Set Parameter %paramname%': 'Ezarri %paramname% parametroa'
+'Show home page': 'Erakutsi sarrera orria'
+'Show Logs': 'Erakutsi Logak'
+'Show': 'Erakutsi'
+'Six months': 'Sei hilabete'
+'Sort jobs': 'Lanak ordenatu'
+'Source': 'Iturria'
+'Status': 'Egoera'
+'Sunday': 'Igandea'
+'Sync first': 'Lehenengo sinkronizatu'
+'Number of copies to keep': 'Mantendu behar diren kopien kopurua'
+'The number of copies to make during the day': 'Egunean zehar egin beharreko kopia kopurua'
+'There are no jobs': 'Ez dago lanik'
+'Three weeks': 'Hiru astea'
+'Three years': 'Hiru urte'
+'Thursday': 'Osteguna'
+'Time': 'Ordua'
+'Time of day': 'Ordutegia'
+'TODO': 'EGITEKE'
+'Tuesday': 'Asteartea'
+'Two weeks': 'Bi aste'
+'Two years': 'Bi urte'
+'Unable to delete client: %extrainfo%': 'Ezin izan da bezeroa ezabatu: %extrainfo%'
+'Unable to delete job: %extrainfo%': 'Ezin izan da lana ezabatu: %extrainfo%'
+'Unable to find public key:': 'Ezin izan da gako publikoa aurkitu:'
+'Unable to save your changes: %extrainfo%': 'Ezin izan dira aldaketak gorde: %extrainfo%'
+'Updating key file %keys%': '%keys% gako fitxategia eguneratzen'
+'Upload dir': 'Upload karpeta'
+'Upload post script': 'Igo post-script bat'
+'Upload pre script': 'Igo pre-script bat'
+'Uploading a script is mandatory for script creation.': 'Beharrezkoa da script fitxategia igotzea.'
+'Use local permissions': 'Erabili baimen lokalak'
+'Used by': 'Hemen erabiltzen da'
+'User %username% logged in.': '%username% erabiltzaileak saioa hasi du.'
+'User': 'Erabiltzailea'
+'Username': 'Erabiltzaile izena'
+'Username:': 'Erabiltzaile izena:'
+'Users': 'Erabiltzaileak'
+'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise': 'Itxaron gakoa sortzen den bitartean. Bi minutu barru erabilgarri egon beharko luke. Bestela begiratu log erregistroa'
+'Warning: the directory does not exist': 'Adi: direktorioa ez da existitzen'
+'Warnings and up': 'Abisuak eta gorago'
+'Wednesday': 'Asteazkena'
+'Weekly': 'Astero'
+'Welcome to the backup server configuration application.': 'Ongi etorri backup zerbitzariaren konfigurazio aplikaziora.'
+'Wrong old password': 'Okerreko pasahitz zaharra'
+'Yearly': 'Urtero'
+'Yes': 'Bai'
+'You forgot to specify hours during the day': 'Orduak zehaztea ahaztu duzu'
+'Add client': 'Gehitu bezeroa'
+'Backup not found': 'Ez dago segurtasun kopiarik'
+'Client has not yet been saved': 'Bezeroa ez da gorde'
+'Job has not yet been saved': 'Lana ez da gorde'
+'Impossible to delete superuser account': 'Super erabiltzailearen kontua ezin da ezabatu'
+'This script is used by some client or job': 'Bezero edo lan batek script hau erabiltzen du'
+'Run as': 'Nola exekutatu'
+'Job': 'Lana'
+'Before': 'Lehenago'
+'After': 'Ondoren'
+'Size': 'Tamaina'
+'Back to root': 'Errora itzuli'
+'Preferences': 'Hobespenak'
+'Manage preferences': 'Kudeatu hobespenak'
+'Abort': 'Gelditu'
+'More': 'Gehiago'
+'Clone': 'Klonatu'
+'Abort job': 'Utzi lana'
+'Test connection': 'Probatu'
+policy_help: |
+  <h4>Izena</h4>
+  Politikaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Politika bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
+  <h4>Azalpena</h4>
+  Politika deskribatzeko testu librea. Sartu hemen zuretzat lagungarria izan daitekeen informazioa.
+  <h4>Baztertu eta sartu</h4>
+  Aplikazioak Baztertu eremuaren lerro bakoitza eredu moduan erabiltzen du fitxategiak baztertzerakoan, eta era berdinean Sartu eremuaren lerro bakoitza fitxategiak kopian sartzeko eredu moduan hartzen du. Eremu hauek ondo erabiliz kopian sartu eta baztertu nahi dituzun fitxategiak hautatu ditzakezu. Kopian parte hartzen duen karpeta eta fitxategi bakoitzarkin honela egin du lan:
+  <ol>
+  <li>Karpetak edo fitxategiak bat egiten badute Sartu eremuan dagoen lerro batekin, orduan kopiatzen da. </li>
+  <li>Karpetak edo fitxategiak bat egiten badute Baztertu eremuan dagoen lerro batekin, orduan sistemak EZ DU fitxategia kopiatuko. </li>
+  <li>Karpetak edo fitxategiak ez badu bate egiten Sartu/Baztertu eremuetan dauden lerroekin, orduan kopiatzen da.</li>
+  </ol>
+  Ikusten duzun moduan, aplikazioaren konfigurazio lehenetsiaren arabera fitxategi eta karpeta guztiak kopiatuko dira, Baztertu eremuarekin bat egiten dutenak baztertuz, beti ere ez badute bat egiten Sartu eremuko ereduekin. Kontutan izan lan bakoitzak bere Sartu eta Baztertu definizioak dituela. Beti izango dute lehentasuna lanetan definitutako arauak.
+  <h4>Lehenengo sinkronizatu</h4>
+  Lehenengo sinkronizatu aukeratuta dagoenean, sinkronizazio lanak egiteko beste urrats bat egiten da. Horly exekuzioek ere karpeten errotazio hutsa egingo dute, bezeroarekin konexiorik ezarri gabe.Honi esker snapshot-en konsistentzia ziurtatzen da sinkronizaziorako bakarrik erabiliko den beste snapshot baten gain-kostuarekin.
+  <h4>Orduro</h4>
+  Egunean zehar egindako kopiak.
+  <h4>Egunero</h4>
+  Egunean behin eta aukeratutako orduan egiten diren kopiak.
+  <h4>Astero</h4>
+  Astean behin egiten diren kopiak.
+  <h4>Hilero</h4>
+  Hilean behin egiten diren kopiak.
+  <h4>Urtero</h4>
+  Urtean behin egiten diren kopiak.
+client_help: |
+  <h4>Izena</h4>
+  Bezeroaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Bezero bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
+  <h4>Url</h4>
+  Bezeroarekin konektatu ahal izateko erabiliko da. Aplikazioak balio hau erabiliko du lanaren path edo bidearekin batera lanaren URLa osatzeko. Eremu honetan balio tipikoak hauek dira:
+  <ul>
+  <li>Hutsik egon daiteke. Baliogarria izan daiteke kopiatu nahi ditugun datuak fitxategi sistema lokalean daudenean.</li>
+  <li><i>erabiltzailea@domeinu.izena</i> ssh bidez <i>domain.name</i> makinarekin konektatuko da <i>user</i> erabiliaz erabiltzaile moduan.</li>
+  <li><i>erabiltzailea@domeinu.izena:</i> Adi bi puntuekin. Goian azaldu dugun berdina, baina ssh erabili beharrean urruneko rsync zerbitzarira konektatuko da.</li>
+  </ul>
+  <h4>Kuota</h4>
+  Bezeroaren datuek diskoan erabili dezaketen lekua GB-etan. -1 balioak "mugarik ez" esan nahi du. Konfiguratutako mugara heltzen denean (balio lehenetsia %80koa da), aplikazioak mezuak bidaliko ditu bezero horren lan bakoitzean mezuak jasotzeko konfiguratu diren helbideetara. Diskoaren erabilera ezarritako kuota gainditzen duenean ez dira programatutako kopiak egingo, eta errore bat sortuko da egoera azalduz.
+  <h4>Diskoaren erabilera</h4>
+  Une hauetan bezeroaren datuek diskoan okupatzen ari direna.
+  <h4>Azalpena</h4>
+  Bezeroa deskribatzeko testu librea. Sartu hemen zuretzat lagungarria izan daitekeen informazioa.
+  <h4>Aktibo dago</h4>
+  Kontrol-laukia markatuta ez badago, snapshot-ak ez dira egingo.
+  <h4>Pre eta post scriptak</h4>
+  Bezero honen edozein lan abiatu aurretik eta bukatu ondoren exekutatuko diren scriptak. Adibidez VPN konexioak zabaldu, sareko karpetak aktibatu, eta abar.
+client_job_help: |
+  <h4>Lanak</h4>
+  Lan baten parametro garrantzitsuenak hemendik editatu ditzakezu. Aldaketak egin ondoren izan gogoan gorde egin behar dituzula.
+job_help: |
+  <h4>Izena</h4>
+  Lanaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Lan bakoitzak izen ezberdina izan behar du, eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
+  <h4>Path(bidea)</h4>
+  Bezerotik kopiatu nahi dugun karpetaren bidea (path) edo rsync baliabidearen izena.
+  <h4>Diskoaren erabilpena</h4>
+  Lan honetako datuak une hauetan diskoan okupatzen dutena.
+  <h4>Azalpena</h4>
+  Lana deskribatzeko testu librea. Sartu hemen zuretzat lagungarria izan daitekeen informazioa.
+  <h4>Aktibo dago</h4>
+  Kontrol-laukia markatuta ez badago, snapshot-ak ez dira egingo.
+  <h4>Jabea</h4>
+  Konfigurazio lehenetsi moduan, lana sortu duen erabiltzailea da lan horren jabea, eta aplikazioak berari bidaliko dizkio lan honi buruzko mezuak (ikusi "Mezuak nori bidali" eta "Bidaliko diren mezuak"). Lan baten Jabea zein den administratzaileak bakarrik alda dezake.
+  <h4>Mezuak nori bidali</h4>
+  Zuk erabakiko duzu aplikazioak zeintzuei bidaliko dizkien (posta elektronikoz) sortzen diren ebentuen abisuak. Aplikazioak "Bidaliko diren mezuak" eremuan dagoen balioa erabiliko du bidali beharreko informazioa zein den erabakitzeko. Abisuak beste edozein posta elektronikora ere bidaltzeko aukera dago. Egin beharreko gauza bakarra helbidea kutxatxoan idaztea da.
+  <h4>Bidaliko diren mezuak</h4>
+  Jasoko duzun mezu kopurua gutxitzeko, aukera ezazu zein motatako mezuak jaso nahi dituzun.
+  <h4>Pre eta post scriptak</h4>
+  Lan hau abiatu aurretik eta bukatu ondoren exekutatuko diren scriptak. Adibidez VPN konexioak zabaldu, sareko karpetak aktibatu, eta abar.
+  <h4>Politika</h4>
+  Aukeratu lan honek jarraituko duen politika. Politika bakoitzak hainbat gauza zehazten ditu, besteak beste Kopiak noiz egin behar diren eta zenbat kopia mantenduko diren. Eremu hau ez bada betetzen, ez dira kopiak egingo.
+  <h4>Erabili baimen lokalak</h4>
+  Rsnapshot beti saiatuko da fitxategien baimenak jatorrian dauden bezala mantentzen. Honek Windows sistemetan eta Linux-en ACLak erabiltzerakoan batzuetan arazoak sortu ditzake. Hau gertatzen denean aukera hau aktibatu, eta horrela web zerbitzariak ez ditu arazorik izango fitxategiak irakurtzerakoan.
+  <h4>Baztertu eta sartu</h4>
+  Aplikazioak Baztertu eremuaren lerro bakoitza eredu moduan erabiltzen du fitxategiak baztertzerakoan, eta era berdinean Sartu eremuaren lerro bakoitza fitxategiak kopian sartzeko eredu moduan hartzen du. Eremu hauek ondo erabiliz kopian sartu eta baztertu nahi dituzun fitxategiak hautatu ditzakezu. Kopian parte hartzen duen karpeta eta fitxategi bakoitzarkin honela egin du lan:
+  <ol>
+  <li>Karpetak edo fitxategiak bat egiten badute Sartu eremuan dagoen lerro batekin, orduan kopiatzen da. </li>
+  <li>Karpetak edo fitxategiak bat egiten badute Baztertu eremuan dagoen lerro batekin, orduan sistemak EZ DU fitxategia kopiatuko. </li>
+  <li>Karpetak edo fitxategiak ez badu bate egiten Sartu/Baztertu eremuetan dauden lerroekin, orduan kopiatzen da.</li>
+  </ol>
+  Ikusten duzun moduan, aplikazioaren konfigurazio lehenetsiaren arabera fitxategi eta karpeta guztiak kopiatuko dira, Baztertu eremuarekin bat egiten dutenak baztertuz, beti ere ez badute bat egiten Sartu eremuko ereduekin. Sartu eremua hutsik dagoenean eta orduan bakarrik, sistemak politika mailan definituriko Sartu eremuaren edukia erabiliko du. Berdina egingo du Baztertu eremuarekin.
+user_help: |
+  <h4>Izena</h4>
+  Erabiltzaile identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Erabiltzaile bakoitzak izen ezberdina izan behar du,eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
+  <h4>Pasahitza</h4>
+  Eremu honetan ezin dezakezu pasahitza ikusi, bai ordea pasahitza aldatu. Eremu honetan zerbait sartzen baduzu, erabiltzailearen pasahitza aldatuko duzu.
+  <h4>Posta Elektronikoa</h4>
+  Posta elektroniko helbidea oso garrantzitsua da. Erabiltzaileari bidaltzen zaizkion abisu guztiak posta helbide honetara bidaliko zaizko.
+  <h4>Aktibo dago</h4>
+  Markatuta ez badago, erabiltzailea ezingo da sisteman sartu.
+params_help: |
+  <h4>MySQL konfigurazioa</h4>
+  Eremu hauetan DBko konexioa konfiguratzen da. Kontuz ibili, daturen bat gaizki sartu ezkero aplikazioak errorea eman eta geratuko da.
+  <h4>Mailer konfigurazioa</h4>
+  Eremu hauetan aplikazioak posta elektronikoak nola bidaliko dituen konfiguratzen da. Kontuz bili, daturen bat gaizki sartu ezkero ezingo dira mezuak bidali.  <a href="http://symfony.com/doc/current/cookbook/email/email.html">Symfony proiektuko dokumentazioa</a> agian lagungarria izan daiteke.
+  <h4>Hau baino zaharragoak diren log-ak ezabatu</h4>
+  Log erregistroa handiegia ez suertatzeko aplikazioak aldiro garbiketa lana egingo du. Hemen jarritako balioa baino zaharragoak diren logak ezabatuko dira.
+  <h4>Kuota abisuen maila</h4>
+  Bezero bati asignatu zaion kuotaren %-eko hau gainditzen denean, abisu bat bidaliko da.
+  <h4>Orrialdeko erregistro kopurua</h4>
+  Orrialde bakoitzean erakutsiko den lerro kopurua.
+backupscriptconfig_help: |
+  <h4>Authorized keys</h4>
+  Biltegiaren kopiak egin ahal izateko zure gako publikoa aplikazioaren "authorized keys"-era gehitu behar duzu.
+managebackups_help: |
+  <h4>Host</h4>
+  NFS zerbitzariaren host izena edo IP helbidea. Fitxategi sistema lokala erabiltzen denean, hutsik egon behar da.
+  <p>Aplikazio honek autofs-kin dependentzia du urruneko fitxategi sistemak muntatzeko. autofs behar den bezala konfiguratuta ez badago eremu hau ez da editagarria izango.</p>
+  <h4>Karpeta</h4>
+  Fitxategi sistema lokaleko path osoa edo NFS export-aren izena. Beti '/'-ekin hasi behar da.  Aplikazioak snapshot edo kopia guztiak karpeta honetan gordeko ditu. elkarbackup erabiltzaileak karpeta honetan idazteko baimenak izan beharko ditu.
+  <h4>Tahoe biltegia</h4>
+  Bigarren biltegi bat aktibatzen du. Aktibatzerakoan tahoe configuratzeaz gogoratu.
+  <p>Funtzionalitate honek tahoe-lafs paketea erabiltzen du. Tahoe-lafs instalaturik ez badago laukia desaktibatuta agertuko da.</p>
+script_help: |
+  <h4>Scritp-ei buruz</h4>
+  Aplikazioak scriptak exekutatzen ditu backup erabiltzailea erabiliz. Scriptak exekutatu aurretik, aplikazioak ingurune aldagai hauek ezartzen ditu:
+  <ul>
+  <li>ELKARBACKUP_LEVEL:  bere balioa JOB edo CLIENT izan daiteke</li>
+  <li>ELKARBACKUP_EVENT:  bere balioa PRE edo POST izan daiteke</li>
+  <li>ELKARBACKUP_URL:    bere balioa lana edo bezeroaren URL osoa da</li>
+  <li>ELKARBACKUP_ID:     lanaren id kodea edo bezeroaren id kodea (zenbakia) </li>
+  <li>ELKARBACKUP_PATH:   snapshot edo kopia erroaren path edo bide osoa </li>
+  <li>ELKARBACKUP_STATUS: Post-script baten irteera egoera, bestelakorik ezean beti 0 izango da</li>
+  <li>ELKARBACKUP_CLIENT_NAME:  bezeroaren izena </li>
+  <li>ELKARBACKUP_JOB_NAME: lanaren izena (hutsik bezeroan) </li>
+  <li>ELKARBACKUP_OWNER_EMAIL: lanaren arduradunaren email helbidea (hutsik bezeroan) </li>
+  <li>ELKARBACKUP_RECIPIENT_LIST: lanaren notifikazio email zerrenda (hutsik bezeroan) </li>
+  <li>ELKARBACKUP_CLIENT_TOTAL_SIZE: bezeroaren tamaina guztira (KB-etan) </li>
+  <li>ELKARBACKUP_JOB_TOTAL_SIZE: lanaren tamaina guztira (KB-etan) </li>
+  <li>ELKARBACKUP_JOB_RUN_SIZE: lan exekuzio honetan kopiatutako fitxategien tamaina (KB-etan) </li>
+  <li>ELKARBACKUP_CLIENT_STARTTIME: bezeroaren kopia hasiera-ordua timestamp formatuan (post-client bakarrik)</li>
+  <li>ELKARBACKUP_CLIENT_ENDTIME: bezeroaren kopia bukaera-ordua timestamp formatuan (post-client bakarrik)</li>
+  <li>ELKARBACKUP_JOB_STARTTIME: lanaren kopia hasiera-ordua timestamp formatuan (post-job bakarrik)</li>
+  <li>ELKARBACKUP_JOB_ENDTIME: lanaren kopia bukaera-ordua timestamp formatuan (post-job bakarrik)</li>
+  <li>ELKARBACKUP_SSH_ARGS: ssh konexiorako aukera aurreratuak</li>
+  </ul>
+  Bezero baten pre-script batek 0 ez den balioa bueltatzen badu, aplikazioak bertan behera utziko ditu bezero horren lanak. Lan mailako pre-script exekuzioak huts egitean, WARNING abisu bat sortuko da (backup lanak jarraituko du).
+  <h4>Izena</h4>
+  Scriptaren identifikatzailea da. Zerrenda eta aukeraketa kutxetan azalduko da. Script bakoitzak izen ezberdina izan behar du,eta dagoeneko erabiltzen ari den izen bat sartzen baduzu errorea jasoko duzu.
+  <h4>Azalpena</h4>
+  Scripta deskribatzeko testu librea. Sartu hemen zuretzat lagungarria izan daitekeen informazioa.
+  <h4>Fitxategia</h4>
+  Arakatu eta aukeratu igo nahi duzun scripta.
+  <h4>Bezeroaren pre-script moduan exekutatu daiteke</h4>
+  Markatu ezazu beti ere script hau bezero baten exekuzioa hasi aurretik abian jartzeko diseinatuta dagoenean.
+  <h4>Bezeroaren post-script moduan exekutatu daiteke</h4>
+  Markatu ezazu beti ere script hau bezero baten exekuzioa bukatu ondoren abian jartzeko diseinatuta dagoenean.
+  <h4>Lanaren pre-script moduan exekutatu daiteke</h4>
+  Markatu ezazu beti ere script hau lan baten exekuzioa hasi aurretik abian jartzeko diseinatuta dagoenean.
+  <h4>Lanaren post-script moduan exekutatu daiteke</h4>
+  Markatu ezazu beti ere script hau lan baten exekuzioa bukatu ondoren abian jartzeko diseinatuta dagoenean.
+sort_jobs_help: |
+  <h4>Lanak ordenatu</h4>
+  Lanen exekuzio ordena aldatu dezakezu. Erabilgarria izan daiteke lan bat baina gehiago ordu berean programatuak dituzunean.
+  <p>Arrastatu eta jaregin lanaren lehentasuna aldatzeko</p>
+preferences_help: |
+  <h4>Erabiltzaile hobespenen kudeaketa</h4>
+  Hemen aldatutako hobespenak ez diete gainontzeko erabiltzaileei eragingo
+  <h4>Hizkuntza</h4>
+  Aukeratu zure hizkuntza
+  <h4>Orrialdeko erregistro kopurua</h4>
+  Aukeratu orrialdeko erregistro kopurua: azalduko diren bezero/lan kopurua, erabiltzaile kopurua, edota log kopurua.

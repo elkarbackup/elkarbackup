@@ -1,0 +1,219 @@
+{##
+ # @copyright 2012,2013 Binovo it Human Project, S.L.
+ # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ #}
+#################################################
+# rsnapshot.conf - rsnapshot configuration file #
+#################################################
+#                                               #
+# PLEASE BE AWARE OF THE FOLLOWING RULES:       #
+#                                               #
+# This file requires tabs between elements      #
+#                                               #
+# Directories require a trailing slash:         #
+#   right: /home/                               #
+#   wrong: /home                                #
+#                                               #
+#################################################
+
+#######################
+# CONFIG FILE VERSION #
+#######################
+
+config_version	1.2
+
+###########################
+# SNAPSHOT ROOT DIRECTORY #
+###########################
+
+# All snapshots will be stored under this root directory.
+#
+snapshot_root	{{snapshotRoot}}
+
+# If no_create_root is enabled, rsnapshot will not automatically create the
+# snapshot_root directory. This is particularly useful if you are backing
+# up to removable media, such as a FireWire or USB drive.
+#
+#no_create_root	1
+
+#################################
+# EXTERNAL PROGRAM DEPENDENCIES #
+#################################
+
+# LINUX USERS:   Be sure to uncomment "cmd_cp". This gives you extra features.
+# EVERYONE ELSE: Leave "cmd_cp" commented out for compatibility.
+#
+# See the README file or the man page for more details.
+#
+cmd_cp		/bin/cp
+
+# uncomment this to use the rm program instead of the built-in perl routine.
+#
+cmd_rm		/bin/rm
+
+# rsync must be enabled for anything to work. This is the only command that
+# must be enabled.
+#
+cmd_rsync	/usr/bin/rsync
+
+# Uncomment this to enable remote ssh backups over rsync.
+#
+cmd_ssh	/usr/bin/ssh
+
+# Comment this out to disable syslog support.
+#
+cmd_logger	/usr/bin/logger
+
+# Uncomment this to specify the path to "du" for disk usage checks.
+# If you have an older version of "du", you may also want to check the
+# "du_args" parameter below.
+#
+#cmd_du		/usr/bin/du
+
+# Uncomment this to specify the path to rsnapshot-diff.
+#
+#cmd_rsnapshot_diff	/usr/local/bin/rsnapshot-diff
+
+# Specify the path to a script (and any optional arguments) to run right
+# before rsnapshot syncs files
+#
+{% if cmdPreExec %}
+cmd_preexec	{{cmdPreExec|raw}}
+{% else %}
+#cmd_preexec	/path/to/preexec/script
+{% endif %}
+
+# Specify the path to a script (and any optional arguments) to run right
+# after rsnapshot syncs files
+#
+{% if cmdPostExec %}
+cmd_postexec	{{cmdPostExec|raw}}
+{% else %}
+#cmd_postexec	/path/to/postexec/script
+{% endif %}
+
+#########################################
+#           BACKUP INTERVALS            #
+# Must be unique and in ascending order #
+# i.e. hourly, daily, weekly, etc.      #
+#########################################
+
+{% for retain in retains %}
+retain	{{retain[0]}}	{{retain[1]}}
+{% endfor %}
+
+############################################
+#              GLOBAL OPTIONS              #
+# All are optional, with sensible defaults #
+############################################
+
+# Verbose level, 1 through 5.
+# 1     Quiet           Print fatal errors only
+# 2     Default         Print errors and warnings only
+# 3     Verbose         Show equivalent shell commands being executed
+# 4     Extra Verbose   Show extra verbose information
+# 5     Debug mode      Everything
+#
+verbose		2
+
+# Same as "verbose" above, but controls the amount of data sent to the
+# logfile, if one is being used. The default is 3.
+#
+loglevel	4
+
+# If you enable this, data will be written to the file you specify. The
+# amount of data written is controlled by the "loglevel" parameter.
+#
+logfile	{{logDir}}/tmp-c{{idClient}}j{{idJob}}.log
+
+# If enabled, rsnapshot will write a lockfile to prevent two instances
+# from running simultaneously (and messing up the snapshot_root).
+# If you enable this, make sure the lockfile directory is not world
+# writable. Otherwise anyone can prevent the program from running.
+#
+lockfile	{{tmp}}/rsnapshot.{{idClient}}_{{idJob}}.pid
+
+# Default rsync args. All rsync commands have at least these options set.
+#
+#rsync_short_args -a
+{% if rsyncShortArgs %}
+rsync_short_args	-a	{{rsyncShortArgs}}
+{% endif %}
+#rsync_long_args	--delete --numeric-ids --relative --delete-excluded
+{% if useLocalPermissions %}
+rsync_long_args	--delete --numeric-ids --relative --delete-excluded --chmod=Fug=rwX,Dug=rwx,Fo=r,Do=rx --stats  {{rsyncLongArgs}}
+{% else %}
+rsync_long_args	--delete --numeric-ids --relative --delete-excluded --stats {{rsyncLongArgs}}
+{% endif %}
+
+# ssh has no args passed by default, but you can specify some here.
+#
+ssh_args	-o BatchMode=yes -o StrictHostKeyChecking=no {{sshArgs}}
+
+# Default arguments for the "du" program (for disk space reporting).
+# The GNU version of "du" is preferred. See the man page for more details.
+# If your version of "du" doesn't support the -h flag, try -k flag instead.
+#
+#du_args	-csh
+
+# If this is enabled, rsync won't span filesystem partitions within a
+# backup point. This essentially passes the -x option to rsync.
+# The default is 0 (off).
+#
+#one_fs		0
+
+# The include and exclude parameters, if enabled, simply get passed directly
+# to rsync. If you have multiple include/exclude patterns, put each one on a
+# separate line. Please look up the --include and --exclude options in the
+# rsync man page for more details on how to specify file name patterns.
+#
+#include	???
+#include	???
+#exclude	???
+#exclude	???
+{% for include in includes %}
+include	{{ include }}
+{% endfor %}
+{% for exclude in excludes %}
+exclude	{{ exclude }}
+{% endfor %}
+
+# The include_file and exclude_file parameters, if enabled, simply get
+# passed directly to rsync. Please look up the --include-from and
+# --exclude-from options in the rsync man page for more details.
+#
+#include_file	/path/to/include/file
+#exclude_file	/path/to/exclude/file
+
+# If your version of rsync supports --link-dest, consider enable this.
+# This is the best way to support special files (FIFOs, etc) cross-platform.
+# The default is 0 (off).
+#
+#link_dest	0
+
+# When sync_first is enabled, it changes the default behaviour of rsnapshot.
+# Normally, when rsnapshot is called with its lowest interval
+# (i.e.: "rsnapshot hourly"), it will sync files AND rotate the lowest
+# intervals. With sync_first enabled, "rsnapshot sync" handles the file sync,
+# and all interval calls simply rotate files. See the man page for more
+# details. The default is 0 (off).
+#
+#sync_first	0
+{% if syncFirst %}
+sync_first	1
+{% else %}
+sync_first	0
+{% endif %}
+
+# If enabled, rsnapshot will move the oldest directory for each interval
+# to [interval_name].delete, then it will remove the lockfile and delete
+# that directory just before it exits. The default is 0 (off).
+#
+#use_lazy_deletes	0
+
+###############################
+### BACKUP POINTS / SCRIPTS ###
+###############################
+
+# LOCALHOST
+backup	{{url}}	.

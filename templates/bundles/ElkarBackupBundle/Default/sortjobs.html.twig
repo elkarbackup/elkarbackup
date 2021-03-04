@@ -1,0 +1,54 @@
+{##
+ # @copyright 2012,2013 Binovo it Human Project, S.L.
+ # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ #}
+{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoElkarBackup' %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/sort-jobs.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+
+<div class="row">
+    <div class="max10" >
+        <h3>{% trans %}Sort jobs{% endtrans %}</h3>
+        <div class="row">
+          <div class="col-md-6">
+
+{% for flashMessage in app.session.flashbag.get('sortJobs') %}
+        <div class="controls help-block">
+            {{ flashMessage }}
+        </div>
+{% endfor %}
+        <form action="{{ path('sortJobs') }}" method="post" {{ form_start(form) }}>
+            <table id="jobs" class="table table-condensed table-bordered table-hover">
+                <tr>
+                    {# sorting of properties based on query components #}
+                    <th>{% trans %}Id{% endtrans %}</th>
+                    <th>{% trans %}Name{% endtrans %}</th>
+                    <th>{% trans %}Status{% endtrans %}</th>
+                </tr>
+{% for job in form.jobs %}
+                <tr class="dojoDndItem">
+                    <td>{{ job.vars.value.client.id ~ "." ~ job.vars.value.id }}{{ form_widget(job) }}</td>
+                    <td>{{ job.vars.value.client.name ~ "/" ~ job.vars.value.name }}</td>
+                    <td>{% if job.vars.value.isActive and job.vars.value.client.isActive %}{% trans %}Active{% endtrans%}{% else%}{% trans %}Inactive{% endtrans%}{% endif %}</td>
+                </tr>
+{% endfor %}
+            </table>
+            <button class="btn btn-elkarbackup pull-right" type="submit">{% trans %}Save{% endtrans %}</button>
+            {{ form_rest(form) }}
+        </form>
+        </div>
+        <div class="col-md-6">
+          {% trans %}sort_jobs_help{% endtrans %}
+        </div>
+      </div>
+    </div>
+</div>
+
+{% endblock %}

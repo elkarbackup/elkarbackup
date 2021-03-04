@@ -1,0 +1,62 @@
+{##
+ # @copyright 2012,2013 Binovo it Human Project, S.L.
+ # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ #}
+<!DOCTYPE html>
+{% trans_default_domain 'BinovoElkarBackup' %}
+<html>
+    <head>
+        <title>{% block title %}ElkarBackup{% endblock %}</title>
+  			<!-- Dojo 1.8.1-->
+  			<link rel="stylesheet" href="{{ asset('js/dojo-release/dijit/themes/claro/claro.css') }}" media="screen" />
+
+        <!-- Bootstrap 3.3-->
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" media="screen" />
+
+        <!-- @ChristianGR elkarbackup theme -->
+        <link rel="stylesheet" href="{{ asset('css/elkarbackup.css') }}" media="screen" />
+
+        {% block scripts %}
+        <!-- jQuery -->
+        <script type="text/javascript" src="{{ asset('js/jquery/jquery-1.12.0.min.js')}}"></script>
+        <!-- Dojo -->
+        <script type="text/javascript" src="{{ asset('js/dojo-release/dojo/dojo.js') }}" data-dojo-config="async: true"></script>
+        <!-- Bootstrap and Elkarbackup js -->
+        <script type="text/javascript" src="{{ asset('js/bootstrap/bootstrap.min.js') }}" ></script>
+        <script type="text/javascript" src="{{ asset('js/base.js') }}"></script>
+	<script type="text/javascript">var context="{{url_prefix}}";</script>
+        {% endblock %}
+
+    </head>
+    <body class="claro">
+
+        <div id="top">
+          <div id="cont-top">
+            <div class="logo">
+                {% block header %}
+                {% endblock %}
+                <a href="{{path('showClients')}}"><img src="{{ asset('/img/elkarbackup.png') }}" alt="ElkarBackup" /></a>
+            </div>
+
+		        <div class="navbar" role="navigation">
+                {% block menu %}
+                    {{ knp_menu_render('main',{'allow_safe_labels': true})|raw }}
+                {% endblock %}
+            </div>
+          </div>
+        </div>
+
+        <div id="contenido" class="container">
+            <div class="row">
+                {% block body %}
+                {% endblock %}
+            </div>
+
+            <div class="row">
+                {% block footer %}
+                {% endblock %}
+            </div>
+        </div>
+
+    </body>
+</html>

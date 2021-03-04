@@ -1,0 +1,251 @@
+{##
+ # @copyright 2012,2013 Binovo it Human Project, S.L.
+ # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ #}
+
+{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% trans_default_domain 'BinovoElkarBackup' %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/edit-policy.js') }}"></script>
+<style>
+.dijitTabContainerNoLayout {
+width:auto;
+}
+legend.panel-legend {
+font-size: 14px;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+
+<form id="form" class="form-horizontal" action="{{ path('savePolicy', {id: form.vars.value.id}) }}" method="post" {{ form_start(form) }}>
+    <fieldset>
+        <h3>{% trans %}Edit policy{% endtrans %}</h3>
+        <div class="row">
+            <div class="col-md-6">
+                {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
+                <div>
+                    <div class="control-group">
+                        <div id="errorMessage" class="controls help-block">
+                            <div id="hourlyCountMsg" class="hide alert alert-danger">
+                                {% trans %}Hourly backups activated, hourly count can not be 0{% endtrans %}
+                            </div>
+                            <div id="dailyCountMsg" class="hide alert alert-danger">
+                                {% trans %}Daily backups activated, daily count can not be 0{% endtrans %}
+                            </div>
+                            <div id="weeklyCountMsg" class="hide alert alert-danger">
+                                {% trans %}Weekly backups activated, weekly count can not be 0{% endtrans %}
+                            </div>
+                            <div id="monthlyCountMsg" class="hide alert alert-danger">
+                                {% trans %}Monthly backups activated, monthly count can not be 0{% endtrans %}
+                            </div>
+                            <div id="yearlyCountMsg" class="hide alert alert-danger">
+                            {% trans %}Yearly backups activated, yearly count can not be 0{% endtrans %}
+                            </div>
+                            <div id="rotationMsg" class="hide alert alert-danger">
+                                {% trans %}Can not have the retention count of the first backup level set to 1, and have a second backup level{% endtrans %}
+                            </div>
+                        </div>
+                    </div>
+                    {{ form_widget(form) }}
+                </div>
+                <div class="control-group">
+                    <div data-dojo-type="dijit/layout/TabContainer" style="height: 100%;" data-dojo-props="doLayout:false" class="controls">
+                        <div id="duringTheDay-panel" data-dojo-type="dijit/layout/ContentPane" title="{% trans %}During the day{% endtrans %}">
+                            <label class="checkbox">
+                                <input type="checkbox" class="activation-controller" id="duringTheDay-activation" /> {% trans %}Make backups during the day{% endtrans %}
+                            </label>
+                            <fieldset  id="hourlyHours">
+                                <legend class="panel-legend">{% trans %}Time of day{% endtrans %}</legend>
+                                <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId:'hourlyCount'">
+                                    {% trans %}The number of copies to make during the day{% endtrans %}
+                                </div>
+                                <button type="button" class="btn btn-default btn-sm" id="hourlyHoursAdd">
+                                  <span class="glyphicon-plus"> {% trans %}Add{% endtrans %}
+                                </button>
+                            </fieldset>
+                            <fieldset>
+                                <legend class="panel-legend">{% trans %}Days of the week{% endtrans %}</legend>
+                                <label class="checkbox">
+                                    <input id="hourly-monday" type="checkbox" /> {% trans %}Monday{% endtrans %}
+                                </label>
+                                <label class="checkbox">
+                                    <input id="hourly-tuesday" type="checkbox" /> {% trans %}Tuesday{% endtrans %}
+                                </label>
+                                <label class="checkbox">
+                                    <input id="hourly-wednesday" type="checkbox" /> {% trans %}Wednesday{% endtrans %}
+                                </label>
+                                <label class="checkbox">
+                                    <input id="hourly-thursday" type="checkbox" /> {% trans %}Thursday{% endtrans %}
+                                </label>
+                                <label class="checkbox">
+                                    <input id="hourly-friday" type="checkbox" /> {% trans %}Friday{% endtrans %}
+                                </label>
+                                <label class="checkbox">
+                                    <input id="hourly-saturday" type="checkbox" /> {% trans %}Saturday{% endtrans %}
+                                </label>
+                                <label class="checkbox">
+                                    <input id="hourly-sunday" type="checkbox" /> {% trans %}Sunday{% endtrans %}
+                                </label>
+                            </fieldset>
+                            <fieldset>
+                                <legend class="panel-legend">{% trans %}Retention policy{% endtrans %}</legend>
+                                {% trans %}Number of copies to keep{% endtrans %}<br>
+                                <input data-dojo-type="dijit/form/NumberSpinner"
+                                       value="0"
+                                       data-dojo-props="id: 'hourlyCount', intermediateChanges: true, smallDelta: 1, constraints: {min:0,places:0}, style: 'width: 100px'" />
+                            </fieldset>
+                        </div>
+
+                        <div id="daily-panel" data-dojo-type="dijit/layout/ContentPane" title="{% trans %}Daily{% endtrans %}">
+                            <label class="checkbox">
+                                <input type="checkbox" class="activation-controller" id="daily-activation" /> {% trans %}Make daily backups{% endtrans %}
+                            </label>
+                            <fieldset>
+                                <legend class="panel-legend">{% trans %}Time of day{% endtrans %}</legend>
+                                <input id="dailyHour" data-dojo-type="dijit/form/TimeTextBox" data-dojo-props="constraints:{timePattern: 'HH:mm', clickableIncrement: 'T00:15:00',visibleIncrement: 'T00:15:00', visibleRange: 'T01:00:00'}, value: '09:00'" />
+                            </fieldset>
+                            <fieldset>
+                                <legend class="panel-legend">{% trans %}Days of the week{% endtrans %}</legend>
+                                <label class="checkbox">
+                                    <input id="daily-monday" type="checkbox" /> {% trans %}Monday{% endtrans %}
+                                </label>
+                                <label class="checkbox">
+                                    <input id="daily-tuesday" type="checkbox" /> {% trans %}Tuesday{% endtrans %}
+                                </label>
+                                <label class="checkbox">
+                                    <input id="daily-wednesday" type="checkbox" /> {% trans %}Wednesday{% endtrans %}
+                                </label>
+                                <label class="checkbox">
+                                    <input id="daily-thursday" type="checkbox" /> {% trans %}Thursday{% endtrans %}
+                                </label>
+                                <label class="checkbox">
+                                    <input id="daily-friday" type="checkbox" /> {% trans %}Friday{% endtrans %}
+                                </label>
+                                <label class="checkbox">
+                                    <input id="daily-saturday" type="checkbox" /> {% trans %}Saturday{% endtrans %}
+                                </label>
+                                <label class="checkbox">
+                                    <input id="daily-sunday" type="checkbox" /> {% trans %}Sunday{% endtrans %}
+                                </label>
+                            </fieldset>
+                            <fieldset>
+                                <legend class="panel-legend">{% trans %}Retention policy{% endtrans %}</legend>
+                                {% trans %}Number of copies to keep{% endtrans %}<br>
+                                <input data-dojo-type="dijit/form/NumberSpinner"
+                                       value="0"
+                                       data-dojo-props="id: 'dailyCount', intermediateChanges: true, smallDelta: 1, constraints: {min:0,places:0}, style: 'width: 100px'" />
+                            </fieldset>
+                        </div>
+
+                        <div id="weekly-panel" data-dojo-type="dijit/layout/ContentPane" title="{% trans %}Weekly{% endtrans %}">
+                            <label class="checkbox">
+                                <input type="checkbox" class="activation-controller" id="weekly-activation" /> {% trans %}Make weekly backups{% endtrans %}
+                            </label>
+                            <fieldset>
+                                <legend class="panel-legend">{% trans %}Time of day{% endtrans %}</legend>
+                                <input id="weeklyHour"
+                                       data-dojo-type="dijit/form/TimeTextBox"
+                                       data-dojo-props="constraints:{timePattern: 'HH:mm', clickableIncrement: 'T00:15:00',visibleIncrement: 'T00:15:00', visibleRange: 'T01:00:00'}, value: '09:00'" />
+                            </fieldset>
+                            <fieldset>
+                                <legend class="panel-legend">{% trans %}Day of week{% endtrans %}</legend>
+                                <label class="radio">
+                                    <input name="weekly-day" id="weekly-monday" type="radio" /> {% trans %}Monday{% endtrans %}
+                                </label>
+                                <label class="radio">
+                                    <input name="weekly-day" id="weekly-tuesday" type="radio" /> {% trans %}Tuesday{% endtrans %}
+                                </label>
+                                <label class="radio">
+                                    <input name="weekly-day" id="weekly-wednesday" type="radio" /> {% trans %}Wednesday{% endtrans %}
+                                </label>
+                                <label class="radio">
+                                    <input name="weekly-day" id="weekly-thursday" type="radio" /> {% trans %}Thursday{% endtrans %}
+                                </label>
+                                <label class="radio">
+                                    <input name="weekly-day" id="weekly-friday" type="radio" /> {% trans %}Friday{% endtrans %}
+                                </label>
+                                <label class="radio">
+                                    <input name="weekly-day" id="weekly-saturday" type="radio" /> {% trans %}Saturday{% endtrans %}
+                                </label>
+                                <label class="radio">
+                                    <input name="weekly-day" id="weekly-sunday" type="radio" /> {% trans %}Sunday{% endtrans %}
+                                </label>
+                            </fieldset>
+                            <fieldset>
+                                <legend class="panel-legend">{% trans %}Retention policy{% endtrans %}</legend>
+                                {% trans %}Number of copies to keep{% endtrans %}<br>
+                                <input id="weeklyCount"
+                                       data-dojo-type="dijit/form/NumberSpinner"
+                                       data-dojo-props="id: 'weeklyCount', intermediateChanges: true, smallDelta: 1, constraints: {min:0,places:0}, style: 'width: 100px'" />
+                            </fieldset>
+                        </div>
+
+                        <div id="monthly-panel" data-dojo-type="dijit/layout/ContentPane" title="{% trans %}Monthly{% endtrans %}">
+                            <label class="checkbox">
+                                <input type="checkbox" class="activation-controller" id="monthly-activation" /> {% trans %}Make monthly backups{% endtrans %}
+                            </label>
+                            <fieldset>
+                                <legend class="panel-legend">{% trans %}Time of day{% endtrans %}</legend>
+                                <input id="monthlyHour"
+                                       data-dojo-type="dijit/form/TimeTextBox"
+                                       data-dojo-props="constraints:{timePattern: 'HH:mm', clickableIncrement: 'T00:15:00',visibleIncrement: 'T00:15:00', visibleRange: 'T01:00:00'}, value: '09:00'" />
+                            </fieldset>
+                            <fieldset>
+                                <legend class="panel-legend">{% trans %}Day of month{% endtrans %}</legend>
+                                <input id="dayOfMonth"
+                                       data-dojo-type="dijit/form/NumberSpinner"
+                                       data-dojo-props="id: 'dayOfMonth', intermediateChanges: true, smallDelta: 1, constraints: {min:1,max:31,places:0}, style: 'width: 100px'" />
+                            </fieldset>
+                            <fieldset>
+                                <legend class="panel-legend">{% trans %}Retention policy{% endtrans %}</legend>
+                                {% trans %}Number of copies to keep{% endtrans %}<br>
+                                <input id="monthlyCount"
+                                       data-dojo-type="dijit/form/NumberSpinner"
+                                       data-dojo-props="id: 'monthlyCount', intermediateChanges: true, smallDelta: 1, constraints: {min:0,places:0}, style: 'width: 100px'" />
+                            </fieldset>
+                        </div>
+
+                        <div id="yearly-panel" data-dojo-type="dijit/layout/ContentPane" title="{% trans %}Yearly{% endtrans %}">
+                            <label class="checkbox">
+                                <input type="checkbox" class="activation-controller" id="yearly-activation" /> {% trans %}Make yearly backups{% endtrans %}
+                            </label>
+                            <fieldset>
+                                <legend class="panel-legend">{% trans %}Time of day{% endtrans %}</legend>
+                                <input id="yearlyHour"
+                                       data-dojo-type="dijit/form/TimeTextBox"
+                                       data-dojo-props="constraints:{timePattern: 'HH:mm', clickableIncrement: 'T00:15:00',visibleIncrement: 'T00:15:00', visibleRange: 'T01:00:00'}, value: '09:00'" />
+                            </fieldset>
+                            <fieldset>
+                                <legend class="panel-legend">{% trans %}Day of year:{% endtrans %}</legend>
+                                <input id="dayOfYear"
+                                       data-dojo-type="dijit/form/DateTextBox"
+                                       data-dojo-props="style:'width: 100px'"
+                                       />
+                            </fieldset>
+                            <fieldset>
+                                <legend class="panel-legend">{% trans %}Retention policy{% endtrans %}</legend>
+                                {% trans %}Number of copies to keep{% endtrans %}<br>
+                                <input id="yearlyCount"
+                                       data-dojo-type="dijit/form/NumberSpinner"
+                                       data-dojo-props="id: 'yearlyCount', intermediateChanges: true, smallDelta: 1, constraints: {min:0,places:0}, style: 'width: 100px'" />
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group" style="padding-top: 20px;">
+                    <div class="controls">
+                        <input class="btn btn-default pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                {% trans %}policy_help{% endtrans %}
+            </div>
+        </div>
+    </fieldset>
+</form>
+{% endblock %}
