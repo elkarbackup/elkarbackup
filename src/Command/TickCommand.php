@@ -80,13 +80,13 @@ class TickCommand extends LoggingCommand
                     $this->initializeQueue();
                     $dql =<<<EOF
 SELECT COUNT(q)
-FROM BinovoElkarBackupBundle:Queue q
+FROM App:Queue q
 EOF;
                     $queueCount = $this->manager->createQuery($dql)->getSingleScalarResult();
                     
                     $dql =<<<EOF
 SELECT COUNT(c)
-FROM BinovoElkarBackupBundle:Client c
+FROM App:Client c
 WHERE c.state != 'NOT READY' AND c.state != 'ERROR'
 EOF;
                     $clientCount = $this->manager->createQuery($dql)->getSingleScalarResult();
@@ -104,13 +104,13 @@ EOF;
                         
                         $dql =<<<EOF
 SELECT COUNT(q)
-FROM BinovoElkarBackupBundle:Queue q
+FROM App:Queue q
 EOF;
                         $queueCount = $this->manager->createQuery($dql)->getSingleScalarResult();
                         
                         $dql =<<<EOF
 SELECT COUNT(c)
-FROM BinovoElkarBackupBundle:Client c
+FROM App:Client c
 WHERE c.state != 'NOT READY' AND c.state != 'ERROR'
 EOF;
                         $clientCount = $this->manager->createQuery($dql)->getSingleScalarResult();
@@ -118,7 +118,7 @@ EOF;
                         //check that there are no jobs that can not be executed
                         $dql =<<<EOF
 SELECT COUNT(q)
-FROM BinovoElkarBackupBundle:Queue q
+FROM App:Queue q
 WHERE q.state = 'QUEUED'
 EOF;
                         $queuedJobs = $this->manager->createQuery($dql)->getSingleScalarResult();
@@ -160,7 +160,7 @@ EOF;
             
             return self::ERR_CODE_INPUT_ARG;
         }
-        $repository = $this->container->get('doctrine')->getRepository('BinovoElkarBackupBundle:Policy');
+        $repository = $this->container->get('doctrine')->getRepository('App:Policy');
         $query = $repository->createQueryBuilder('policy')->getQuery();
         $policies = array();
         foreach ($repository->createQueryBuilder('policy')->getQuery()->getResult() as $policy) {
@@ -178,7 +178,7 @@ EOF;
         $runnablePolicies = implode(', ', array_keys($policies));
         $dql =<<<EOF
 SELECT j, c, p
-FROM  BinovoElkarBackupBundle:Job j
+FROM  App:Job j
 JOIN  j.client                            c
 JOIN  j.policy                            p
 WHERE j.isActive = 1 AND c.isActive = 1 AND j.policy IN ($runnablePolicies)
@@ -188,7 +188,7 @@ EOF;
         $jobs = $this->manager->createQuery($dql)->getResult();
         foreach ($jobs as $job) {
             $isQueueIn = $this->container->get('doctrine')
-            ->getRepository('BinovoElkarBackupBundle:Queue')
+            ->getRepository('App:Queue')
             ->findBy(array('job' => $job));
             if (! $isQueueIn) {
                 $context = array('link' => $this->generateJobRoute($job->getId(), $job->getClient()->getId()));
@@ -205,7 +205,7 @@ EOF;
 
     protected function executeMessages(InputInterface $input, OutputInterface $output)
     {
-        $repository = $this->manager->getRepository('BinovoElkarBackupBundle:Message');
+        $repository = $this->manager->getRepository('App:Message');
         while (true) {
             /*
              * read messages one by one and remove them from the queue
@@ -257,7 +257,7 @@ EOF;
     {
         $dql =<<<EOF
 SELECT q,j,c
-FROM BinovoElkarBackupBundle:Queue q
+FROM App:Queue q
 JOIN q.job j
 JOIN j.client c
 WHERE j.isActive = 1 AND c.isActive = 1
@@ -271,7 +271,7 @@ EOF;
     
     protected function processClients(InputInterface $input, OutputInterface $output)
     {
-        $clients = $this->manager->getRepository('BinovoElkarBackupBundle:Client')
+        $clients = $this->manager->getRepository('App:Client')
         ->findAll();
         foreach($clients as $client) {
             $this->processClientState($client);
@@ -496,7 +496,7 @@ EOF;
             case self::STATE_CLIENT_NOT_READY:
                 $dql =<<<EOF
 SELECT COUNT(q)
-FROM BinovoElkarBackupBundle:Queue q
+FROM App:Queue q
 JOIN q.job j
 WHERE j.client = :clientId AND q.state = 'WAITING FOR CLIENT'
 EOF;
@@ -529,7 +529,7 @@ EOF;
             case self::STATE_CLIENT_READY:
                 $dql =<<<EOF
 SELECT q,j,c
-FROM BinovoElkarBackupBundle:Queue q
+FROM App:Queue q
 JOIN q.job j
 JOIN j.client c
 WHERE c.id = :clientId
@@ -588,7 +588,7 @@ EOF;
 
         $dql =<<<EOF
 SELECT q,j,c,bc
-FROM BinovoElkarBackupBundle:Queue q
+FROM App:Queue q
 JOIN q.job j
 JOIN j.client c
 JOIN j.backupLocation bc
@@ -631,7 +631,7 @@ EOF;
     protected function initializeClients(){
         $clients = $this->container
             ->get('doctrine')
-            ->getRepository('BinovoElkarBackupBundle:Client')
+            ->getRepository('App:Client')
             ->findAll();
         foreach ($clients as $client) {
             $client->setState(self::STATE_CLIENT_NOT_READY);
@@ -660,7 +660,7 @@ EOF;
         if (!empty($maxAge)) {
             $interval = new DateInterval($maxAge);
             $interval->invert = true;
-            $q = $this->manager->createQuery('DELETE FROM BinovoElkarBackupBundle:LogRecord l WHERE l.dateTime < :minDate');
+            $q = $this->manager->createQuery('DELETE FROM App:LogRecord l WHERE l.dateTime < :minDate');
             $q->setParameter('minDate', date_add(new DateTime(), $interval));
             $numDeleted = $q->execute();
         }
@@ -753,7 +753,7 @@ EOF;
         $clientId = $job->getClient()->getId();
         $jobId    = $job->getId();
         $container = $this->getContainer();
-        $repository = $container->get('doctrine')->getRepository('BinovoElkarBackupBundle:Job');
+        $repository = $container->get('doctrine')->getRepository('App:Job');
         $tmp = $container->getParameter('tmp_dir');
         $job = $repository->find($jobId);
         $context = array('link' => $this->generateJobRoute($jobId, $clientId));
@@ -786,7 +786,7 @@ EOF;
     
     private function initializeQueue()
     {
-        $queue = $this->manager->getRepository('BinovoElkarBackupBundle:Queue')->findAll();
+        $queue = $this->manager->getRepository('App:Queue')->findAll();
         
         foreach ($queue as $task) {
             if (self::STATE_JOB_QUEUED != $task->getState()) {
@@ -814,7 +814,7 @@ EOF;
     {
 
         $container        = $this->getContainer();
-        $adminEmail       = $container->get('doctrine')->getRepository('BinovoElkarBackupBundle:User')->find(User::SUPERUSER_ID)->getEmail();
+        $adminEmail       = $container->get('doctrine')->getRepository('App:User')->find(User::SUPERUSER_ID)->getEmail();
 
         if ($container->hasParameter('mailer_from') && $container->getParameter('mailer_from') != "") {
           $fromEmail      = $container->getParameter('mailer_from');
@@ -857,7 +857,7 @@ EOF;
                 ->setSubject($translator->trans('Log for backup from job %joburl%', array('%joburl%' => $job->getUrl()), 'BinovoElkarBackup'))
                 ->setFrom(array($fromEmail => 'ElkarBackup'))
                 ->setTo($recipients)
-                ->setBody($engine->render('BinovoElkarBackupBundle:Default:logreport.html.twig',
+                ->setBody($engine->render('App:Default:logreport.html.twig',
                                           array('base'     => gethostname(),
                                                 'job'      => $job,
                                                 'messages' => $filteredMessages)),
