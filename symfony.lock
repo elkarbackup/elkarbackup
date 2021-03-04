@@ -282,6 +282,12 @@
             "config/routes.yaml"
         ]
     },
+    "symfony/security-core": {
+        "version": "v4.4.19"
+    },
+    "symfony/security-csrf": {
+        "version": "v4.4.19"
+    },
     "symfony/service-contracts": {
         "version": "v2.2.0"
     },
@@ -302,6 +308,9 @@
             "config/packages/test/swiftmailer.yaml"
         ]
     },
+    "symfony/templating": {
+        "version": "v4.4.19"
+    },
     "symfony/translation": {
         "version": "3.3",
         "recipe": {
@@ -317,6 +326,39 @@
     },
     "symfony/translation-contracts": {
         "version": "v2.3.0"
+    },
+    "symfony/twig-bridge": {
+        "version": "v4.4.19"
+    },
+    "symfony/twig-bundle": {
+        "version": "4.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.4",
+            "ref": "15a41bbd66a1323d09824a189b485c126bbefa51"
+        },
+        "files": [
+            "config/packages/test/twig.yaml",
+            "config/packages/twig.yaml",
+            "templates/base.html.twig"
+        ]
+    },
+    "symfony/twig-pack": {
+        "version": "v1.0.1"
+    },
+    "symfony/validator": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "d902da3e4952f18d3bf05aab29512eb61cabd869"
+        },
+        "files": [
+            "config/packages/test/validator.yaml",
+            "config/packages/validator.yaml"
+        ]
     },
     "symfony/var-dumper": {
         "version": "v4.4.19"
@@ -341,6 +383,9 @@
         "files": [
             "config/packages/twig_extensions.yaml"
         ]
+    },
+    "twig/extra-bundle": {
+        "version": "v3.3.0"
     },
     "twig/twig": {
         "version": "v3.3.0"
