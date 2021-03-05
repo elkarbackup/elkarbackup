@@ -1,3 +1,11 @@
 framework:
     router:
         utf8: true
+binovo_elkar_backups:
+    resource: "@App/Controller/"
+    type:     annotation
+    prefix:   /
+login_check:
+    path:   /login_check
+logout:
+    path: /logout
