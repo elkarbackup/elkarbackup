@@ -6,8 +6,9 @@ framework:
     csrf_protection: true
     #http_method_override: true
     router:
-        resource: '%kernel.root_dir%/../config/packages/routing.yml'
+        resource: '%kernel.root_dir%/../config/routes.yaml'
         strict_requirements: '%kernel.debug%'
+        type: yaml
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
     # Remove or comment this section to explicitly disable session support.
     validation:      { enable_annotations: true }
