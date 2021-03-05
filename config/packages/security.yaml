@@ -1,6 +1,7 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
+        users_in_memory: { memory: null }
         administrators:
             entity: { class: BinovoElkarBackupBundle:User, property: username }
     firewalls:
@@ -27,6 +28,7 @@ security:
             pattern:    ^/
             anonymous:  true
             form_login:
+                provider: administrators
                 check_path: /login_check
                 login_path: /login
             logout:
