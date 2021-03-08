@@ -30,10 +30,9 @@ use App\Form\Type\UserType;
 use App\Form\Type\PreferencesType;
 use App\Lib\Globals;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -47,6 +46,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use steevanb\SSH2Bundle\Entity\Profile;
@@ -58,7 +58,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 
-class DefaultController extends Controller
+class DefaultController extends AbstractController
 {
     private $security;
 
@@ -331,7 +331,7 @@ class DefaultController extends Controller
     {
         $request = $this->container->get('request_stack')->getCurrentRequest();
         $session = $request->getSession();
-        $t = $this->get('translator');
+        $t = $this->container->get('translator');
         
         // get the login error if there is one
         if ($request->attributes->has(Security::AUTHENTICATION_ERROR)) {
@@ -386,7 +386,7 @@ class DefaultController extends Controller
         }
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:login.html.twig',
+            'default/login.html.twig',
             array(
                 'last_username' => $session->get(Security::LAST_USERNAME),
                 'error' => $error,
