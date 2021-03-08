@@ -57,14 +57,17 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class DefaultController extends AbstractController
 {
     private $security;
+    private $translator;
 
-    public function __construct(Security $security)
+    public function __construct(Security $security, TranslatorInterface $t)
     {
         $this->security = $security;
+        $this->translator = $t;
     }
     protected function info($msg, $translatorParams = array(), $context = array())
     {
@@ -211,7 +214,7 @@ class DefaultController extends AbstractController
      */
     public function generatePublicKeyAction(Request $request)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         $db = $this->getDoctrine();
         $manager = $db->getManager();
         $msg = new Message(
@@ -236,7 +239,7 @@ class DefaultController extends AbstractController
 
     public function trans($msg, $params = array(), $domain = 'BinovoElkarBackup')
     {
-        return $this->get('translator')->trans($msg, $params, $domain);
+        return $this->translator->trans($msg, $params, $domain);
     }
 
     /**
@@ -252,7 +255,7 @@ class DefaultController extends AbstractController
             return $this->redirect($this->generateUrl('showClients'));
         }
         
-        $t = $this->get('translator');
+        $t = $this->translator;
         $db = $this->getDoctrine();
         $manager = $db->getManager();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Client');
@@ -331,7 +334,7 @@ class DefaultController extends AbstractController
     {
         $request = $this->container->get('request_stack')->getCurrentRequest();
         $session = $request->getSession();
-        $t = $this->container->get('translator');
+        $t = $this->translator;
         
         // get the login error if there is one
         if ($request->attributes->has(Security::AUTHENTICATION_ERROR)) {
@@ -425,7 +428,7 @@ class DefaultController extends AbstractController
         $form = $this->createForm(
             ClientType::class,
             $client,
-            array('translator' => $this->get('translator'))
+            array('translator' => $this->translator)
         );
         $this->debug(
             'View client %clientid%',
@@ -451,7 +454,7 @@ class DefaultController extends AbstractController
         $user = $this->security->getToken()->getUser();
         $actualuserid = $user->getId();
         
-        $t = $this->get('translator');
+        $t = $this->translator;
         if ("-1" === $id) {
             $client = new Client();
         } else {
@@ -548,7 +551,7 @@ class DefaultController extends AbstractController
         if ($access == False) {
             return $this->redirect($this->generateUrl('showClients'));
         }
-        $t = $this->get('translator');
+        $t = $this->translator;
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Job');
         $manager = $db->getManager();
@@ -642,7 +645,7 @@ class DefaultController extends AbstractController
         $form = $this->createForm(
             JobType::class,
             $job,
-            array('translator' => $this->get('translator'))
+            array('translator' => $this->translator)
         );
         $this->debug(
             'View client %clientid%, job %jobid%',
@@ -688,7 +691,7 @@ class DefaultController extends AbstractController
         $form = $this->createForm(
             RestoreBackupType::class,
             array('path' => $suggestedPath,'source' => $path),
-            array('translator' => $this->get('translator'), 'actualuserid' => $actualuserid, 'granted' => $granted));
+            array('translator' => $this->translator, 'actualuserid' => $actualuserid, 'granted' => $granted));
         return $this->render('BinovoElkarBackupBundle:Default:restorebackup.html.twig',array(
             'form' => $form->createView(),
             'idClient' => $idClient,
@@ -704,7 +707,7 @@ class DefaultController extends AbstractController
      */
     public function runRestoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
-       $t = $this->get('translator');
+       $t = $this->translator;
        $user = $this->security->getToken()->getUser();
        $actualuserid = $user->getId();
        $granted = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
@@ -715,7 +718,7 @@ class DefaultController extends AbstractController
         $form = $this->createForm(
             RestoreBackupType::class,
             array('path' => $suggestedPath,'source' => $path),
-            array('translator' => $this->get('translator'), 'actualuserid' => $actualuserid, 'granted' => $granted));
+            array('translator' => $this->translator, 'actualuserid' => $actualuserid, 'granted' => $granted));
        $form->handleRequest($request);
 
        if (!$form->isSubmitted() || !$form->isValid()) {
@@ -770,7 +773,7 @@ class DefaultController extends AbstractController
      */
     public function enqueueJobAction(Request $request, $idClient, $idJob)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         $user = $this->security->getToken();
         $trustable = false;
         
@@ -885,7 +888,7 @@ class DefaultController extends AbstractController
      */
     public function runAbortAction(Request $request, $idClient, $idJob)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         $manager = $this->getDoctrine()->getManager();
         
         $job = $this->getDoctrine()
@@ -937,7 +940,7 @@ class DefaultController extends AbstractController
      */
     public function showJobConfigAction(Request $request, $idClient, $idJob)
     {
-        $t = $this->get('translator');        
+        $t = $this->translator;        
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
         $job = $repository->find($idJob);
         if (null == $job || $job->getClient()->getId() != $idClient) {
@@ -1028,7 +1031,7 @@ class DefaultController extends AbstractController
      */
     public function saveJobAction(Request $request, $idClient, $idJob)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         if ("-1" === $idJob) {
             $job = new Job();
             $client = $this->getDoctrine()
@@ -1097,7 +1100,7 @@ class DefaultController extends AbstractController
         if ($this->checkPermissions($idClient) == False) {
             return $this->redirect($this->generateUrl('showClients'));
         }
-        $t = $this->get('translator');
+        $t = $this->translator;
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
         $job = $repository->find($idJob);
         if ($job->getClient()->getId() != $idClient) {
@@ -1340,7 +1343,7 @@ class DefaultController extends AbstractController
             return $this->redirect($this->generateUrl('showClients'));
         }
         
-        $t = $this->get('translator');
+        $t = $this->translator;
         if ('new' === $id) {
             $policy = new Policy();
         } else {
@@ -1379,7 +1382,7 @@ class DefaultController extends AbstractController
             return $this->redirect($this->generateUrl('showClients'));
         }
         
-        $t = $this->get('translator');
+        $t = $this->translator;
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Policy');
         $manager = $db->getManager();
@@ -1411,7 +1414,7 @@ class DefaultController extends AbstractController
      */
     public function savePolicyAction(Request $request, $id)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         if ("-1" === $id) {
             $policy = new Policy();
         } else {
@@ -1453,7 +1456,7 @@ class DefaultController extends AbstractController
         $user = $this->security->getToken()->getUser();
         $actualuserid = $user->getId();
         
-        $t = $this->get('translator');
+        $t = $this->translator;
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
         
         $query = $repository->createQueryBuilder('j')
@@ -1655,7 +1658,7 @@ EOF;
     public function showLogsAction(Request $request)
     {
         $formValues = array();
-        $t = $this->get('translator');
+        $t = $this->translator;
         $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:LogRecord');
         $queryBuilder = $repository->createQueryBuilder('l')->addOrderBy('l.id', 'DESC');
         $queryParamCounter = 1;
@@ -1839,7 +1842,7 @@ EOF;
      */
     public function configureRepositoryBackupScriptAction(Request $request)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         $params = array(
             'backup_script' => array(
                 'entry_type' => EntityType::class,
@@ -1930,7 +1933,7 @@ EOF;
             return $this->redirect($this->generateUrl('showClients'));
         }
         
-        $t = $this->get('translator');
+        $t = $this->translator;
         if ('new' === $id) {
             $backupLocation = new BackupLocation();
         } else {
@@ -1966,7 +1969,7 @@ EOF;
      */
     public function saveBackupLocationAction(Request $request, $id = 'new')
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         if ('new' === $id) {
             $backupLocation = new BackupLocation();
         } else {
@@ -2038,7 +2041,7 @@ EOF;
             return $this->redirect($this->generateUrl('showClients'));
         }
         
-        $t = $this->get('translator');
+        $t = $this->translator;
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:BackupLocation');
         $manager = $db->getManager();
@@ -2099,7 +2102,7 @@ EOF;
      */
     public function manageParametersAction(Request $request)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         $params = array(
             'database_host' => array(
                 'entry_type' => TextType::class,
@@ -2360,7 +2363,7 @@ EOF;
      */
     public function changePasswordAction(Request $request)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         $defaultData = array();
         $form = $this->createFormBuilder($defaultData)->add(
             'oldPassword',
@@ -2458,7 +2461,7 @@ EOF;
      */
     public function downloadLogAction(Request $request, $id)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:LogRecord');
         $manager = $db->getManager();
@@ -2535,7 +2538,7 @@ EOF;
             return $this->redirect($this->generateUrl('showClients'));
         }
         
-        $t = $this->get('translator');
+        $t = $this->translator;
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Script');
         $manager = $db->getManager();
@@ -2570,7 +2573,7 @@ EOF;
      */
     public function downloadScriptAction(Request $request, $id)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         $db = $this->getDoctrine();
         $repository = $db->getRepository('BinovoElkarBackupBundle:Script');
         $manager = $db->getManager();
@@ -2615,7 +2618,7 @@ EOF;
             return $this->redirect($this->generateUrl('showClients'));
         }
         
-        $t = $this->get('translator');
+        $t = $this->translator;
         if ('new' === $id) {
             $script = new Script();
         } else {
@@ -2651,7 +2654,7 @@ EOF;
      */
     public function saveScriptAction(Request $request, $id)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         if ("-1" === $id) {
             $script = new Script();
         } else {
@@ -2734,7 +2737,7 @@ EOF;
      */
     public function editUserAction(Request $request, $id)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         if ('new' === $id) {
             $user = new User();
         } else {
@@ -2763,7 +2766,7 @@ EOF;
      */
     public function saveUserAction(Request $request, $id)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         if ("-1" === $id) {
             $user = new User();
         } else {
@@ -2858,7 +2861,7 @@ EOF;
      */
     public function cloneClientAction(Request $request, $idClient)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         $idoriginal = $idClient;
         if (null == $idClient) {
             throw $this->createNotFoundException($t->trans(
@@ -2962,7 +2965,7 @@ EOF;
      */
     public function generateTokenAction(Request $request)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         $randtoken = md5(uniqid(rand(), true));
         
         $response = new JsonResponse(array(
@@ -2978,7 +2981,7 @@ EOF;
      */
     public function managePreferencesAction(Request $request)
     {
-        $t = $this->get('translator');
+        $t = $this->translator;
         // Get current user
         $user = $this->security->getToken()->getUser();
         $form = $this->createForm(
