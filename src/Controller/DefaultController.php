@@ -32,6 +32,7 @@ use App\Lib\Globals;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -63,17 +64,18 @@ class DefaultController extends AbstractController
 {
     private $security;
     private $translator;
+    private $logger;
 
-    public function __construct(Security $security, TranslatorInterface $t)
+    public function __construct(Security $security, TranslatorInterface $t, Logger $logger)
     {
         $this->security = $security;
         $this->translator = $t;
+        $this->logger = $logger;
     }
     protected function info($msg, $translatorParams = array(), $context = array())
     {
-        $logger = $this->get('BnvWebLogger');
         $context = array_merge(array('source' => 'DefaultController'), $context);
-        $logger->info(
+        $this->logger->info(
             $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
             $context
         );
