@@ -267,10 +267,10 @@ class DefaultController extends AbstractController
         $t = $this->translator;
         $db = $this->getDoctrine();
         $manager = $db->getManager();
-        $repository = $db->getRepository('BinovoElkarBackupBundle:Client');
+        $repository = $db->getRepository('App:Client');
         $manager = $db->getManager();
         $client = $repository->find($id);
-        $queue = $db->getRepository('BinovoElkarBackupBundle:Queue')->findAll();
+        $queue = $db->getRepository('App:Queue')->findAll();
         foreach ($queue as $item) {
             if ($item->getJob()->getClient()->getId() == $id) {
                 $response = new JsonResponse(array(
@@ -421,7 +421,7 @@ class DefaultController extends AbstractController
                 return $this->redirect($this->generateUrl('showClients'));
             }
             
-            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+            $repository = $this->getDoctrine()->getRepository('App:Client');
             $client = $repository->find($id);
             if (null == $client) {
                 throw $this->createNotFoundException(
@@ -463,7 +463,7 @@ class DefaultController extends AbstractController
         if ("-1" === $id) {
             $client = new Client();
         } else {
-            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+            $repository = $this->getDoctrine()->getRepository('App:Client');
             $client = $repository->find($id);
         }
         
@@ -558,10 +558,10 @@ class DefaultController extends AbstractController
         }
         $t = $this->translator;
         $db = $this->getDoctrine();
-        $repository = $db->getRepository('BinovoElkarBackupBundle:Job');
+        $repository = $db->getRepository('App:Job');
         $manager = $db->getManager();
         $job = $repository->find($idJob);
-        $queue = $db->getRepository('BinovoElkarBackupBundle:Queue')->findAll();
+        $queue = $db->getRepository('App:Queue')->findAll();
         foreach ($queue as $item) {
             if ($item->getJob()->getId() == $idJob) {
                 $response = new JsonResponse(array(
@@ -631,7 +631,7 @@ class DefaultController extends AbstractController
         if ('new' === $idJob) {
             $job = new Job();
             $client = $this->getDoctrine()
-                ->getRepository('BinovoElkarBackupBundle:Client')
+                ->getRepository('App:Client')
                 ->find($idClient);
             if (null == $client) {
                 throw $this->createNotFoundException($this->trans('Unable to find Client entity:') . $idClient);
@@ -641,7 +641,7 @@ class DefaultController extends AbstractController
             $access = $this->checkPermissions($idClient, $idJob);
             if ($access == True) {
                 $job = $this->getDoctrine()
-                    ->getRepository('BinovoElkarBackupBundle:Job')
+                    ->getRepository('App:Job')
                     ->find($idJob);
             } else {
                 return $this->redirect($this->generateUrl('showClients'));
@@ -736,11 +736,11 @@ class DefaultController extends AbstractController
        $targetPath = $data['path'];
        $targetIdClient = $data['client'];
 
-       $backupLocation = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation')->find($idBackupLocation);
+       $backupLocation = $this->getDoctrine()->getRepository('App:BackupLocation')->find($idBackupLocation);
        $sourcePath = sprintf("%s/%s/%s/%s", $backupLocation->getDirectory(), sprintf('%04d', $idClient), sprintf('%04d', $idJob), $path);
 
        $clientRepo = $this->getDoctrine()
-            ->getRepository('BinovoElkarBackupBundle:Client');
+            ->getRepository('App:Client');
        $targetClient = $clientRepo->find($targetIdClient);
        $url = $targetClient->getUrl();
        $sshArgs = $targetClient->getSshArgs();
@@ -799,7 +799,7 @@ class DefaultController extends AbstractController
                 ));
                 return $response;
             } else {
-                $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
+                $repository = $this->getDoctrine()->getRepository('App:Job');
                 $job = $repository->findOneById($idJob);
                 if ($token == $job->getToken()) {
                     // Valid token, but let's require HTTPS
@@ -838,7 +838,7 @@ class DefaultController extends AbstractController
         if ($trustable) {
             if (! isset($job)) {
                 $job = $this->getDoctrine()
-                    ->getRepository('BinovoElkarBackupBundle:Job')
+                    ->getRepository('App:Job')
                     ->find($idJob);
                 if (null == $job) {
                     throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
@@ -850,7 +850,7 @@ class DefaultController extends AbstractController
                 'source' => Globals::STATUS_REPORT
             );
             $isQueueIn = $this->getDoctrine()
-            ->getRepository('BinovoElkarBackupBundle:Queue')
+            ->getRepository('App:Queue')
             ->findBy(array('job' => $job));
             if(! $isQueueIn) {
                 $status = 'QUEUED';
@@ -897,10 +897,10 @@ class DefaultController extends AbstractController
         $manager = $this->getDoctrine()->getManager();
         
         $job = $this->getDoctrine()
-            ->getRepository('BinovoElkarBackupBundle:Job')
+            ->getRepository('App:Job')
             ->find($idJob);
         $queue = $this->getDoctrine()
-            ->getRepository('BinovoElkarBackupBundle:Queue')
+            ->getRepository('App:Queue')
             ->findOneBy(array('job' => $job));
         if (null == $job) {
             throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
@@ -946,7 +946,7 @@ class DefaultController extends AbstractController
     public function showJobConfigAction(Request $request, $idClient, $idJob)
     {
         $t = $this->translator;        
-        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
+        $repository = $this->getDoctrine()->getRepository('App:Job');
         $job = $repository->find($idJob);
         if (null == $job || $job->getClient()->getId() != $idClient) {
             throw $this->createNotFoundException(
@@ -1040,7 +1040,7 @@ class DefaultController extends AbstractController
         if ("-1" === $idJob) {
             $job = new Job();
             $client = $this->getDoctrine()
-                ->getRepository('BinovoElkarBackupBundle:Client')
+                ->getRepository('App:Client')
                 ->find($idClient);
             if (null == $client) {
                 throw $this->createNotFoundException($t->trans(
@@ -1051,7 +1051,7 @@ class DefaultController extends AbstractController
             }
             $job->setClient($client);
         } else {
-            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
+            $repository = $this->getDoctrine()->getRepository('App:Job');
             $job = $repository->find($idJob);
         }
         $form = $this->createForm(
@@ -1106,7 +1106,7 @@ class DefaultController extends AbstractController
             return $this->redirect($this->generateUrl('showClients'));
         }
         $t = $this->translator;
-        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
+        $repository = $this->getDoctrine()->getRepository('App:Job');
         $job = $repository->find($idJob);
         if ($job->getClient()->getId() != $idClient) {
             throw $this->createNotFoundException($t->trans(
@@ -1117,7 +1117,7 @@ class DefaultController extends AbstractController
         }
         if (0 != $idBackupLocation) {
             $backupLocation = $this->getDoctrine()
-            ->getRepository('BinovoElkarBackupBundle:BackupLocation')
+            ->getRepository('App:BackupLocation')
             ->find($idBackupLocation);
             $backupDir = sprintf(
                 '%s/%04d/%04d',
@@ -1353,7 +1353,7 @@ class DefaultController extends AbstractController
             $policy = new Policy();
         } else {
             $policy = $this->getDoctrine()
-                ->getRepository('BinovoElkarBackupBundle:Policy')
+                ->getRepository('App:Policy')
                 ->find($id);
         }
         $form = $this->createForm(
@@ -1389,7 +1389,7 @@ class DefaultController extends AbstractController
         
         $t = $this->translator;
         $db = $this->getDoctrine();
-        $repository = $db->getRepository('BinovoElkarBackupBundle:Policy');
+        $repository = $db->getRepository('App:Policy');
         $manager = $db->getManager();
         $policy = $repository->find($id);
         try {
@@ -1423,7 +1423,7 @@ class DefaultController extends AbstractController
         if ("-1" === $id) {
             $policy = new Policy();
         } else {
-            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Policy');
+            $repository = $this->getDoctrine()->getRepository('App:Policy');
             $policy = $repository->find($id);
         }
         $form = $this->createForm(
@@ -1462,7 +1462,7 @@ class DefaultController extends AbstractController
         $actualuserid = $user->getId();
         
         $t = $this->translator;
-        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
+        $repository = $this->getDoctrine()->getRepository('App:Job');
         
         $query = $repository->createQueryBuilder('j')
             ->innerJoin('j.client', 'c')
@@ -1534,7 +1534,7 @@ class DefaultController extends AbstractController
             PHP_ROUND_HALF_UP
         );
         
-        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+        $repository = $this->getDoctrine()->getRepository('App:Client');
         $query = $repository->createQueryBuilder('c')->addOrderBy('c.id', 'ASC');
         
         if (! $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
@@ -1578,12 +1578,12 @@ class DefaultController extends AbstractController
      */
     public function showStatusAction(Request $request)
     {
-        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Queue');
+        $repository = $this->getDoctrine()->getRepository('App:Queue');
         $query = $repository
             ->createQueryBuilder('c')
             ->orderBy('c.date ASC, c.priority')
             ->getQuery();
-        $clients = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client')->findAll();
+        $clients = $this->getDoctrine()->getRepository('App:Client')->findAll();
             
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
@@ -1611,7 +1611,7 @@ class DefaultController extends AbstractController
      */
     public function showScriptsAction(Request $request)
     {
-        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Script');
+        $repository = $this->getDoctrine()->getRepository('App:Script');
         $query = $repository->createQueryBuilder('c')->getQuery();
         
         $paginator = $this->get('knp_paginator');
@@ -1640,7 +1640,7 @@ class DefaultController extends AbstractController
         // :WARNING: this call might end up slowing things too much.
         $dql = <<<EOF
 SELECT l
-FROM  BinovoElkarBackupBundle:LogRecord l
+FROM  App:LogRecord l
 WHERE l.source = :source AND l.link LIKE :link
 ORDER BY l.id DESC
 EOF;
@@ -1664,7 +1664,7 @@ EOF;
     {
         $formValues = array();
         $t = $this->translator;
-        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:LogRecord');
+        $repository = $this->getDoctrine()->getRepository('App:LogRecord');
         $queryBuilder = $repository->createQueryBuilder('l')->addOrderBy('l.id', 'DESC');
         $queryParamCounter = 1;
         
@@ -1770,7 +1770,7 @@ EOF;
      */
     public function showPoliciesAction(Request $request)
     {
-        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Policy');
+        $repository = $this->getDoctrine()->getRepository('App:Policy');
         $query = $repository->createQueryBuilder('c')->getQuery();
         
         $paginator = $this->get('knp_paginator');
@@ -1803,7 +1803,7 @@ EOF;
         $backupLocationId = $result['form']['backup_script'];
         $backupLocation = $this
             ->getDoctrine()
-            ->getRepository('BinovoElkarBackupBundle:BackupLocation')
+            ->getRepository('App:BackupLocation')
             ->find($backupLocationId);
         $response = $this->render(
             'BinovoElkarBackupBundle:Default:copyrepository.sh.twig',
@@ -1854,7 +1854,7 @@ EOF;
                 'required' => true,
                 'attr' => array('class' => 'form-control'),
                 'label' => $t->trans('Backup Script', array(), 'BinovoElkarBackup'),
-                'class'    => 'BinovoElkarBackupBundle:BackupLocation',
+                'class'    => 'App:BackupLocation',
                 'choice_label' => 'name'
             )
         );
@@ -1942,7 +1942,7 @@ EOF;
         if ('new' === $id) {
             $backupLocation = new BackupLocation();
         } else {
-            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation');
+            $repository = $this->getDoctrine()->getRepository('App:BackupLocation');
             $backupLocation = $repository->find($id);
         }
         
@@ -1978,7 +1978,7 @@ EOF;
         if ('new' === $id) {
             $backupLocation = new BackupLocation();
         } else {
-            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation');
+            $repository = $this->getDoctrine()->getRepository('App:BackupLocation');
             $backupLocation = $repository->find($id);
         }
         
@@ -2048,7 +2048,7 @@ EOF;
         
         $t = $this->translator;
         $db = $this->getDoctrine();
-        $repository = $db->getRepository('BinovoElkarBackupBundle:BackupLocation');
+        $repository = $db->getRepository('App:BackupLocation');
         $manager = $db->getManager();
         $backupLocation = $repository->find($id);
         try {
@@ -2079,7 +2079,7 @@ EOF;
      */
     public function manageBackupLocationsAction(Request $request)
     {
-        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:BackupLocation');
+        $repository = $this->getDoctrine()->getRepository('App:BackupLocation');
         $query = $repository->createQueryBuilder('c')->getQuery();
         
         $paginator = $this->get('knp_paginator');
@@ -2468,7 +2468,7 @@ EOF;
     {
         $t = $this->translator;
         $db = $this->getDoctrine();
-        $repository = $db->getRepository('BinovoElkarBackupBundle:LogRecord');
+        $repository = $db->getRepository('App:LogRecord');
         $manager = $db->getManager();
         $log = $repository->findOneById($id);
         if (null == $log) {
@@ -2545,7 +2545,7 @@ EOF;
         
         $t = $this->translator;
         $db = $this->getDoctrine();
-        $repository = $db->getRepository('BinovoElkarBackupBundle:Script');
+        $repository = $db->getRepository('App:Script');
         $manager = $db->getManager();
         $script = $repository->find($id);
         try {
@@ -2580,7 +2580,7 @@ EOF;
     {
         $t = $this->translator;
         $db = $this->getDoctrine();
-        $repository = $db->getRepository('BinovoElkarBackupBundle:Script');
+        $repository = $db->getRepository('App:Script');
         $manager = $db->getManager();
         $script = $repository->findOneById($id);
         if (null == $script) {
@@ -2627,7 +2627,7 @@ EOF;
         if ('new' === $id) {
             $script = new Script();
         } else {
-            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Script');
+            $repository = $this->getDoctrine()->getRepository('App:Script');
             $script = $repository->find($id);
         }
         $form = $this->createForm(
@@ -2663,7 +2663,7 @@ EOF;
         if ("-1" === $id) {
             $script = new Script();
         } else {
-            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Script');
+            $repository = $this->getDoctrine()->getRepository('App:Script');
             $script = $repository->find($id);
         }
         $form = $this->createForm(
@@ -2719,7 +2719,7 @@ EOF;
     {
         if (User::SUPERUSER_ID != $id) {
             $db = $this->getDoctrine();
-            $repository = $db->getRepository('BinovoElkarBackupBundle:User');
+            $repository = $db->getRepository('App:User');
             $manager = $db->getManager();
             $user = $repository->find($id);
             $manager->remove($user);
@@ -2746,7 +2746,7 @@ EOF;
         if ('new' === $id) {
             $user = new User();
         } else {
-            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:User');
+            $repository = $this->getDoctrine()->getRepository('App:User');
             $user = $repository->find($id);
         }
         $form = $this->createForm(UserType::class, $user, array('translator' => $t));
@@ -2775,7 +2775,7 @@ EOF;
         if ("-1" === $id) {
             $user = new User();
         } else {
-            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:User');
+            $repository = $this->getDoctrine()->getRepository('App:User');
             $user = $repository->find($id);
         }
         $form = $this->createForm(UserType::class, $user, array('translator' => $t));
@@ -2823,7 +2823,7 @@ EOF;
      */
     public function showUsersAction(Request $request)
     {
-        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:User');
+        $repository = $this->getDoctrine()->getRepository('App:User');
         $query = $repository->createQueryBuilder('c')->getQuery();
         
         $paginator = $this->get('knp_paginator');
@@ -2847,7 +2847,7 @@ EOF;
 
     protected function checkPermissions($idClient, $idJob = null)
     {
-        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+        $repository = $this->getDoctrine()->getRepository('App:Client');
         $client = $repository->find($idClient);
         
         if ($client->getOwner() == $this->security->getToken()->getUser() || 
@@ -2879,7 +2879,7 @@ EOF;
         $clientrow = array();
         try {
             // CLONE CLIENT
-            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+            $repository = $this->getDoctrine()->getRepository('App:Client');
             $client = $repository->find($idoriginal);
             if (null == $client) {
                 throw $this->createNotFoundException($t->trans(
@@ -2905,12 +2905,12 @@ EOF;
             
             // CLONE JOBS
             
-            $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Job');
+            $repository = $this->getDoctrine()->getRepository('App:Job');
             $jobs = $repository->findBy(array('client' => $idoriginal
             ));
             
             foreach ($jobs as $job) {
-                $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+                $repository = $this->getDoctrine()->getRepository('App:Client');
                 $client = $repository->find($idnew);
                 
                 $newjob = clone $job;
@@ -2948,7 +2948,7 @@ EOF;
         $encoders[] = new XmlEncoder();
         $serializer = new Serializer($normalizers, $encoders);
         
-        $repository = $this->getDoctrine()->getRepository('BinovoElkarBackupBundle:Client');
+        $repository = $this->getDoctrine()->getRepository('App:Client');
         $client = $repository->find($idnew);
         // syslog(LOG_ERR, "Obtaining first job: ".$client->getJobs()[0]->getId());
         syslog(LOG_ERR, "Serializing object: " . $client->getName());
@@ -3040,7 +3040,7 @@ EOF;
     public function findBackups($job)
     {
         $em = $this->getDoctrine()->getManager();
-        $backupLocations = $em->getRepository('BinovoElkarBackupBundle:BackupLocation')
+        $backupLocations = $em->getRepository('App:BackupLocation')
         ->findAll();
         $jobLocations = array();
         $actualLocation = $job->getBackupLocation()->getEffectiveDir();
