@@ -34,9 +34,9 @@ services:
     Symfony\Bridge\Monolog\Logger:
         arguments: [BnvWeb]
         calls:
-            - [pushProcessor, ["@BnvWebUserLoggerProcessor"]]
-            - [pushHandler,   ["@StreamHandler"]]
-            - [pushHandler,   ["@BnvLoggerHandler"]]
+            - [pushProcessor, ['@App\Logger\WebUserLoggerProcessor']]
+            - [pushHandler,   ['@Monolog\Handler\StreamHandler']]
+            - [pushHandler,   ['@App\Logger\LoggerHandler']]
     App\Logger\LoggerHandler:
         calls:
             - [setContainer,  ["@service_container"] ]
@@ -44,7 +44,7 @@ services:
         # 200 = INFO, see Monolog::Logger for the values of log levels
         arguments: ['%kernel.logs_dir%/BnvLog.log', 200]
         calls:
-            - [setFormatter, ["@BnvWebLoggerFormatter"]]
+            - [setFormatter, ['@Monolog\Formatter\LineFormatter']]
     App\Logger\WebUserLoggerProcessor:
         calls:
             - [setContainer, ["@service_container"] ]
