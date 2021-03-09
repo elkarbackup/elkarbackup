@@ -68,14 +68,16 @@ class DefaultController extends AbstractController
     private $logger;
     private $supportedLocales;
     private $requestStack;
+    private $disableBackground;
 
-    public function __construct(Security $security, TranslatorInterface $t, Logger $logger, $sl, RequestStack $rs)
+    public function __construct(Security $security, TranslatorInterface $t, Logger $logger, $sl, RequestStack $rs, $disableBackground = false)
     {
         $this->security = $security;
         $this->translator = $t;
         $this->logger = $logger;
         $this->supportedLocales = $sl;
         $this->requestStack = $rs;
+        $this->disableBackground = $disableBackground;
     }
     protected function info($msg, $translatorParams = array(), $context = array())
     {
@@ -337,6 +339,7 @@ class DefaultController extends AbstractController
      * @method ("GET")
      *         @Template()
      */
+    public function loginAction(Request $request)
     {
         $request = $this->requestStack->getCurrentRequest();
         $session = $request->getSession();
@@ -362,11 +365,7 @@ class DefaultController extends AbstractController
                 $t->trans("language_$locale", array(), 'BinovoElkarBackup')
             );
         }
-        if ($this->container->hasParameter('disable_background')) {
-            $disable_background = $this->container->getParameter('disable_background');
-        } else {
-            $disable_background = False;
-        }
+        $disable_background = $this->disableBackground;
         
         // Warning for Rsnapshot 1.3.1-4 in Debian Jessie
         $rsnapshot_jessie_md5 = '7d9eb926a1c4d6fcbf81d939d9f400ea';
