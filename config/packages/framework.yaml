@@ -1,19 +1,16 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     #esi:             ~
-    translator:      { fallback: '%locale%' }
-    secret: '%secret%'
+    translator:      { fallback: '%env(LOCALE)%' }
+    secret: '%env(SECRET)%'
     csrf_protection: true
     #http_method_override: true
-    router:
-        resource: '%kernel.root_dir%/../config/routes.yaml'
-        strict_requirements: '%kernel.debug%'
-        type: yaml
+    
     # Enables session support. Note that the session will ONLY be started if you read or write from it.
     # Remove or comment this section to explicitly disable session support.
     validation:      { enable_annotations: true }
     templating:      { engines: ['twig'] } #assets_version: SomeVersionScheme
-    default_locale:  '%locale%'
+    default_locale:  '%env(LOCALE)%'
 
     session:
         handler_id: null

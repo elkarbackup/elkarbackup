@@ -3,33 +3,10 @@
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+imports:
+    - { resource: legacy_aliases.yml }
+
 parameters:
-    database_driver: pdo_mysql
-    database_host: localhost
-    database_port: null
-    database_name: elkarbackup
-    database_user: elkarbackup
-    database_password: elkarbackup
-    mailer_transport: smtp
-    mailer_host: localhost
-    mailer_user: null
-    mailer_password: null
-    locale: en
-    secret: fba546d6ab6abc4a01391d161772a14e093c7aa2
-    database_path: null
-    upload_dir: /var/spool/elkarbackup/uploads
-    public_key: /var/lib/elkarbackup/.ssh/id_rsa.pub
-    max_log_age: P1Y
-    tmp_dir: /tmp
-    rsnapshot: /usr/bin/rsnapshot
-    warning_load_level: 0.8
-    pagination_lines_per_page: 20
-    url_prefix: null
-    disable_background: false
-    mailer_from: null
-    home: /var/lib/elkarbackup
-    max_parallel_jobs: 1
-    post_on_pre_fail: true
     supported_locales: [es, en, eu, de]
     
 services:
