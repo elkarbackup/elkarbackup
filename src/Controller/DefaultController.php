@@ -72,12 +72,11 @@ class DefaultController extends AbstractController
     private $disableBackground;
     private $paginator;
 
-    public function __construct(Security $security, TranslatorInterface $t, Logger $logger, $sl, RequestStack $rs, $disableBackground = false, PaginatorInterface $pag)
+    public function __construct(Security $security, TranslatorInterface $t, Logger $logger, RequestStack $rs, $disableBackground = false, PaginatorInterface $pag)
     {
         $this->security = $security;
         $this->translator = $t;
         $this->logger = $logger;
-        $this->supportedLocales = $sl;
         $this->requestStack = $rs;
         $this->disableBackground = $disableBackground;
         $this->paginator = $pag;
@@ -360,7 +359,7 @@ class DefaultController extends AbstractController
             array('%username%' => $session->get(Security::LAST_USERNAME))
         );
         $this->getDoctrine()->getManager()->flush();
-        $locales = $this->supportedLocales;
+        $locales = $this->getParameter('supported_locales');
         $localesWithNames = array();
         foreach ($locales as $locale) {
             $localesWithNames[] = array(
