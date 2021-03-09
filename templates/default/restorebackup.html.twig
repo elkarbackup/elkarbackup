@@ -1,4 +1,4 @@
-{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% extends 'default/base.html.twig' %}
 {% trans_default_domain 'BinovoElkarBackup' %}
 
 {% block body %}
@@ -12,7 +12,7 @@
                 {{ flashMessage }}
             </div>
             {% endfor %}
-            {% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
+            {% form_theme form 'default/fields.html.twig' %}
             <div>
                 {{ form_widget(form) }}
             </div>

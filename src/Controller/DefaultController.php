@@ -192,7 +192,7 @@ class DefaultController extends AbstractController
      */
     public function aboutAction(Request $request)
     {
-        return $this->render('BinovoElkarBackupBundle:Default:about.html.twig');
+        return $this->render('default/about.html.twig');
     }
 
     /**
@@ -446,7 +446,7 @@ class DefaultController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:client.html.twig',
+            'default/client.html.twig',
             array('form' => $form->createView())
         );
     }
@@ -540,7 +540,7 @@ class DefaultController extends AbstractController
         } else {
             
             return $this->render(
-                'BinovoElkarBackupBundle:Default:client.html.twig',
+                'default/client.html.twig',
                 array('form' => $form->createView())
             );
         }
@@ -663,7 +663,7 @@ class DefaultController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:job.html.twig',
+            'default/job.html.twig',
             array('form' => $form->createView())
         );
     }
@@ -700,7 +700,7 @@ class DefaultController extends AbstractController
             RestoreBackupType::class,
             array('path' => $suggestedPath,'source' => $path),
             array('translator' => $this->translator, 'actualuserid' => $actualuserid, 'granted' => $granted));
-        return $this->render('BinovoElkarBackupBundle:Default:restorebackup.html.twig',array(
+        return $this->render('default/restorebackup.html.twig',array(
             'form' => $form->createView(),
             'idClient' => $idClient,
             'idJob' => $idJob,
@@ -1007,7 +1007,7 @@ class DefaultController extends AbstractController
         }
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:rsnapshotconfig.txt.twig',
+            'default/rsnapshotconfig.txt.twig',
             array(
                 'cmdPreExec' => $preCommand,
                 'cmdPostExec' => $postCommand,
@@ -1092,7 +1092,7 @@ class DefaultController extends AbstractController
         } else {
             
             return $this->render(
-                'BinovoElkarBackupBundle:Default:job.html.twig',
+                'default/job.html.twig',
                 array('form' => $form->createView())
             );
         }
@@ -1254,7 +1254,7 @@ class DefaultController extends AbstractController
                         'backupDirectories' => $backupDirectories,
                         'idBackupLocation' => $idBackupLocation
                     );
-                    return $this->render('BinovoElkarBackupBundle:Default:directory.html.twig', $params);
+                    return $this->render('default/directory.html.twig', $params);
                 }
             } else {
                 $response = new BinaryFileResponse($realPath);
@@ -1314,7 +1314,7 @@ class DefaultController extends AbstractController
                 'path' => '',
                 'backupDirectories' => $backupDirectories
             );
-            return $this->render('BinovoElkarBackupBundle:Default:directory.html.twig', $params);
+            return $this->render('default/directory.html.twig', $params);
 
         }
     }
@@ -1372,7 +1372,7 @@ class DefaultController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:policy.html.twig',
+            'default/policy.html.twig',
             array('form' => $form->createView())
         );
     }
@@ -1449,7 +1449,7 @@ class DefaultController extends AbstractController
         } else {
             
             return $this->render(
-                'BinovoElkarBackupBundle:Default:policy.html.twig',
+                'default/policy.html.twig',
                 array('form' => $form->createView())
             );
         }
@@ -1502,7 +1502,7 @@ class DefaultController extends AbstractController
             $result = $this->redirect($this->generateUrl('sortJobs'));
         } else {
             $result = $this->render(
-                'BinovoElkarBackupBundle:Default:sortjobs.html.twig',
+                'default/sortjobs.html.twig',
                 array('form' => $form->createView())
             );
         }
@@ -1570,7 +1570,7 @@ class DefaultController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:clients.html.twig',
+            'default/clients.html.twig',
             array('pagination' => $pagination,'fsDiskUsage' => $fsDiskUsage)
         );
     }
@@ -1603,7 +1603,7 @@ class DefaultController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:status.html.twig',
+            'default/status.html.twig',
             array('pagination' => $pagination, 'clients' => $clients)
         );
     }
@@ -1631,7 +1631,7 @@ class DefaultController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:scripts.html.twig',
+            'default/scripts.html.twig',
             array('pagination' => $pagination)
         );
     }
@@ -1714,7 +1714,7 @@ EOF;
         $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:logs.html.twig',
+            'default/logs.html.twig',
             array(
                 'pagination' => $pagination,
                 'levels' => array(
@@ -1790,7 +1790,7 @@ EOF;
         $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:policies.html.twig',
+            'default/policies.html.twig',
             array('pagination' => $pagination)
         );
     }
@@ -1809,7 +1809,7 @@ EOF;
             ->getRepository('App:BackupLocation')
             ->find($backupLocationId);
         $response = $this->render(
-            'BinovoElkarBackupBundle:Default:copyrepository.sh.twig',
+            'default/copyrepository.sh.twig',
             array(
                 'backupsroot'   => $backupLocation->getEffectiveDir(),
                 'backupsuser'   => 'elkarbackup',
@@ -1922,7 +1922,7 @@ EOF;
             $result = $this->redirect($this->generateUrl('configureRepositoryBackupScript'));
         } else {
             $result = $this->render(
-                'BinovoElkarBackupBundle:Default:backupscriptconfig.html.twig',
+                'default/backupscriptconfig.html.twig',
                 array('authorizedKeysForm' => $authorizedKeysForm->createView(), 'backupScriptForm' => $backupScriptForm->createView())
             );
         }
@@ -1964,7 +1964,7 @@ EOF;
         $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:backuplocation.html.twig',
+            'default/backuplocation.html.twig',
             array('form' => $form->createView(),'id' => $id)
         );
     }
@@ -2001,7 +2001,7 @@ EOF;
                 'BinovoElkarBackup'
             )));
             $result = $this->render(
-                'BinovoElkarBackupBundle:Default:backuplocation.html.twig',
+                'default/backuplocation.html.twig',
                 array('form' => $form->createView(),'id' => $id)
             );
         } elseif ($backupLocation->getMaxParallelJobs() < 1) {
@@ -2011,7 +2011,7 @@ EOF;
                 'BinovoElkarBackup'
             )));
             $result = $this->render(
-                'BinovoElkarBackupBundle:Default:backuplocation.html.twig',
+                'default/backuplocation.html.twig',
                 array('form' => $form->createView(),'id' => $id)
             );
             
@@ -2027,7 +2027,7 @@ EOF;
             $result = $this->redirect($this->generateUrl('manageBackupLocations'));
         } else {
             $result = $this->render(
-                'BinovoElkarBackupBundle:Default:backuplocation.html.twig',
+                'default/backuplocation.html.twig',
                 array('form' => $form->createView(),'id' => $id)
             );
         }
@@ -2099,7 +2099,7 @@ EOF;
         $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:backuplocations.html.twig',
+            'default/backuplocations.html.twig',
             array('pagination' => $pagination)
         );
     }
@@ -2321,7 +2321,7 @@ EOF;
             $result = $this->redirect($this->generateUrl('manageParameters'));
         } else {
             $result = $this->render(
-                'BinovoElkarBackupBundle:Default:params.html.twig',
+                'default/params.html.twig',
                 array(
                     'form' => $form->createView(),
                     'showKeyDownload' => file_exists(
@@ -2455,7 +2455,7 @@ EOF;
         } else {
             
             return $this->render(
-                'BinovoElkarBackupBundle:Default:password.html.twig',
+                'default/password.html.twig',
                 array('form' => $form->createView())
             );
         }
@@ -2649,7 +2649,7 @@ EOF;
         $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:script.html.twig',
+            'default/script.html.twig',
             array('form' => $form->createView())
         );
     }
@@ -2704,7 +2704,7 @@ EOF;
         }
         if (! $result) {
             $result = $this->render(
-                'BinovoElkarBackupBundle:Default:script.html.twig',
+                'default/script.html.twig',
                 array('form' => $form->createView())
             );
         }
@@ -2761,7 +2761,7 @@ EOF;
         $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:user.html.twig',
+            'default/user.html.twig',
             array('form' => $form->createView())
         );
     }
@@ -2803,7 +2803,7 @@ EOF;
         } else {
             
             return $this->render(
-                'BinovoElkarBackupBundle:Default:user.html.twig',
+                'default/user.html.twig',
                 array('form' => $form->createView())
             );
         }
@@ -2843,7 +2843,7 @@ EOF;
         $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
-            'BinovoElkarBackupBundle:Default:users.html.twig',
+            'default/users.html.twig',
             array('pagination' => $pagination)
         );
     }
@@ -3022,7 +3022,7 @@ EOF;
             $this->getDoctrine()->getManager()->flush();
             
             return $this->render(
-                'BinovoElkarBackupBundle:Default:preferences.html.twig',
+                'default/preferences.html.twig',
                 array('form' => $form->createView())
             );
         }

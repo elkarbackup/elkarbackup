@@ -2,7 +2,7 @@
  # @copyright 2012,2013 Binovo it Human Project, S.L.
  # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
  #}
-{% extends 'BinovoElkarBackupBundle:Default:base.html.twig' %}
+{% extends 'default/base.html.twig' %}
 {% trans_default_domain 'BinovoElkarBackup' %}
 
 {% block scripts %}
@@ -30,7 +30,7 @@
                 {{ flashMessage }}
             </div>
 {% endfor %}
-{% form_theme form 'BinovoElkarBackupBundle:Default:fields.html.twig' %}
+{% form_theme form 'default/fields.html.twig' %}
             {{ form_row(form.name) }}
             {{ form_row(form.url) }}
             {{ form_row(form.quota) }}
