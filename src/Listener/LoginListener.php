@@ -6,6 +6,7 @@
 
 namespace App\Listener;
 
+use Symfony\Bridge\Monolog\Logger;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Security;
@@ -17,15 +18,17 @@ class LoginListener
 {
     private $container;
     private $security;
+    private $logger;
 	/**
 	 * Constructor
 	 *
 	 * @param ContainerInterface $container
 	 */
-	public function __construct(ContainerInterface $container, Security $security)
+	public function __construct(ContainerInterface $container, Security $security, Logger $logger)
 	{
         $this->container = $container;
         $this->security = $security;
+        $this->logger = $logger;
 	}
 
 	/**
@@ -35,7 +38,7 @@ class LoginListener
 	 */
 	public function onSecurityInteractiveLogin(Event $event)
 	{
-        $logger   = $this->container->get('BnvWebLogger');
+        $logger   = $this->logger;
         $trans    = $this->container->get('translator');
         $username = $this->security->getToken()->getUser()->getUsername();
         $msg = $trans->trans('User %username% logged in.', array('%username%' => $username), 'BinovoElkarBackup');
