@@ -29,6 +29,7 @@ use App\Form\Type\ScriptType;
 use App\Form\Type\UserType;
 use App\Form\Type\PreferencesType;
 use App\Lib\Globals;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -69,8 +70,9 @@ class DefaultController extends AbstractController
     private $supportedLocales;
     private $requestStack;
     private $disableBackground;
+    private $paginator;
 
-    public function __construct(Security $security, TranslatorInterface $t, Logger $logger, $sl, RequestStack $rs, $disableBackground = false)
+    public function __construct(Security $security, TranslatorInterface $t, Logger $logger, $sl, RequestStack $rs, $disableBackground = false, PaginatorInterface $pag)
     {
         $this->security = $security;
         $this->translator = $t;
@@ -78,6 +80,7 @@ class DefaultController extends AbstractController
         $this->supportedLocales = $sl;
         $this->requestStack = $rs;
         $this->disableBackground = $disableBackground;
+        $this->paginator = $pag;
     }
     protected function info($msg, $translatorParams = array(), $context = array())
     {
@@ -1544,7 +1547,7 @@ class DefaultController extends AbstractController
         }
         $query->getQuery();
         
-        $paginator = $this->get('knp_paginator');
+        $paginator = $this->paginator;
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
@@ -1585,7 +1588,7 @@ class DefaultController extends AbstractController
             ->getQuery();
         $clients = $this->getDoctrine()->getRepository('App:Client')->findAll();
             
-        $paginator = $this->get('knp_paginator');
+        $paginator = $this->paginator;
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
@@ -1614,7 +1617,7 @@ class DefaultController extends AbstractController
         $repository = $this->getDoctrine()->getRepository('App:Script');
         $query = $repository->createQueryBuilder('c')->getQuery();
         
-        $paginator = $this->get('knp_paginator');
+        $paginator = $this->paginator;
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
@@ -1697,7 +1700,7 @@ EOF;
         
         $query = $queryBuilder->getQuery();
         
-        $paginator = $this->get('knp_paginator');
+        $paginator = $this->paginator;
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
@@ -1773,7 +1776,7 @@ EOF;
         $repository = $this->getDoctrine()->getRepository('App:Policy');
         $query = $repository->createQueryBuilder('c')->getQuery();
         
-        $paginator = $this->get('knp_paginator');
+        $paginator = $this->paginator;
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
@@ -2082,7 +2085,7 @@ EOF;
         $repository = $this->getDoctrine()->getRepository('App:BackupLocation');
         $query = $repository->createQueryBuilder('c')->getQuery();
         
-        $paginator = $this->get('knp_paginator');
+        $paginator = $this->paginator;
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
@@ -2826,7 +2829,7 @@ EOF;
         $repository = $this->getDoctrine()->getRepository('App:User');
         $query = $repository->createQueryBuilder('c')->getQuery();
         
-        $paginator = $this->get('knp_paginator');
+        $paginator = $this->paginator;
         $pagination = $paginator->paginate(
             $query,
             $request->query->get('page', 1)/*page number*/,
