@@ -83,7 +83,7 @@ class DefaultController extends AbstractController
     
     protected function warn($msg, $translatorParams = array(), $context = array())
     {
-        $logger = $this->get('BnvWebLogger');
+        $logger = $this->logger;
         $context = array_merge(array('source' => 'DefaultController'), $context);
         $logger->warning(
             $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
@@ -93,7 +93,7 @@ class DefaultController extends AbstractController
     
     protected function err($msg, $translatorParams = array(), $context = array())
     {
-        $logger = $this->get('BnvWebLogger');
+        $logger = $this->logger;
         $context = array_merge(array('source' => 'DefaultController'), $context);
         $logger->error(
             $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
@@ -103,7 +103,7 @@ class DefaultController extends AbstractController
     
     protected function debug($msg, $translatorParams = array(), $context = array())
     {
-        $logger = $this->get('BnvWebLogger');
+        $logger = $this->logger;
         $context = array_merge(array('source' => 'DefaultController'), $context);
         $logger->debug(
             $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
