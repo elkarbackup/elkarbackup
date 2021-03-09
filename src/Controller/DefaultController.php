@@ -52,6 +52,7 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use steevanb\SSH2Bundle\Entity\Profile;
 use steevanb\SSH2Bundle\Entity\Connection;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
@@ -65,12 +66,16 @@ class DefaultController extends AbstractController
     private $security;
     private $translator;
     private $logger;
+    private $supportedLocales;
+    private $requestStack;
 
-    public function __construct(Security $security, TranslatorInterface $t, Logger $logger)
+    public function __construct(Security $security, TranslatorInterface $t, Logger $logger, $sl, RequestStack $rs)
     {
         $this->security = $security;
         $this->translator = $t;
         $this->logger = $logger;
+        $this->supportedLocales = $sl;
+        $this->requestStack = $rs;
     }
     protected function info($msg, $translatorParams = array(), $context = array())
     {
@@ -332,9 +337,8 @@ class DefaultController extends AbstractController
      * @method ("GET")
      *         @Template()
      */
-    public function loginAction(Request $request)
     {
-        $request = $this->container->get('request_stack')->getCurrentRequest();
+        $request = $this->requestStack->getCurrentRequest();
         $session = $request->getSession();
         $t = $this->translator;
         
@@ -350,7 +354,7 @@ class DefaultController extends AbstractController
             array('%username%' => $session->get(Security::LAST_USERNAME))
         );
         $this->getDoctrine()->getManager()->flush();
-        $locales = $this->container->getParameter('supported_locales');
+        $locales = $this->supportedLocales;
         $localesWithNames = array();
         foreach ($locales as $locale) {
             $localesWithNames[] = array(
@@ -800,7 +804,7 @@ class DefaultController extends AbstractController
                 $job = $repository->findOneById($idJob);
                 if ($token == $job->getToken()) {
                     // Valid token, but let's require HTTPS
-                    if ($this->container->get('request_stack')->getCurrentRequest()->isSecure()) {
+                    if ($this->requestStack->getCurrentRequest()->isSecure()) {
                         $trustable = true;
                     } else {
                         $response = new JsonResponse(array(

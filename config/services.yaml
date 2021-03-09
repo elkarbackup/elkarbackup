@@ -30,7 +30,7 @@ services:
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
-        arguments: ["@security.helper", "@translator", "@logger"]
+        arguments: ["@security.helper", "@translator", "@logger", '%supported_locales%', "@request_stack"]
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     Symfony\Bridge\Monolog\Logger:
