@@ -84,9 +84,6 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.3"
     },
-    "incenteev/composer-parameter-handler": {
-        "version": "v2.1.4"
-    },
     "knplabs/knp-components": {
         "version": "v3.0.0"
     },
@@ -411,7 +408,7 @@
         "version": "v4.4.19"
     },
     "twbs/bootstrap": {
-        "version": "v4.6.0"
+        "version": "v3.4.1"
     },
     "twig/extensions": {
         "version": "1.0",
