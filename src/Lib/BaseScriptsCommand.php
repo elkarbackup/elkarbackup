@@ -184,7 +184,7 @@ class BaseScriptsCommand extends LoggingCommand
             
             $queue = $container
             ->get('doctrine')
-            ->getRepository('BinovoElkarBackupBundle:Queue')
+            ->getRepository('App:Queue')
             ->findOneBy(array('job' => $job));
             if (null != $queue) {
                 $data = $queue->getData();
