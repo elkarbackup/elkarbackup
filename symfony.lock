@@ -238,6 +238,18 @@
     "symfony/intl": {
         "version": "v4.4.20"
     },
+    "symfony/lock": {
+        "version": "4.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.4",
+            "ref": "e13a79427495e670ef7a19f0e25fd13fbdd909d4"
+        },
+        "files": [
+            "config/packages/lock.yaml"
+        ]
+    },
     "symfony/mime": {
         "version": "v4.4.19"
     },
