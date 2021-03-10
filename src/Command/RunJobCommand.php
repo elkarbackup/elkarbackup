@@ -33,7 +33,7 @@ class RunJobCommand extends LoggingCommand
             }
             $job = $container
             ->get('doctrine')
-            ->getRepository('BinovoElkarBackupBundle:Job')
+            ->getRepository('App:Job')
             ->find($jobId);
             if (null == $job) {
                 $this->err('Job not found');
@@ -246,7 +246,7 @@ class RunJobCommand extends LoggingCommand
             
             $queue = $container
             ->get('doctrine')
-            ->getRepository('BinovoElkarBackupBundle:Queue')
+            ->getRepository('App:Queue')
             ->findOneBy(array('job' => $job));
             
             if (null == $queue) {
@@ -340,7 +340,7 @@ class RunJobCommand extends LoggingCommand
         
         $queue = $this->getContainer()
         ->get('doctrine')
-        ->getRepository('BinovoElkarBackupBundle:Queue')
+        ->getRepository('App:Queue')
         ->findOneBy(array('job' => $job));
         
         if (null == $queue) {

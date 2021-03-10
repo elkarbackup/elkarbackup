@@ -33,7 +33,7 @@ class CreateAdminUserCommand extends ContainerAwareCommand
         $container = $this->getContainer();
         $doctrine = $container->get('doctrine');
         $em = $doctrine->getManager();
-        $user = $doctrine->getRepository('BinovoElkarBackupBundle:User')->find(User::SUPERUSER_ID);
+        $user = $doctrine->getRepository('App:User')->find(User::SUPERUSER_ID);
         if (!$user) {
             $user = new User();
         } else if ($input->getOption('reset')) {

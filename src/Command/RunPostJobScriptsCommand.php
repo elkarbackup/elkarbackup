@@ -40,7 +40,7 @@ class RunPostJobScriptsCommand extends BaseScriptsCommand
         
         $job = $container
             ->get('doctrine')
-            ->getRepository('BinovoElkarBackupBundle:Job')
+            ->getRepository('App:Job')
             ->find($jobId);
         if (null == $job) {
             $this->err('Job not found');

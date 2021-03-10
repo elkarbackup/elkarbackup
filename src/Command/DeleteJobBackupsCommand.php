@@ -41,7 +41,7 @@ class DeleteJobBackupsCommand extends ContainerAwareCommand
         $manager = $doctrine->getManager();
         $jobId = $input->getArgument('job');
         $clientId = $input->getArgument('client');
-        $backupLocations = $doctrine->getRepository('BinovoElkarBackupBundle:BackupLocation')->findAll();
+        $backupLocations = $doctrine->getRepository('App:BackupLocation')->findAll();
         $allOk = 0;
         foreach ($backupLocations as $location) {
             $backupDir = $location->getEffectiveDir();

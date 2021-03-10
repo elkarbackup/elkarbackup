@@ -46,7 +46,7 @@ class RemoteRestoreCommand extends ContainerAwareCommand
         $translator = $this->getContainer()->get('translator');
         $context = array('source' => 'RestoreBackups');
                 
-        $volumes = $manager->getRepository('BinovoElkarBackupBundle:BackupLocation'); 
+        $volumes = $manager->getRepository('App:BackupLocation'); 
 
         $url = $input->getArgument(self::PARAM_URL);
         $sourcePath = $input->getArgument(self::PARAM_SOURCE_PATH);

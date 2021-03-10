@@ -30,7 +30,7 @@ class RunPreClientScriptsCommand extends BaseScriptsCommand
         }
         $client = $container
             ->get('doctrine')
-            ->getRepository('BinovoElkarBackupBundle:Client')
+            ->getRepository('App:Client')
             ->find($clientId);
         if (null == $client) {
             $this->err('Client not found');
