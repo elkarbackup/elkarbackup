@@ -99,7 +99,7 @@ class RunJobCommand extends LoggingCommand
         $context = array('link' => $this->generateJobRoute($idJob, $idClient));
         
         $content = $engine->render(
-            'BinovoElkarBackupBundle:Default:rsnapshotconfig.txt.twig',
+            'default/rsnapshotconfig.txt.twig',
             array('cmdPreExec'          => '',
                 'cmdPostExec'         => '',
                 'excludes'            => $excludes,
