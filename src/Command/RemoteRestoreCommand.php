@@ -3,6 +3,7 @@ namespace App\Command;
 
 use Symfony\Component\Console\Command\Command;
 use App\Lib\LoggingCommand;
+use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -13,11 +14,19 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class RemoteRestoreCommand extends ContainerAwareCommand
 {
+    private $logger;
+    
     const PARAM_URL = 'url';
     const PARAM_SOURCE_PATH = 'sourcePath';
     const PARAM_REMOTE_PATH = 'remotePath';
     const PARAM_SSHARGS = 'sshArgs';
-
+    
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+        parent::__construct();
+    }
+    
     protected function configure()
     {
         $this->setName('elkarbackup:restore_backup');
@@ -33,7 +42,7 @@ class RemoteRestoreCommand extends ContainerAwareCommand
         $container = $this->getContainer();
         $manager = $container->get('doctrine')->getManager();
         
-        $logger = $this->getContainer()->get('BnvWebLogger');
+        $logger = $this->logger;
         $translator = $this->getContainer()->get('translator');
         $context = array('source' => 'RestoreBackups');
                 

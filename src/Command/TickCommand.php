@@ -13,6 +13,8 @@ use App\Entity\Message;
 use App\Entity\Queue;
 use App\Lib\Globals;
 use App\Lib\LoggingCommand;
+use App\Logger\LoggerHandler;
+use Symfony\Bridge\Monolog\Logger;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,7 +24,6 @@ use Symfony\Component\Lock\Factory;
 use DateInterval;
 use DateTime;
 use Exception;
-
 
 class TickCommand extends LoggingCommand
 {
@@ -34,6 +35,7 @@ class TickCommand extends LoggingCommand
     private $errors = array();
     private $container;
     private $manager;
+    private $loggerHandler;
     
     const STATE_CLIENT_NOT_READY = 'NOT READY';
     const STATE_CLIENT_PRE = 'PRE CLIENT';
@@ -50,6 +52,11 @@ class TickCommand extends LoggingCommand
     const BACKUP_STATUS_OK = 'OK';
     const BACKUP_STATUS_FAIL = 'FAIL';
     
+    public function __construct(LoggerHandler $loggerHandler, Logger $logger)
+    {
+        $this->loggerHandler = $loggerHandler;
+        parent::__construct($logger);
+    }
     protected function configure()
     {
         parent::configure();
@@ -67,7 +74,7 @@ class TickCommand extends LoggingCommand
         $errors = $this->executeMessages($input, $output) && $errors;
         $errors = $this->removeOldLogs() && $errors;
         
-        $logHandler = $this->container->get('BnvLoggerHandler');
+        $logHandler = $this->loggerHandler;
         $logHandler->startRecordingMessages();
         
         $store    = new FlockStore(sys_get_temp_dir());
@@ -302,7 +309,7 @@ EOF;
     protected function processJobState($task)
     {
 
-        $logHandler = $this->getContainer()->get('BnvLoggerHandler');
+        $logHandler = $this->loggerHandler;
         $state = $task->getState();
         $job = $task->getJob();
         $context = array('link' => $this->generateJobRoute(
@@ -748,7 +755,7 @@ EOF;
     protected function stopJob($job)
     {
         $manager = $this->getContainer()->get('doctrine')->getManager();
-        $logHandler = $this->getContainer()->get('BnvLoggerHandler');
+        $logHandler = $this->loggerHandler;
         $logHandler->startRecordingMessages();
         $clientId = $job->getClient()->getId();
         $jobId    = $job->getId();

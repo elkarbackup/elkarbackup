@@ -6,6 +6,7 @@
 
 namespace App\Lib;
 
+use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 /**
@@ -14,6 +15,8 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
  */
 abstract class LoggingCommand extends ContainerAwareCommand
 {
+    private $logger;
+    
     const ERR_CODE_PRE_FAIL = -1;
     const ERR_CODE_NO_RUN = -2;
     const ERR_CODE_OK = 0;
@@ -31,6 +34,12 @@ abstract class LoggingCommand extends ContainerAwareCommand
     
     const TYPE_PRE = 'PRE';
     const TYPE_POST = 'POST';
+    
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+        parent::__construct();
+    }
     
     abstract protected function getNameForLogs();
 
@@ -63,7 +72,7 @@ abstract class LoggingCommand extends ContainerAwareCommand
 
     protected function err($msg, $translatorParams = array(), $context = array())
     {
-        $logger = $this->getContainer()->get('BnvWebLogger');
+        $logger = $this->logger;
         $translator = $this->getContainer()->get('translator');
         $context = array_merge(array('source' => $this->getNameForLogs()), $context);
         $logger->error($translator->trans($msg, $translatorParams, 'BinovoElkarBackup'), $context);
@@ -71,7 +80,7 @@ abstract class LoggingCommand extends ContainerAwareCommand
 
     protected function info($msg, $translatorParams = array(), $context = array())
     {
-        $logger = $this->getContainer()->get('BnvWebLogger');
+        $logger = $this->logger;
         $translator = $this->getContainer()->get('translator');
         $context = array_merge(array('source' => $this->getNameForLogs()), $context);
         $logger->info($translator->trans($msg, $translatorParams, 'BinovoElkarBackup'), $context);
@@ -79,7 +88,7 @@ abstract class LoggingCommand extends ContainerAwareCommand
 
     protected function warn($msg, $translatorParams = array(), $context = array())
     {
-        $logger = $this->getContainer()->get('BnvWebLogger');
+        $logger = $this->logger;
         $translator = $this->getContainer()->get('translator');
         $context = array_merge(array('source' => $this->getNameForLogs()), $context);
         $logger->warning($translator->trans($msg, $translatorParams, 'BinovoElkarBackup'), $context);
@@ -87,7 +96,7 @@ abstract class LoggingCommand extends ContainerAwareCommand
     
     protected function debug($msg, $translatorParams = array(), $context = array())
     {
-        $logger = $this->getContainer()->get('BnvWebLogger');
+        $logger = $this->logger;
         $translator = $this->getContainer()->get('translator');
         $context = array_merge(array('source' => $this->getNameForLogs()), $context);
         $logger->debug($translator->trans($msg, $translatorParams, 'BinovoElkarBackup'), $context);

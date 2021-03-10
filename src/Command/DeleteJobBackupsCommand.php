@@ -7,6 +7,7 @@
 namespace App\Command;
 
 use App\Lib\Globals;
+use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,6 +15,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DeleteJobBackupsCommand extends ContainerAwareCommand
 {
+    private $logger;
+    
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+        parent::__construct();
+    }
+    
     protected function configure()
     {
         parent::configure();
@@ -26,7 +35,7 @@ class DeleteJobBackupsCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $logger = $this->getContainer()->get('BnvWebLogger');
+        $logger = $this->logger;
         $context = array('source' => 'DeleteJobBackupsCommand');
         $doctrine = $this->getContainer()->get('doctrine');
         $manager = $doctrine->getManager();
