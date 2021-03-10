@@ -4,7 +4,7 @@ namespace App\Lib;
 use App\Entity\Client;
 use App\Entity\Job;
 
-class BaseScriptsCommand extends LoggingCommand
+abstract class BaseScriptsCommand extends LoggingCommand
 {
     /**
      * Prepares the model with the necessary data to run Client scripts.
