@@ -68,16 +68,14 @@ class DefaultController extends AbstractController
     private $translator;
     private $logger;
     private $supportedLocales;
-    private $requestStack;
     private $disableBackground;
     private $paginator;
 
-    public function __construct(Security $security, TranslatorInterface $t, Logger $logger, RequestStack $rs, $disableBackground = false, PaginatorInterface $pag)
+    public function __construct(Security $security, TranslatorInterface $t, Logger $logger, $disableBackground = false, PaginatorInterface $pag)
     {
         $this->security = $security;
         $this->translator = $t;
         $this->logger = $logger;
-        $this->requestStack = $rs;
         $this->disableBackground = $disableBackground;
         $this->paginator = $pag;
     }
@@ -341,9 +339,9 @@ class DefaultController extends AbstractController
      * @method ("GET")
      *         @Template()
      */
-    public function loginAction(Request $request)
+    public function loginAction(Request $request, RequestStack $rs)
     {
-        $request = $this->requestStack->getCurrentRequest();
+        $request = $rs->getCurrentRequest();
         $session = $request->getSession();
         $t = $this->translator;
         
