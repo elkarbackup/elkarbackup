@@ -22,7 +22,7 @@ class JobShortType extends AbstractType
                 ->add('description' , TextareaType::class, array('required' => false))
                 ->add('path'        , TextType::class)
                 ->add('policy'      , EntityType::class  , array('required' => false,
-                                                        'class'    => 'BinovoElkarBackupBundle:Policy',
+                                                        'class'    => 'App:Policy',
                                                         'choice_label' => 'name'))
                 ->add('isActive'    , CheckboxType::class, array('required' => false));
 
