@@ -7,11 +7,11 @@
 namespace App\Menu;
 
 use Knp\Menu\FactoryInterface;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Builder implements ContainerAwareInterface
 {
@@ -35,7 +35,7 @@ class Builder implements ContainerAwareInterface
     private $auth;
     private $t;
 
-    public function __construct(FactoryInterface $factory, EntityManager $entity, AuthorizationCheckerInterface $auth, DataCollectorTranslator $t)
+    public function __construct(FactoryInterface $factory, EntityManagerInterface $entity, AuthorizationCheckerInterface $auth, TranslatorInterface $t)
     {
         $this->factory = $factory;
         $this->em = $entity;
