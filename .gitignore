@@ -13,7 +13,7 @@
 
 # Symfony4 personal gitignore #
 ###############################
-
+config/parameters.yaml
 # Makepackage #
 ###############
 .debian
@@ -27,3 +27,6 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+/.buildpath
+/.project
+/.settings/
