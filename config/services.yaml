@@ -3,7 +3,9 @@
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
-
+imports:
+    - { resource: 'parameters.yaml' }
+    
 parameters:
     supported_locales: [es, en, eu, de]
     
@@ -28,7 +30,7 @@ services:
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
-        arguments: ["@security.helper", "@translator", "@logger", '%env(DISABLE_BACKGROUND)%', "@knp_paginator"]
+        arguments: ["@security.helper", "@translator", "@logger", "@knp_paginator"]
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     Symfony\Bridge\Monolog\Logger:

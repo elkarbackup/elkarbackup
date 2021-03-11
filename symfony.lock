@@ -84,6 +84,9 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.3"
     },
+    "incenteev/composer-parameter-handler": {
+        "version": "v2.1.4"
+    },
     "knplabs/knp-components": {
         "version": "v3.0.0"
     },

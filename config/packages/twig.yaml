@@ -4,5 +4,5 @@ twig:
     strict_variables: '%kernel.debug%'
     exception_controller: null
     globals:
-        warning_load_level: '%env(WARNING_LOAD_LEVEL)%'
-        url_prefix: '%env(URL_PREFIX)%'
+        warning_load_level: '%warning_load_level%'
+        url_prefix: '%url_prefix%'

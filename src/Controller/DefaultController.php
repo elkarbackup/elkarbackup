@@ -9,7 +9,6 @@ use \DateTime;
 use \Exception;
 use \PDOException;
 use \RuntimeException;
-use App\BinovoElkarBackupBundle;
 use App\Entity\Client;
 use App\Entity\BackupLocation;
 use App\Entity\Job;
@@ -68,15 +67,13 @@ class DefaultController extends AbstractController
     private $translator;
     private $logger;
     private $supportedLocales;
-    private $disableBackground;
     private $paginator;
 
-    public function __construct(Security $security, TranslatorInterface $t, Logger $logger, $disableBackground = false, PaginatorInterface $pag)
+    public function __construct(Security $security, TranslatorInterface $t, Logger $logger, PaginatorInterface $pag)
     {
         $this->security = $security;
         $this->translator = $t;
         $this->logger = $logger;
-        $this->disableBackground = $disableBackground;
         $this->paginator = $pag;
     }
     protected function info($msg, $translatorParams = array(), $context = array())
@@ -198,7 +195,7 @@ class DefaultController extends AbstractController
      */
     public function downloadPublicKeyAction(Request $request)
     {
-        if (!file_exists($this->container->getParameter('public_key'))) {
+        if (!file_exists($this->getParameter('public_key'))) {
             throw $this->createNotFoundException(
                 $this->trans('Unable to find public key:')
             );
@@ -209,7 +206,7 @@ class DefaultController extends AbstractController
         );
         
         return new Response(file_get_contents(
-            $this->container->getParameter('public_key')),
+            $this->getParameter('public_key')),
             200,
             $headers
         );
@@ -365,7 +362,7 @@ class DefaultController extends AbstractController
                 $t->trans("language_$locale", array(), 'BinovoElkarBackup')
             );
         }
-        $disable_background = $this->disableBackground;
+        $disable_background = $this->getParameter('disable_background');
         
         // Warning for Rsnapshot 1.3.1-4 in Debian Jessie
         $rsnapshot_jessie_md5 = '7d9eb926a1c4d6fcbf81d939d9f400ea';
@@ -961,7 +958,7 @@ class DefaultController extends AbstractController
         $backupDir = $job->getBackupLocation()->getEffectiveDir();
         $client = $job->getClient();
         $logDir = $this->container->get('kernel')->getLogDir();
-        $tmpDir = $this->container->getParameter('tmp_dir');
+        $tmpDir = $this->tmp_dir;
         $sshArgs = $client->getSshArgs();
         $rsyncShortArgs = $client->getRsyncShortArgs();
         $rsyncLongArgs = $client->getRsyncLongArgs();
@@ -1810,12 +1807,12 @@ EOF;
             array(
                 'backupsroot'   => $backupLocation->getEffectiveDir(),
                 'backupsuser'   => 'elkarbackup',
-                'mysqldb'       => $this->container->getParameter('database_name'),
-                'mysqlhost'     => $this->container->getParameter('database_host'),
-                'mysqlpassword' => $this->container->getParameter('database_password'),
-                'mysqluser'     => $this->container->getParameter('database_user'),
+                'mysqldb'       => $this->getParameter('database_name'),
+                'mysqlhost'     => $this->getParameter('database_host'),
+                'mysqlpassword' => $this->getParameter('database_password'),
+                'mysqluser'     => $this->getParameter('database_user'),
                 'server'        => $request->getHttpHost(),
-                'uploads'       => $this->container->getParameter('upload_dir')
+                'uploads'       => $this->getParameter('upload_dir')
             )
         );
         $response->headers->set('Content-Type', 'text/plain');
@@ -1870,7 +1867,7 @@ EOF;
         $backupScriptForm = $backupScriptFormBuilder->getForm();
         
         $authorizedKeysFile = dirname(
-            $this->container->getParameter('public_key')
+            $this->getParameter('public_key')
         ) . '/authorized_keys';
         $keys = $this->readKeyFileAsCommentAndRest($authorizedKeysFile);
         $authorizedKeysFormBuilder = $this->createFormBuilder(array('publicKeys' => $keys));
@@ -2234,7 +2231,7 @@ EOF;
         $defaultData = array();
         foreach ($params as $paramName => $formField) {
             if (PasswordType::class != $formField['entry_type']) {
-                $defaultData[$paramName] = $this->container->getParameter($paramName);
+                $defaultData[$paramName] = $this->getParameter($paramName);
             }
         }
         $formBuilder = $this->createFormBuilder($defaultData);
@@ -2277,7 +2274,7 @@ EOF;
                         );
                     }
                 } else {
-                    if ($paramValue != $this->container->getParameter($paramName)) {
+                    if ($paramValue != $this->getParameter($paramName)) {
                         if ('max_parallel_jobs' == $paramName) {
                             if ($paramValue < 1) {
                                 $ok = false;
@@ -2322,7 +2319,7 @@ EOF;
                 array(
                     'form' => $form->createView(),
                     'showKeyDownload' => file_exists(
-                        $this->container->getParameter('public_key')
+                        $this->getParameter('public_key')
                     )
                 )
             );
