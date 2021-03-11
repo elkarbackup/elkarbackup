@@ -863,7 +863,7 @@ EOF;
             $message = (new \Swift_Message(($translator->trans('Log for backup from job %joburl%', array('%joburl%' => $job->getUrl()), 'BinovoElkarBackup'))))
                 ->setFrom(array($fromEmail => 'ElkarBackup'))
                 ->setTo($recipients)
-                ->setBody($engine->render('App:Default:logreport.html.twig',
+                ->setBody($engine->render('default/logreport.html.twig',
                                           array('base'     => gethostname(),
                                                 'job'      => $job,
                                                 'messages' => $filteredMessages)),
