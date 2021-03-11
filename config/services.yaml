@@ -30,7 +30,7 @@ services:
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
-        arguments: ["@security.helper", "@translator", "@logger", "@knp_paginator"]
+        arguments: ["%kernel.cache_dir%"]
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     Symfony\Bridge\Monolog\Logger:
@@ -67,3 +67,5 @@ services:
         #arguments: ["@knp_menu.factory", "@doctrine.orm.entity_manager", "@security.authorization_checker", "@translator.data_collector"]
         tags:
             - { name: knp_menu.menu_builder, method: mainMenu, alias: main }
+    Symfony\Component\HttpKernel\CacheClearer\ChainCacheClearer:
+        
