@@ -60,6 +60,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\HttpKernel\CacheClearer\ChainCacheClearer;
 
 class DefaultController extends AbstractController
 {
@@ -68,13 +69,17 @@ class DefaultController extends AbstractController
     private $logger;
     private $supportedLocales;
     private $paginator;
+    private $cacheDir;
+    private $cacheClearer;
 
-    public function __construct(Security $security, TranslatorInterface $t, Logger $logger, PaginatorInterface $pag)
+    public function __construct($cacheDir, Security $security, TranslatorInterface $t, Logger $logger, PaginatorInterface $pag, ChainCacheClearer $cci)
     {
+        $this->cacheDir = $cacheDir;
         $this->security = $security;
         $this->translator = $t;
         $this->logger = $logger;
         $this->paginator = $pag;
+        $this->cacheClearer = $cci;
     }
     protected function info($msg, $translatorParams = array(), $context = array())
     {
@@ -176,8 +181,8 @@ class DefaultController extends AbstractController
      */
     protected function clearCache()
     {
-        $realCacheDir = $this->container->getParameter('kernel.cache_dir');
-        $this->container->get('cache_clearer')->clear($realCacheDir);
+        $realCacheDir = $this->cacheDir;
+        $this->cacheClearer->clear($realCacheDir);
     }
 
     /**
