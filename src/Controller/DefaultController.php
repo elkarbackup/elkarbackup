@@ -2340,7 +2340,7 @@ EOF;
      */
     public function setParameter($name, $value, $from)
     {
-        $paramsFilename = dirname(__FILE__) . '/../../../../app/config/parameters.yml';
+        $paramsFilename = dirname(__FILE__) . '/../../config/parameters.yaml';
         $paramsFile = file_get_contents($paramsFilename);
         if (false == $paramsFile) {
             return false;
