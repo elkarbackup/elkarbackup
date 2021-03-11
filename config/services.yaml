@@ -64,6 +64,6 @@ services:
         tags:
             - { name: kernel.event_subscriber }
     App\Menu\Builder:
-        arguments: ["@knp_menu.factory", "@doctrine.orm.entity_manager", "@security.authorization_checker", "@translator.data_collector"]
+        #arguments: ["@knp_menu.factory", "@doctrine.orm.entity_manager", "@security.authorization_checker", "@translator.data_collector"]
         tags:
             - { name: knp_menu.menu_builder, method: mainMenu, alias: main }
