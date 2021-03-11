@@ -860,8 +860,7 @@ EOF;
                 }
             }
 
-            $message = \Swift_Message::newInstance()
-                ->setSubject($translator->trans('Log for backup from job %joburl%', array('%joburl%' => $job->getUrl()), 'BinovoElkarBackup'))
+            $message = (new \Swift_Message(($translator->trans('Log for backup from job %joburl%', array('%joburl%' => $job->getUrl()), 'BinovoElkarBackup'))))
                 ->setFrom(array($fromEmail => 'ElkarBackup'))
                 ->setTo($recipients)
                 ->setBody($engine->render('App:Default:logreport.html.twig',
