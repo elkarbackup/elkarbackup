@@ -54,6 +54,7 @@ use steevanb\SSH2Bundle\Entity\Profile;
 use steevanb\SSH2Bundle\Entity\Connection;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -71,8 +72,9 @@ class DefaultController extends AbstractController
     private $paginator;
     private $cacheDir;
     private $cacheClearer;
+    private $encoderFactory;
 
-    public function __construct($cacheDir, Security $security, TranslatorInterface $t, Logger $logger, PaginatorInterface $pag, ChainCacheClearer $cci)
+    public function __construct($cacheDir, Security $security, TranslatorInterface $t, Logger $logger, PaginatorInterface $pag, ChainCacheClearer $cci, EncoderFactoryInterface $encoder)
     {
         $this->cacheDir = $cacheDir;
         $this->security = $security;
@@ -80,6 +82,7 @@ class DefaultController extends AbstractController
         $this->logger = $logger;
         $this->paginator = $pag;
         $this->cacheClearer = $cci;
+        $this->encoderFactory = $encoder;
     }
     protected function info($msg, $translatorParams = array(), $context = array())
     {
@@ -2405,7 +2408,7 @@ EOF;
             $form->handleRequest($request);
             $data = $form->getData();
             $user = $this->security->getToken()->getUser();
-            $encoder = $this->get('security.encoder_factory')->getEncoder($user);
+            $encoder = $this->encoderFactory->getEncoder($user);
             $ok = true;
             if (empty($data['newPassword']) || $data['newPassword'] !== $data['newPassword2']) {
                 $ok = false;
@@ -2784,7 +2787,7 @@ EOF;
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($user->newPassword) {
-                $factory = $this->get('security.encoder_factory');
+                $factory = $this->encoderFactory;
                 $encoder = $factory->getEncoder($user);
                 $password = $encoder->encodePassword($user->newPassword, $user->getSalt());
                 $user->setPassword($password);
