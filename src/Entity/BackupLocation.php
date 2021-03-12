@@ -42,11 +42,6 @@ class BackupLocation
     protected $directory;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $tahoe;
-    
-    /**
      * Parallel jobs allowed for the location
      *
      * @ORM\Column(type="integer", nullable=false)
@@ -150,27 +145,6 @@ class BackupLocation
     public function setDirectory($directory)
     {
         $this->directory = $directory;
-    }
-
-    /**
-     * Get tahoe
-     * 
-     * @return boolean
-     */
-    public function getTahoe()
-    {
-        return $this->tahoe;
-    }
-
-    /**
-     * Set tahoe
-     * 
-     * @param boolean $tahoe
-     * @return BackupLocation
-     */
-    public function setTahoe($tahoe)
-    {
-        $this->tahoe = $tahoe;
     }
 
     /**
