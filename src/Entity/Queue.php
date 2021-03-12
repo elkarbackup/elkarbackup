@@ -33,7 +33,7 @@ class Queue
     protected $date;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     protected $runningSince;
     
@@ -59,7 +59,7 @@ class Queue
     /**
      * Data generated during the execution
      *
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $data;
 
