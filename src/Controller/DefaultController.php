@@ -221,10 +221,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/config/publickey/generate", name="generatePublicKey")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/config/publickey/generate", name="generatePublicKey", methods={"POST"})
      */
     public function generatePublicKeyAction(Request $request)
     {
@@ -257,10 +254,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/client/{id}/delete", name="deleteClient")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/client/{id}/delete", name="deleteClient", methods={"POST"})
      */
     public function deleteClientAction(Request $request, $id)
     {
@@ -339,10 +333,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/login", name="login")
-     *
-     * @method ("GET")
-     *         @Template()
+     * @Route("/login", name="login", methods={"GET"})
      */
     public function loginAction(Request $request, RequestStack $rs)
     {
@@ -411,10 +402,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/client/{id}", name="editClient")
-     *
-     * @method ("GET")
-     *         @Template()
+     * @Route("/client/{id}", name="editClient", methods={"GET"}) 
      */
     public function editClientAction(Request $request, $id = 'new')
     {
@@ -454,10 +442,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/client/{id}", requirements={"id" = "\d+"}, defaults={"id" = "-1"}, name="saveClient")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/client/{id}", requirements={"id" = "\d+"}, defaults={"id" = "-1"}, name="saveClient", methods={"POST"})
      */
     public function saveClientAction(Request $request, $id)
     {
@@ -550,10 +535,7 @@ class DefaultController extends AbstractController
 
     /**
      * @Route("/job/{id}/delete", name="deleteJob")
-     * @Route("/client/{idClient}/job/{idJob}/delete", requirements={"idClient" = "\d+", "idJob" = "\d+"}, defaults={"idJob" = "-1"}, name="deleteJob")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/client/{idClient}/job/{idJob}/delete", requirements={"idClient" = "\d+", "idJob" = "\d+"}, defaults={"idJob" = "-1"}, name="deleteJob", methods={"POST"})
      */
     public function deleteJobAction(Request $request, $idClient, $idJob)
     {
@@ -626,10 +608,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/client/{idClient}/job/{idJob}", name="editJob")
-     *
-     * @method ("GET")
-     *         @Template()
+     * @Route("/client/{idClient}/job/{idJob}", name="editJob", methods={"GET"})
      */
     public function editJobAction(Request $request, $idClient, $idJob = 'new')
     {
@@ -671,9 +650,7 @@ class DefaultController extends AbstractController
     }
     
     /**
-     * @Route("/client/{idClient}/job/{idJob}/restore/{idBackupLocation}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "idBackupLocation" = "\d+"}, defaults={"path" = "/", "idBackupLocation" = 0}, name="restoreJobBackup")
-     *
-     * @method ("GET")
+     * @Route("/client/{idClient}/job/{idJob}/restore/{idBackupLocation}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "idBackupLocation" = "\d+"}, defaults={"path" = "/", "idBackupLocation" = 0}, name="restoreJobBackup", methods={"GET"})
      */
     public function restoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
@@ -711,9 +688,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/client/{idClient}/job/{idJob}/restore/{idBackupLocation}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "idBackupLocation" = "\d+"}, defaults={"path" = "/", "idBackupLocation" = 0}, name="runRestoreJobBackup")
-     *
-     * @method ("POST")
+     * @Route("/client/{idClient}/job/{idJob}/restore/{idBackupLocation}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "idBackupLocation" = "\d+"}, defaults={"path" = "/", "idBackupLocation" = 0}, name="runRestoreJobBackup", methods={"POST"})
      */
     public function runRestoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
@@ -776,10 +751,7 @@ class DefaultController extends AbstractController
     }
     
     /**
-     * @Route("/client/{idClient}/job/{idJob}/run", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="enqueueJob")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/client/{idClient}/job/{idJob}/run", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="enqueueJob", methods={"POST"})
      */
     public function enqueueJobAction(Request $request, $idClient, $idJob)
     {
@@ -891,10 +863,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/client/{idClient}/job/{idJob}/abort", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="abortJob")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/client/{idClient}/job/{idJob}/abort", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="abortJob", methods={"POST"})
      */
     public function runAbortAction(Request $request, $idClient, $idJob)
     {
@@ -943,10 +912,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/client/{idClient}/job/{idJob}/config", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="showJobConfig")
-     *
-     * @method ("GET")
-     *         @Template()
+     * @Route("/client/{idClient}/job/{idJob}/config", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="showJobConfig", methods={"GET"})
      */
     public function showJobConfigAction(Request $request, $idClient, $idJob)
     {
@@ -1034,10 +1000,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/client/{idClient}/job/{idJob}", requirements={"idClient" = "\d+", "idJob" = "\d+"}, defaults={"idJob" = "-1"}, name="saveJob")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/client/{idClient}/job/{idJob}", requirements={"idClient" = "\d+", "idJob" = "\d+"}, defaults={"idJob" = "-1"}, name="saveJob", methods={"POST"})
      */
     public function saveJobAction(Request $request, $idClient, $idJob)
     {
@@ -1101,9 +1064,7 @@ class DefaultController extends AbstractController
     }
 
         /**
-     * @Route("/client/{idClient}/job/{idJob}/backup/{action}/{idBackupLocation}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "action" = "view|download|downloadzip", "idBackupLocation" = "\d+"}, defaults={"path" = "/", "idBackupLocation" = 0}, name="showJobBackup")
-     *
-     * @method ("GET")
+     * @Route("/client/{idClient}/job/{idJob}/backup/{action}/{idBackupLocation}/{path}", requirements={"idClient" = "\d+", "idJob" = "\d+", "path" = ".*", "action" = "view|download|downloadzip", "idBackupLocation" = "\d+"}, defaults={"path" = "/", "idBackupLocation" = 0}, name="showJobBackup", methods={"GET"})
      */
     public function showJobBackupAction(Request $request, $idClient, $idJob, $action, $idBackupLocation, $path)
     {
@@ -1341,10 +1302,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/policy/{id}", name="editPolicy")
-     *
-     * @method ("GET")
-     *         @Template()
+     * @Route("/policy/{id}", name="editPolicy", methods={"GET"})
      */
     public function editPolicyAction(Request $request, $id = 'new')
     {
@@ -1380,10 +1338,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/policy/{id}/delete", name="deletePolicy")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/policy/{id}/delete", name="deletePolicy", methods={"POST"})
      */
     public function deletePolicyAction(Request $request, $id)
     {
@@ -1417,10 +1372,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/policy/{id}", requirements={"id" = "\d+"}, defaults={"id" = "-1"}, name="savePolicy")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/policy/{id}", requirements={"id" = "\d+"}, defaults={"id" = "-1"}, name="savePolicy", methods={"POST"})
      */
     public function savePolicyAction(Request $request, $id)
     {
@@ -1798,9 +1750,7 @@ EOF;
     }
 
     /**
-     * @Route("/config/repositorybackupscript/download", name="getRepositoryBackupScript")
-     * @method ("POST")
-     * @Template()
+     * @Route("/config/repositorybackupscript/download", name="getRepositoryBackupScript", methods={"POST"})
      */
     public function getRepositoryBackupScriptAction(Request $request)
     {
@@ -1972,10 +1922,7 @@ EOF;
     }
 
     /**
-     * @Route("/backupLocation/{id}/save", name="saveBackupLocation")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/backupLocation/{id}/save", name="saveBackupLocation", methods={"POST"})
      */
     public function saveBackupLocationAction(Request $request, $id = 'new')
     {
@@ -2039,10 +1986,7 @@ EOF;
     }
 
     /**
-     * @Route("/backupLocation/{id}/delete", name="deleteBackupLocation")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/backupLocation/{id}/delete", name="deleteBackupLocation", methods={"POST"})
      */
     public function deleteBackupLocationAction(Request $request, $id)
     {
@@ -2464,10 +2408,7 @@ EOF;
     }
 
     /**
-     * @Route("/log/{id}/download", name="downloadLog")
-     *
-     * @method ("GET")
-     *         @Template()
+     * @Route("/log/{id}/download", name="downloadLog", methods={"GET"})
      */
     public function downloadLogAction(Request $request, $id)
     {
@@ -2536,10 +2477,7 @@ EOF;
     }
 
     /**
-     * @Route("/script/{id}/delete", name="deleteScript")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/script/{id}/delete", name="deleteScript", methods={"POST"})
      */
     public function deleteScriptAction(Request $request, $id)
     {
@@ -2576,10 +2514,7 @@ EOF;
     }
 
     /**
-     * @Route("/script/{id}/download", name="downloadScript")
-     *
-     * @method ("GET")
-     *         @Template()
+     * @Route("/script/{id}/download", name="downloadScript", methods={"GET"})
      */
     public function downloadScriptAction(Request $request, $id)
     {
@@ -2616,10 +2551,7 @@ EOF;
     }
 
     /**
-     * @Route("/script/{id}", name="editScript")
-     *
-     * @method ("GET")
-     *         @Template()
+     * @Route("/script/{id}", name="editScript", methods={"GET"})
      */
     public function editScriptAction(Request $request, $id)
     {
@@ -2657,10 +2589,7 @@ EOF;
     }
 
     /**
-     * @Route("/script/{id}", requirements={"id" = "\d+"}, defaults={"id" = "-1"}, name="saveScript")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/script/{id}", requirements={"id" = "\d+"}, defaults={"id" = "-1"}, name="saveScript", methods={"POST"})
      */
     public function saveScriptAction(Request $request, $id)
     {
@@ -2715,10 +2644,7 @@ EOF;
     }
 
     /**
-     * @Route("/user/{id}/delete", name="deleteUser")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/user/{id}/delete", name="deleteUser", methods={"POST"})
      */
     public function deleteUserAction(Request $request, $id)
     {
@@ -2740,10 +2666,7 @@ EOF;
     }
 
     /**
-     * @Route("/user/{id}", name="editUser")
-     *
-     * @method ("GET")
-     *         @Template()
+     * @Route("/user/{id}", name="editUser", methods={"GET"})
      */
     public function editUserAction(Request $request, $id)
     {
@@ -2769,10 +2692,7 @@ EOF;
     }
 
     /**
-     * @Route("/user/{id}", requirements={"id" = "\d+"}, defaults={"id" = "-1"}, name="saveUser")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/user/{id}", requirements={"id" = "\d+"}, defaults={"id" = "-1"}, name="saveUser", methods={"POST"})
      */
     public function saveUserAction(Request $request, $id)
     {
@@ -2864,10 +2784,7 @@ EOF;
     }
 
     /**
-     * @Route("/client/clone/{idClient}", requirements={"idClient" = "\d+"}, defaults={"id" = "-1"}, name="cloneClient")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/client/clone/{idClient}", requirements={"idClient" = "\d+"}, defaults={"id" = "-1"}, name="cloneClient", methods={"POST"})
      */
     public function cloneClientAction(Request $request, $idClient)
     {
@@ -2968,10 +2885,7 @@ EOF;
     }
 
     /**
-     * @Route("/job/generate/token/", name="generateToken")
-     *
-     * @method ("POST")
-     *         @Template()
+     * @Route("/job/generate/token/", name="generateToken", methods={"POST"})
      */
     public function generateTokenAction(Request $request)
     {
