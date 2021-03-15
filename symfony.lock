@@ -184,6 +184,9 @@
     "symfony/event-dispatcher-contracts": {
         "version": "v1.1.9"
     },
+    "symfony/expression-language": {
+        "version": "v4.4.20"
+    },
     "symfony/filesystem": {
         "version": "v4.4.19"
     },

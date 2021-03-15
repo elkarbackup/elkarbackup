@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
+ * @ORM\EntityListeners({"App\Listener\ScriptListener"})
  */
 class Script
 {
@@ -96,12 +97,23 @@ class Script
      * @ORM\ManyToMany(targetEntity="Job", mappedBy="preScripts")
      */
     protected $preJobs;
+    
+    private $scriptDirectory;
+
+    /**
+     * @param mixed $scriptDirectory
+     */
+    public function setScriptDirectory($scriptDir)
+    {
+        $this->scriptDirectory = $scriptDir;
+    }
 
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct($scriptDirectory)
     {
+        $this->scriptDirectory = $scriptDirectory;
     }
 
     /**
@@ -154,7 +166,7 @@ class Script
 
     public function getScriptDirectory()
     {
-        return Globals::getUploadDir();
+        return $this->scriptDirectory;
     }
 
     public function getScriptName()

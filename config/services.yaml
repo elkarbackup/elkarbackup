@@ -30,9 +30,14 @@ services:
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
-        arguments: ["%kernel.cache_dir%"]
+        arguments: ["%kernel.cache_dir%", "%upload_dir%"]
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Listener\ScriptListener:
+        arguments: ["%upload_dir%"]
+        tags:
+            # Minimal configuration below
+            - { name: doctrine.orm.entity_listener }
     Symfony\Bridge\Monolog\Logger:
         arguments: [BnvWeb]
         calls:
@@ -68,4 +73,8 @@ services:
         tags:
             - { name: knp_menu.menu_builder, method: mainMenu, alias: main }
     Symfony\Component\HttpKernel\CacheClearer\ChainCacheClearer:
+    Doctrine\Migrations\Version\DbalMigrationFactory: ~
+    App\Migrations\MigrationFactoryDecorator:
+        decorates: Doctrine\Migrations\Version\DbalMigrationFactory
+        arguments: ['@App\Migrations\MigrationFactoryDecorator.inner', '%upload_dir%', "@=container.hasParameter('backup_dir') ? parameter('backup_dir') : null"]
         

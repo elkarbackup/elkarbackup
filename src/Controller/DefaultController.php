@@ -73,8 +73,9 @@ class DefaultController extends AbstractController
     private $cacheDir;
     private $cacheClearer;
     private $encoderFactory;
+    private $uploadDir;
 
-    public function __construct($cacheDir, Security $security, TranslatorInterface $t, Logger $logger, PaginatorInterface $pag, ChainCacheClearer $cci, EncoderFactoryInterface $encoder)
+    public function __construct($cacheDir, $uploadDir, Security $security, TranslatorInterface $t, Logger $logger, PaginatorInterface $pag, ChainCacheClearer $cci, EncoderFactoryInterface $encoder)
     {
         $this->cacheDir = $cacheDir;
         $this->security = $security;
@@ -83,6 +84,7 @@ class DefaultController extends AbstractController
         $this->paginator = $pag;
         $this->cacheClearer = $cci;
         $this->encoderFactory = $encoder;
+        $this->uploadDir = $uploadDir;
     }
     protected function info($msg, $translatorParams = array(), $context = array())
     {
@@ -2562,7 +2564,7 @@ EOF;
         
         $t = $this->translator;
         if ('new' === $id) {
-            $script = new Script();
+            $script = new Script($this->uploadDir);
         } else {
             $repository = $this->getDoctrine()->getRepository('App:Script');
             $script = $repository->find($id);
@@ -2595,7 +2597,7 @@ EOF;
     {
         $t = $this->translator;
         if ("-1" === $id) {
-            $script = new Script();
+            $script = new Script($this->uploadDir);
         } else {
             $repository = $this->getDoctrine()->getRepository('App:Script');
             $script = $repository->find($id);
