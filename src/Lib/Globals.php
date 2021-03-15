@@ -10,29 +10,6 @@ class Globals
 {
     const STATUS_REPORT = 'StatusReport';
 
-    protected static $uploadDir;
-    protected static $backupDir;
-
-    public static function setUploadDir($dir)
-    {
-        self::$uploadDir = $dir;
-    }
-
-    public static function getUploadDir()
-    {
-        return self::$uploadDir;
-    }
-
-    public static function setBackupDir($dir)
-    {
-        self::$backupDir = $dir;
-    }
-
-    public static function getBackupDir()
-    {
-        return self::$backupDir;
-    }
-
     public static function getSnapshotRoot($idClient, $job)
     {
         return sprintf('%s/%04d/%04d', $job->getBackupLocation()->getEffectiveDir(), $idClient, $job->getId());
