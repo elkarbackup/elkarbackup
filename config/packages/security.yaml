@@ -1,16 +1,12 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        users_in_memory: { memory: null }
         administrators:
-            entity: { class: BinovoElkarBackupBundle:User, property: username }
+            entity: { class: App\Entity\User, property: username }
     firewalls:
         dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            pattern:  ^/(_(profiler|wdt)|css|images|js|setlocale)/
             security: false
-        main:
-            anonymous: lazy
-            provider: users_in_memory
 
         login:
             pattern:  ^/login$
@@ -28,13 +24,11 @@ security:
             pattern:    ^/
             anonymous:  true
             form_login:
-                provider: administrators
                 check_path: /login_check
                 login_path: /login
             logout:
                 path:   /logout
                 target: /
-
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
