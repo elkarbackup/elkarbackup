@@ -11,9 +11,22 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use Symfony\Component\Console\Command\Command;
 
 class CreateAdminUserCommand extends ContainerAwareCommand
 {
+    private $encoderFactory;
+    /**
+     * {@inheritDoc}
+     * @see \Symfony\Component\Console\Command\Command::__construct()
+     */
+    public function __construct(EncoderFactoryInterface $encoder)
+    {
+        $this->encoderFactory = $encoder;
+        parent::__construct();
+    }
+    
     protected function configure()
     {
         parent::configure();
@@ -43,7 +56,7 @@ class CreateAdminUserCommand extends ContainerAwareCommand
 
             return 0;
         }
-        $factory = $container->get('security.encoder_factory');
+        $factory = $this->encoderFactory;
         $encoder = $factory->getEncoder($user);
         $user->setUsername('root');
         $user->setEmail('root@localhost');
