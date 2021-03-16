@@ -1,0 +1,56 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        administrators:
+            entity: { class: App\Entity\User, property: username }
+    firewalls:
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js|setlocale)/
+            security: false
+
+        login:
+            pattern:  ^/login$
+            security: false
+
+        publickey:
+            pattern: ^/config/publickey/get$
+            security: false
+
+        #runjob:
+        #    pattern: ^/client/[0-9]+/job/[0-9]+/run
+        #    security: false
+
+        secured_area:
+            pattern:    ^/
+            anonymous:  true
+            form_login:
+                check_path: /login_check
+                login_path: /login
+            logout:
+                path:   /logout
+                target: /
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#firewalls-authentication
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    encoders:
+        App\Entity\User: sha512
+
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+    access_control:
+        - { path: ^/login                        , roles: IS_AUTHENTICATED_ANONYMOUSLY}
+        - { path: ^/config/publickey/get         , roles: IS_AUTHENTICATED_ANONYMOUSLY}
+        - { path: ^/client/[0-9]+/job/[0-9]+/run , roles: IS_AUTHENTICATED_ANONYMOUSLY}
+        - { path: ^/user                         , roles: ROLE_ADMIN}
+        - { path: ^/users                        , roles: ROLE_ADMIN}
+        - { path: ^/config/params                , roles: ROLE_ADMIN}
+        - { path: ^/config/repositorybackupscript, roles: ROLE_ADMIN}
+        - { path: ^/config/publickey/generate    , roles: ROLE_ADMIN}
+        - { path: ^/                             , roles: ROLE_USER}

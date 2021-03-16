@@ -1,37 +1,22 @@
-# Symfony3 default gitignore #
+# Symfony4 default gitignore #
 ##############################
-/.web-server-pid
-/app/config/parameters.yml
-/build/
-/phpunit.xml
-/var/*
-!/var/cache
-/var/cache/*
-!var/cache/.gitkeep
-!/var/logs
-/var/logs/*
-!var/logs/.gitkeep
-!/var/sessions
-/var/sessions/*
-!var/sessions/.gitkeep
-!var/SymfonyRequirements.php
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
 /vendor/
+###< symfony/framework-bundle ###
 
-# Symfony3 personal gitignore #
+# Symfony4 personal gitignore #
 ###############################
-/web/js/
-!/web/js/dojo-release
-!/web/js/dojo-release-*
-/web/css/*
-!/web/css/.gitkeep
-!/web/js/bootstrap/.gitkeep
-!/web/js/moment/moment.min.js
-/web/fonts/glyphicons-*
-
+config/parameters.yaml
 # Makepackage #
 ###############
 .debian
-build
 
 # OS generated files #
 ######################
@@ -42,3 +27,6 @@ build
 .Trashes
 ehthumbs.db
 Thumbs.db
+/.buildpath
+/.project
+/.settings/

@@ -1,0 +1,78 @@
+{##
+ # @copyright 2012,2013 Binovo it Human Project, S.L.
+ # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ #}
+{% extends 'default/base.html.twig' %}
+{% trans_default_domain 'BinovoElkarBackup' %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/edit-client.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+<div class="top-action-buttons pull-right">
+  <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnAddJobDisabled'">
+          {% trans %}Client has not yet been saved{% endtrans %}
+  </div>
+  <div class="btn-group inline" {% if not form.vars.value.id %}id="btnAddJobDisabled"{% endif %}>
+    <button type="button" class="btn btn-default btn-pull-right" {% if not form.vars.value.id %}disabled="true" {% else %} onclick="document.location.href='{{ path('editJob', {idJob: 'new', idClient: form.vars.value.id}) }}'" {% endif %}> <span class="glyphicon glyphicon-plus"></span> {% trans %}Add job{% endtrans %}</button>
+  </div>
+</div>
+
+<form class="form-horizontal" action="{{ path('saveClient', {id: form.vars.value.id}) }}" method="POST" {{ form_start(form) }}>
+    <h3 id="legend">{% trans %}Edit client{% endtrans %}</h3>
+    <div class="row">
+        <div class="col-md-6">
+{% for flashMessage in app.session.flashbag.get('client') %}
+            <div class="controls help-block">
+                {{ flashMessage }}
+            </div>
+{% endfor %}
+{% form_theme form 'default/fields.html.twig' %}
+            {{ form_row(form.name) }}
+            {{ form_row(form.url) }}
+            {{ form_row(form.quota) }}
+            <div class="form-group">
+                <label class="control-label col-xs-12 col-md-3">{% trans %}Disk usage{% endtrans %}</label>
+                <div class="col-xs-12 col-md-9"><input style="{% if form.vars.value.quota > 0 and form.vars.value.diskUsage / form.vars.value.quota > warning_load_level %}color:red{% endif %}" type="text" class="col-md-12" disabled="disabled" value="{{ (form.vars.value.diskUsage / 1024) | number_format(0)  }} MB{% if form.vars.value.quota > 0 %} ({{ (form.vars.value.diskUsage / form.vars.value.quota * 100) | number_format(0)}}%){% endif %}" /></div>
+            </div>
+            {{ form_row(form.description) }}
+            {{ form_row(form.isActive) }}
+            {{ form_row(form.preScripts) }}
+            {{ form_row(form.postScripts) }}
+            {{ form_row(form.maxParallelJobs) }}
+            {% if is_granted('ROLE_ADMIN') %}
+                {{ form_row(form.owner) }}
+            {% endif %}
+
+            <div class="panel panel-default">
+              <div class="panel-heading panel-collapsable-heading">
+                <a class="collapsed" href="#viewadvanced" data-toggle="collapse" data-target="#viewadvanced">Advanced</a></div>
+              <div id="viewadvanced" class="collapse panel-body">
+                {{ form_row(form.sshArgs) }}
+                {{ form_row(form.rsyncShortArgs)}}
+                {{ form_row(form.rsyncLongArgs)}}
+              </div>
+            </div>
+
+            <div class="control-group">
+              <div class="controls control-row">
+                  <button type="submit" class="btn btn-default pull-right">{% trans %}Save{% endtrans %}</button>
+              </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            {% trans %}client_help{% endtrans %}
+        </div>
+    </div>
+    <div>
+        <div>
+            {{ form_widget(form._token) }}
+        </div>
+    </div>
+</form>
+
+
+{% endblock %}

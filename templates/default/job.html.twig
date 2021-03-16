@@ -1,0 +1,97 @@
+{##
+ # @copyright 2012,2013 Binovo it Human Project, S.L.
+ # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ #}
+{% extends 'default/base.html.twig' %}
+{% trans_default_domain 'BinovoElkarBackup' %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/edit-job.js') }}"></script>
+{% endblock %}
+
+
+{% block body %}
+
+<div class="top-action-buttons pull-right">
+  <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnRunNowDisabled'">
+          {% trans %}Job has not yet been saved{% endtrans %}
+  </div>
+  <div class="btn-group inline" {% if not form.vars.value.id %}id="btnRunNowDisabled"{% endif %}>
+    <button class="btn btn-default btn-pull-right" type="button" id="runNow" {% if not form.vars.value.id %} disabled="true" {% endif %}><span class="glyphicon glyphicon-repeat"></span> {% trans %}Run now{% endtrans %}</button>
+  </div>
+  <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'btnRestoreDisabled'">
+          {% trans %}Backup not found{% endtrans %}
+  </div>
+  <div class="btn-group inline">
+    <button type="button" class="btn btn-default btn-pull-right" {% if form.vars.value.id%} onclick="document.location.href='{{path('showJobBackup', {idClient: form.vars.value.client.id, idJob: form.vars.value.id, action: 'view'}) }}'" {% else %} disabled="true" {% endif %}><span class="glyphicon glyphicon-cloud-download"></span> {% trans %}Backups{% endtrans %}</button>
+  </div>
+</div>
+
+<form class="form-horizontal" action="{{ path('saveJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" method="post" {{ form_start(form) }}>
+
+    <h3 id="legend">{% trans %}Edit Job{% endtrans %}</h3>
+    <div class="row">
+        <div class="col-md-6">
+{% form_theme form 'default/fields.html.twig' %}
+{% for flashMessage in app.session.flashbag.get('job') %}
+            <div class="controls help-block alert alert-success" class="alert alert-success">
+                {{ flashMessage }}
+            </div>
+{% endfor %}
+            <div>
+                <div class="controls">
+                </div>
+                {{ form_row(form.name) }}
+                {{ form_row(form.path) }}
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-md-3">{% trans %}Disk usage{% endtrans %}</label>
+                    <div class="col-xs-12 col-md-9"><input type="text" disabled="disabled" value="{{ (form.vars.value.diskUsage / 1024) | number_format(0)  }} MB" /></div>
+                </div>
+                {{ form_row(form.description) }}
+                {{ form_row(form.isActive) }}
+                {{ form_row(form.notificationsTo) }}
+                {{ form_row(form.notificationsEmail, {attr: {class: 'col-md-12'}}) }}
+                {{ form_row(form.minNotificationLevel) }}
+                {{ form_row(form.preScripts) }}
+                {{ form_row(form.postScripts) }}
+                {{ form_row(form.policy) }}
+                {{ form_row(form.useLocalPermissions) }}
+                {{ form_row(form.exclude) }}
+                {{ form_row(form.include) }}
+                {{ form_row(form.backupLocation) }}
+                <div class="panel panel-default">
+                  <div class="panel-heading panel-collapsable-heading">
+                    <a class="collapsed" href="#viewadvanced" data-toggle="collapse" data-target="#viewadvanced">Advanced</a></div>
+                  <div id="viewadvanced" class="collapse panel-body">
+                    <div class="input-group">
+                    {{ form_row(form.token) }}
+                    <span class="input-group-btn input-append">
+
+                          <a class="btn btn-default" id="generateToken" href="{{ path('generateToken', {idJob: form.vars.value.id}) }}" eb-action="generateToken" eb-path="{{ path('generateToken') }}" eb-jobid="{{form.vars.value.id}}"><span class="glyphicon glyphicon-repeat"></span> {% trans %}Generate{% endtrans %}</a>
+                    </span>
+                    <span class="input-group-btn input-append">
+
+                          <a class="btn btn-default" id="removeToken" href="#" ><span class="glyphicon glyphicon-trash"></span></a>
+                    </span>
+                    </div>
+                  </div>
+                </div>
+                {{ form_rest(form) }}
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <input class="btn btn-default pull-right" type="submit" value="{% trans %}Save{% endtrans %}" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            {% trans %}job_help{% endtrans %}
+        </div>
+    </div>
+</form>
+
+<form id="runNowForm" {% if form.vars.value.id %} action="{{ path('enqueueJob', {idJob: form.vars.value.id, idClient: form.vars.value.client.id}) }}" {% endif %} method="POST" {{ form_start(form) }}>
+</form>
+
+{% endblock %}

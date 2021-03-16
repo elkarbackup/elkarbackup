@@ -1,0 +1,33 @@
+{##
+ # @copyright 2012,2013 Binovo it Human Project, S.L.
+ # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ #}
+{% extends 'default/base.html.twig' %}
+{% trans_default_domain 'BinovoElkarBackup' %}
+
+{% block body %}
+
+<form class="form-horizontal" action="{{ path('saveBackupLocation', {id: id}) }}" method="post" {{ form_start(form) }}>
+    <h3>{% trans %}Edit backup location{% endtrans %}</h3>
+    <div class="row">
+        <div class="col-md-6">
+            {% for flashMessage in app.session.flashbag.get('manageParameters') %}
+            <div class="controls help-block">
+                {{ flashMessage }}
+            </div>
+            {% endfor %}
+            {% form_theme form 'default/fields.html.twig' %}
+            {{ form_widget(form) }}
+            <div class="control-group">
+                <div class="controls">
+                    <input class="btn btn-default pull-right" type="submit" value="{% trans %}Save{% endtrans %}"/>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            {% trans %}managebackups_help{% endtrans %}
+        </div>
+    </div>
+</form>
+
+{% endblock %}

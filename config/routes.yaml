@@ -1,0 +1,11 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::homeAction
+#login:
+#    path:       /login
+#    controller: App\Controller\DefaultController::loginAction
+#    methods: GET|POST
+login_check:
+    path:   /login_check
+logout:
+    path: /logout

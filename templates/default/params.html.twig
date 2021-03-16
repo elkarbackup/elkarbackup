@@ -1,0 +1,48 @@
+{##
+ # @copyright 2012,2013 Binovo it Human Project, S.L.
+ # @license http://www.opensource.org/licenses/bsd-license.php New-BSD
+ #}
+{% extends 'default/base.html.twig' %}
+{% trans_default_domain 'BinovoElkarBackup' %}
+
+{% block body %}
+
+{% if not showKeyDownload %}
+<form action="{{ path('generatePublicKey') }}" id="generateKey" method="post">
+{% endif %}
+</form>
+<h3>{% trans %}Manage parameters{% endtrans %}</h3>
+<form class="form-horizontal" action="{{ path('manageParameters') }}" method="post" {{ form_start(form) }}>
+    <div class="row">
+        <div class="col-md-6">
+            {% for flashMessage in app.session.flashbag.get('manageParameters') %}
+            <div class="controls help-block">
+                {{ flashMessage }}
+            </div>
+            {% endfor %}
+            {% form_theme form 'default/fields.html.twig' %}
+            <div>
+                <div class="form-group">
+                    <label class="control-label col-sm-3">{% trans %}Public key{% endtrans %}</label>
+                {% if showKeyDownload %}
+                    <div class="controls col-sm-9">
+                    <button class="btn btn-default" onclick="window.location='{{ path('downloadPublicKey') }}';" type="button">{% trans %}Download{% endtrans %} <span class="glyphicon glyphicon-download-alt"></span></button></div>
+                {% else %}
+                    <div class="controls col-sm-8"><input class="btn" onclick="dojo.byId('generateKey').submit()" type="button" value="{% trans %}Generate{% endtrans %}" /></div>
+                {% endif %}
+                </div>
+                {{ form_widget(form) }}
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button class="btn pull-right btn-default" type="submit">{% trans %}Save{% endtrans %}</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            {% trans %}params_help{% endtrans %}
+        </div>
+    </div>
+</form>
+
+{% endblock %}
