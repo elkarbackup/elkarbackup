@@ -1,4 +1,3 @@
-# parameters.yml.dist is a template
 parameters:
     database_driver: '%env(SYMFONY__DATABASE__DRIVER)%'
     database_path: '%env(SYMFONY__DATABASE__PATH)%'
