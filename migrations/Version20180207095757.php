@@ -14,7 +14,7 @@ use App\Migrations\LegacyBackupDirAwareTrait;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20180207095757 extends AbstractMigration implements LegacyBackupDirAwareInterface
+class Version20180207095757 extends AbstractMigration implements LegacyBackupDirAwareInterface, ContainerAwareInterface
 {
     use ContainerAwareTrait;
     use LegacyBackupDirAwareTrait;
@@ -36,7 +36,7 @@ class Version20180207095757 extends AbstractMigration implements LegacyBackupDir
             $this->addSql("INSERT INTO BackupLocation VALUES(1,'Default','','" . $location . "',0)");
             
             $rootDir = $this->container->get('kernel')->getRootDir();
-            $paramsDir = $rootDir . "/config/parameters.yml";
+            $paramsDir = $rootDir . "/../config/parameters.yaml";
             $value = Yaml::parse(file_get_contents($paramsDir));
             unset($value['parameters']['backup_dir']);
             $yaml = Yaml::dump($value);
