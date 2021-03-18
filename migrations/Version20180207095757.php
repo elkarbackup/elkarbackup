@@ -31,8 +31,8 @@ class Version20180207095757 extends AbstractMigration implements LegacyBackupDir
         $this->addSql('CREATE INDEX IDX_C395A618615D27E1 ON Job (backupLocation_id)');
         
         //get backup_dir param and store as new BackupLocation
-        if ($this->backup_dir != null) {
-            $location = $this->backup_dir;
+        if ($this->backupDir != null) {
+            $location = $this->backupDir;
             $this->addSql("INSERT INTO BackupLocation VALUES(1,'Default','','" . $location . "',0)");
             
             $rootDir = $this->container->get('kernel')->getRootDir();
