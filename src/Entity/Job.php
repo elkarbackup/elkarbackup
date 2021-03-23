@@ -10,8 +10,10 @@ use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
 use Monolog\Logger;
 use \RuntimeException;
+use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
+ * @ApiResource
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
