@@ -129,3 +129,4 @@ VOLUME /app/backups
 EXPOSE 80
 
 LABEL maintainer="Xabi Ezpeleta <xezpeleta@gmail.com>"
+LABEL org.opencontainers.image.source=https://github.com/elkarbackup/elkarbackup
