@@ -21,7 +21,7 @@ class ClientCollectionDataProvider implements ContextAwareCollectionDataProvider
     public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
     {
         $repository = $this->entityManager->getRepository('App:Client');
-        $query = $repository->createQueryBuilder('c')->addOrderBy('c.id', 'ASC');
+        $query = $repository->createQueryBuilder('c')->select('c.id', 'c.name', 'c.description')->addOrderBy('c.id', 'ASC');
         $queryNameGenerator = new QueryNameGenerator();
         
         foreach ($this->collectionExtensions as $extension) {

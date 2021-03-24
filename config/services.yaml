@@ -80,3 +80,4 @@ services:
     App\Api\DataProviders\ClientCollectionDataProvider:
         arguments:
              $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+    App\Api\DataProviders\ClientItemDataProvider:
