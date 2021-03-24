@@ -7,6 +7,7 @@
 namespace App\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -28,24 +29,30 @@ class UserType extends AbstractType
                                                         'attr'  => array('class'    => 'form-control')))
                 ->add('isActive'    , CheckboxType::class, array('label' => $t->trans('Is active', array(), 'BinovoElkarBackup'),
                                                         'required' => false))
-                ->add('roles'      , CollectionType::class, array('entry_type' => ChoiceType::class,
-                                             //'label' => 'Profile type',
-                                             //'attr' => array('class' => 'form-control'),
-                                             'entry_options' => array(
-                                                'expanded' => false,
-                                                'choices' => array(
-                                                        'Admin' => 'ROLE_ADMIN',
-                                                        'User' => 'ROLE_USER',
-                                                )
-                                             ),
-                                          ))
+                ->add('roles'       , ChoiceType::class, array('choices' => array(
+                                                                    'Admin' => 'ROLE_ADMIN',
+                                                                    'User'  => 'ROLE_USER'
+                                                                ),
+                                                                'expanded' => false
+                ))
                 ->add('newPassword', RepeatedType::class, array('type' => PasswordType::class,
-			                                                 'options' => array('attr' => array('class' => 'password-field form-control')),
-			                                                 'required' => false,
-			                                                 'first_options'  => array('label' => $t->trans('New password' , array(), 'BinovoElkarBackup')),
-			                                                 'second_options' => array('label' => $t->trans('Confirm new password', array(), 'BinovoElkarBackup')),
-    			                                             'invalid_message' => 'The password fields must match.'
-                     ));
+                    'options' => array('attr' => array('class' => 'password-field form-control')),
+                    'required' => false,
+                    'first_options'  => array('label' => $t->trans('New password' , array(), 'BinovoElkarBackup')),
+                    'second_options' => array('label' => $t->trans('Confirm new password', array(), 'BinovoElkarBackup')),
+                    'invalid_message' => 'The password fields must match.'
+                ));
+         $builder->get('roles')
+                ->addModelTransformer(new CallbackTransformer(
+                    function ($rolesArray) {
+                        // transform the array to a string
+                        return count($rolesArray)? $rolesArray[0]: null;
+                    },
+                    function ($rolesString) {
+                        // transform the string back to an array
+                        return [$rolesString];
+                    }
+                    ));
     }
 
     public function configureOptions(OptionsResolver $resolver)
