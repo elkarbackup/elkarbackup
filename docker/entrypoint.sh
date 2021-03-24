@@ -4,8 +4,8 @@ source /envars.sh
 
 EB_DIR=/app/elkarbackup
 
-if [ -z "$SYMFONY_ENV" ];then
-  export SYMFONY_ENV=prod
+if [ -z "$APP_ENV" ];then
+  export APP_ENV=prod
 fi
 
 ## = Set timezone =
