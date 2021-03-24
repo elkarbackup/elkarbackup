@@ -8,6 +8,7 @@ namespace App\Entity;
 
 use App\Api\Dto\ClientInput;
 use App\Api\Dto\ClientOutput;
+use App\Api\DataProviders\ClientItemDataProvider;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Lib\Globals;
@@ -19,6 +20,9 @@ use \RuntimeException;
  * @ApiResource(
  *     input  = ClientInput::class,
  *     output = ClientOutput::class,
+ *     normalizationContext={
+ *         "skip_null_values" = false
+ *     },
  * )
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
