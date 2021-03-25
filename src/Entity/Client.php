@@ -23,6 +23,8 @@ use \RuntimeException;
  *     normalizationContext={
  *         "skip_null_values" = false
  *     },
+ *     collectionOperations= {"get", "post"},
+ *     itemOperations= {"get", "put", "delete"},
  * )
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
