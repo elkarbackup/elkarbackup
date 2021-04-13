@@ -2,21 +2,29 @@
 namespace App\Api\DataPersisters;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
+use ApiPlatform\Core\Exception\InvalidArgumentException;
 use App\Entity\Client;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\ClientService;
+use Exception;
 
 class ClientDataPersister implements ContextAwareDataPersisterInterface
 {
-    public function __construct(EntityManagerInterface $em)
+    private $clientService;
+    
+    public function __construct(ClientService $clientService)
     {
-        $this->entityManager        = $em;
+        $this->clientService = $clientService;
     }
     
     public function persist($data, array $context = [])
     {
-        $this->entityManager->persist($data);
-        $this->entityManager->flush();
-        return $data;
+        try {
+            $this->clientService->save($data);
+            return $data;
+        } catch (Exception $e) {
+            throw new InvalidArgumentException($e->getMessage());
+        }
+        
     }
     
     public function supports($data, array $context = []): bool
@@ -26,6 +34,6 @@ class ClientDataPersister implements ContextAwareDataPersisterInterface
     
     public function remove($data, array $context = [])
     {
-        // call your persistence layer to delete $data
+        $this->clientService->delete($data->getId());
     }
 }
