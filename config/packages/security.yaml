@@ -16,9 +16,9 @@ security:
             pattern: ^/config/publickey/get$
             security: false
         api:
-            pattern: ^/api
+            pattern: ^/api/
             http_basic:
-                realm: Secured Area
+                realm: Elkarbackup API Area
         #runjob:
         #    pattern: ^/client/[0-9]+/job/[0-9]+/run
         #    security: false
