@@ -27,10 +27,10 @@ class ClientOutputDataTransformer implements DataTransformerInterface
         $output->setQuota($data->getQuota());
         $output->setDescription($data->getDescription());
         $output->setIsActive($data->getIsActive());
-        //      $output->addPreScript($preScripts);
-        //      $output->addPostScript($postScripts);
+        $output->setPreScript($this->getScriptsId($data->getPreScripts()));
+        $output->setPostScript($this->getScriptsId($data->getPostScripts()));
         $output->setMaxParallelJobs($data->getMaxParallelJobs());
-        $output->setOwner($data->getOwner()->getId());
+        $output->setOwner($this->getOwnerId($data));
         $output->setSshArgs($data->getSshArgs());
         $output->setRsyncShortArgs($data->getRsyncShortArgs());
         $output->setRsyncLongArgs($data->getRsyncLongArgs());
@@ -43,6 +43,23 @@ class ClientOutputDataTransformer implements DataTransformerInterface
     public function supportsTransformation($data, string $to, array $context = []): bool
     {
         return ClientOutput::class === $to && $data instanceof Client;
+    }
+
+    private function getOwnerId($data): ?int
+    {
+        if (null != $data->getOwner())
+        {
+            return $data->getOwner()->getId();
+        }
+        return $data->getOwner();
+    }
+    private function getScriptsId ($scripts): array
+    {
+        $result = array();
+        foreach ($scripts as $script) {
+            $result[]=$script->getId();
+        }
+        return $result;
     }
 }
 
