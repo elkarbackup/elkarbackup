@@ -8,7 +8,6 @@ namespace App\Entity;
 
 use App\Api\Dto\ClientInput;
 use App\Api\Dto\ClientOutput;
-use App\Api\DataProviders\ClientItemDataProvider;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Lib\Globals;
