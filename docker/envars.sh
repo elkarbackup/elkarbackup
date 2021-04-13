@@ -1,6 +1,6 @@
 # Default environment variables
 
-export SYMFONY_ENV=${SYMFONY_ENV:=prod}
+export APP_ENV=${APP_ENV:=prod}
 
 # ${SYMFONY database default configuration
 export SYMFONY__DATABASE__DRIVER=${SYMFONY__DATABASE__DRIVER:=pdo_mysql}
