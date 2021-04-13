@@ -20,7 +20,11 @@ class ClientInputDataTransformer implements DataTransformerInterface
      */
     public function transform($data, string $to, array $context = [])
     {
-        $client = new Client();
+        if (isset($context[AbstractItemNormalizer::OBJECT_TO_POPULATE])) {
+            $client = $context[AbstractItemNormalizer::OBJECT_TO_POPULATE];
+        } else {
+            $client = new Client();
+        }
         $client->setName($data->getName());
         $client->setUrl($data->getUrl());
         $client->setQuota($data->getQuota());
