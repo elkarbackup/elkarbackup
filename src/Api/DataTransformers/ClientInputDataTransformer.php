@@ -56,10 +56,19 @@ class ClientInputDataTransformer implements DataTransformerInterface
 
     private function getOwner($id): ?User
     {
-        $repository = $this->entityManager->getRepository('App:User');
-        $query = $repository->createQueryBuilder('c');
-        $query->where($query->expr()->eq('c.id', $id));
-        return $query->getQuery()->getOneOrNullResult();
+        if (null == $id) {
+            return null;
+        } else {
+            $repository = $this->entityManager->getRepository('App:User');
+            $query = $repository->createQueryBuilder('c');
+            $query->where($query->expr()->eq('c.id', $id));
+            if (null == $query->getQuery()->getOneOrNullResult()) {
+                throw new InvalidArgumentException ("Incorrect owner id");
+            } else {
+                return $query->getQuery()->getOneOrNullResult();
+            }
+        }
+    }
 
     private function setPreScripts($client, $preScripts): void
     {
