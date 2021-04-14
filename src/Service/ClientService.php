@@ -5,6 +5,7 @@ use App\Entity\Message;
 use \Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Monolog\Logger;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -15,13 +16,15 @@ class ClientService
     private $em;
     private $authChecker;
     private $logger;
+    private $router;
     private $security;
     private $translator;
     
-    public function __construct(EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker, Logger $logger, Security $security, TranslatorInterface $translator){
+    public function __construct(EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker, Logger $logger, Security $security, TranslatorInterface $translator, UrlGeneratorInterface $router){
         $this->em = $em;
         $this->authChecker = $authChecker;
         $this->logger = $logger;
+        $this->router = $router;
         $this->security = $security;
         $this->translator = $translator;
     }
@@ -37,8 +40,8 @@ class ClientService
                 $this->em->flush();
                 $this->err(
                     'Could not delete client %clientName%, it has jobs enqueued.',
-                    array('%clientName%' => $client->getName())
-//                    array('link' => $this->generateClientRoute($id))
+                    array('%clientName%' => $client->getName()),
+                    array('link' => $this->generateClientRoute($id))
                     );
                 throw new Exception("Could not delete client, it has jobs enqueued.");
 //                 $response = new JsonResponse(array(
@@ -64,11 +67,11 @@ class ClientService
                 ))
                 );
             $this->em->persist($msg);
-//             $this->info(
-//                 'Client "%clientid%" deleted',
-//                 array('%clientid%' => $id),
-//                 array('link' => $this->generateClientRoute($id))
-//                 );
+            $this->info(
+                'Client "%clientid%" deleted',
+                array('%clientid%' => $id),
+                array('link' => $this->generateClientRoute($id))
+                );
             $this->em->flush();
 //             $response = new JsonResponse(array(
 //                 'error' => false,
@@ -151,8 +154,8 @@ class ClientService
                 $this->em->persist($client);
                 $this->info(
                     'Save client %clientid%',
-                    array('%clientid%' => $client->getId())
-                    //array('link' => $this->generateClientRoute($client->getId()))
+                    array('%clientid%' => $client->getId()),
+                    array('link' => $this->generateClientRoute($client->getId()))
                     );
                 $this->em->flush();
 //                 return $this->redirect($this->generateUrl('showClients'));
@@ -189,7 +192,7 @@ class ClientService
         {
             return;
         }
-        throw new PermissionException();
+        throw new PermissionException("Unable to delete client: Permission denied.");
     }
 
     private function err($msg, $translatorParams = array(), $context = array())
@@ -212,6 +215,19 @@ class ClientService
     public function trans($msg, $params = array(), $domain = 'BinovoElkarBackup')
     {
         return $this->translator->trans($msg, $params, $domain);
+    }
+
+    private function generateClientRoute($id)
+    {
+        return $this->router->generate('editClient', array('id' => $id));
+    }
+    
+    private function generateJobRoute($idJob, $idClient)
+    {
+        return $this->router->generate('editJob', array(
+            'idClient' => $idClient,
+            'idJob' => $idJob
+        ));
     }
 
 }
