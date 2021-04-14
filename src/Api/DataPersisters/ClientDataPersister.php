@@ -7,6 +7,7 @@ use App\Entity\Client;
 use App\Exception\APIException;
 use App\Service\ClientService;
 use \Exception;
+use App\Exception\PermissionException;
 
 class ClientDataPersister implements ContextAwareDataPersisterInterface
 {
@@ -37,7 +38,9 @@ class ClientDataPersister implements ContextAwareDataPersisterInterface
     {
         try{
             $this->clientService->delete($data->getId());
-        } catch (Exception $e) {
+        } catch (PermissionException $e) {
+            throw new PermissionException($e->getMessage());
+        }catch (Exception $e) {
             throw new APIException($e->getMessage());
         }
         
