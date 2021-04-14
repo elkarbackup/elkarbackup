@@ -3,10 +3,11 @@ namespace App\Api\DataProviders;
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGenerator;
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
+use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\Entity\Client;
 use Doctrine\ORM\EntityManagerInterface;
 
-class ClientCollectionDataProvider implements ContextAwareCollectionDataProviderInterface
+class ClientCollectionDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
     private $entityManager;
     private $collectionExtensions;
@@ -18,10 +19,14 @@ class ClientCollectionDataProvider implements ContextAwareCollectionDataProvider
         $this->entityManager        = $em;
         $this->collectionExtensions = $collectionExtensions;
     }
+    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    {
+        return Client::class === $resourceClass;
+    }
     public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
     {
         $repository = $this->entityManager->getRepository('App:Client');
-        $query = $repository->createQueryBuilder('c')->select('c.id', 'c.name', 'c.description')->addOrderBy('c.id', 'ASC');
+        $query = $repository->createQueryBuilder('c')->addOrderBy('c.id', 'ASC');
         $queryNameGenerator = new QueryNameGenerator();
         
         foreach ($this->collectionExtensions as $extension) {
