@@ -11,4 +11,7 @@ api_platform:
         ApiPlatform\Core\Exception\InvalidArgumentException: !php/const Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST
         ApiPlatform\Core\Exception\FilterValidationException: 400
         Doctrine\ORM\OptimisticLockException: 409
+        
+        # Custom exceptions
+        App\Exception\PermissionException: 400
     
