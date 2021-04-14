@@ -4,8 +4,9 @@ namespace App\Api\DataPersisters;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use ApiPlatform\Core\Exception\InvalidArgumentException;
 use App\Entity\Client;
+use App\Exception\APIException;
 use App\Service\ClientService;
-use Exception;
+use \Exception;
 
 class ClientDataPersister implements ContextAwareDataPersisterInterface
 {
@@ -34,6 +35,11 @@ class ClientDataPersister implements ContextAwareDataPersisterInterface
     
     public function remove($data, array $context = [])
     {
-        $this->clientService->delete($data->getId());
+        try{
+            $this->clientService->delete($data->getId());
+        } catch (Exception $e) {
+            throw new APIException($e->getMessage());
+        }
+        
     }
 }
