@@ -6,15 +6,12 @@ class ScriptOutput
     protected $description;
     protected $id;
     protected $name;
-    protected $deleteScriptFile = false;
-    protected $scriptFile;
-    protected $filesToRemove;
     protected $isClientPre;
     protected $isJobPre;
     protected $isClientPost;
     protected $isJobPost;
     /**
-     * @return mixed
+     * @return string
      */
     public function getDescription()
     {
@@ -22,7 +19,7 @@ class ScriptOutput
     }
 
     /**
-     * @param mixed $description
+     * @param string $description
      */
     public function setDescription($description)
     {
@@ -30,7 +27,7 @@ class ScriptOutput
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {
@@ -38,59 +35,11 @@ class ScriptOutput
     }
 
     /**
-     * @param mixed $name
+     * @param string $name
      */
     public function setName($name)
     {
         $this->name = $name;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getDeleteScriptFile()
-    {
-        return $this->deleteScriptFile;
-    }
-
-    /**
-     * @param boolean $deleteScriptFile
-     */
-    public function setDeleteScriptFile($deleteScriptFile)
-    {
-        $this->deleteScriptFile = $deleteScriptFile;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getScriptFile()
-    {
-        return $this->scriptFile;
-    }
-
-    /**
-     * @param mixed $scriptFile
-     */
-    public function setScriptFile($scriptFile)
-    {
-        $this->scriptFile = $scriptFile;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFilesToRemove()
-    {
-        return $this->filesToRemove;
-    }
-
-    /**
-     * @param mixed $filesToRemove
-     */
-    public function setFilesToRemove($filesToRemove)
-    {
-        $this->filesToRemove = $filesToRemove;
     }
 
     /**
@@ -107,6 +56,14 @@ class ScriptOutput
     public function setIsClientPre($isClientPre)
     {
         $this->isClientPre = $isClientPre;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
