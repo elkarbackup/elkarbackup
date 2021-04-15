@@ -7,13 +7,23 @@
 namespace App\Entity;
 
 use App\Lib\Globals;
+use App\Api\Dto\JobInput;
+use App\Api\Dto\JobOutput;
 use Doctrine\ORM\Mapping as ORM;
 use Monolog\Logger;
 use \RuntimeException;
 use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
- * @ApiResource
+ * @ApiResource(
+ *     input  = JobInput::class,
+ *     output = JobOutput::class,
+ *     normalizationContext={
+ *         "skip_null_values" = false
+ *     },
+ *     collectionOperations= {"get", "post"},
+ *     itemOperations= {"get", "put", "delete"},
+ * )
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
