@@ -2,13 +2,12 @@
 namespace App\Service;
 
 use App\Entity\Message;
+use App\Service\LoggerService;
 use \Exception;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Monolog\Logger;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use App\Exception\PermissionException;
 
 class ClientService
@@ -18,15 +17,13 @@ class ClientService
     private $logger;
     private $router;
     private $security;
-    private $translator;
     
-    public function __construct(EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker, Logger $logger, Security $security, TranslatorInterface $translator, UrlGeneratorInterface $router){
+    public function __construct(EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker, LoggerService $logger, Security $security, UrlGeneratorInterface $router){
         $this->em = $em;
         $this->authChecker = $authChecker;
         $this->logger = $logger;
         $this->router = $router;
         $this->security = $security;
-        $this->translator = $translator;
     }
     public function delete($id)
     {
@@ -38,7 +35,7 @@ class ClientService
         foreach ($queue as $item) {
             if ($item->getJob()->getClient()->getId() == $id) {
                 $this->em->flush();
-                $this->err(
+                $this->logger->err(
                     'Could not delete client %clientName%, it has jobs enqueued.',
                     array('%clientName%' => $client->getName()),
                     array('link' => $this->generateClientRoute($id))
@@ -67,7 +64,7 @@ class ClientService
                 ))
                 );
             $this->em->persist($msg);
-            $this->info(
+            $this->logger->info(
                 'Client "%clientid%" deleted',
                 array('%clientid%' => $id),
                 array('link' => $this->generateClientRoute($id))
@@ -107,7 +104,7 @@ class ClientService
 //             $repository = $this->em->getRepository('App:Client');
 //             $client = $repository->find($id);
 //         }
-        
+
 //         $form = $this->createForm(
 //             ClientType::class,
 //             $client,
@@ -131,7 +128,7 @@ class ClientService
                             ))
                             );
                         $this->em->persist($msg);
-                        $this->info(
+                        $this->logger->info(
                             'Delete client %clientid%, job %jobid%',
                             array(
                                 '%clientid%' => $client->getId(),
@@ -152,7 +149,7 @@ class ClientService
                     throw new Exception('Max parallel jobs parameter should be positive integer');
                 }
                 $this->em->persist($client);
-                $this->info(
+                $this->logger->info(
                     'Save client %clientid%',
                     array('%clientid%' => $client->getId()),
                     array('link' => $this->generateClientRoute($client->getId()))
@@ -193,28 +190,6 @@ class ClientService
             return;
         }
         throw new PermissionException("Unable to delete client: Permission denied.");
-    }
-
-    private function err($msg, $translatorParams = array(), $context = array())
-    {
-        $context = array_merge(array('source' => 'DefaultController'), $context);
-        $this->logger->error(
-            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
-            $context
-            );
-    }
-    private function info($msg, $translatorParams = array(), $context = array())
-    {
-        $context = array_merge(array('source' => 'DefaultController'), $context);
-        $this->logger->info(
-            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
-            $context
-            );
-    }
-
-    public function trans($msg, $params = array(), $domain = 'BinovoElkarBackup')
-    {
-        return $this->translator->trans($msg, $params, $domain);
     }
 
     private function generateClientRoute($id)
