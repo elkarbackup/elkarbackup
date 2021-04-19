@@ -29,7 +29,7 @@ class JobInputDataTransformer implements DataTransformerInterface
         $job->setDescription($data->getDescription());
         $this->setClient($job, $data->getClient());
         $job->setIsActive($data->getIsActive());
-        $job->setNotificationsEmail($data->getNotificationsEmail());
+        $this->setNotificationsEmail($job, $data->getNotificationsEmail());
         $this->setNotificationsTo($job, $data->getNotificationsTo());
         $this->setMinNotificationLevel($job, $data->getMinNotificationLevel());
         $job->setExclude($data->getExclude());
@@ -149,6 +149,15 @@ class JobInputDataTransformer implements DataTransformerInterface
             }
         }
         $job->setNotificationsTo($notificationsTo);
+    }
+    
+    private function setNotificationsEmail (Job $job, $notificationsEmail)
+    {
+        if (isset($notificationsEmail) && !filter_var($notificationsEmail, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidArgumentException("Incorrect notification email address");
+        }
+        
+        $job->setNotificationsEmail($notificationsEmail);
     }
 }
 
