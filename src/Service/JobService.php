@@ -2,13 +2,12 @@
 namespace App\Service;
 
 use App\Entity\Message;
+use App\Service\LoggerService;
 use App\Exception\PermissionException;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Monolog\Logger;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use \Exception;
 
 class JobService
@@ -18,22 +17,19 @@ class JobService
     private $logger;
     private $router;
     private $security;
-    private $translator;
     
-    public function __construct(AuthorizationCheckerInterface $authChecker, EntityManagerInterface $em, Logger $logger, UrlGeneratorInterface $router, 
-        Security $security, TranslatorInterface $translator)
+    public function __construct(AuthorizationCheckerInterface $authChecker, EntityManagerInterface $em, LoggerService $logger, UrlGeneratorInterface $router, 
+        Security $security)
     {
         $this->authChecker = $authChecker;
         $this->em          = $em;
         $this->logger      = $logger;
         $this->router      = $router;
         $this->security    = $security;
-        $this->translator  = $translator;
     }
     
     public function delete ($id)
     {
-
 //         $access = $this->checkPermissions($idClient);
 //         if ($access == False) {
 //             return $this->redirect($this->generateUrl('showClients'));
@@ -57,7 +53,7 @@ class JobService
 //                         ),
 //                     'data' => array($idJob)
 //                 ));
-                $this->err(
+                $this->logger->err(
                     'Could not delete job %jobName%, it is enqueued.',
                     array('%jobName%' => $job->getName()),
                     array('link' => $this->generateJobRoute($id, $idClient))
@@ -76,7 +72,7 @@ class JobService
                 'job' => (int) $id
             )));
             $this->em->persist($msg);
-            $this->info(
+            $this->logger->info(
                 'Client %clientid%, job "%jobid%" deleted successfully.',
                 array('%clientid%' => $idClient,'%jobid%' => $id),
                 array('link' => $this->generateJobRoute($id, $idClient))
@@ -135,7 +131,7 @@ class JobService
 //             $job = $form->getData();
 //             try {
                 $this->em->persist($job);
-                $this->info(
+                $this->logger->info(
                     'Save client %clientid%, job %jobid%',
                     array(
                         '%clientid%' => $job->getClient()->getId(),
@@ -177,25 +173,7 @@ class JobService
         }
         throw new PermissionException("Unable to delete client: Permission denied.");
     }
-    
-    private function info($msg, $translatorParams = array(), $context = array())
-    {
-        $context = array_merge(array('source' => 'DefaultController'), $context);
-        $this->logger->info(
-            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
-            $context
-            );
-    }
-    
-    private function err($msg, $translatorParams = array(), $context = array())
-    {
-        $context = array_merge(array('source' => 'DefaultController'), $context);
-        $this->logger->error(
-            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
-            $context
-            );
-    }
-    
+
     private function generateClientRoute($id)
     {
         return $this->router->generate('editClient', array('id' => $id));
@@ -207,11 +185,6 @@ class JobService
             'idClient' => $idClient,
             'idJob' => $idJob
         ));
-    }
-    
-    public function trans($msg, $params = array(), $domain = 'BinovoElkarBackup')
-    {
-        return $this->translator->trans($msg, $params, $domain);
     }
 }
 
