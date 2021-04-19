@@ -6,6 +6,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Api\Dto\UserOutput;
 use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -13,7 +15,11 @@ use Symfony\Component\Security\Core\Validator\Constraint as SecurityAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- *
+ * @ApiResource(
+ *     output = UserOutput::class,
+ *     collectionOperations= {"get"},
+ *     itemOperations= {"get"}
+ * )
  * @ORM\Entity
  */
 class User implements AdvancedUserInterface
