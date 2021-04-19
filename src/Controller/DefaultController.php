@@ -32,6 +32,7 @@ use App\Lib\Globals;
 use App\Service\ClientService;
 use App\Service\JobService;
 use App\Service\LoggerService;
+use App\Service\RouterService;
 use App\Service\TranslatorService;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -74,6 +75,7 @@ class DefaultController extends AbstractController
     private $translator;
     private $translatorService;
     private $logger;
+    private $router;
     private $supportedLocales;
     private $paginator;
     private $cacheDir;
@@ -81,50 +83,18 @@ class DefaultController extends AbstractController
     private $encoderFactory;
     private $uploadDir;
 
-    public function __construct($cacheDir, $uploadDir, Security $security, TranslatorInterface $t, TranslatorService $translatorService, LoggerService $logger, PaginatorInterface $pag, ChainCacheClearer $cci, EncoderFactoryInterface $encoder)
+    public function __construct($cacheDir, $uploadDir, Security $security, TranslatorInterface $t, TranslatorService $translatorService, LoggerService $logger, RouterService $router, PaginatorInterface $pag, ChainCacheClearer $cci, EncoderFactoryInterface $encoder)
     {
         $this->cacheDir          = $cacheDir;
         $this->security          = $security;
         $this->translator        = $t;
         $this->translatorService = $translatorService;
         $this->logger            = $logger;
+        $this->router            = $router;
         $this->paginator         = $pag;
         $this->cacheClearer      = $cci;
         $this->encoderFactory    = $encoder;
         $this->uploadDir         = $uploadDir;
-    }
-
-    protected function generateClientRoute($id)
-    {
-        return $this->generateUrl('editClient', array('id' => $id));
-    }
-
-    protected function generateJobRoute($idJob, $idClient)
-    {
-        return $this->generateUrl('editJob', array(
-            'idClient' => $idClient,
-            'idJob' => $idJob
-        ));
-    }
-
-    protected function generatePolicyRoute($id)
-    {
-        return $this->generateUrl('editPolicy', array('id' => $id));
-    }
-
-    protected function generateScriptRoute($id)
-    {
-        return $this->generateUrl('editScript', array('id' => $id));
-    }
-
-    protected function generateBackupLocationRoute($id)
-    {
-        return $this->generateUrl('editBackupLocation', array('id' => $id));
-    }
-
-    protected function generateUserRoute($id)
-    {
-        return $this->generateUrl('editUser', array('id' => $id));
     }
 
     /*
@@ -426,7 +396,7 @@ class DefaultController extends AbstractController
         $this->logger->debug(
             'View client %clientid%',
             array('%clientid%' => $id),
-            array('link' => $this->generateClientRoute($id))
+            array('link' => $this->router->generateClientRoute($id))
         );
         $this->getDoctrine()->getManager()->flush();
         
@@ -636,7 +606,7 @@ class DefaultController extends AbstractController
         $this->logger->debug(
             'View client %clientid%, job %jobid%',
             array('%clientid%' => $idClient,'%jobid%' => $idJob),
-            array('link' => $this->generateJobRoute($idJob, $idClient))
+            array('link' => $this->router->generateJobRoute($idJob, $idClient))
         );
         $this->getDoctrine()->getManager()->flush();
         
@@ -738,7 +708,7 @@ class DefaultController extends AbstractController
         $this->logger->info(
               'Client "%clientid%" restore started',
               array('%clientid%' => $idClient),
-              array('link' => $this->generateClientRoute($idClient))
+              array('link' => $this->router->generateClientRoute($idClient))
         );
         $manager->flush();
         
@@ -820,7 +790,7 @@ class DefaultController extends AbstractController
             }
             $em = $this->getDoctrine()->getManager();
             $context = array(
-                'link' => $this->generateJobRoute($idJob, $idClient),
+                'link' => $this->router->generateJobRoute($idJob, $idClient),
                 'source' => Globals::STATUS_REPORT
             );
             $isQueueIn = $this->getDoctrine()
@@ -959,7 +929,7 @@ class DefaultController extends AbstractController
         $this->logger->info(
             'Show job config %clientid%, job %jobid%',
             array('%clientid%' => $idClient,'%jobid%' => $idJob),
-            array('link' => $this->generateJobRoute($idJob, $idClient))
+            array('link' => $this->router->generateJobRoute($idJob, $idClient))
         );
         $this->getDoctrine()->getManager()->flush();
         $preCommand = '';
@@ -1325,7 +1295,7 @@ class DefaultController extends AbstractController
         $this->logger->debug(
             'View policy %policyname%',
             array('%policyname%' => $policy->getName()), 
-            array('link' => $this->generatePolicyRoute($policy->getId()))
+            array('link' => $this->router->generatePolicyRoute($policy->getId()))
         );
         $this->getDoctrine()->getManager()->flush();
         
@@ -1355,7 +1325,7 @@ class DefaultController extends AbstractController
             $this->logger->info(
                 'Delete policy %policyname%',
                 array('%policyname%' => $policy->getName()),
-                array('link' => $this->generatePolicyRoute($id))
+                array('link' => $this->router->generatePolicyRoute($id))
             );
             $manager->flush();
         } catch (PDOException $e) {
@@ -1393,7 +1363,7 @@ class DefaultController extends AbstractController
             $this->logger->info(
                 'Save policy %policyname%',
                 array('%policyname%' => $policy->getName()),
-                array('link' => $this->generatePolicyRoute($id))
+                array('link' => $this->router->generatePolicyRoute($id))
             );
             $em->flush();
             
@@ -1909,7 +1879,7 @@ EOF;
         $this->logger->debug(
             'View location %backupLocationName%.',
             array('%backupLocationName%' => $backupLocation->getName()),
-            array('link' => $this->generateBackupLocationRoute($id))
+            array('link' => $this->router->generateBackupLocationRoute($id))
         );
         $this->getDoctrine()->getManager()->flush();
         
@@ -1968,7 +1938,7 @@ EOF;
             $this->logger->info(
                 'Save backup location %locationName%.',
                 array('%locationName%' => $backupLocation->getName()),
-                array('link' => $this->generateBackupLocationRoute($id))
+                array('link' => $this->router->generateBackupLocationRoute($id))
             );
             $em->flush();
             $result = $this->redirect($this->generateUrl('manageBackupLocations'));
@@ -2003,7 +1973,7 @@ EOF;
             $this->logger->info(
                 'Delete backup location %locationName%',
                 array('%locationName%' => $backupLocation->getName()),
-                array('link' => $this->generateBackupLocationRoute($id))
+                array('link' => $this->router->generateBackupLocationRoute($id))
             );
             $manager->flush();
         } catch (Exception $e) {
@@ -2361,7 +2331,7 @@ EOF;
                 $this->logger->info(
                     'Change password for user %username% failed. Passwords do not match.',
                     array('%username%' => $user->getUsername()),
-                    array('link' => $this->generateUserRoute($user->getId()))
+                    array('link' => $this->router->generateUserRoute($user->getId()))
                 );
             }
             if ($encoder->encodePassword($data['oldPassword'], $user->getSalt()) !== $user->getPassword()) {
@@ -2373,7 +2343,7 @@ EOF;
                 $this->logger->info(
                     'Change password for user %username% failed. Wrong old password.',
                     array('%username%' => $user->getUsername()),
-                    array('link' => $this->generateUserRoute($user->getId()))
+                    array('link' => $this->router->generateUserRoute($user->getId()))
                 );
             }
             if ($ok) {
@@ -2390,7 +2360,7 @@ EOF;
                 $this->logger->info(
                     'Change password for user %username%.',
                     array('%username%' => $user->getUsername()),
-                    array('link' => $this->generateUserRoute($user->getId()))
+                    array('link' => $this->router->generateUserRoute($user->getId()))
                 );
                 $manager->flush();
             }
@@ -2494,7 +2464,7 @@ EOF;
             $this->logger->info(
                 'Delete script %scriptname%',
                 array('%scriptname%' => $script->getName()),
-                array('link' => $this->generateScriptRoute($id))
+                array('link' => $this->router->generateScriptRoute($id))
             );
             $manager->flush();
         } catch (PDOException $e) {
@@ -2531,7 +2501,7 @@ EOF;
         $this->logger->info(
             'Download script %scriptname%',
             array('%scriptname%' => $script->getName()),
-            array('link' => $this->generateScriptRoute($id))
+            array('link' => $this->router->generateScriptRoute($id))
         );
         $manager->flush();
         $response = new Response();
@@ -2576,7 +2546,7 @@ EOF;
         $this->logger->debug(
             'View script %scriptname%.',
             array('%scriptname%' => $script->getName()),
-            array('link' => $this->generateScriptRoute($id))
+            array('link' => $this->router->generateScriptRoute($id))
         );
         $this->getDoctrine()->getManager()->flush();
         
@@ -2625,7 +2595,7 @@ EOF;
                 $this->logger->info(
                     'Save script %scriptname%.',
                     array('%scriptname%' => $script->getScriptname()),
-                    array('link' => $this->generateScriptRoute($id))
+                    array('link' => $this->router->generateScriptRoute($id))
                 );
                 $em->flush();
                 $result = $this->redirect($this->generateUrl('showScripts'));
@@ -2655,7 +2625,7 @@ EOF;
             $this->logger->info(
                 'Delete user %username%.',
                 array('%username%' => $user->getUsername()),
-                array('link' => $this->generateUserRoute($id))
+                array('link' => $this->router->generateUserRoute($id))
             );
             $manager->flush();
         }
@@ -2679,7 +2649,7 @@ EOF;
         $this->logger->debug(
             'View user %username%.',
             array('%username%' => $user->getUsername()),
-            array('link' => $this->generateUserRoute($id))
+            array('link' => $this->router->generateUserRoute($id))
         );
         $this->getDoctrine()->getManager()->flush();
         
@@ -2715,7 +2685,7 @@ EOF;
             $this->logger->info(
                 'Save user %username%.',
                 array('%username%' => $user->getUsername()),
-                array('link' => $this->generateUserRoute($id))
+                array('link' => $this->router->generateUserRoute($id))
             );
             $em->flush();
             
@@ -2920,7 +2890,7 @@ EOF;
             $this->logger->info(
                 'Save preferences for user %username%.',
                 array('%username%' => $user->getUsername()),
-                array('link' => $this->generateUserRoute($user->getId()))
+                array('link' => $this->router->generateUserRoute($user->getId()))
             );
             $em->flush();
             
@@ -2931,7 +2901,7 @@ EOF;
             $this->logger->info(
                 'Manage preferences for user %username%.',
                 array('%username%' => $user->getUsername()),
-                array('link' => $this->generateUserRoute($user->getId()))
+                array('link' => $this->router->generateUserRoute($user->getId()))
             );
             $this->getDoctrine()->getManager()->flush();
             
