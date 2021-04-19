@@ -9,7 +9,7 @@ class JobInput
     protected $isActive = true;
     protected $name;
     protected $notificationsEmail;
-    protected $notificationsTo = '["owner"]';
+    protected $notificationsTo = ["owner"];
     protected $minNotificationLevel = 400;
     protected $include;
     protected $exclude;
