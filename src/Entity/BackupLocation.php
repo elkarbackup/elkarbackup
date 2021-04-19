@@ -6,12 +6,19 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Api\Dto\BackupLocationOutput;
 use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use \RuntimeException;
 
 /**
+ * @ApiResource(
+ *     output = BackupLocationOutput::class,
+ *     collectionOperations= {"get"},
+ *     itemOperations= {"get"}
+ * )
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */

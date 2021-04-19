@@ -93,3 +93,7 @@ services:
     App\Api\DataProviders\PolicyCollectionDataProvider:
         arguments:
              $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+    App\Api\DataProviders\BackupLocationCollectionDataProvider:
+        arguments:
+             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+             
