@@ -17,6 +17,7 @@ use App\Entity\Policy;
 use App\Entity\Queue;
 use App\Entity\Script;
 use App\Entity\User;
+use App\Exception\PermissionException;
 use App\Form\Type\AuthorizedKeyType;
 use App\Form\Type\BackupLocationType;
 use App\Form\Type\ClientType;
@@ -28,6 +29,10 @@ use App\Form\Type\ScriptType;
 use App\Form\Type\UserType;
 use App\Form\Type\PreferencesType;
 use App\Lib\Globals;
+use App\Service\ClientService;
+use App\Service\JobService;
+use App\Service\LoggerService;
+use App\Service\TranslatorService;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -62,14 +67,12 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\HttpKernel\CacheClearer\ChainCacheClearer;
-use App\Service\ClientService;
-use App\Exception\PermissionException;
-use App\Service\JobService;
 
 class DefaultController extends AbstractController
 {
     private $security;
     private $translator;
+    private $translatorService;
     private $logger;
     private $supportedLocales;
     private $paginator;
@@ -78,54 +81,17 @@ class DefaultController extends AbstractController
     private $encoderFactory;
     private $uploadDir;
 
-    public function __construct($cacheDir, $uploadDir, Security $security, TranslatorInterface $t, Logger $logger, PaginatorInterface $pag, ChainCacheClearer $cci, EncoderFactoryInterface $encoder)
+    public function __construct($cacheDir, $uploadDir, Security $security, TranslatorInterface $t, TranslatorService $translatorService, LoggerService $logger, PaginatorInterface $pag, ChainCacheClearer $cci, EncoderFactoryInterface $encoder)
     {
-        $this->cacheDir = $cacheDir;
-        $this->security = $security;
-        $this->translator = $t;
-        $this->logger = $logger;
-        $this->paginator = $pag;
-        $this->cacheClearer = $cci;
-        $this->encoderFactory = $encoder;
-        $this->uploadDir = $uploadDir;
-    }
-    protected function info($msg, $translatorParams = array(), $context = array())
-    {
-        $context = array_merge(array('source' => 'DefaultController'), $context);
-        $this->logger->info(
-            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
-            $context
-        );
-    }
-    
-    protected function warn($msg, $translatorParams = array(), $context = array())
-    {
-        $logger = $this->logger;
-        $context = array_merge(array('source' => 'DefaultController'), $context);
-        $logger->warning(
-            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
-            $context
-        );
-    }
-    
-    protected function err($msg, $translatorParams = array(), $context = array())
-    {
-        $logger = $this->logger;
-        $context = array_merge(array('source' => 'DefaultController'), $context);
-        $logger->error(
-            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
-            $context
-        );
-    }
-    
-    protected function debug($msg, $translatorParams = array(), $context = array())
-    {
-        $logger = $this->logger;
-        $context = array_merge(array('source' => 'DefaultController'), $context);
-        $logger->debug(
-            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
-            $context
-        );
+        $this->cacheDir          = $cacheDir;
+        $this->security          = $security;
+        $this->translator        = $t;
+        $this->translatorService = $translatorService;
+        $this->logger            = $logger;
+        $this->paginator         = $pag;
+        $this->cacheClearer      = $cci;
+        $this->encoderFactory    = $encoder;
+        $this->uploadDir         = $uploadDir;
     }
 
     protected function generateClientRoute($id)
@@ -210,7 +176,7 @@ class DefaultController extends AbstractController
     {
         if (!file_exists($this->getParameter('public_key'))) {
             throw $this->createNotFoundException(
-                $this->trans('Unable to find public key:')
+                $this->translatorService->trans('Unable to find public key:')
             );
         }
         $headers = array(
@@ -239,7 +205,7 @@ class DefaultController extends AbstractController
             json_encode(array('command' => "elkarbackup:generate_keypair"))
         );
         $manager->persist($msg);
-        $this->info('Public key generation requested');
+        $this->logger->info('Public key generation requested');
         $manager->flush();
         $this->get('session')->getFlashBag()->add(
             'manageParameters', 
@@ -251,11 +217,6 @@ class DefaultController extends AbstractController
         );
         
         return $this->redirect($this->generateUrl('manageParameters'));
-    }
-
-    public function trans($msg, $params = array(), $domain = 'BinovoElkarBackup')
-    {
-        return $this->translator->trans($msg, $params, $domain);
     }
 
     /**
@@ -382,7 +343,7 @@ class DefaultController extends AbstractController
             $error = $session->get(Security::AUTHENTICATION_ERROR);
             $session->remove(Security::AUTHENTICATION_ERROR);
         }
-        $this->info(
+        $this->logger->info(
             'Log in attempt with user: %username%',
             array('%username%' => $session->get(Security::LAST_USERNAME))
         );
@@ -452,7 +413,7 @@ class DefaultController extends AbstractController
             $client = $repository->find($id);
             if (null == $client) {
                 throw $this->createNotFoundException(
-                    $this->trans('Unable to find Client entity:') . $id
+                    $this->translatorService->trans('Unable to find Client entity:') . $id
                 );
             }
         }
@@ -462,7 +423,7 @@ class DefaultController extends AbstractController
             $client,
             array('translator' => $this->translator)
         );
-        $this->debug(
+        $this->logger->debug(
             'View client %clientid%',
             array('%clientid%' => $id),
             array('link' => $this->generateClientRoute($id))
@@ -654,7 +615,7 @@ class DefaultController extends AbstractController
                 ->getRepository('App:Client')
                 ->find($idClient);
             if (null == $client) {
-                throw $this->createNotFoundException($this->trans('Unable to find Client entity:') . $idClient);
+                throw $this->createNotFoundException($this->translatorService->trans('Unable to find Client entity:') . $idClient);
             }
             $job->setClient($client);
         } else {
@@ -672,7 +633,7 @@ class DefaultController extends AbstractController
             $job,
             array('translator' => $this->translator)
         );
-        $this->debug(
+        $this->logger->debug(
             'View client %clientid%, job %jobid%',
             array('%clientid%' => $idClient,'%jobid%' => $idJob),
             array('link' => $this->generateJobRoute($idJob, $idClient))
@@ -700,7 +661,7 @@ class DefaultController extends AbstractController
         $access = $this->checkPermissions($idClient);
         if ($access == False) {
 
-            $this->err(
+            $this->logger->err(
             'Unautorized access attempt by user: %username% into %path% by idclient: %clientid%. / idjob: %jobid%' ,
             array('%username%' => $actualusername, '%path%' => $path, '%clientid%' => $idClient,'%jobid%' => $idJob )
             );
@@ -774,7 +735,7 @@ class DefaultController extends AbstractController
               ))
         );
         $manager->persist($msg);
-        $this->info(
+        $this->logger->info(
               'Client "%clientid%" restore started',
               array('%clientid%' => $idClient),
               array('link' => $this->generateClientRoute($idClient))
@@ -854,7 +815,7 @@ class DefaultController extends AbstractController
                     ->getRepository('App:Job')
                     ->find($idJob);
                 if (null == $job) {
-                    throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
+                    throw $this->createNotFoundException($this->translatorService->trans('Unable to find Job entity:') . $idJob);
                 }
             }
             $em = $this->getDoctrine()->getManager();
@@ -878,7 +839,7 @@ class DefaultController extends AbstractController
                         ),
                     'data' => array($idJob)
                 ));
-                $this->info($status, array(), $context);
+                $this->logger->info($status, array(), $context);
                 
             } else {
                 $status = 'The job has been already enqueued, it will not be enqueued again';
@@ -891,7 +852,7 @@ class DefaultController extends AbstractController
                         ),
                     'data' => array($idJob)
                 ));
-                $this->warn($status, array(), $context);
+                $this->logger->warn($status, array(), $context);
             }
             $em->flush();
             return $response;
@@ -913,7 +874,7 @@ class DefaultController extends AbstractController
             ->getRepository('App:Queue')
             ->findOneBy(array('job' => $job));
         if (null == $job) {
-            throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
+            throw $this->createNotFoundException($this->translatorService->trans('Unable to find Job entity:') . $idJob);
         }
         if (null == $queue) {
             $response = new JsonResponse(array(
@@ -995,7 +956,7 @@ class DefaultController extends AbstractController
         $syncFirst = $policy->getSyncFirst();
         $response = new Response();
         $response->headers->set('Content-Type', 'text/plain');
-        $this->info(
+        $this->logger->info(
             'Show job config %clientid%, job %jobid%',
             array('%clientid%' => $idClient,'%jobid%' => $idJob),
             array('link' => $this->generateJobRoute($idJob, $idClient))
@@ -1171,7 +1132,7 @@ class DefaultController extends AbstractController
                             );
                         passthru($command);
                     };
-                    $this->info(
+                    $this->logger->info(
                         'Download backup directory %clientid%, %jobid% %path%',
                         array('%clientid%' => $idClient,'%jobid%' => $idJob,'%path%' => $path),
                         array('link' => $this->generateUrl('showJobBackup', array(
@@ -1199,7 +1160,7 @@ class DefaultController extends AbstractController
                             );
                         passthru($command);
                     };
-                    $this->info(
+                    $this->logger->info(
                         'Download backup directory %clientid%, %jobid% %path%',
                         array('%clientid%' => $idClient,'%jobid%' => $idJob,'%path%' => $path),
                         array('link' => $this->generateUrl('showJobBackup', array(
@@ -1232,7 +1193,7 @@ class DefaultController extends AbstractController
                         );
                     }
                     array_push($dirContent, $content);
-                    $this->debug(
+                    $this->logger->debug(
                         'View backup directory %clientid%, %jobid% %path%',
                         array('%clientid%' => $idClient,'%jobid%' => $idJob, '%idBackupLocation%' => $idBackupLocation, '%path%' => $path),
                         array('link' => $this->generateUrl('showJobBackup', array(
@@ -1258,7 +1219,7 @@ class DefaultController extends AbstractController
                 }
             } else {
                 $response = new BinaryFileResponse($realPath);
-                $this->info('Download backup file %clientid%, %jobid% %path%', array(
+                $this->logger->info('Download backup file %clientid%, %jobid% %path%', array(
                     '%clientid%' => $idClient,
                     '%jobid%' => $idJob,
                     '%path%' => $path
@@ -1296,7 +1257,7 @@ class DefaultController extends AbstractController
                 }
                 array_push($dirContent, $content);
             }
-            $this->debug(
+            $this->logger->debug(
                 'View backup directory %clientid%, %jobid% %path%',
                 array('%clientid%' => $idClient,'%jobid%' => $idJob),
                 array('link' => $this->generateUrl('showJobBackup', array(
@@ -1361,7 +1322,7 @@ class DefaultController extends AbstractController
             $policy,
             array('translator' => $t)
         );
-        $this->debug(
+        $this->logger->debug(
             'View policy %policyname%',
             array('%policyname%' => $policy->getName()), 
             array('link' => $this->generatePolicyRoute($policy->getId()))
@@ -1391,7 +1352,7 @@ class DefaultController extends AbstractController
         $policy = $repository->find($id);
         try {
             $manager->remove($policy);
-            $this->info(
+            $this->logger->info(
                 'Delete policy %policyname%',
                 array('%policyname%' => $policy->getName()),
                 array('link' => $this->generatePolicyRoute($id))
@@ -1429,7 +1390,7 @@ class DefaultController extends AbstractController
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($policy);
-            $this->info(
+            $this->logger->info(
                 'Save policy %policyname%',
                 array('%policyname%' => $policy->getName()),
                 array('link' => $this->generatePolicyRoute($id))
@@ -1480,7 +1441,7 @@ class DefaultController extends AbstractController
                 $job->setPriority($i);
                 ++ $i;
             }
-            $this->info(
+            $this->logger->info(
                 'Jobs reordered',
                 array(),
                 array('link' => $this->generateUrl('showClients'))
@@ -1553,7 +1514,7 @@ class DefaultController extends AbstractController
                 ));
             }
         }
-        $this->debug(
+        $this->logger->debug(
             'View clients',
             array(),
             array('link' => $this->generateUrl('showClients'))
@@ -1586,7 +1547,7 @@ class DefaultController extends AbstractController
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
             );
         
-        $this->debug(
+        $this->logger->debug(
             'View backup status',
             array(),
             array('link' => $this->generateUrl('showStatus'))
@@ -1614,7 +1575,7 @@ class DefaultController extends AbstractController
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->debug(
+        $this->logger->debug(
             'View scripts',
             array(),
             array('link' => $this->generateUrl('showScripts'))
@@ -1697,7 +1658,7 @@ EOF;
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->debug(
+        $this->logger->debug(
             'View logs',
             array(),
             array('link' => $this->generateUrl('showLogs'))
@@ -1773,7 +1734,7 @@ EOF;
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->debug(
+        $this->logger->debug(
             'View policies',
             array(),
             array('link' => $this->generateUrl('showPolicies'))
@@ -1895,7 +1856,7 @@ EOF;
                 ))
             );
             $manager->persist($msg);
-            $this->info(
+            $this->logger->info(
                 'Updating key file %keys%',
                 array('%keys%' => $serializedKeys)
             );
@@ -1945,7 +1906,7 @@ EOF;
             array( 'fs' => $this->isAutoFsAvailable(), 'translator' => $t)
         );
         
-        $this->debug(
+        $this->logger->debug(
             'View location %backupLocationName%.',
             array('%backupLocationName%' => $backupLocation->getName()),
             array('link' => $this->generateBackupLocationRoute($id))
@@ -2004,7 +1965,7 @@ EOF;
         } elseif ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($backupLocation);
-            $this->info(
+            $this->logger->info(
                 'Save backup location %locationName%.',
                 array('%locationName%' => $backupLocation->getName()),
                 array('link' => $this->generateBackupLocationRoute($id))
@@ -2039,7 +2000,7 @@ EOF;
         $backupLocation = $repository->find($id);
         try {
             $manager->remove($backupLocation);
-            $this->info(
+            $this->logger->info(
                 'Delete backup location %locationName%',
                 array('%locationName%' => $backupLocation->getName()),
                 array('link' => $this->generateBackupLocationRoute($id))
@@ -2074,7 +2035,7 @@ EOF;
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->debug(
+        $this->logger->debug(
             'View backup locations',
             array(),
             array('link' => $this->generateUrl('manageBackupLocations'))
@@ -2332,13 +2293,13 @@ EOF;
         $updated = preg_replace("/$name:.*/", "$name: $value", $paramsFile);
         $ok = file_put_contents($paramsFilename, $updated);
         if ($ok) {
-            $this->info(
+            $this->logger->info(
                 'Set Parameter %paramname%',
                 array('%paramname%' => $name),
                 array('link' => $this->generateUrl($from))
             );
         } else {
-            $this->info(
+            $this->logger->info(
                 'Warning: Parameter %paramname% not set',
                 array('%paramname%' => $name),
                 array('link' => $this->generateUrl($from))
@@ -2397,7 +2358,7 @@ EOF;
                     'changePassword',
                     $t->trans("Passwords do not match", array(), 'BinovoElkarBackup')
                 );
-                $this->info(
+                $this->logger->info(
                     'Change password for user %username% failed. Passwords do not match.',
                     array('%username%' => $user->getUsername()),
                     array('link' => $this->generateUserRoute($user->getId()))
@@ -2409,7 +2370,7 @@ EOF;
                     'changePassword',
                     $t->trans("Wrong old password", array(), 'BinovoElkarBackup')
                 );
-                $this->info(
+                $this->logger->info(
                     'Change password for user %username% failed. Wrong old password.',
                     array('%username%' => $user->getUsername()),
                     array('link' => $this->generateUserRoute($user->getId()))
@@ -2426,7 +2387,7 @@ EOF;
                     'changePassword',
                     $t->trans("Password changed", array(), 'BinovoElkarBackup')
                 );
-                $this->info(
+                $this->logger->info(
                     'Change password for user %username%.',
                     array('%username%' => $user->getUsername()),
                     array('link' => $this->generateUserRoute($user->getId()))
@@ -2465,7 +2426,7 @@ EOF;
         $response = new Response();
         if (is_file($log->getLogfilePath())) {
             // Logfile exists
-            $this->info(
+            $this->logger->info(
                 'Download log %logfile%',
                 array('%logfile%' => $log->getLogfile()),
                 array('link' => $this->generateUrl('downloadLog', array('id' => $id)))
@@ -2483,7 +2444,7 @@ EOF;
             );
         } elseif (is_file($log->getLogFilePath() . ".gz")) {
             // Logfile is compressed (gz)
-            $this->info(
+            $this->logger->info(
                 'Download log %logfile%.gz',
                 array('%logfile%' => $log->getLogfile()),
                 array('link' => $this->generateUrl('downloadLog', array('id' => $id)))
@@ -2501,7 +2462,7 @@ EOF;
             );
         } else {
             // Logfile does not exist
-            $this->info(
+            $this->logger->info(
                 'Log not found: %logfile%',
                 array('%logfile%' => $log->getLogfilePath()),
                 array('link' => $this->generateUrl('downloadLog', array('id' => $id)))
@@ -2530,7 +2491,7 @@ EOF;
         $script = $repository->find($id);
         try {
             $manager->remove($script);
-            $this->info(
+            $this->logger->info(
                 'Delete script %scriptname%',
                 array('%scriptname%' => $script->getName()),
                 array('link' => $this->generateScriptRoute($id))
@@ -2567,7 +2528,7 @@ EOF;
                 'BinovoElkarBackup'
             ));
         }
-        $this->info(
+        $this->logger->info(
             'Download script %scriptname%',
             array('%scriptname%' => $script->getName()),
             array('link' => $this->generateScriptRoute($id))
@@ -2612,7 +2573,7 @@ EOF;
                 'translator' => $t
             )
         );
-        $this->debug(
+        $this->logger->debug(
             'View script %scriptname%.',
             array('%scriptname%' => $script->getName()),
             array('link' => $this->generateScriptRoute($id))
@@ -2661,7 +2622,7 @@ EOF;
                 $em = $this->getDoctrine()->getManager();
                 $script->setLastUpdated(new DateTime()); // we to this to force the PostPersist script to run.
                 $em->persist($script);
-                $this->info(
+                $this->logger->info(
                     'Save script %scriptname%.',
                     array('%scriptname%' => $script->getScriptname()),
                     array('link' => $this->generateScriptRoute($id))
@@ -2691,7 +2652,7 @@ EOF;
             $manager = $db->getManager();
             $user = $repository->find($id);
             $manager->remove($user);
-            $this->info(
+            $this->logger->info(
                 'Delete user %username%.',
                 array('%username%' => $user->getUsername()),
                 array('link' => $this->generateUserRoute($id))
@@ -2715,7 +2676,7 @@ EOF;
             $user = $repository->find($id);
         }
         $form = $this->createForm(UserType::class, $user, array('translator' => $t));
-        $this->debug(
+        $this->logger->debug(
             'View user %username%.',
             array('%username%' => $user->getUsername()),
             array('link' => $this->generateUserRoute($id))
@@ -2751,7 +2712,7 @@ EOF;
             }
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
-            $this->info(
+            $this->logger->info(
                 'Save user %username%.',
                 array('%username%' => $user->getUsername()),
                 array('link' => $this->generateUserRoute($id))
@@ -2794,7 +2755,7 @@ EOF;
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->debug(
+        $this->logger->debug(
             'View users',
             array(),
             array('link' => $this->generateUrl('showUsers'))
@@ -2956,7 +2917,7 @@ EOF;
             $data = $form->getData();
             $em = $this->getDoctrine()->getManager();
             $em->persist($data);
-            $this->info(
+            $this->logger->info(
                 'Save preferences for user %username%.',
                 array('%username%' => $user->getUsername()),
                 array('link' => $this->generateUserRoute($user->getId()))
@@ -2967,7 +2928,7 @@ EOF;
             $this->setLanguage($request, $language);
             return $this->redirect($this->generateUrl('managePreferences'));
         } else {
-            $this->info(
+            $this->logger->info(
                 'Manage preferences for user %username%.',
                 array('%username%' => $user->getUsername()),
                 array('link' => $this->generateUserRoute($user->getId()))
