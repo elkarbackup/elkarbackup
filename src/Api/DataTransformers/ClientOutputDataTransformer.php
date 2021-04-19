@@ -56,8 +56,10 @@ class ClientOutputDataTransformer implements DataTransformerInterface
     private function getScriptsId ($scripts): array
     {
         $result = array();
-        foreach ($scripts as $script) {
-            $result[]=$script->getId();
+        if(null != $scripts){
+            foreach ($scripts as $script) {
+                $result[]=$script->getId();
+            }
         }
         return $result;
     }
