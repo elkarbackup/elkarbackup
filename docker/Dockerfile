@@ -34,6 +34,8 @@ COPY . /app/elkarbackup
 RUN set -ex; \
       cd /app/elkarbackup; \
       mkdir -p var/cache var/sessions var/log; \
+      # Remove leftover parameters file
+      rm -f config/parameters.yaml \
       # This doctrine migration file was provoking an error as it was trying to
       # copy a file to a hardcoded path it does not exist in this docker image.
       # We can disable it without negative consequences
