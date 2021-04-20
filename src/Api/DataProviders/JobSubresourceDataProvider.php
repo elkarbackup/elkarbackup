@@ -2,12 +2,11 @@
 namespace App\Api\DataProviders;
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGenerator;
-use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
-use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
+use ApiPlatform\Core\DataProvider\SubresourceDataProviderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Job;
 
-class JobCollectionDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
+class JobSubresourceDataProvider implements SubresourceDataProviderInterface
 {
     private $entityManager;
     private $collectionExtensions;
@@ -23,12 +22,12 @@ class JobCollectionDataProvider implements ContextAwareCollectionDataProviderInt
     {
         return Job::class === $resourceClass;
     }
-    public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
+    public function getSubresource(string $resourceClass, array $identifiers, array $context, string $operationName = null)
     {
         $repository = $this->entityManager->getRepository('App:Job');
         $query = $repository->createQueryBuilder('c')->addOrderBy('c.id', 'ASC');
         $queryNameGenerator = new QueryNameGenerator();
-        
+        $client = $context['subresource_resources'];
         foreach ($this->collectionExtensions as $extension) {
             $extension->applyToCollection($query, $queryNameGenerator, $resourceClass, $operationName);
             if ($extension instanceof QueryResultCollectionExtensionInterface && $extension->supportsResult($resourceClass,$operationName)) {

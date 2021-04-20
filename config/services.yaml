@@ -84,7 +84,7 @@ services:
     App\Api\DataProviders\ScriptCollectionDataProvider:
         arguments:
              $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
-    App\Api\DataProviders\JobCollectionDataProvider:
+    App\Api\DataProviders\JobSubresourceDataProvider:
         arguments:
              $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
     App\Api\DataProviders\UserCollectionDataProvider:
