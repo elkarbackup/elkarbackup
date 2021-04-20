@@ -8,18 +8,24 @@ use App\Entity\Client;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
+use App\Service\LoggerService;
+use App\Service\RouterService;
 
 final class ClientItemDataProvider implements ItemDataProviderInterface, RestrictedDataProviderInterface
 {
     private $entityManager;
     private $authChecker;
+    private $logger;
+    private $router;
     private $security;
     
-    public function __construct(EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker, Security $security)
+    public function __construct(EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker, LoggerService $logger, RouterService $router, Security $security)
     {
-        $this->entityManager        = $em;
-        $this->authChecker          = $authChecker;
-        $this->security             = $security;
+        $this->entityManager = $em;
+        $this->authChecker   = $authChecker;
+        $this->logger        = $logger;
+        $this->router        = $router;
+        $this->security      = $security;
     }
     
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
@@ -37,6 +43,12 @@ final class ClientItemDataProvider implements ItemDataProviderInterface, Restric
         } else {
             $query->where($query->expr()->eq('c.id', $id));
         }
+        $this->logger->debug(
+            'View client %clientid%',
+            array('%clientid%' => $id),
+            array('link' => $this->router->generateClientRoute($id))
+            );
+        $this->entityManager->flush();
         return $query->getQuery()->getOneOrNullResult();
     }
 }

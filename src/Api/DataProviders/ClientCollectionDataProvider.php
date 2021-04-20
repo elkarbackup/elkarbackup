@@ -5,24 +5,30 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGenerator;
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\Entity\Client;
+use App\Service\LoggerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
+use App\Service\RouterService;
 
 class ClientCollectionDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
     private $entityManager;
     private $authChecker;
     private $collectionExtensions;
+    private $logger;
+    private $router;
     private $security;
     /**
      * Constructor
      */
-    public function __construct(EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker, Security $security, iterable $collectionExtensions)
+    public function __construct(EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker, Security $security, LoggerService $logger, RouterService $router, iterable $collectionExtensions)
     {
         $this->entityManager        = $em;
         $this->authChecker          = $authChecker;
         $this->collectionExtensions = $collectionExtensions;
+        $this->logger               = $logger;
+        $this->router               = $router;
         $this->security             = $security;
     }
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
@@ -44,7 +50,12 @@ class ClientCollectionDataProvider implements ContextAwareCollectionDataProvider
                 return $extension->getResult($query, $resourceClass, $operationName);
             }
         }
-        
+        $this->logger->debug(
+            'View clients',
+            array(),
+            array('link' => $this->router->generateUrl('showClients'))
+            );
+        $this->entityManager->flush();
         return $query->getQuery()->getResult(); 
     }
 }
