@@ -4,20 +4,27 @@ namespace App\Api\DataProviders;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGenerator;
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Script;
+use App\Service\LoggerService;
+use App\Service\RouterService;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ScriptCollectionDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
-    private $entityManager;
     private $collectionExtensions;
+    private $entityManager;
+    private $logger;
+    private $router;
     /**
      * Constructor
      */
-    public function __construct(EntityManagerInterface $em, iterable $collectionExtensions)
+    public function __construct(EntityManagerInterface $entityManager, LoggerService $logger, RouterService $router, iterable $collectionExtensions)
     {
-        $this->entityManager        = $em;
         $this->collectionExtensions = $collectionExtensions;
+        $this->entityManager        = $entityManager;
+        $this->logger               = $logger;
+        $this->router               = $router;
+        
     }
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
     {
@@ -35,6 +42,12 @@ class ScriptCollectionDataProvider implements ContextAwareCollectionDataProvider
                 return $extension->getResult($query, $resourceClass, $operationName);
             }
         }
+        $this->logger->debug(
+            'View scripts',
+            array(),
+            array('link' => $this->router->generateUrl('showScripts'))
+            );
+        $this->entityManager->flush();
         
         return $query->getQuery()->getResult(); 
     }
