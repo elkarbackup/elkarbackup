@@ -8,14 +8,21 @@ use App\Entity\Client;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use \Exception;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Security;
+use App\Exception\PermissionException;
 
 class ClientInputDataTransformer implements DataTransformerInterface
 {
+    private $authChecker;
     private $entityManager;
+    private $security;
     
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker, Security $security)
     {
-        $this->entityManager        = $em;
+        $this->entityManager = $em;
+        $this->authChecker   = $authChecker;
+        $this->security      = $security;
     }
     /**
      * {@inheritdoc}
@@ -35,7 +42,7 @@ class ClientInputDataTransformer implements DataTransformerInterface
         $this->setPreScripts($client, $data->getPreScript());
         $this->setPostScripts($client, $data->getPostScript());
         $client->setMaxParallelJobs($data->getMaxParallelJobs());
-        $client->setOwner($this->getOwner($data->getOwner()));
+        $this->setOwner($client, $data->getOwner());
         $client->setSshArgs($data->getSshArgs());
         $client->setRsyncShortArgs($data->getRsyncShortArgs());
         $client->setRsyncLongArgs($data->getRsyncLongArgs());
@@ -52,22 +59,6 @@ class ClientInputDataTransformer implements DataTransformerInterface
         }
 
         return Client::class === $to && null !== ($context['input']['class'] ?? null);
-    }
-
-    private function getOwner($id): ?User
-    {
-        if (null == $id) {
-            return null;
-        } else {
-            $repository = $this->entityManager->getRepository('App:User');
-            $query = $repository->createQueryBuilder('c');
-            $query->where($query->expr()->eq('c.id', $id));
-            if (null == $query->getQuery()->getOneOrNullResult()) {
-                throw new InvalidArgumentException ("Incorrect owner id");
-            } else {
-                return $query->getQuery()->getOneOrNullResult();
-            }
-        }
     }
 
     private function setPreScripts($client, $preScripts): void
@@ -109,5 +100,27 @@ class ClientInputDataTransformer implements DataTransformerInterface
             }
         }
     }
+    
+    private function setOwner ($client, $owner)
+    {
+        if (null != $owner) {
+            $repository = $this->entityManager->getRepository('App:User');
+            $query = $repository->createQueryBuilder('c');
+            $query->where($query->expr()->eq('c.id', $owner));
+            if (null == $query->getQuery()->getOneOrNullResult()) {
+                throw new InvalidArgumentException ("Incorrect owner id");
+            } else {
+                if (!$this->authChecker->isGranted('ROLE_ADMIN')) {
+                    $user = $this->security->getToken()->getUser()->getId();
+                    if ($user == $owner){
+                        $client->setOwner($this->security->getToken()->getUser());
+                    } else{
+                        throw new PermissionException("Permission denied.");
+                    }
+                } else {
+                    $client->setOwner($query->getQuery()->getOneOrNullResult());
+                }
+            }
+        }
+    }
 }
-
