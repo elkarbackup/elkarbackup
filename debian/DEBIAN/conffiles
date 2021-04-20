@@ -1,0 +1,8 @@
+/etc/apache2/conf-available/elkarbackup.conf
+/etc/apache2/sites-available/elkarbackup.conf
+/etc/apache2/sites-available/elkarbackup-ssl.conf
+/etc/auto.nfs4
+/etc/cron.d/elkarbackup
+/etc/elkarbackup/parameters.yaml
+/etc/logrotate.d/elkarbackup
+/etc/sudoers.d/elkarbackup
