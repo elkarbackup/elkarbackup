@@ -11,6 +11,10 @@ class RouterService
     {
         $this->router = $router;
     }
+    public function generateUrl($route)
+    {
+        return $this->router->generate($route);
+    }
     public function generateClientRoute($id)
     {
         return $this->router->generate('editClient', array('id' => $id));
