@@ -331,6 +331,8 @@ managebackups_help: |
   <p>Aplikazio honek autofs-kin dependentzia du urruneko fitxategi sistemak muntatzeko. autofs behar den bezala konfiguratuta ez badago eremu hau ez da editagarria izango.</p>
   <h4>Karpeta</h4>
   Fitxategi sistema lokaleko path osoa edo NFS export-aren izena. Beti '/'-ekin hasi behar da.  Aplikazioak snapshot edo kopia guztiak karpeta honetan gordeko ditu. elkarbackup erabiltzaileak karpeta honetan idazteko baimenak izan beharko ditu.
+  <h4>Lan paralelo maximoak</h4>
+  Backup kokapen honetarako lan paralelo maximo kopurua.
 script_help: |
   <h4>Scritp-ei buruz</h4>
   Aplikazioak scriptak exekutatzen ditu backup erabiltzailea erabiliz. Scriptak exekutatu aurretik, aplikazioak ingurune aldagai hauek ezartzen ditu:
