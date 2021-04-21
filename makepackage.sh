@@ -48,12 +48,12 @@ mkdir -p .debian/etc/elkarbackup/
 cp .debian/usr/share/elkarbackup/config/parameters.yaml.dist .debian/etc/elkarbackup/parameters.yaml
 rm .debian/usr/share/elkarbackup/config/parameters.yaml
 ln -s /etc/elkarbackup/parameters.yaml .debian/usr/share/elkarbackup/config/parameters.yaml
-cp debian/env.local.php .debian/usr/share/elkarbackup/.env.local.php
+mv .debian/env.local.php .debian/usr/share/elkarbackup/.env.local.php
 # put copyright notices and changelog in its place
 mkdir -p .debian/usr/share/doc/elkarbackup
 # Copy changelog and copyright files
 cp -a CHANGELOG.md .debian/usr/share/doc/elkarbackup/CHANGELOG.md
-cp -a debian/changelog .debian/usr/share/doc/elkarbackup/changelog.Debian
+mv .debian/changelog .debian/usr/share/doc/elkarbackup/changelog.Debian
 cp -a debian/DEBIAN/copyright .debian/usr/share/doc/elkarbackup
 gzip -f --best .debian/usr/share/doc/elkarbackup/changelog.Debian
 # ensure directory permissions are right
