@@ -14,6 +14,12 @@ if [ ! -f /etc/elkarbackup/parameters.yaml ]; then
 	else
 		echo "Renaming /etc/elkarbackup/parameters.yml to /etc/elkarbackup/parameters.yaml ..."
 		mv /etc/elkarbackup/parameters.yml /etc/elkarbackup/parameters.yaml
+		PRE200FIXEDSECRET='fba546d6ab6abc4a01391d161772a14e093c7aa2'
+		if grep $PRE200FIXEDSECRET /etc/elkarbackup/parameters.yaml ; then
+			echo "Updating parameters.yaml with random secret instead of old fixed one..."
+			SECRET=`tr -dc A-Za-z0-9 </dev/urandom | head -c 40` 
+			sed -i s/$PRE200FIXEDSECRET/$SECRET/ /etc/elkarbackup/parameters.yaml
+		fi
 	fi
 fi
 
