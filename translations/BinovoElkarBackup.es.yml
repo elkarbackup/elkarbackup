@@ -285,9 +285,6 @@ managebackups_help: |
   <p>Esta aplicación tiene dependencias con el paquete autofs para montar el sistema de ficheros remoto. Si autofs no está correctamente configurado, este campo no será editable.</p>
   <h4>Directorio</h4>
   Path completo del sistema de ficheros local, o nombre del export NFS. Siempre debe de comenzar con '/'. La aplicación guardará aquí todos los snapshots o copias que realiza, por lo que el usuario de sistema elkarbackup debe tener permisos de escritura.
-  <h4>Almacenamiento Tahoe</h4>
-  Activa el amacenamiento secundario Tahoe.  Si lo activa, recuerde configurar Tahoe.
-  <p>Esta funcionalidad depende del paquete tahoe-lafs. Si tahoe-lafs no está instalado en su equipo la casilla aparecerá deshabilitada.</p>
 script_help: |
   <h4>Acerca de los scripts</h4>
   La aplicación ejecuta los scripts utilizando el usuario para backups. Antes de la ejecución de los scripts, la aplicación modifica el valor de estas variables de entorno.
