@@ -222,6 +222,7 @@ client_help: |
   Si no está activado no se realizarán las copias.
   <h4>Pre y post scripts</h4>
   Scripts que se ejecutarán antes y después de la ejecución de este cliente. Por ejemplo, abrir conexiones VPN, montar carpetas de red, etc.
+  Si hay más de un pre o post script, se ejecutarán en orden alfabético; los pre scripts de forma ascendente y los post script de forma descendente.
 client_job_help: |
   <h4>Tareas</h4>
   Aquí puedes editar los parámetros más importantes de una tarea. Recuerda que tras realizar los cambios debes guardarlos.
@@ -244,6 +245,7 @@ job_help: |
   Elige el tipo de mensajes que quieres recibir a fin de reducir el número de mails.
   <h4>Pre y post scripts</h4>
   Scripts que se ejecutarán antes y después de la ejecución de esta tarea.
+  Si hay más de un pre o post script, se ejecutarán en orden alfabético; los pre scripts de forma ascendente y los post script de forma descendente.
   <h4>Políticas</h4>
   Elige la política que se aplicará a esta tarea. Cada política define varios parámetros, entre ellos cuando se realizarán las copias, y cuantas copias guardarán. Si no se llena este campo, no se realizarán las copias.
   <h4>Utilizar permisos locales</h4>
@@ -285,9 +287,8 @@ managebackups_help: |
   <p>Esta aplicación tiene dependencias con el paquete autofs para montar el sistema de ficheros remoto. Si autofs no está correctamente configurado, este campo no será editable.</p>
   <h4>Directorio</h4>
   Path completo del sistema de ficheros local, o nombre del export NFS. Siempre debe de comenzar con '/'. La aplicación guardará aquí todos los snapshots o copias que realiza, por lo que el usuario de sistema elkarbackup debe tener permisos de escritura.
-  <h4>Almacenamiento Tahoe</h4>
-  Activa el amacenamiento secundario Tahoe.  Si lo activa, recuerde configurar Tahoe.
-  <p>Esta funcionalidad depende del paquete tahoe-lafs. Si tahoe-lafs no está instalado en su equipo la casilla aparecerá deshabilitada.</p>
+  <h4>Tareas paralelas máximas</h4>
+  El número máximo de tareas a ejecutar en paralelo para esta ubicación de backups.
 script_help: |
   <h4>Acerca de los scripts</h4>
   La aplicación ejecuta los scripts utilizando el usuario para backups. Antes de la ejecución de los scripts, la aplicación modifica el valor de estas variables de entorno.

@@ -4,8 +4,29 @@ namespace App\Lib;
 use App\Entity\Client;
 use App\Entity\Job;
 
+
 abstract class BaseScriptsCommand extends LoggingCommand
 {
+    /**
+     * Compare funtion for post scripts so that they get sorted by name desc
+     * @param Script $a
+     * @param Script $b
+     * @return int
+     */
+    public static function comparePostScripts($a, $b) 
+    {
+        return strcmp($b->getName(), $a->getName());
+    }
+    /**
+     * Compare funtion for pre scripts so that they get sorted by name asc
+     * @param Script $b
+     * @param Script $a
+     * @return int
+     */
+    public static function comparePreScripts($a, $b) 
+    {
+        return strcmp($a->getName(), $b->getName());
+    }
     /**
      * Prepares the model with the necessary data to run Client scripts.
      *
@@ -38,6 +59,10 @@ abstract class BaseScriptsCommand extends LoggingCommand
             $data['clientStartTime'] = $time;
             $client->setData($data);
             $scripts = $client->getPreScripts();
+            foreach ($scripts as $script) {
+                array_push($model['scriptFiles'], $script);
+            }
+            usort($model['scriptFiles'], array('App\Lib\BaseScriptsCommand', 'comparePreScripts'));
         } elseif (self::TYPE_POST == $type) {
             $data = $client->getData();
             if (null != $data) {
@@ -48,12 +73,13 @@ abstract class BaseScriptsCommand extends LoggingCommand
             
             $model['clientEndTime'] = time();
             $scripts = $client->getPostScripts();
+            foreach ($scripts as $script) {
+                array_push($model['scriptFiles'], $script);
+            }
+            usort($model['scriptFiles'], array('App\Lib\BaseScriptsCommand', 'comparePostScripts'));
             $client->setData(null);
         }
         
-        foreach ($scripts as $script) {
-            array_push($model['scriptFiles'], $script);
-        }
         return $model;
     }
     
@@ -174,6 +200,10 @@ abstract class BaseScriptsCommand extends LoggingCommand
         
         if (self::TYPE_PRE == $type){
             $scripts = $job->getPreScripts();
+            foreach ($scripts as $script) {
+                array_push($model['scriptFiles'], $script);
+            }
+            usort($model['scriptFiles'], array('App\Lib\BaseScriptsCommand', 'comparePreScripts'));
             $model['jobRunSize']    = 0;
             $model['jobStartTime']  = time();
             $model['jobEndTime']    = 0;
@@ -181,6 +211,10 @@ abstract class BaseScriptsCommand extends LoggingCommand
         } elseif (self::TYPE_POST == $type) {
             $model['status']        = $status;
             $scripts = $job->getPostScripts();
+            foreach ($scripts as $script) {
+                array_push($model['scriptFiles'], $script);
+            }
+            usort($model['scriptFiles'], array('App\Lib\BaseScriptsCommand', 'comparePostScripts'));
             
             $queue = $container
             ->get('doctrine')
@@ -202,9 +236,6 @@ abstract class BaseScriptsCommand extends LoggingCommand
             }
         }
         
-        foreach ($scripts as $script) {
-            array_push($model['scriptFiles'], $script);
-        }
         return $model;
     }
     

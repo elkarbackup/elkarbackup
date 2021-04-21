@@ -268,6 +268,7 @@ client_help: |
   Kontrol-laukia markatuta ez badago, snapshot-ak ez dira egingo.
   <h4>Pre eta post scriptak</h4>
   Bezero honen edozein lan abiatu aurretik eta bukatu ondoren exekutatuko diren scriptak. Adibidez VPN konexioak zabaldu, sareko karpetak aktibatu, eta abar.
+  Pre edo post script bat baina gehiago badago, orden alfabetikoan exekutatuko dira; pre scriptak gorakorrean eta post scriptak beherakorrean.
 client_job_help: |
   <h4>Lanak</h4>
   Lan baten parametro garrantzitsuenak hemendik editatu ditzakezu. Aldaketak egin ondoren izan gogoan gorde egin behar dituzula.
@@ -290,6 +291,7 @@ job_help: |
   Jasoko duzun mezu kopurua gutxitzeko, aukera ezazu zein motatako mezuak jaso nahi dituzun.
   <h4>Pre eta post scriptak</h4>
   Lan hau abiatu aurretik eta bukatu ondoren exekutatuko diren scriptak. Adibidez VPN konexioak zabaldu, sareko karpetak aktibatu, eta abar.
+  Pre edo post script bat baina gehiago badago, orden alfabetikoan exekutatuko dira; pre scriptak gorakorrean eta post scriptak beherakorrean.
   <h4>Politika</h4>
   Aukeratu lan honek jarraituko duen politika. Politika bakoitzak hainbat gauza zehazten ditu, besteak beste Kopiak noiz egin behar diren eta zenbat kopia mantenduko diren. Eremu hau ez bada betetzen, ez dira kopiak egingo.
   <h4>Erabili baimen lokalak</h4>
@@ -331,11 +333,10 @@ managebackups_help: |
   <p>Aplikazio honek autofs-kin dependentzia du urruneko fitxategi sistemak muntatzeko. autofs behar den bezala konfiguratuta ez badago eremu hau ez da editagarria izango.</p>
   <h4>Karpeta</h4>
   Fitxategi sistema lokaleko path osoa edo NFS export-aren izena. Beti '/'-ekin hasi behar da.  Aplikazioak snapshot edo kopia guztiak karpeta honetan gordeko ditu. elkarbackup erabiltzaileak karpeta honetan idazteko baimenak izan beharko ditu.
-  <h4>Tahoe biltegia</h4>
-  Bigarren biltegi bat aktibatzen du. Aktibatzerakoan tahoe configuratzeaz gogoratu.
-  <p>Funtzionalitate honek tahoe-lafs paketea erabiltzen du. Tahoe-lafs instalaturik ez badago laukia desaktibatuta agertuko da.</p>
+  <h4>Lan paralelo maximoak</h4>
+  Backup kokapen honetarako lan paralelo maximo kopurua.
 script_help: |
-  <h4>Scritp-ei buruz</h4>
+  <h4>Script-ei buruz</h4>
   Aplikazioak scriptak exekutatzen ditu backup erabiltzailea erabiliz. Scriptak exekutatu aurretik, aplikazioak ingurune aldagai hauek ezartzen ditu:
   <ul>
   <li>ELKARBACKUP_LEVEL:  bere balioa JOB edo CLIENT izan daiteke</li>
