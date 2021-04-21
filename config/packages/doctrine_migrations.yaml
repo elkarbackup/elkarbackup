@@ -5,3 +5,6 @@ doctrine_migrations:
         'DoctrineMigrations': '%kernel.project_dir%/migrations'
     services:
         'Doctrine\Migrations\Version\MigrationFactory': 'App\Migrations\MigrationFactoryDecorator'
+    storage:
+        table_storage:
+            table_name: 'migration_versions'
