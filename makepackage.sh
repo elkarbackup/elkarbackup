@@ -8,24 +8,23 @@
 # prepare source for build
 #
 
+if [ "$(which composer)" == "" ]
+then
+    echo "Download and install composer"
+    curl -s https://getcomposer.org/installer | php
+    ln -s composer.phar composer
+    export PATH=$PATH:$PWD
+fi
+composer install --no-interaction
+
 if [ -d .debian ]; then
     rm -fR .debian
 fi
 mkdir .debian
 cp -a debian/* .debian
-if [ ! -d .debian/usr/share/elkarbackup ]
-then
-    if [ "$FROM_SCRATCH" != "" ]
-    then
-        export PATH=$PATH:$PWD
-        mkdir -p .debian/usr/share/elkarbackup
-        composer install
-    fi
-    php bin/console cache:clear --env=prod --no-debug
-    php bin/console cache:clear --env=dev  --no-debug
-    mkdir -p .debian/usr/share/elkarbackup
-    cp -a * .debian/usr/share/elkarbackup
-fi
+mkdir -p .debian/usr/share/elkarbackup
+cp -a * .debian/usr/share/elkarbackup
+
 # remove unneeded files from copy to package
 find .debian -type f -name "*.deb"| xargs rm -rf
 find .debian/usr/share/elkarbackup/public/js/dojo-release-1.8.1 -name "*.uncompressed.js"|xargs rm -f

@@ -41,7 +41,6 @@ else
 fi
 
 cd $TMP_DIR
-./bootstrap.sh
 ./makepackage.sh
 
 DEB_FILE=`ls *deb`
