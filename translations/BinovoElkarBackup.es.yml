@@ -222,6 +222,7 @@ client_help: |
   Si no está activado no se realizarán las copias.
   <h4>Pre y post scripts</h4>
   Scripts que se ejecutarán antes y después de la ejecución de este cliente. Por ejemplo, abrir conexiones VPN, montar carpetas de red, etc.
+  Si hay más de un pre o post script, se ejecutarán en orden alfabético; los pre scripts de forma ascendente y los post script de forma descendente.
 client_job_help: |
   <h4>Tareas</h4>
   Aquí puedes editar los parámetros más importantes de una tarea. Recuerda que tras realizar los cambios debes guardarlos.
@@ -244,6 +245,7 @@ job_help: |
   Elige el tipo de mensajes que quieres recibir a fin de reducir el número de mails.
   <h4>Pre y post scripts</h4>
   Scripts que se ejecutarán antes y después de la ejecución de esta tarea.
+  Si hay más de un pre o post script, se ejecutarán en orden alfabético; los pre scripts de forma ascendente y los post script de forma descendente.
   <h4>Políticas</h4>
   Elige la política que se aplicará a esta tarea. Cada política define varios parámetros, entre ellos cuando se realizarán las copias, y cuantas copias guardarán. Si no se llena este campo, no se realizarán las copias.
   <h4>Utilizar permisos locales</h4>
