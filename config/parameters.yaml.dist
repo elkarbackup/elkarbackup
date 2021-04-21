@@ -11,7 +11,7 @@ parameters:
     mailer_user: null
     mailer_password: null
     locale: en
-    secret: fba546d6ab6abc4a01391d161772a14e093c7aa2
+    secret: ThisTokenIsNotSoSecretChangeItElkarbackup
     database_path: null
     upload_dir: /var/spool/elkarbackup/uploads
     public_key: /var/lib/elkarbackup/.ssh/id_rsa.pub

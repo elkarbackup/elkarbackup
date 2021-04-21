@@ -6,8 +6,11 @@ set -e
 
 if [ ! -f /etc/elkarbackup/parameters.yaml ]; then
 	if [ ! -f /etc/elkarbackup/parameters.yml ]; then
-	    echo "parameters.yaml not found: creating it from template..."
+	    echo "parameters.yaml not found: creating from template..."
 	    cp /usr/share/elkarbackup/config/parameters.yaml.dist /etc/elkarbackup/parameters.yaml
+	    echo "Generating random Symfony secret..."
+		SECRET=`tr -dc A-Za-z0-9 </dev/urandom | head -c 40`
+		sed -i s/ThisTokenIsNotSoSecretChangeItElkarbackup/$SECRET/ /etc/elkarbackup/parameters.yaml
 	else
 		echo "Renaming /etc/elkarbackup/parameters.yml to /etc/elkarbackup/parameters.yaml ..."
 		mv /etc/elkarbackup/parameters.yml /etc/elkarbackup/parameters.yaml
