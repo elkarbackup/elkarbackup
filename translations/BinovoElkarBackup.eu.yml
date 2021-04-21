@@ -334,7 +334,7 @@ managebackups_help: |
   <h4>Lan paralelo maximoak</h4>
   Backup kokapen honetarako lan paralelo maximo kopurua.
 script_help: |
-  <h4>Scritp-ei buruz</h4>
+  <h4>Script-ei buruz</h4>
   Aplikazioak scriptak exekutatzen ditu backup erabiltzailea erabiliz. Scriptak exekutatu aurretik, aplikazioak ingurune aldagai hauek ezartzen ditu:
   <ul>
   <li>ELKARBACKUP_LEVEL:  bere balioa JOB edo CLIENT izan daiteke</li>
