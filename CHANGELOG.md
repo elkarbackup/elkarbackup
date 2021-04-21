@@ -1,6 +1,15 @@
-## 2.0.0~alpha1 (2021/03/16)
+## 2.0.0~rc1 (2021/04/21)
+Security fixes:
+  * Generate new Symfony secret on install or on upgrade if it was left unchanged (closes #481)
+
+Enhacements:
   * Remove Tahoe integration (closes #458)
   * Upgrade to Symfony 4.4 LTS (closes #426)
+  * Pre/post script execution order changed to be alphabetic, pre ascending and post descending (closes #466)
+  * Debian 11 Bullseye support (requires Debian 10 rsnaphost package installation, closes #456)
+  
+Bugfixes:
+  * Fix missing php-xml dependency in package (closes #473)
 
 ## 1.4.0~rc2 (2021/02/24)
   * Fix critical bug in elkarbackup:tick that fails running client pre-scripts, aborting all backup jobs.
