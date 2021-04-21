@@ -3,13 +3,14 @@ namespace App\Api\Dto;
 
 class ScriptOutput
 {
-    protected $description;
-    protected $id;
-    protected $name;
-    protected $isClientPre;
-    protected $isJobPre;
-    protected $isClientPost;
-    protected $isJobPost;
+    private $description;
+    private $id;
+    private $isClientPost;
+    private $isClientPre;
+    private $isJobPost;
+    private $isJobPre;
+    private $name;
+
     /**
      * @return string
      */
@@ -19,7 +20,55 @@ class ScriptOutput
     }
 
     /**
-     * @param string $description
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsClientPost()
+    {
+        return $this->isClientPost;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsClientPre()
+    {
+        return $this->isClientPre;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsJobPost()
+    {
+        return $this->isJobPost;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsJobPre()
+    {
+        return $this->isJobPre;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param boolean $description
      */
     public function setDescription($description)
     {
@@ -27,11 +76,43 @@ class ScriptOutput
     }
 
     /**
-     * @return string
+     * @param integer $id
      */
-    public function getName()
+    public function setId($id)
     {
-        return $this->name;
+        $this->id = $id;
+    }
+
+    /**
+     * @param boolean $isClientPost
+     */
+    public function setIsClientPost($isClientPost)
+    {
+        $this->isClientPost = $isClientPost;
+    }
+
+    /**
+     * @param boolean $isClientPre
+     */
+    public function setIsClientPre($isClientPre)
+    {
+        $this->isClientPre = $isClientPre;
+    }
+
+    /**
+     * @param boolean $isJobPost
+     */
+    public function setIsJobPost($isJobPost)
+    {
+        $this->isJobPost = $isJobPost;
+    }
+
+    /**
+     * @param boolean $isJobPre
+     */
+    public function setIsJobPre($isJobPre)
+    {
+        $this->isJobPre = $isJobPre;
     }
 
     /**
@@ -41,87 +122,6 @@ class ScriptOutput
     {
         $this->name = $name;
     }
-
-    /**
-     * @return mixed
-     */
-    public function getIsClientPre()
-    {
-        return $this->isClientPre;
-    }
-
-    /**
-     * @param mixed $isClientPre
-     */
-    public function setIsClientPre($isClientPre)
-    {
-        $this->isClientPre = $isClientPre;
-    }
-
-    /**
-     * @param mixed $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIsJobPre()
-    {
-        return $this->isJobPre;
-    }
-
-    /**
-     * @param mixed $isJobPre
-     */
-    public function setIsJobPre($isJobPre)
-    {
-        $this->isJobPre = $isJobPre;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIsClientPost()
-    {
-        return $this->isClientPost;
-    }
-
-    /**
-     * @param mixed $isClientPost
-     */
-    public function setIsClientPost($isClientPost)
-    {
-        $this->isClientPost = $isClientPost;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIsJobPost()
-    {
-        return $this->isJobPost;
-    }
-
-    /**
-     * @param mixed $isJobPost
-     */
-    public function setIsJobPost($isJobPost)
-    {
-        $this->isJobPost = $isJobPost;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
 
 }
 

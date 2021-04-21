@@ -3,42 +3,11 @@ namespace App\Api\Dto;
 
 class UserOutput
 {
-    private $id;
-    private $username;
     private $email;
+    private $id;
     private $isActive;
+    private $username;
     private $roles;
-    /**
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param integer $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    /**
-     * @param string $username
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-    }
 
     /**
      * @return string
@@ -49,11 +18,11 @@ class UserOutput
     }
 
     /**
-     * @param string $email
+     * @return integer
      */
-    public function setEmail($email)
+    public function getId()
     {
-        $this->email = $email;
+        return $this->id;
     }
 
     /**
@@ -65,11 +34,11 @@ class UserOutput
     }
 
     /**
-     * @param boolean $isActive
+     * @return string
      */
-    public function setIsActive($isActive)
+    public function getUsername()
     {
-        $this->isActive = $isActive;
+        return $this->username;
     }
 
     /**
@@ -78,6 +47,38 @@ class UserOutput
     public function getRoles()
     {
         return $this->roles;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * @param integer $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @param boolean $isActive
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     * @param string $username
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
     }
 
     /**

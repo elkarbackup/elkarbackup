@@ -11,25 +11,19 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class JobItemDataProvider implements ItemDataProviderInterface, RestrictedDataProviderInterface
 {
-    private $entityManager;
     private $authChecker;
+    private $entityManager;
     private $logger;
     private $router;
 
-    
     public function __construct(EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker, LoggerService $logger, RouterService $router)
     {
-        $this->entityManager = $em;
         $this->authChecker   = $authChecker;
+        $this->entityManager = $em;
         $this->logger        = $logger;
         $this->router        = $router;
     }
-    
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
-    {
-        return Job::class === $resourceClass;
-    }
-    
+
     public function getItem(string $resourceClass, $id, string $operationName = null, array $context = []): ?Job
     {
         $repository = $this->entityManager->getRepository('App:Job');
@@ -43,6 +37,11 @@ class JobItemDataProvider implements ItemDataProviderInterface, RestrictedDataPr
             );
         $this->entityManager->flush();
         return $query->getQuery()->getOneOrNullResult();
+    }
+
+    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    {
+        return Job::class === $resourceClass;
     }
 }
 

@@ -26,10 +26,7 @@ class UserCollectionDataProvider implements ContextAwareCollectionDataProviderIn
         $this->router               = $router;
         
     }
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
-    {
-        return User::class === $resourceClass;
-    }
+
     public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
     {
         $repository = $this->entityManager->getRepository('App:User');
@@ -50,6 +47,11 @@ class UserCollectionDataProvider implements ContextAwareCollectionDataProviderIn
         $this->entityManager->flush();
         
         return $query->getQuery()->getResult();
+    }
+
+    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    {
+        return User::class === $resourceClass;
     }
 }
 

@@ -3,38 +3,37 @@ namespace App\Api\Dto;
 
 class JobInput
 {
-    protected $client;
-    protected $description;
-    protected $id;
-    protected $isActive = true;
-    protected $name;
-    protected $notificationsEmail;
-    protected $notificationsTo = ["owner"];
-    protected $minNotificationLevel = 400;
-    protected $include;
-    protected $exclude;
-    protected $policy = 1;
-    protected $postScripts = [];
-    protected $preScripts = [];
-    protected $path;
-    protected $useLocalPermissions = true;
-    protected $token = null;
-    protected $backupLocation = 1;
-    
+    private $backupLocation = 1;
+    private $client;
+    private $description;
+    private $exclude;
+    private $id;
+    private $include;
+    private $isActive = true;
+    private $minNotificationLevel = 400;
+    private $name;
+    private $notificationsEmail;
+    private $notificationsTo = ["owner"];
+    private $path;
+    private $policy = 1;
+    private $postScripts = [];
+    private $preScripts = [];
+    private $token = null;
+    private $useLocalPermissions = true;
+    /**
+     * @return integer
+     */
+    public function getBackupLocation()
+    {
+        return $this->backupLocation;
+    }
+
     /**
      * @return integer
      */
     public function getClient()
     {
         return $this->client;
-    }
-
-    /**
-     * @param integer $client
-     */
-    public function setClient($client)
-    {
-        $this->client = $client;
     }
 
     /**
@@ -46,91 +45,19 @@ class JobInput
     }
 
     /**
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
-    }
-
-    /**
-     * @param boolean $isActive
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-    }
-
-    /**
      * @return string
      */
-    public function getName()
+    public function getExclude()
     {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNotificationsEmail()
-    {
-        return $this->notificationsEmail;
-    }
-
-    /**
-     * @param string $notificationsEmail
-     */
-    public function setNotificationsEmail($notificationsEmail)
-    {
-        $this->notificationsEmail = $notificationsEmail;
-    }
-
-    /**
-     * @return array
-     */
-    public function getNotificationsTo()
-    {
-        return $this->notificationsTo;
-    }
-
-    /**
-     * @param array $notificationsTo
-     */
-    public function setNotificationsTo($notificationsTo)
-    {
-        $this->notificationsTo = $notificationsTo;
+        return $this->exclude;
     }
 
     /**
      * @return integer
      */
-    public function getMinNotificationLevel()
+    public function getId()
     {
-        return $this->minNotificationLevel;
-    }
-
-    /**
-     * @param integer $minNotificationLevel
-     */
-    public function setMinNotificationLevel($minNotificationLevel)
-    {
-        $this->minNotificationLevel = $minNotificationLevel;
+        return $this->id;
     }
 
     /**
@@ -142,75 +69,43 @@ class JobInput
     }
 
     /**
-     * @param string $include
+     * @return boolean
      */
-    public function setInclude($include)
+    public function getIsActive()
     {
-        $this->include = $include;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExclude()
-    {
-        return $this->exclude;
-    }
-
-    /**
-     * @param string $exclude
-     */
-    public function setExclude($exclude)
-    {
-        $this->exclude = $exclude;
+        return $this->isActive;
     }
 
     /**
      * @return integer
      */
-    public function getPolicy()
+    public function getMinNotificationLevel()
     {
-        return $this->policy;
+        return $this->minNotificationLevel;
     }
 
     /**
-     * @param integer $policy
+     * @return string
      */
-    public function setPolicy($policy)
+    public function getName()
     {
-        $this->policy = $policy;
+        return $this->name;
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getPostScripts()
+    public function getNotificationsEmail()
     {
-        return $this->postScripts;
+        return $this->notificationsEmail;
     }
 
     /**
-     * @param array $postScripts
+     * @return string 
      */
-    public function setPostScripts($postScripts)
+    public function getNotificationsTo()
     {
-        $this->postScripts = $postScripts;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPreScripts()
-    {
-        return $this->preScripts;
-    }
-
-    /**
-     * @param array $preScripts
-     */
-    public function setPreScripts($preScripts)
-    {
-        $this->preScripts = $preScripts;
+        return $this->notificationsTo;
     }
 
     /**
@@ -222,27 +117,27 @@ class JobInput
     }
 
     /**
-     * @param string $path
+     * @return integer
      */
-    public function setPath($path)
+    public function getPolicy()
     {
-        $this->path = $path;
+        return $this->policy;
     }
 
     /**
-     * @return boolean
+     * @return array
      */
-    public function getUseLocalPermissions()
+    public function getPostScripts()
     {
-        return $this->useLocalPermissions;
+        return $this->postScripts;
     }
 
     /**
-     * @param boolean $useLocalPermissions
+     * @return array
      */
-    public function setUseLocalPermissions($useLocalPermissions)
+    public function getPreScripts()
     {
-        $this->useLocalPermissions = $useLocalPermissions;
+        return $this->preScripts;
     }
 
     /**
@@ -254,19 +149,11 @@ class JobInput
     }
 
     /**
-     * @param string $token
+     * @return boolean
      */
-    public function setToken($token)
+    public function getUseLocalPermissions()
     {
-        $this->token = $token;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getBackupLocation()
-    {
-        return $this->backupLocation;
+        return $this->useLocalPermissions;
     }
 
     /**
@@ -278,11 +165,123 @@ class JobInput
     }
 
     /**
-     * @return integer
+     * @param integer $client
      */
-    public function getId()
+    public function setClient($client)
     {
-        return $this->id;
+        $this->client = $client;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @param string $exclude
+     */
+    public function setExclude($exclude)
+    {
+        $this->exclude = $exclude;
+    }
+
+    /**
+     * @param string $include
+     */
+    public function setInclude($include)
+    {
+        $this->include = $include;
+    }
+
+    /**
+     * @param boolean $isActive
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     * @param integer $minNotificationLevel
+     */
+    public function setMinNotificationLevel($minNotificationLevel)
+    {
+        $this->minNotificationLevel = $minNotificationLevel;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @param string $notificationsEmail
+     */
+    public function setNotificationsEmail($notificationsEmail)
+    {
+        $this->notificationsEmail = $notificationsEmail;
+    }
+
+    /**
+     * @param array  $notificationsTo
+     */
+    public function setNotificationsTo($notificationsTo)
+    {
+        $this->notificationsTo = $notificationsTo;
+    }
+
+    /**
+     * @param string $path
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
+
+    /**
+     * @param integer $policy
+     */
+    public function setPolicy($policy)
+    {
+        $this->policy = $policy;
+    }
+
+    /**
+     * @param array: $postScripts
+     */
+    public function setPostScripts($postScripts)
+    {
+        $this->postScripts = $postScripts;
+    }
+
+    /**
+     * @param array: $preScripts
+     */
+    public function setPreScripts($preScripts)
+    {
+        $this->preScripts = $preScripts;
+    }
+
+    /**
+     * @param string $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * @param boolean $useLocalPermissions
+     */
+    public function setUseLocalPermissions($useLocalPermissions)
+    {
+        $this->useLocalPermissions = $useLocalPermissions;
     }
 
 }

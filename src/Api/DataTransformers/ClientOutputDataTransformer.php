@@ -15,6 +15,35 @@ class ClientOutputDataTransformer implements DataTransformerInterface
     {
         $this->entityManager        = $em;
     }
+
+    private function getOwnerId($data): ?int
+    {
+        if (null != $data->getOwner())
+        {
+            return $data->getOwner()->getId();
+        }
+        return $data->getOwner();
+    }
+
+    private function getScriptsId ($scripts): array
+    {
+        $result = array();
+        if(null != $scripts){
+            foreach ($scripts as $script) {
+                $result[]=$script->getId();
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsTransformation($data, string $to, array $context = []): bool
+    {
+        return ClientOutput::class === $to && $data instanceof Client;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -35,33 +64,6 @@ class ClientOutputDataTransformer implements DataTransformerInterface
         $output->setRsyncShortArgs($data->getRsyncShortArgs());
         $output->setRsyncLongArgs($data->getRsyncLongArgs());
         return $output;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsTransformation($data, string $to, array $context = []): bool
-    {
-        return ClientOutput::class === $to && $data instanceof Client;
-    }
-
-    private function getOwnerId($data): ?int
-    {
-        if (null != $data->getOwner())
-        {
-            return $data->getOwner()->getId();
-        }
-        return $data->getOwner();
-    }
-    private function getScriptsId ($scripts): array
-    {
-        $result = array();
-        if(null != $scripts){
-            foreach ($scripts as $script) {
-                $result[]=$script->getId();
-            }
-        }
-        return $result;
     }
 }
 

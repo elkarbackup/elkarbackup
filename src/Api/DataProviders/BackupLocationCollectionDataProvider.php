@@ -26,10 +26,7 @@ class BackupLocationCollectionDataProvider implements ContextAwareCollectionData
         $this->router               = $router;
         
     }
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
-    {
-        return BackupLocation::class === $resourceClass;
-    }
+    
     public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
     {
         $repository = $this->entityManager->getRepository('App:BackupLocation');
@@ -49,6 +46,11 @@ class BackupLocationCollectionDataProvider implements ContextAwareCollectionData
             );
         $this->entityManager->flush();
         return $query->getQuery()->getResult();
+    }
+    
+    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    {
+        return BackupLocation::class === $resourceClass;
     }
 }
 

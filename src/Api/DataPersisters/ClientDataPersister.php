@@ -5,9 +5,9 @@ use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use ApiPlatform\Core\Exception\InvalidArgumentException;
 use App\Entity\Client;
 use App\Exception\APIException;
+use App\Exception\PermissionException;
 use App\Service\ClientService;
 use \Exception;
-use App\Exception\PermissionException;
 
 class ClientDataPersister implements ContextAwareDataPersisterInterface
 {
@@ -29,11 +29,6 @@ class ClientDataPersister implements ContextAwareDataPersisterInterface
         
     }
     
-    public function supports($data, array $context = []): bool
-    {
-        return $data instanceof Client;
-    }
-    
     public function remove($data, array $context = [])
     {
         try{
@@ -44,5 +39,10 @@ class ClientDataPersister implements ContextAwareDataPersisterInterface
             throw new APIException($e->getMessage());
         }
         
+    }
+    
+    public function supports($data, array $context = []): bool
+    {
+        return $data instanceof Client;
     }
 }

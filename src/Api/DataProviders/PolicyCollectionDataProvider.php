@@ -25,10 +25,7 @@ class PolicyCollectionDataProvider implements ContextAwareCollectionDataProvider
         $this->logger               = $logger;
         $this->router               = $router;
     }
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
-    {
-        return Policy::class === $resourceClass;
-    }
+
     public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
     {
         $repository = $this->entityManager->getRepository('App:Policy');
@@ -49,6 +46,11 @@ class PolicyCollectionDataProvider implements ContextAwareCollectionDataProvider
         $this->entityManager->flush();
         
         return $query->getQuery()->getResult();
+    }
+
+    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    {
+        return Policy::class === $resourceClass;
     }
 }
 

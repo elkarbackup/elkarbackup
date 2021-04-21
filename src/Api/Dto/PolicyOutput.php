@@ -6,21 +6,6 @@ class PolicyOutput
     private $id;
     private $description;
     private $name;
-    /**
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param integer $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
 
     /**
      * @return string
@@ -31,11 +16,11 @@ class PolicyOutput
     }
 
     /**
-     * @param string $description
+     * @return integer
      */
-    public function setDescription($description)
+    public function getId()
     {
-        $this->description = $description;
+        return $this->id;
     }
 
     /**
@@ -47,6 +32,14 @@ class PolicyOutput
     }
 
     /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
      * @param string $name
      */
     public function setName($name)
@@ -54,6 +47,5 @@ class PolicyOutput
         $this->name = $name;
     }
 
-    
 }
 

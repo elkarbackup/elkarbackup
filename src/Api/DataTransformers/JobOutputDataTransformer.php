@@ -9,12 +9,31 @@ use Doctrine\ORM\EntityManagerInterface;
 class JobOutputDataTransformer implements DataTransformerInterface
 {
     private $entityManager;
-    
+
     public function __construct(EntityManagerInterface $em)
     {
         $this->entityManager        = $em;
     }
-    
+
+    private function getScriptsId ($scripts): array
+    {
+        $result = array();
+        if(null != $scripts){
+            foreach ($scripts as $script) {
+                $result[]=$script->getId();
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsTransformation($data, string $to, array $context = []): bool
+    {
+        return JobOutput::class === $to && $data instanceof Job;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -39,25 +58,6 @@ class JobOutputDataTransformer implements DataTransformerInterface
         $output->setToken($data->getToken());
         $output->setBackupLocation($data->getBackupLocation()->getId());
         return $output;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsTransformation($data, string $to, array $context = []): bool
-    {
-        return JobOutput::class === $to && $data instanceof Job;
-    }
-
-    private function getScriptsId ($scripts): array
-    {
-        $result = array();
-        if(null != $scripts){
-            foreach ($scripts as $script) {
-                $result[]=$script->getId();
-            }
-        }
-        return $result;
     }
 }
 

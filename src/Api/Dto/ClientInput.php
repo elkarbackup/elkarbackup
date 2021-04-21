@@ -5,66 +5,19 @@ use Symfony\Component\Cache\Adapter\NullAdapter;
 
 class ClientInput
 {
-    protected $id;
-    protected $name;
-    protected $url = null;
-    protected $quota = -1;
-    protected $description;
-    protected $isActive = true;
-    protected $preScript= [];
-    protected $postScript = [];
-    protected $maxParallelJobs = 1;
-    protected $owner;
-    protected $sshArgs = null;
-    protected $rsyncShortArgs = null;
-    protected $rsyncLongArgs=null;
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     * @param string $url
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getQuota()
-    {
-        return $this->quota;
-    }
-
-    /**
-     * @param integer $quota
-     */
-    public function setQuota($quota)
-    {
-        $this->quota = $quota;
-    }
+    private $description;
+    private $id;
+    private $isActive = true;
+    private $maxParallelJobs = 1;
+    private $name;
+    private $owner;
+    private $postScript = [];
+    private $preScript= [];
+    private $quota = -1;
+    private $rsyncLongArgs=null;
+    private $rsyncShortArgs = null;
+    private $sshArgs = null;
+    private $url = null;
 
     /**
      * @return string
@@ -75,11 +28,11 @@ class ClientInput
     }
 
     /**
-     * @param string $description
+     * @return integer
      */
-    public function setDescription($description)
+    public function getId()
     {
-        $this->description = $description;
+        return $this->id;
     }
 
     /**
@@ -91,46 +44,6 @@ class ClientInput
     }
 
     /**
-     * @param boolean $isActive
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPreScript()
-    {
-        return $this->preScript;
-    }
-
-    /**
-     * @param array $preScript
-     */
-    public function setPreScript($preScript)
-    {
-        $this->preScript = $preScript;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPostScript()
-    {
-        return $this->postScript;
-    }
-
-    /**
-     * @param array $postScript
-     */
-    public function setPostScript($postScript)
-    {
-        $this->postScript = $postScript;
-    }
-
-    /**
      * @return integer
      */
     public function getMaxParallelJobs()
@@ -139,11 +52,11 @@ class ClientInput
     }
 
     /**
-     * @param integer $maxParallelJobs
+     * @return string
      */
-    public function setMaxParallelJobs($maxParallelJobs)
+    public function getName()
     {
-        $this->maxParallelJobs = $maxParallelJobs;
+        return $this->name;
     }
 
     /**
@@ -155,43 +68,27 @@ class ClientInput
     }
 
     /**
-     * @param integer $owner
+     * @return array
      */
-    public function setOwner($owner)
+    public function getPostScript()
     {
-        $this->owner = $owner;
+        return $this->postScript;
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getSshArgs()
+    public function getPreScript()
     {
-        return $this->sshArgs;
+        return $this->preScript;
     }
 
     /**
-     * @param string $sshArgs
+     * @return integer
      */
-    public function setSshArgs($sshArgs)
+    public function getQuota()
     {
-        $this->sshArgs = $sshArgs;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRsyncShortArgs()
-    {
-        return $this->rsyncShortArgs;
-    }
-
-    /**
-     * @param string $rsyncShortArgs
-     */
-    public function setRsyncShortArgs($rsyncShortArgs)
-    {
-        $this->rsyncShortArgs = $rsyncShortArgs;
+        return $this->quota;
     }
 
     /**
@@ -203,6 +100,93 @@ class ClientInput
     }
 
     /**
+     * @return string
+     */
+    public function getRsyncShortArgs()
+    {
+        return $this->rsyncShortArgs;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSshArgs()
+    {
+        return $this->sshArgs;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @param boolean $isActive
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     * @param integer $maxParallelJobs
+     */
+    public function setMaxParallelJobs($maxParallelJobs)
+    {
+        $this->maxParallelJobs = $maxParallelJobs;
+    }
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @param integer $owner
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+    }
+
+    /**
+     * @param array $postScript
+     */
+    public function setPostScript($postScript)
+    {
+        $this->postScript = $postScript;
+    }
+
+    /**
+     * @param array $preScript
+     */
+    public function setPreScript($preScript)
+    {
+        $this->preScript = $preScript;
+    }
+
+    /**
+     * @param integer $quota
+     */
+    public function setQuota($quota)
+    {
+        $this->quota = $quota;
+    }
+
+    /**
      * @param string $rsyncLongArgs
      */
     public function setRsyncLongArgs($rsyncLongArgs)
@@ -211,12 +195,27 @@ class ClientInput
     }
 
     /**
-     * @return integer
+     * @param string $rsyncShortArgs
      */
-    public function getId()
+    public function setRsyncShortArgs($rsyncShortArgs)
     {
-        return $this->id;
+        $this->rsyncShortArgs = $rsyncShortArgs;
     }
 
+    /**
+     * @param string $sshArgs
+     */
+    public function setSshArgs($sshArgs)
+    {
+        $this->sshArgs = $sshArgs;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+    }
 }
 

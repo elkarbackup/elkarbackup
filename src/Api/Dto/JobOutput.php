@@ -3,30 +3,31 @@ namespace App\Api\Dto;
 
 class JobOutput
 {
-    protected $client;
-    protected $description;
-    protected $id;
-    protected $isActive = true;
-    protected $name;
-    protected $notificationsEmail;
-    protected $notificationsTo = '["owner"]';
-    protected $minNotificationLevel;
-    protected $include;
-    protected $exclude;
-    protected $policy;
-    protected $postScripts;
-    protected $preScripts;
-    protected $path;
-    protected $diskUsage = 0;
-    protected $useLocalPermissions = true;
-    protected $token = null;
-    protected $backupLocation;
+    private $backupLocation;
+    private $client;
+    private $description;
+    private $diskUsage = 0;
+    private $exclude;
+    private $id;
+    private $include;
+    private $isActive = true;
+    private $minNotificationLevel;
+    private $name;
+    private $notificationsEmail;
+    private $notificationsTo = '["owner"]';
+    private $policy;
+    private $postScripts;
+    private $preScripts;
+    private $path;
+    private $token = null;
+    private $useLocalPermissions = true;
+
     /**
-     * @param integer $id
+     * @return integer
      */
-    public function setId($id)
+    public function getBackupLocation()
     {
-        $this->id = $id;
+        return $this->backupLocation;
     }
 
     /**
@@ -38,203 +39,11 @@ class JobOutput
     }
 
     /**
-     * @param integer $client
-     */
-    public function setClient($client)
-    {
-        $this->client = $client;
-    }
-
-    /**
      * @return string
      */
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
-    }
-
-    /**
-     * @param boolean $isActive
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNotificationsEmail()
-    {
-        return $this->notificationsEmail;
-    }
-
-    /**
-     * @param string $notificationsEmail
-     */
-    public function setNotificationsEmail($notificationsEmail)
-    {
-        $this->notificationsEmail = $notificationsEmail;
-    }
-
-    /**
-     * @return array
-     */
-    public function getNotificationsTo()
-    {
-        return $this->notificationsTo;
-    }
-
-    /**
-     * @param array $notificationsTo
-     */
-    public function setNotificationsTo($notificationsTo)
-    {
-        $this->notificationsTo = $notificationsTo;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getMinNotificationLevel()
-    {
-        return $this->minNotificationLevel;
-    }
-
-    /**
-     * @param integer $minNotificationLevel
-     */
-    public function setMinNotificationLevel($minNotificationLevel)
-    {
-        $this->minNotificationLevel = $minNotificationLevel;
-    }
-
-    /**
-     * @return string
-     */
-    public function getInclude()
-    {
-        return $this->include;
-    }
-
-    /**
-     * @param string $include
-     */
-    public function setInclude($include)
-    {
-        $this->include = $include;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExclude()
-    {
-        return $this->exclude;
-    }
-
-    /**
-     * @param string $exclude
-     */
-    public function setExclude($exclude)
-    {
-        $this->exclude = $exclude;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getPolicy()
-    {
-        return $this->policy;
-    }
-
-    /**
-     * @param integer $policy
-     */
-    public function setPolicy($policy)
-    {
-        $this->policy = $policy;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPostScripts()
-    {
-        return $this->postScripts;
-    }
-
-    /**
-     * @param array $postScripts
-     */
-    public function setPostScripts($postScripts)
-    {
-        $this->postScripts = $postScripts;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPreScripts()
-    {
-        return $this->preScripts;
-    }
-
-    /**
-     * @param array $preScripts
-     */
-    public function setPreScripts($preScripts)
-    {
-        $this->preScripts = $preScripts;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPath()
-    {
-        return $this->path;
-    }
-
-    /**
-     * @param string $path
-     */
-    public function setPath($path)
-    {
-        $this->path = $path;
     }
 
     /**
@@ -246,27 +55,99 @@ class JobOutput
     }
 
     /**
-     * @param integer $diskUsage
+     * @return string
      */
-    public function setDiskUsage($diskUsage)
+    public function getExclude()
     {
-        $this->diskUsage = $diskUsage;
+        return $this->exclude;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInclude()
+    {
+        return $this->include;
     }
 
     /**
      * @return boolean
      */
-    public function getUseLocalPermissions()
+    public function getIsActive()
     {
-        return $this->useLocalPermissions;
+        return $this->isActive;
     }
 
     /**
-     * @param boolean $useLocalPermissions
+     * @return integer
      */
-    public function setUseLocalPermissions($useLocalPermissions)
+    public function getMinNotificationLevel()
     {
-        $this->useLocalPermissions = $useLocalPermissions;
+        return $this->minNotificationLevel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNotificationsEmail()
+    {
+        return $this->notificationsEmail;
+    }
+
+    /**
+     * @return array
+     */
+    public function getNotificationsTo()
+    {
+        return $this->notificationsTo;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getPolicy()
+    {
+        return $this->policy;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPostScripts()
+    {
+        return $this->postScripts;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPreScripts()
+    {
+        return $this->preScripts;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
     }
 
     /**
@@ -278,19 +159,11 @@ class JobOutput
     }
 
     /**
-     * @param string $token
+     * @return boolean
      */
-    public function setToken($token)
+    public function getUseLocalPermissions()
     {
-        $this->token = $token;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getBackupLocation()
-    {
-        return $this->backupLocation;
+        return $this->useLocalPermissions;
     }
 
     /**
@@ -302,11 +175,139 @@ class JobOutput
     }
 
     /**
-     * @return integer
+     * @param integer $client
      */
-    public function getId()
+    public function setClient($client)
     {
-        return $this->id;
+        $this->client = $client;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @param integer $diskUsage
+     */
+    public function setDiskUsage($diskUsage)
+    {
+        $this->diskUsage = $diskUsage;
+    }
+
+    /**
+     * @param string $exclude
+     */
+    public function setExclude($exclude)
+    {
+        $this->exclude = $exclude;
+    }
+
+    /**
+     * @param integer $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @param string $include
+     */
+    public function setInclude($include)
+    {
+        $this->include = $include;
+    }
+
+    /**
+     * @param boolean $isActive
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     * @param integer $minNotificationLevel
+     */
+    public function setMinNotificationLevel($minNotificationLevel)
+    {
+        $this->minNotificationLevel = $minNotificationLevel;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @param string $notificationsEmail
+     */
+    public function setNotificationsEmail($notificationsEmail)
+    {
+        $this->notificationsEmail = $notificationsEmail;
+    }
+
+    /**
+     * @param array $notificationsTo
+     */
+    public function setNotificationsTo($notificationsTo)
+    {
+        $this->notificationsTo = $notificationsTo;
+    }
+
+    /**
+     * @param integer $policy
+     */
+    public function setPolicy($policy)
+    {
+        $this->policy = $policy;
+    }
+
+    /**
+     * @param array $postScripts
+     */
+    public function setPostScripts($postScripts)
+    {
+        $this->postScripts = $postScripts;
+    }
+
+    /**
+     * @param array $preScripts
+     */
+    public function setPreScripts($preScripts)
+    {
+        $this->preScripts = $preScripts;
+    }
+
+    /**
+     * @param string $path
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
+
+    /**
+     * @param string $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * @param boolean $useLocalPermissions
+     */
+    public function setUseLocalPermissions($useLocalPermissions)
+    {
+        $this->useLocalPermissions = $useLocalPermissions;
     }
 
 }

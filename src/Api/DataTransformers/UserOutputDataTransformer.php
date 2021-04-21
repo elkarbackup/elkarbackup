@@ -14,7 +14,15 @@ class UserOutputDataTransformer implements DataTransformerInterface
     {
         $this->entityManager        = $em;
     }
-    
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsTransformation($data, string $to, array $context = []): bool
+    {
+        return UserOutput::class === $to && $data instanceof User;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -27,14 +35,6 @@ class UserOutputDataTransformer implements DataTransformerInterface
         $output->setIsActive($data->getIsActive());
         $output->setRoles($data->getRoles());
         return $output;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsTransformation($data, string $to, array $context = []): bool
-    {
-        return UserOutput::class === $to && $data instanceof User;
     }
 }
 

@@ -15,6 +15,123 @@ class JobInputDataTransformer implements DataTransformerInterface
     {
         $this->entityManager        = $em;
     }
+
+    private function setClient (Job $job, $clientId) {
+        $repository = $this->entityManager->getRepository('App:Client');
+        $query = $repository->createQueryBuilder('c');
+        $query->where($query->expr()->eq('c.id', $clientId));
+        if (null == $query->getQuery()->getOneOrNullResult()) {
+            throw new InvalidArgumentException ("Incorrect client id");
+        } else {
+            $job->setClient($query->getQuery()->getOneOrNullResult());
+        }
+    }
+
+    private function setMinNotificationLevel (Job $job, $minNotificationLevel)
+    {
+        if (0 == $minNotificationLevel || 200 == $minNotificationLevel || 300 == $minNotificationLevel || 
+            400 == $minNotificationLevel || 1000 == $minNotificationLevel) {
+            $job->setMinNotificationLevel($minNotificationLevel);
+        } else {
+            throw new InvalidArgumentException("Incorrect notification level (0, 200, 300, 400, 1000)");
+        }
+    }
+
+    private function setPolicy (Job $job, $policyId)
+    {
+        $repository = $this->entityManager->getRepository('App:Policy');
+        $query = $repository->createQueryBuilder('c');
+        $query->where($query->expr()->eq('c.id', $policyId));
+        if (null == $query->getQuery()->getOneOrNullResult()) {
+            throw new InvalidArgumentException ("Incorrect policy id");
+        } else {
+            $job->setPolicy($query->getQuery()->getOneOrNullResult());
+        }
+    }
+
+    private function setPostScripts (Job $job, $postScripts)
+    {
+        $repository = $this->entityManager->getRepository('App:Script');
+        $query = $repository->createQueryBuilder('s');
+        foreach ($postScripts as $script) {
+            $query = $repository->createQueryBuilder('s');
+            $query->where($query->expr()->eq('s.id', $script));
+            $result = $query->getQuery()->getOneOrNullResult();
+            if (null != $result) {
+                if ($result->getIsJobPost()) {
+                    $job->addPostScript($result);
+                }else {
+                    throw new InvalidArgumentException(sprintf('Script "%s" is not a job post script', $result->getId()));
+                }
+            } else {
+                throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
+            }
+        }
+    }
+
+    private function setPreScripts (Job $job, $preScripts)
+    {
+        $repository = $this->entityManager->getRepository('App:Script');
+        $query = $repository->createQueryBuilder('s');
+        foreach ($preScripts as $script) {
+            $query = $repository->createQueryBuilder('s');
+            $query->where($query->expr()->eq('s.id', $script));
+            $result = $query->getQuery()->getOneOrNullResult();
+            if (null != $result) {
+                if ($result->getIsJobPre()) {
+                    $job->addPreScript($result);
+                }else {
+                    throw new InvalidArgumentException(sprintf('Script "%s" is not a job pre script', $result->getId()));
+                }
+            } else {
+                throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
+            }
+        }
+    }
+
+    private function setBackupLocation (Job $job, $backupLocationId)
+    {
+        $repository = $this->entityManager->getRepository('App:BackupLocation');
+        $query = $repository->createQueryBuilder('c');
+        $query->where($query->expr()->eq('c.id', $backupLocationId));
+        if (null == $query->getQuery()->getOneOrNullResult()) {
+            throw new InvalidArgumentException ("Incorrect backup location id");
+        } else {
+            $job->setBackupLocation($query->getQuery()->getOneOrNullResult());
+        }
+    }
+
+    private function setNotificationsTo (Job $job, $notificationsTo)
+    {
+        foreach ($notificationsTo as $to) {
+            if ("admin" != $to && "owner"!=$to && "email"!=$to) {
+                throw new InvalidArgumentException("Incorrect notifications to argument (owner, admin, email)");
+            }
+        }
+        $job->setNotificationsTo($notificationsTo);
+    }
+
+    private function setNotificationsEmail (Job $job, $notificationsEmail)
+    {
+        if (isset($notificationsEmail) && !filter_var($notificationsEmail, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidArgumentException("Incorrect notification email address");
+        }
+        
+        $job->setNotificationsEmail($notificationsEmail);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsTransformation($data, string $to, array $context = []): bool
+    {
+        if ($data instanceof Job) {
+            return false;
+        }
+        
+        return Job::class === $to && null !== ($context['input']['class'] ?? null);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -42,122 +159,6 @@ class JobInputDataTransformer implements DataTransformerInterface
         $job->setToken($data->getToken());
         $this->setBackupLocation($job, $data->getBackupLocation());
         return $job;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsTransformation($data, string $to, array $context = []): bool
-    {
-        if ($data instanceof Job) {
-            return false;
-        }
-        
-        return Job::class === $to && null !== ($context['input']['class'] ?? null);
-    }
-    
-    private function setClient (Job $job, $clientId) {
-        $repository = $this->entityManager->getRepository('App:Client');
-        $query = $repository->createQueryBuilder('c');
-        $query->where($query->expr()->eq('c.id', $clientId));
-        if (null == $query->getQuery()->getOneOrNullResult()) {
-            throw new InvalidArgumentException ("Incorrect client id");
-        } else {
-            $job->setClient($query->getQuery()->getOneOrNullResult());
-        }
-    }
-    
-    private function setMinNotificationLevel (Job $job, $minNotificationLevel)
-    {
-        if (0 == $minNotificationLevel || 200 == $minNotificationLevel || 300 == $minNotificationLevel || 
-            400 == $minNotificationLevel || 1000 == $minNotificationLevel) {
-            $job->setMinNotificationLevel($minNotificationLevel);
-        } else {
-            throw new InvalidArgumentException("Incorrect notification level (0, 200, 300, 400, 1000)");
-        }
-    }
-    
-    private function setPolicy (Job $job, $policyId)
-    {
-        $repository = $this->entityManager->getRepository('App:Policy');
-        $query = $repository->createQueryBuilder('c');
-        $query->where($query->expr()->eq('c.id', $policyId));
-        if (null == $query->getQuery()->getOneOrNullResult()) {
-            throw new InvalidArgumentException ("Incorrect policy id");
-        } else {
-            $job->setPolicy($query->getQuery()->getOneOrNullResult());
-        }
-    }
-    
-    private function setPostScripts (Job $job, $postScripts)
-    {
-        $repository = $this->entityManager->getRepository('App:Script');
-        $query = $repository->createQueryBuilder('s');
-        foreach ($postScripts as $script) {
-            $query = $repository->createQueryBuilder('s');
-            $query->where($query->expr()->eq('s.id', $script));
-            $result = $query->getQuery()->getOneOrNullResult();
-            if (null != $result) {
-                if ($result->getIsJobPost()) {
-                    $job->addPostScript($result);
-                }else {
-                    throw new InvalidArgumentException(sprintf('Script "%s" is not a job post script', $result->getId()));
-                }
-            } else {
-                throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
-            }
-        }
-    }
-    
-    private function setPreScripts (Job $job, $preScripts)
-    {
-        $repository = $this->entityManager->getRepository('App:Script');
-        $query = $repository->createQueryBuilder('s');
-        foreach ($preScripts as $script) {
-            $query = $repository->createQueryBuilder('s');
-            $query->where($query->expr()->eq('s.id', $script));
-            $result = $query->getQuery()->getOneOrNullResult();
-            if (null != $result) {
-                if ($result->getIsJobPre()) {
-                    $job->addPreScript($result);
-                }else {
-                    throw new InvalidArgumentException(sprintf('Script "%s" is not a job pre script', $result->getId()));
-                }
-            } else {
-                throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
-            }
-        }
-    }
-    
-    private function setBackupLocation (Job $job, $backupLocationId)
-    {
-        $repository = $this->entityManager->getRepository('App:BackupLocation');
-        $query = $repository->createQueryBuilder('c');
-        $query->where($query->expr()->eq('c.id', $backupLocationId));
-        if (null == $query->getQuery()->getOneOrNullResult()) {
-            throw new InvalidArgumentException ("Incorrect backup location id");
-        } else {
-            $job->setBackupLocation($query->getQuery()->getOneOrNullResult());
-        }
-    }
-    
-    private function setNotificationsTo (Job $job, $notificationsTo)
-    {
-        foreach ($notificationsTo as $to) {
-            if ("admin" != $to && "owner"!=$to && "email"!=$to) {
-                throw new InvalidArgumentException("Incorrect notifications to argument (owner, admin, email)");
-            }
-        }
-        $job->setNotificationsTo($notificationsTo);
-    }
-    
-    private function setNotificationsEmail (Job $job, $notificationsEmail)
-    {
-        if (isset($notificationsEmail) && !filter_var($notificationsEmail, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidArgumentException("Incorrect notification email address");
-        }
-        
-        $job->setNotificationsEmail($notificationsEmail);
     }
 }
 

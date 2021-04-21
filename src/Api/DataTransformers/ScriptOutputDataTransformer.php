@@ -14,7 +14,15 @@ class ScriptOutputDataTransformer implements DataTransformerInterface
     {
         $this->entityManager        = $em;
     }
-    
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsTransformation($data, string $to, array $context = []): bool
+    {
+        return ScriptOutput::class === $to && $data instanceof Script;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -29,14 +37,6 @@ class ScriptOutputDataTransformer implements DataTransformerInterface
         $output->setIsJobPost($data->getIsJobPost());
         $output->setIsJobPre($data->getIsJobPre());
         return $output;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsTransformation($data, string $to, array $context = []): bool
-    {
-        return ScriptOutput::class === $to && $data instanceof Script;
     }
 }
 

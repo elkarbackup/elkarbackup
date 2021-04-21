@@ -9,12 +9,20 @@ use Doctrine\ORM\EntityManagerInterface;
 class BackupLocationOutputDataTransformer implements DataTransformerInterface
 {
     private $entityManager;
-    
+
     public function __construct(EntityManagerInterface $em)
     {
         $this->entityManager        = $em;
     }
-    
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsTransformation($data, string $to, array $context = []): bool
+    {
+        return BackupLocationOutput::class === $to && $data instanceof BackupLocation;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -28,14 +36,4 @@ class BackupLocationOutputDataTransformer implements DataTransformerInterface
         $output->setMaxParallelJobs($data->getMaxParallelJobs());
         return $output;
     }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsTransformation($data, string $to, array $context = []): bool
-    {
-        return BackupLocationOutput::class === $to && $data instanceof BackupLocation;
-    }
 }
-
-

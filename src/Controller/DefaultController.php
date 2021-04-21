@@ -224,76 +224,7 @@ class DefaultController extends AbstractController
                     ),
             ));
         }
-//         $access = $this->checkPermissions($id);
-//         if ($access == False) {
-//             return $this->redirect($this->generateUrl('showClients'));
-//         }
         
-//         $db = $this->getDoctrine();
-//         $manager = $db->getManager();
-//         $repository = $db->getRepository('App:Client');
-//         $manager = $db->getManager();
-//         $client = $repository->find($id);
-//         $queue = $db->getRepository('App:Queue')->findAll();
-//         foreach ($queue as $item) {
-//             if ($item->getJob()->getClient()->getId() == $id) {
-//                 $response = new JsonResponse(array(
-//                     'error' => true,
-//                     'msg' => $t->trans(
-//                         'Could not delete client %clientName%, it has jobs enqueued.',
-//                         array('%clientName%' => $client->getName()),
-//                         'BinovoElkarBackup'
-//                     ),
-//                     'data' => array($id)
-//                 ));
-//                 $this->err(
-//                     'Could not delete client %clientName%, it has jobs enqueued.',
-//                     array('%clientName%' => $client->getName()),
-//                     array('link' => $this->generateClientRoute($id))
-//                 );
-//                 $manager->flush();
-//                 return $response;
-//             }
-//         }
-        
-//         try {
-//             $manager->remove($client);
-//             $msg = new Message(
-//                 'DefaultController',
-//                 'TickCommand',
-//                 json_encode(array(
-//                     'command' => "elkarbackup:delete_job_backups",
-//                     'client' => (int) $id
-//                 ))
-//             );
-//             $manager->persist($msg);
-//             $this->info(
-//                 'Client "%clientid%" deleted',
-//                 array('%clientid%' => $id),
-//                 array('link' => $this->generateClientRoute($id))
-//             );
-//             $manager->flush();
-//             $response = new JsonResponse(array(
-//                 'error' => false,
-//                 'msg' => $t->trans(
-//                     'Client %clientName% deleted successfully.',
-//                     array('%clientName%' => $client->getName()),
-//                     'BinovoElkarBackup'
-//                 ),
-//                 'action' => 'deleteClientRow',
-//                 'data' => array($id)
-//             ));
-            
-//         } catch (Exception $e) {
-//             $response = new JsonResponse(array(
-//                 'error' => false,
-//                 'msg' => $t->trans(
-//                     'Unable to delete client: %extrainfo%',
-//                     array('%extrainfo%' => $e->getMessage()),
-//                     'BinovoElkarBackup'
-//                 ),
-//             ));
-//         }
         return $response;
     }
 
@@ -411,9 +342,6 @@ class DefaultController extends AbstractController
      */
     public function saveClientAction(Request $request, ClientService $clientService, $id)
     {
-//         $user = $this->security->getToken()->getUser();
-//         $actualuserid = $user->getId();
-        
         $t = $this->translator;
         if ("-1" === $id) {
             $client = new Client();
@@ -430,50 +358,8 @@ class DefaultController extends AbstractController
         $form->handleRequest($request);
         if ($form->isValid()) {
             $client = $form->getData();
-//             $em = $this->getDoctrine()->getManager();
             try {
                 $clientService->save($client);
-//                 if (isset($jobsToDelete)) {
-//                     foreach ($jobsToDelete as $idJob => $job) {
-//                         $client->getJobs()->removeElement($job);
-//                         $em->remove($job);
-//                         $msg = new Message(
-//                             'DefaultController', 
-//                             'TickCommand', 
-//                             json_encode(array(
-//                                 'command' => "elkarbackup:delete_job_backups",
-//                                 'client' => (int) $id,
-//                                 'job' => $idJob
-//                             ))
-//                         );
-//                         $em->persist($msg);
-//                         $this->info(
-//                             'Delete client %clientid%, job %jobid%',
-//                             array(
-//                                 '%clientid%' => $client->getId(),
-//                                 '%jobid%' => $job->getId()
-//                             ), 
-//                             array('link' => $this->generateJobRoute(
-//                                 $job->getId(),
-//                                 $client->getId()
-//                             ))
-//                         );
-//                     }
-//                 }
-//                 if ($client->getOwner() == null) {
-//                     $client->setOwner($this->security->getToken()->getUser());
-//                 }
-                
-//                 if ($client->getMaxParallelJobs() < 1) {
-//                     throw new Exception('Max parallel jobs parameter should be positive integer');
-//                 }
-//                 $em->persist($client);
-//                 $this->info(
-//                     'Save client %clientid%',
-//                     array('%clientid%' => $client->getId()),
-//                     array('link' => $this->generateClientRoute($client->getId()))
-//                 );
-//                 $em->flush();
                 
                 return $this->redirect($this->generateUrl('showClients'));
             } catch (Exception $e) {
@@ -505,51 +391,9 @@ class DefaultController extends AbstractController
      */
     public function deleteJobAction(Request $request, JobService $jobService, $idClient, $idJob)
     {
-//         $access = $this->checkPermissions($idClient);
-//         if ($access == False) {
-//             return $this->redirect($this->generateUrl('showClients'));
-//         }
          $t = $this->translator;
-//         $db = $this->getDoctrine();
-//         $repository = $db->getRepository('App:Job');
-//         $manager = $db->getManager();
-//         $job = $repository->find($idJob);
-//         $queue = $db->getRepository('App:Queue')->findAll();
-//         foreach ($queue as $item) {
-//             if ($item->getJob()->getId() == $idJob) {
-//                 $response = new JsonResponse(array(
-//                     'error' => true,
-//                     'msg' => $t->trans(
-//                         'Could not delete job %jobName%, it is enqueued.',
-//                         array('%jobName%' => $job->getName()),
-//                         'BinovoElkarBackup'
-//                     ),
-//                     'data' => array($idJob)
-//                 ));
-//                 $this->err(
-//                     'Could not delete job %jobName%, it is enqueued.',
-//                     array('%jobName%' => $job->getName()),
-//                     array('link' => $this->generateJobRoute($idJob, $idClient))
-//                 );
-//                 $manager->flush();
-//                 return $response;
-//             }
-//         }
         
         try {
-//             $manager->remove($job);
-//             $msg = new Message('DefaultController', 'TickCommand', json_encode(array(
-//                 'command' => "elkarbackup:delete_job_backups",
-//                 'client' => (int) $idClient,
-//                 'job' => (int) $idJob
-//             )));
-//             $manager->persist($msg);
-//             $this->info(
-//                 'Client %clientid%, job "%jobid%" deleted successfully.',
-//                 array('%clientid%' => $idClient,'%jobid%' => $idJob),
-//                 array('link' => $this->generateJobRoute($idJob, $idClient))
-//             );
-//             $manager->flush();
             $jobService->delete($idJob);
             $response = new JsonResponse(array(
                 'error' => false,
@@ -999,20 +843,6 @@ class DefaultController extends AbstractController
             $job = $form->getData();
             try {
                 $jobService->save($job);
-//                 $em = $this->getDoctrine()->getManager();
-//                 $em->persist($job);
-//                 $this->info(
-//                     'Save client %clientid%, job %jobid%',
-//                     array(
-//                         '%clientid%' => $job->getClient()->getId(),
-//                         '%jobid%' => $job->getId()
-//                     ), 
-//                     array('link' => $this->generateJobRoute(
-//                         $job->getId(),
-//                         $job->getClient()->getId()
-//                     ))
-//                 );
-//                 $em->flush();
             } catch (Exception $e) {
                 $this->get('session')->getFlashBag()->add('job', $t->trans(
                     'Unable to save your changes: %extrainfo%',

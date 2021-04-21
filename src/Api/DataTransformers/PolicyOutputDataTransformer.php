@@ -14,7 +14,15 @@ class PolicyOutputDataTransformer implements DataTransformerInterface
     {
         $this->entityManager        = $em;
     }
-    
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsTransformation($data, string $to, array $context = []): bool
+    {
+        return PolicyOutput::class === $to && $data instanceof Policy;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -26,13 +34,4 @@ class PolicyOutputDataTransformer implements DataTransformerInterface
         $output->setDescription($data->getDescription());
         return $output;
     }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function supportsTransformation($data, string $to, array $context = []): bool
-    {
-        return PolicyOutput::class === $to && $data instanceof Policy;
-    }
 }
-

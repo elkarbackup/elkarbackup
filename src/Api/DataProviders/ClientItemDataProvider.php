@@ -5,32 +5,27 @@ namespace App\Api\DataProviders;
 use ApiPlatform\Core\DataProvider\ItemDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use App\Entity\Client;
+use App\Service\LoggerService;
+use App\Service\RouterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
-use App\Service\LoggerService;
-use App\Service\RouterService;
 
 final class ClientItemDataProvider implements ItemDataProviderInterface, RestrictedDataProviderInterface
 {
-    private $entityManager;
     private $authChecker;
+    private $entityManager;
     private $logger;
     private $router;
     private $security;
     
     public function __construct(EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker, LoggerService $logger, RouterService $router, Security $security)
     {
-        $this->entityManager = $em;
         $this->authChecker   = $authChecker;
+        $this->entityManager = $em;
         $this->logger        = $logger;
         $this->router        = $router;
         $this->security      = $security;
-    }
-    
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
-    {
-        return Client::class === $resourceClass;
     }
     
     public function getItem(string $resourceClass, $id, string $operationName = null, array $context = []): ?Client
@@ -50,5 +45,10 @@ final class ClientItemDataProvider implements ItemDataProviderInterface, Restric
             );
         $this->entityManager->flush();
         return $query->getQuery()->getOneOrNullResult();
+    }
+    
+    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    {
+        return Client::class === $resourceClass;
     }
 }

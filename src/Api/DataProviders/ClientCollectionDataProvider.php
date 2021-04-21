@@ -13,9 +13,10 @@ use App\Service\RouterService;
 
 class ClientCollectionDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
-    private $entityManager;
+    
     private $authChecker;
     private $collectionExtensions;
+    private $entityManager;
     private $logger;
     private $router;
     private $security;
@@ -24,17 +25,14 @@ class ClientCollectionDataProvider implements ContextAwareCollectionDataProvider
      */
     public function __construct(EntityManagerInterface $em, AuthorizationCheckerInterface $authChecker, Security $security, LoggerService $logger, RouterService $router, iterable $collectionExtensions)
     {
-        $this->entityManager        = $em;
         $this->authChecker          = $authChecker;
         $this->collectionExtensions = $collectionExtensions;
+        $this->entityManager        = $em;
         $this->logger               = $logger;
         $this->router               = $router;
         $this->security             = $security;
     }
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
-    {
-        return Client::class === $resourceClass;
-    }
+
     public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
     {
         $repository = $this->entityManager->getRepository('App:Client');
@@ -57,6 +55,11 @@ class ClientCollectionDataProvider implements ContextAwareCollectionDataProvider
             );
         $this->entityManager->flush();
         return $query->getQuery()->getResult(); 
+    }
+    
+    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    {
+        return Client::class === $resourceClass;
     }
 }
 

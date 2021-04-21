@@ -26,10 +26,7 @@ class ScriptCollectionDataProvider implements ContextAwareCollectionDataProvider
         $this->router               = $router;
         
     }
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
-    {
-        return Script::class === $resourceClass;
-    }
+
     public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
     {
         $repository = $this->entityManager->getRepository('App:Script');
@@ -50,6 +47,11 @@ class ScriptCollectionDataProvider implements ContextAwareCollectionDataProvider
         $this->entityManager->flush();
         
         return $query->getQuery()->getResult(); 
+    }
+
+    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    {
+        return Script::class === $resourceClass;
     }
 }
 

@@ -3,25 +3,23 @@ namespace App\Api\DataProviders;
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGenerator;
 use ApiPlatform\Core\DataProvider\SubresourceDataProviderInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Job;
+use Doctrine\ORM\EntityManagerInterface;
 
 class JobSubresourceDataProvider implements SubresourceDataProviderInterface
 {
-    private $entityManager;
+
     private $collectionExtensions;
+    private $entityManager;
     /**
      * Constructor
      */
     public function __construct(EntityManagerInterface $em, iterable $collectionExtensions)
     {
-        $this->entityManager        = $em;
         $this->collectionExtensions = $collectionExtensions;
+        $this->entityManager        = $em;
     }
-    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
-    {
-        return Job::class === $resourceClass;
-    }
+
     public function getSubresource(string $resourceClass, array $identifiers, array $context, string $operationName = null)
     {
         $repository = $this->entityManager->getRepository('App:Job');
@@ -34,8 +32,13 @@ class JobSubresourceDataProvider implements SubresourceDataProviderInterface
                 return $extension->getResult($query, $resourceClass, $operationName);
             }
         }
-        
+
         return $query->getQuery()->getResult();
+    }
+
+    public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
+    {
+        return Job::class === $resourceClass;
     }
 }
 

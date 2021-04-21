@@ -11,12 +11,12 @@ use \Exception;
 class JobDataPersister implements ContextAwareDataPersisterInterface
 {
     private $jobService;
-    
+
     public function __construct(JobService $clientService)
     {
         $this->jobService = $clientService;
     }
-    
+
     public function persist($data, array $context = [])
     {
         try {
@@ -27,12 +27,7 @@ class JobDataPersister implements ContextAwareDataPersisterInterface
         }
         
     }
-    
-    public function supports($data, array $context = []): bool
-    {
-        return $data instanceof Job;
-    }
-    
+
     public function remove($data, array $context = [])
     {
         try{
@@ -43,6 +38,11 @@ class JobDataPersister implements ContextAwareDataPersisterInterface
             throw new APIException($e->getMessage());
         }
         
+    }
+
+    public function supports($data, array $context = []): bool
+    {
+        return $data instanceof Job;
     }
 }
 
