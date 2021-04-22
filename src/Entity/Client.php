@@ -9,7 +9,6 @@ namespace App\Entity;
 use App\Api\Dto\ClientInput;
 use App\Api\Dto\ClientOutput;
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -50,7 +49,6 @@ class Client
     protected $isActive = true;
 
     /**
-     * @ApiSubresource
      * @ORM\OneToMany(targetEntity="Job", mappedBy="client", cascade={"remove"})
      */
     protected $jobs;

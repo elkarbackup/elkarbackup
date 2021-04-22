@@ -21,7 +21,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
  *     normalizationContext={
  *         "skip_null_values" = false
  *     },
- *     collectionOperations= {"post"},
+ *     collectionOperations= {"get", "post"},
  *     itemOperations= {"get", "put", "delete"},
  * )
  * @ORM\Entity
