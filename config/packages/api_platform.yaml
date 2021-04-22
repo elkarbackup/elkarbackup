@@ -13,6 +13,6 @@ api_platform:
         Doctrine\ORM\OptimisticLockException: 409
         
         # Custom exceptions
-        App\Exception\PermissionException: 400
+        App\Exception\PermissionException: 403
         App\Exception\NotFoundException: 404
     
