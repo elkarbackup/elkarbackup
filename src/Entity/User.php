@@ -140,7 +140,6 @@ class User implements AdvancedUserInterface
     public function getRoles()
     {
         return explode(',', $this->roles);
-        return array('ROLE_ADMIN');
     }
 
     /**

@@ -8,25 +8,23 @@
 # prepare source for build
 #
 
+if [ "$(which composer)" == "" ]
+then
+    echo "Download and install composer"
+    curl -s https://getcomposer.org/installer | php
+    ln -s composer.phar composer
+    export PATH=$PATH:$PWD
+fi
+composer install --no-interaction
+
 if [ -d .debian ]; then
     rm -fR .debian
 fi
 mkdir .debian
 cp -a debian/* .debian
-if [ ! -d .debian/usr/share/elkarbackup ]
-then
-    if [ "$FROM_SCRATCH" != "" ]
-    then
-        export PATH=$PATH:$PWD
-        mkdir -p .debian/usr/share/elkarbackup
-        composer install
-    fi
-    php bin/console cache:clear --env=prod --no-debug
-    php bin/console cache:clear --env=dev  --no-debug
-    mkdir -p .debian/usr/share/elkarbackup
-    cp -a * .debian/usr/share/elkarbackup
-    cp -a .env .debian/usr/share/elkarbackup/.env
-fi
+mkdir -p .debian/usr/share/elkarbackup
+cp -a * .debian/usr/share/elkarbackup
+
 # remove unneeded files from copy to package
 find .debian -type f -name "*.deb"| xargs rm -rf
 find .debian/usr/share/elkarbackup/public/js/dojo-release-1.8.1 -name "*.uncompressed.js"|xargs rm -f
@@ -42,6 +40,7 @@ mkdir -p .debian/var/cache/elkarbackup
 mkdir -p .debian/var/log/elkarbackup
 mkdir -p .debian/var/log/elkarbackup/jobs
 mkdir -p .debian/var/lib/elkarbackup/sessions
+mkdir -p .debian/usr/share/elkarbackup/var/
 ln -s /var/cache/elkarbackup        .debian/usr/share/elkarbackup/var/cache
 ln -s /var/log/elkarbackup          .debian/usr/share/elkarbackup/var/log
 ln -s /var/lib/elkarbackup/sessions .debian/usr/share/elkarbackup/var/sessions
@@ -50,11 +49,12 @@ mkdir -p .debian/etc/elkarbackup/
 cp .debian/usr/share/elkarbackup/config/parameters.yaml.dist .debian/etc/elkarbackup/parameters.yaml
 rm .debian/usr/share/elkarbackup/config/parameters.yaml
 ln -s /etc/elkarbackup/parameters.yaml .debian/usr/share/elkarbackup/config/parameters.yaml
+mv .debian/env.local.php .debian/usr/share/elkarbackup/.env.local.php
 # put copyright notices and changelog in its place
 mkdir -p .debian/usr/share/doc/elkarbackup
 # Copy changelog and copyright files
 cp -a CHANGELOG.md .debian/usr/share/doc/elkarbackup/CHANGELOG.md
-cp -a debian/changelog .debian/usr/share/doc/elkarbackup/changelog.Debian
+mv .debian/changelog .debian/usr/share/doc/elkarbackup/changelog.Debian
 cp -a debian/DEBIAN/copyright .debian/usr/share/doc/elkarbackup
 gzip -f --best .debian/usr/share/doc/elkarbackup/changelog.Debian
 # ensure directory permissions are right

@@ -67,7 +67,8 @@ class JobType extends AbstractType
                                                                 'class'    => 'App:Script',
                                                                 'query_builder' => function($er) {
                                                                     return $er->createQueryBuilder('s')
-                                                                        ->where('s.isJobPre = 1');
+                                                                        ->where('s.isJobPre = 1')
+                                                                        ->orderBy('s.name', 'ASC');
                                                                 },
                                                                 'choice_label' => 'name'))
                 ->add('postScripts'         , EntityType::class  , array('label' => $t->trans('Post script', array(), 'BinovoElkarBackup'),
@@ -77,7 +78,8 @@ class JobType extends AbstractType
                                                                 'class'    => 'App:Script',
                                                                 'query_builder' => function($er) {
                                                                     return $er->createQueryBuilder('s')
-                                                                        ->where('s.isJobPost = 1');
+                                                                        ->where('s.isJobPost = 1')
+                                                                        ->orderBy('s.name', 'DESC');
                                                                 },
                                                                 'class'    => 'App:Script',
                                                                 'choice_label' => 'name'))
