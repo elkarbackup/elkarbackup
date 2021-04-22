@@ -5,15 +5,22 @@ use ApiPlatform\Core\DataTransformer\DataTransformerInterface;
 use ApiPlatform\Core\Exception\InvalidArgumentException;
 use ApiPlatform\Core\Serializer\AbstractItemNormalizer;
 use App\Entity\Job;
+use App\Exception\PermissionException;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Security;
 
 class JobInputDataTransformer implements DataTransformerInterface
 {
+    private $authChecker;
     private $entityManager;
+    private $security;
     
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(AuthorizationCheckerInterface $authChecker, EntityManagerInterface $em, Security $security)
     {
-        $this->entityManager        = $em;
+        $this->authChecker   = $authChecker;
+        $this->entityManager = $em;
+        $this->security      = $security;
     }
 
     private function setClient (Job $job, $clientId) {
@@ -23,6 +30,12 @@ class JobInputDataTransformer implements DataTransformerInterface
         if (null == $query->getQuery()->getOneOrNullResult()) {
             throw new InvalidArgumentException ("Incorrect client id");
         } else {
+            if (!$this->authChecker->isGranted('ROLE_ADMIN')) {
+                $query->andWhere($query->expr()->eq('c.owner', $this->security->getToken()->getUser()->getId()));
+                if (null == $query->getQuery()->getOneOrNullResult()) {
+                    throw new PermissionException(sprintf("Permission denied to create job of client %s", $clientId));
+                }
+            }
             $job->setClient($query->getQuery()->getOneOrNullResult());
         }
     }
