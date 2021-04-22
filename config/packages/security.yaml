@@ -53,4 +53,4 @@ security:
         - { path: ^/config/params                , roles: ROLE_ADMIN}
         - { path: ^/config/repositorybackupscript, roles: ROLE_ADMIN}
         - { path: ^/config/publickey/generate    , roles: ROLE_ADMIN}
-        - { path: ^/                             , roles: ROLE_USER}
+        - { path: ^/                             , roles: ROLE_ADMIN}
