@@ -1,6 +1,7 @@
 ## 2.0.0~rc1 (2021/04/21)
 Security fixes:
   * Generate new Symfony secret on install or on upgrade if it was left unchanged (closes #481)
+  * Deprecate USER role users, blocking login, due to security issues (closes #157)
 
 Enhacements:
   * Remove Tahoe integration (closes #458)
