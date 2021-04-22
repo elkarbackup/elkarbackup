@@ -10,6 +10,8 @@ use App\Service\RouterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
+use App\Exception\NotFoundException;
+use App\Exception\PermissionException;
 
 final class ClientItemDataProvider implements ItemDataProviderInterface, RestrictedDataProviderInterface
 {
@@ -33,10 +35,14 @@ final class ClientItemDataProvider implements ItemDataProviderInterface, Restric
         $repository = $this->entityManager->getRepository('App:Client');
         $query = $repository->createQueryBuilder('c');
         $query->where($query->expr()->eq('c.id', $id));
+        if (null == $query->getQuery()->getOneOrNullResult()) {
+            throw new NotFoundException(sprintf('The client "%s" does not exist.', $id));
+        }
         if (!$this->authChecker->isGranted('ROLE_ADMIN')) {
-            $query->where($query->expr()->eq('c.id', $id))->andWhere($query->expr()->eq('c.owner', $this->security->getToken()->getUser()->getId()));
-        } else {
-            $query->where($query->expr()->eq('c.id', $id));
+            $query->andWhere($query->expr()->eq('c.id', $id))->andWhere($query->expr()->eq('c.owner', $this->security->getToken()->getUser()->getId()));
+            if (null == $query->getQuery()->getOneOrNullResult()) {
+                throw new PermissionException(sprintf("Permission denied to get client %s", $id));
+            }
         }
         $this->logger->debug(
             'View client %clientid%',

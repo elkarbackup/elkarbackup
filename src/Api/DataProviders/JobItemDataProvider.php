@@ -42,7 +42,7 @@ class JobItemDataProvider implements ItemDataProviderInterface, RestrictedDataPr
             $query->join('j.client', 'c');
             $query->andWhere($query->expr()->eq('c.owner', $this->security->getToken()->getUser()->getId()));
             if (null == $query->getQuery()->getOneOrNullResult()) {
-                throw new PermissionException("Permission denied to get job");
+                throw new PermissionException(sprintf("Permission denied to get job %s", $id));
             }
         }
         $idClient = $query->getQuery()->getOneOrNullResult()->getClient()->getId();
