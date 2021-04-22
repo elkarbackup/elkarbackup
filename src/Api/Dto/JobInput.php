@@ -101,7 +101,7 @@ class JobInput
     }
 
     /**
-     * @return string 
+     * @return array 
      */
     public function getNotificationsTo()
     {
