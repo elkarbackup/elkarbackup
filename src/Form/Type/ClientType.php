@@ -55,7 +55,8 @@ class ClientType extends AbstractType
                                                             'class'    => 'App:Script',
                                                             'query_builder' => function($er) {
                                                                 return $er->createQueryBuilder('s')
-                                                                    ->where('s.isClientPre = 1');
+                                                                    ->where('s.isClientPre = 1')
+                                                                    ->orderBy('s.name', 'ASC');
                                                             },
                                                             'choice_label' => 'name'))
                 ->add('postScripts'   , EntityType::class    , array('label' => $t->trans('Post script', array(), 'BinovoElkarBackup'),
@@ -66,7 +67,8 @@ class ClientType extends AbstractType
                                                             'class'    => 'App:Script',
                                                             'query_builder' => function($er) {
                                                                 return $er->createQueryBuilder('s')
-                                                                    ->where('s.isClientPost = 1');
+                                                                    ->where('s.isClientPost = 1')
+                                                                    ->orderBy('s.name', 'DESC');
                                                             },
                                                             'class'    => 'App:Script',
                                                             'choice_label' => 'name'))
