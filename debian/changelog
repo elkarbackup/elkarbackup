@@ -1,4 +1,4 @@
-elkarbackup (2.0.0~rc1) stable; urgency=medium
+elkarbackup (2.0.0) stable; urgency=medium
 
   [ Uxue Anabitarte ]
   * Remove Tahoe integration (closes #458)

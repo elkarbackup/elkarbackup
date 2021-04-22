@@ -2,6 +2,7 @@ version: '3'
 
 services:
   elkarbackup:
+    image: elkarbackup:2.0.0
     build:
       context: ../
       dockerfile: ./docker/Dockerfile

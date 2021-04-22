@@ -1,5 +1,5 @@
 Package: elkarbackup
-Version: 2.0.0~rc1
+Version: 2.0.0
 Section: admin
 Priority: optional
 Architecture: all
