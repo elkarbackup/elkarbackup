@@ -6,12 +6,24 @@
 
 namespace App\Entity;
 
+use App\Api\Dto\ClientInput;
+use App\Api\Dto\ClientOutput;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use \RuntimeException;
 
 /**
+ * @ApiResource(
+ *     input  = ClientInput::class,
+ *     output = ClientOutput::class,
+ *     normalizationContext={
+ *         "skip_null_values" = false
+ *     },
+ *     collectionOperations= {"get", "post"},
+ *     itemOperations= {"get", "put", "delete"},
+ * )
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */

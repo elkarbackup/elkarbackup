@@ -5,11 +5,19 @@
  */
 
 namespace App\Entity;
+
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Api\Dto\PolicyOutput;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use \DateTime;
 
 /**
+ * @ApiResource(
+ *     output = PolicyOutput::class,
+ *     collectionOperations= {"get"},
+ *     itemOperations= {"get"}
+ * )
  * @ORM\Entity
  */
 class Policy

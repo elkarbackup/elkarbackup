@@ -7,11 +7,18 @@
 namespace App\Entity;
 
 use \RuntimeException;
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Api\Dto\ScriptOutput;
 use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @ApiResource(
+ *     output = ScriptOutput::class,
+ *     collectionOperations= {"get"},
+ *     itemOperations= {"get"}
+ * )
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  * @ORM\EntityListeners({"App\Listener\ScriptListener"})

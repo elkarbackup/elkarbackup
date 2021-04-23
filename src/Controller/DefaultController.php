@@ -17,6 +17,7 @@ use App\Entity\Policy;
 use App\Entity\Queue;
 use App\Entity\Script;
 use App\Entity\User;
+use App\Exception\PermissionException;
 use App\Form\Type\AuthorizedKeyType;
 use App\Form\Type\BackupLocationType;
 use App\Form\Type\ClientType;
@@ -28,6 +29,11 @@ use App\Form\Type\ScriptType;
 use App\Form\Type\UserType;
 use App\Form\Type\PreferencesType;
 use App\Lib\Globals;
+use App\Service\ClientService;
+use App\Service\JobService;
+use App\Service\LoggerService;
+use App\Service\RouterService;
+use App\Service\TranslatorService;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -67,7 +73,9 @@ class DefaultController extends AbstractController
 {
     private $security;
     private $translator;
+    private $translatorService;
     private $logger;
+    private $router;
     private $supportedLocales;
     private $paginator;
     private $cacheDir;
@@ -75,87 +83,18 @@ class DefaultController extends AbstractController
     private $encoderFactory;
     private $uploadDir;
 
-    public function __construct($cacheDir, $uploadDir, Security $security, TranslatorInterface $t, Logger $logger, PaginatorInterface $pag, ChainCacheClearer $cci, EncoderFactoryInterface $encoder)
+    public function __construct($cacheDir, $uploadDir, Security $security, TranslatorInterface $t, TranslatorService $translatorService, LoggerService $logger, RouterService $router, PaginatorInterface $pag, ChainCacheClearer $cci, EncoderFactoryInterface $encoder)
     {
-        $this->cacheDir = $cacheDir;
-        $this->security = $security;
-        $this->translator = $t;
-        $this->logger = $logger;
-        $this->paginator = $pag;
-        $this->cacheClearer = $cci;
-        $this->encoderFactory = $encoder;
-        $this->uploadDir = $uploadDir;
-    }
-    protected function info($msg, $translatorParams = array(), $context = array())
-    {
-        $context = array_merge(array('source' => 'DefaultController'), $context);
-        $this->logger->info(
-            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
-            $context
-        );
-    }
-    
-    protected function warn($msg, $translatorParams = array(), $context = array())
-    {
-        $logger = $this->logger;
-        $context = array_merge(array('source' => 'DefaultController'), $context);
-        $logger->warning(
-            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
-            $context
-        );
-    }
-    
-    protected function err($msg, $translatorParams = array(), $context = array())
-    {
-        $logger = $this->logger;
-        $context = array_merge(array('source' => 'DefaultController'), $context);
-        $logger->error(
-            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
-            $context
-        );
-    }
-    
-    protected function debug($msg, $translatorParams = array(), $context = array())
-    {
-        $logger = $this->logger;
-        $context = array_merge(array('source' => 'DefaultController'), $context);
-        $logger->debug(
-            $this->trans($msg, $translatorParams, 'BinovoElkarBackup'),
-            $context
-        );
-    }
-
-    protected function generateClientRoute($id)
-    {
-        return $this->generateUrl('editClient', array('id' => $id));
-    }
-
-    protected function generateJobRoute($idJob, $idClient)
-    {
-        return $this->generateUrl('editJob', array(
-            'idClient' => $idClient,
-            'idJob' => $idJob
-        ));
-    }
-
-    protected function generatePolicyRoute($id)
-    {
-        return $this->generateUrl('editPolicy', array('id' => $id));
-    }
-
-    protected function generateScriptRoute($id)
-    {
-        return $this->generateUrl('editScript', array('id' => $id));
-    }
-
-    protected function generateBackupLocationRoute($id)
-    {
-        return $this->generateUrl('editBackupLocation', array('id' => $id));
-    }
-
-    protected function generateUserRoute($id)
-    {
-        return $this->generateUrl('editUser', array('id' => $id));
+        $this->cacheDir          = $cacheDir;
+        $this->security          = $security;
+        $this->translator        = $t;
+        $this->translatorService = $translatorService;
+        $this->logger            = $logger;
+        $this->router            = $router;
+        $this->paginator         = $pag;
+        $this->cacheClearer      = $cci;
+        $this->encoderFactory    = $encoder;
+        $this->uploadDir         = $uploadDir;
     }
 
     /*
@@ -207,7 +146,7 @@ class DefaultController extends AbstractController
     {
         if (!file_exists($this->getParameter('public_key'))) {
             throw $this->createNotFoundException(
-                $this->trans('Unable to find public key:')
+                $this->translatorService->trans('Unable to find public key:')
             );
         }
         $headers = array(
@@ -236,7 +175,7 @@ class DefaultController extends AbstractController
             json_encode(array('command' => "elkarbackup:generate_keypair"))
         );
         $manager->persist($msg);
-        $this->info('Public key generation requested');
+        $this->logger->info('Public key generation requested');
         $manager->flush();
         $this->get('session')->getFlashBag()->add(
             'manageParameters', 
@@ -250,77 +189,33 @@ class DefaultController extends AbstractController
         return $this->redirect($this->generateUrl('manageParameters'));
     }
 
-    public function trans($msg, $params = array(), $domain = 'BinovoElkarBackup')
-    {
-        return $this->translator->trans($msg, $params, $domain);
-    }
-
     /**
      * @Route("/client/{id}/delete", name="deleteClient", methods={"POST"})
      */
-    public function deleteClientAction(Request $request, $id)
+    public function deleteClientAction(Request $request, ClientService $clientService, $id)
     {
-        $access = $this->checkPermissions($id);
-        if ($access == False) {
-            return $this->redirect($this->generateUrl('showClients'));
-        }
-        
         $t = $this->translator;
-        $db = $this->getDoctrine();
-        $manager = $db->getManager();
-        $repository = $db->getRepository('App:Client');
-        $manager = $db->getManager();
-        $client = $repository->find($id);
-        $queue = $db->getRepository('App:Queue')->findAll();
-        foreach ($queue as $item) {
-            if ($item->getJob()->getClient()->getId() == $id) {
-                $response = new JsonResponse(array(
-                    'error' => true,
-                    'msg' => $t->trans(
-                        'Could not delete client %clientName%, it has jobs enqueued.',
-                        array('%clientName%' => $client->getName()),
-                        'BinovoElkarBackup'
-                    ),
-                    'data' => array($id)
-                ));
-                $this->err(
-                    'Could not delete client %clientName%, it has jobs enqueued.',
-                    array('%clientName%' => $client->getName()),
-                    array('link' => $this->generateClientRoute($id))
-                );
-                $manager->flush();
-                return $response;
-            }
-        }
-        
         try {
-            $manager->remove($client);
-            $msg = new Message(
-                'DefaultController',
-                'TickCommand',
-                json_encode(array(
-                    'command' => "elkarbackup:delete_job_backups",
-                    'client' => (int) $id
-                ))
-            );
-            $manager->persist($msg);
-            $this->info(
-                'Client "%clientid%" deleted',
-                array('%clientid%' => $id),
-                array('link' => $this->generateClientRoute($id))
-            );
-            $manager->flush();
+            $repository = $this->getDoctrine()->getRepository('App:Client');
+            $clientName = $repository->find($id)->getName();
+            $clientService->delete($id);
             $response = new JsonResponse(array(
                 'error' => false,
                 'msg' => $t->trans(
                     'Client %clientName% deleted successfully.',
-                    array('%clientName%' => $client->getName()),
+                    array('%clientName%' => $clientName),
                     'BinovoElkarBackup'
                 ),
                 'action' => 'deleteClientRow',
                 'data' => array($id)
             ));
-            
+        } catch (PermissionException $e){
+            $response = new JsonResponse(array(
+                'error' => false,
+                'msg' => $t->trans(
+                    'Unable to delete client: Permission denied.',
+                ),
+            ));
         } catch (Exception $e) {
             $response = new JsonResponse(array(
                 'error' => false,
@@ -331,6 +226,7 @@ class DefaultController extends AbstractController
                 ),
             ));
         }
+        
         return $response;
     }
 
@@ -350,7 +246,7 @@ class DefaultController extends AbstractController
             $error = $session->get(Security::AUTHENTICATION_ERROR);
             $session->remove(Security::AUTHENTICATION_ERROR);
         }
-        $this->info(
+        $this->logger->info(
             'Log in attempt with user: %username%',
             array('%username%' => $session->get(Security::LAST_USERNAME))
         );
@@ -420,7 +316,7 @@ class DefaultController extends AbstractController
             $client = $repository->find($id);
             if (null == $client) {
                 throw $this->createNotFoundException(
-                    $this->trans('Unable to find Client entity:') . $id
+                    $this->translatorService->trans('Unable to find Client entity:') . $id
                 );
             }
         }
@@ -430,10 +326,10 @@ class DefaultController extends AbstractController
             $client,
             array('translator' => $this->translator)
         );
-        $this->debug(
+        $this->logger->debug(
             'View client %clientid%',
             array('%clientid%' => $id),
-            array('link' => $this->generateClientRoute($id))
+            array('link' => $this->router->generateClientRoute($id))
         );
         $this->getDoctrine()->getManager()->flush();
         
@@ -446,11 +342,8 @@ class DefaultController extends AbstractController
     /**
      * @Route("/client/{id}", requirements={"id" = "\d+"}, defaults={"id" = "-1"}, name="saveClient", methods={"POST"})
      */
-    public function saveClientAction(Request $request, $id)
+    public function saveClientAction(Request $request, ClientService $clientService, $id)
     {
-        $user = $this->security->getToken()->getUser();
-        $actualuserid = $user->getId();
-        
         $t = $this->translator;
         if ("-1" === $id) {
             $client = new Client();
@@ -467,49 +360,8 @@ class DefaultController extends AbstractController
         $form->handleRequest($request);
         if ($form->isValid()) {
             $client = $form->getData();
-            $em = $this->getDoctrine()->getManager();
             try {
-                if (isset($jobsToDelete)) {
-                    foreach ($jobsToDelete as $idJob => $job) {
-                        $client->getJobs()->removeElement($job);
-                        $em->remove($job);
-                        $msg = new Message(
-                            'DefaultController', 
-                            'TickCommand', 
-                            json_encode(array(
-                                'command' => "elkarbackup:delete_job_backups",
-                                'client' => (int) $id,
-                                'job' => $idJob
-                            ))
-                        );
-                        $em->persist($msg);
-                        $this->info(
-                            'Delete client %clientid%, job %jobid%',
-                            array(
-                                '%clientid%' => $client->getId(),
-                                '%jobid%' => $job->getId()
-                            ), 
-                            array('link' => $this->generateJobRoute(
-                                $job->getId(),
-                                $client->getId()
-                            ))
-                        );
-                    }
-                }
-                if ($client->getOwner() == null) {
-                    $client->setOwner($this->security->getToken()->getUser());
-                }
-                
-                if ($client->getMaxParallelJobs() < 1) {
-                    throw new Exception('Max parallel jobs parameter should be positive integer');
-                }
-                $em->persist($client);
-                $this->info(
-                    'Save client %clientid%',
-                    array('%clientid%' => $client->getId()),
-                    array('link' => $this->generateClientRoute($client->getId()))
-                );
-                $em->flush();
+                $clientService->save($client);
                 
                 return $this->redirect($this->generateUrl('showClients'));
             } catch (Exception $e) {
@@ -539,53 +391,12 @@ class DefaultController extends AbstractController
      * @Route("/job/{id}/delete", name="deleteJob")
      * @Route("/client/{idClient}/job/{idJob}/delete", requirements={"idClient" = "\d+", "idJob" = "\d+"}, defaults={"idJob" = "-1"}, name="deleteJob", methods={"POST"})
      */
-    public function deleteJobAction(Request $request, $idClient, $idJob)
+    public function deleteJobAction(Request $request, JobService $jobService, $idClient, $idJob)
     {
-        $access = $this->checkPermissions($idClient);
-        if ($access == False) {
-            return $this->redirect($this->generateUrl('showClients'));
-        }
-        $t = $this->translator;
-        $db = $this->getDoctrine();
-        $repository = $db->getRepository('App:Job');
-        $manager = $db->getManager();
-        $job = $repository->find($idJob);
-        $queue = $db->getRepository('App:Queue')->findAll();
-        foreach ($queue as $item) {
-            if ($item->getJob()->getId() == $idJob) {
-                $response = new JsonResponse(array(
-                    'error' => true,
-                    'msg' => $t->trans(
-                        'Could not delete job %jobName%, it is enqueued.',
-                        array('%jobName%' => $job->getName()),
-                        'BinovoElkarBackup'
-                    ),
-                    'data' => array($idJob)
-                ));
-                $this->err(
-                    'Could not delete job %jobName%, it is enqueued.',
-                    array('%jobName%' => $job->getName()),
-                    array('link' => $this->generateJobRoute($idJob, $idClient))
-                );
-                $manager->flush();
-                return $response;
-            }
-        }
+         $t = $this->translator;
         
         try {
-            $manager->remove($job);
-            $msg = new Message('DefaultController', 'TickCommand', json_encode(array(
-                'command' => "elkarbackup:delete_job_backups",
-                'client' => (int) $idClient,
-                'job' => (int) $idJob
-            )));
-            $manager->persist($msg);
-            $this->info(
-                'Client %clientid%, job "%jobid%" deleted successfully.',
-                array('%clientid%' => $idClient,'%jobid%' => $idJob),
-                array('link' => $this->generateJobRoute($idJob, $idClient))
-            );
-            $manager->flush();
+            $jobService->delete($idJob);
             $response = new JsonResponse(array(
                 'error' => false,
                 'msg' => $t->trans(
@@ -620,7 +431,7 @@ class DefaultController extends AbstractController
                 ->getRepository('App:Client')
                 ->find($idClient);
             if (null == $client) {
-                throw $this->createNotFoundException($this->trans('Unable to find Client entity:') . $idClient);
+                throw $this->createNotFoundException($this->translatorService->trans('Unable to find Client entity:') . $idClient);
             }
             $job->setClient($client);
         } else {
@@ -638,10 +449,10 @@ class DefaultController extends AbstractController
             $job,
             array('translator' => $this->translator)
         );
-        $this->debug(
+        $this->logger->debug(
             'View client %clientid%, job %jobid%',
             array('%clientid%' => $idClient,'%jobid%' => $idJob),
-            array('link' => $this->generateJobRoute($idJob, $idClient))
+            array('link' => $this->router->generateJobRoute($idJob, $idClient))
         );
         $this->getDoctrine()->getManager()->flush();
         
@@ -666,7 +477,7 @@ class DefaultController extends AbstractController
         $access = $this->checkPermissions($idClient);
         if ($access == False) {
 
-            $this->err(
+            $this->logger->err(
             'Unautorized access attempt by user: %username% into %path% by idclient: %clientid%. / idjob: %jobid%' ,
             array('%username%' => $actualusername, '%path%' => $path, '%clientid%' => $idClient,'%jobid%' => $idJob )
             );
@@ -740,10 +551,10 @@ class DefaultController extends AbstractController
               ))
         );
         $manager->persist($msg);
-        $this->info(
+        $this->logger->info(
               'Client "%clientid%" restore started',
               array('%clientid%' => $idClient),
-              array('link' => $this->generateClientRoute($idClient))
+              array('link' => $this->router->generateClientRoute($idClient))
         );
         $manager->flush();
         
@@ -820,12 +631,12 @@ class DefaultController extends AbstractController
                     ->getRepository('App:Job')
                     ->find($idJob);
                 if (null == $job) {
-                    throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
+                    throw $this->createNotFoundException($this->translatorService->trans('Unable to find Job entity:') . $idJob);
                 }
             }
             $em = $this->getDoctrine()->getManager();
             $context = array(
-                'link' => $this->generateJobRoute($idJob, $idClient),
+                'link' => $this->router->generateJobRoute($idJob, $idClient),
                 'source' => Globals::STATUS_REPORT
             );
             $isQueueIn = $this->getDoctrine()
@@ -844,7 +655,7 @@ class DefaultController extends AbstractController
                         ),
                     'data' => array($idJob)
                 ));
-                $this->info($status, array(), $context);
+                $this->logger->info($status, array(), $context);
                 
             } else {
                 $status = 'The job has been already enqueued, it will not be enqueued again';
@@ -857,7 +668,7 @@ class DefaultController extends AbstractController
                         ),
                     'data' => array($idJob)
                 ));
-                $this->warn($status, array(), $context);
+                $this->logger->warn($status, array(), $context);
             }
             $em->flush();
             return $response;
@@ -879,7 +690,7 @@ class DefaultController extends AbstractController
             ->getRepository('App:Queue')
             ->findOneBy(array('job' => $job));
         if (null == $job) {
-            throw $this->createNotFoundException($this->trans('Unable to find Job entity:') . $idJob);
+            throw $this->createNotFoundException($this->translatorService->trans('Unable to find Job entity:') . $idJob);
         }
         if (null == $queue) {
             $response = new JsonResponse(array(
@@ -961,10 +772,10 @@ class DefaultController extends AbstractController
         $syncFirst = $policy->getSyncFirst();
         $response = new Response();
         $response->headers->set('Content-Type', 'text/plain');
-        $this->info(
+        $this->logger->info(
             'Show job config %clientid%, job %jobid%',
             array('%clientid%' => $idClient,'%jobid%' => $idJob),
-            array('link' => $this->generateJobRoute($idJob, $idClient))
+            array('link' => $this->router->generateJobRoute($idJob, $idClient))
         );
         $this->getDoctrine()->getManager()->flush();
         $preCommand = '';
@@ -1004,7 +815,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/client/{idClient}/job/{idJob}", requirements={"idClient" = "\d+", "idJob" = "\d+"}, defaults={"idJob" = "-1"}, name="saveJob", methods={"POST"})
      */
-    public function saveJobAction(Request $request, $idClient, $idJob)
+    public function saveJobAction(Request $request, JobService $jobService, $idClient, $idJob)
     {
         $t = $this->translator;
         if ("-1" === $idJob) {
@@ -1033,20 +844,7 @@ class DefaultController extends AbstractController
         if ($form->isValid()) {
             $job = $form->getData();
             try {
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($job);
-                $this->info(
-                    'Save client %clientid%, job %jobid%',
-                    array(
-                        '%clientid%' => $job->getClient()->getId(),
-                        '%jobid%' => $job->getId()
-                    ), 
-                    array('link' => $this->generateJobRoute(
-                        $job->getId(),
-                        $job->getClient()->getId()
-                    ))
-                );
-                $em->flush();
+                $jobService->save($job);
             } catch (Exception $e) {
                 $this->get('session')->getFlashBag()->add('job', $t->trans(
                     'Unable to save your changes: %extrainfo%',
@@ -1136,7 +934,7 @@ class DefaultController extends AbstractController
                             );
                         passthru($command);
                     };
-                    $this->info(
+                    $this->logger->info(
                         'Download backup directory %clientid%, %jobid% %path%',
                         array('%clientid%' => $idClient,'%jobid%' => $idJob,'%path%' => $path),
                         array('link' => $this->generateUrl('showJobBackup', array(
@@ -1164,7 +962,7 @@ class DefaultController extends AbstractController
                             );
                         passthru($command);
                     };
-                    $this->info(
+                    $this->logger->info(
                         'Download backup directory %clientid%, %jobid% %path%',
                         array('%clientid%' => $idClient,'%jobid%' => $idJob,'%path%' => $path),
                         array('link' => $this->generateUrl('showJobBackup', array(
@@ -1197,7 +995,7 @@ class DefaultController extends AbstractController
                         );
                     }
                     array_push($dirContent, $content);
-                    $this->debug(
+                    $this->logger->debug(
                         'View backup directory %clientid%, %jobid% %path%',
                         array('%clientid%' => $idClient,'%jobid%' => $idJob, '%idBackupLocation%' => $idBackupLocation, '%path%' => $path),
                         array('link' => $this->generateUrl('showJobBackup', array(
@@ -1223,7 +1021,7 @@ class DefaultController extends AbstractController
                 }
             } else {
                 $response = new BinaryFileResponse($realPath);
-                $this->info('Download backup file %clientid%, %jobid% %path%', array(
+                $this->logger->info('Download backup file %clientid%, %jobid% %path%', array(
                     '%clientid%' => $idClient,
                     '%jobid%' => $idJob,
                     '%path%' => $path
@@ -1261,7 +1059,7 @@ class DefaultController extends AbstractController
                 }
                 array_push($dirContent, $content);
             }
-            $this->debug(
+            $this->logger->debug(
                 'View backup directory %clientid%, %jobid% %path%',
                 array('%clientid%' => $idClient,'%jobid%' => $idJob),
                 array('link' => $this->generateUrl('showJobBackup', array(
@@ -1326,10 +1124,10 @@ class DefaultController extends AbstractController
             $policy,
             array('translator' => $t)
         );
-        $this->debug(
+        $this->logger->debug(
             'View policy %policyname%',
             array('%policyname%' => $policy->getName()), 
-            array('link' => $this->generatePolicyRoute($policy->getId()))
+            array('link' => $this->router->generatePolicyRoute($policy->getId()))
         );
         $this->getDoctrine()->getManager()->flush();
         
@@ -1356,10 +1154,10 @@ class DefaultController extends AbstractController
         $policy = $repository->find($id);
         try {
             $manager->remove($policy);
-            $this->info(
+            $this->logger->info(
                 'Delete policy %policyname%',
                 array('%policyname%' => $policy->getName()),
-                array('link' => $this->generatePolicyRoute($id))
+                array('link' => $this->router->generatePolicyRoute($id))
             );
             $manager->flush();
         } catch (PDOException $e) {
@@ -1394,10 +1192,10 @@ class DefaultController extends AbstractController
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($policy);
-            $this->info(
+            $this->logger->info(
                 'Save policy %policyname%',
                 array('%policyname%' => $policy->getName()),
-                array('link' => $this->generatePolicyRoute($id))
+                array('link' => $this->router->generatePolicyRoute($id))
             );
             $em->flush();
             
@@ -1445,7 +1243,7 @@ class DefaultController extends AbstractController
                 $job->setPriority($i);
                 ++ $i;
             }
-            $this->info(
+            $this->logger->info(
                 'Jobs reordered',
                 array(),
                 array('link' => $this->generateUrl('showClients'))
@@ -1518,7 +1316,7 @@ class DefaultController extends AbstractController
                 ));
             }
         }
-        $this->debug(
+        $this->logger->debug(
             'View clients',
             array(),
             array('link' => $this->generateUrl('showClients'))
@@ -1551,7 +1349,7 @@ class DefaultController extends AbstractController
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
             );
         
-        $this->debug(
+        $this->logger->debug(
             'View backup status',
             array(),
             array('link' => $this->generateUrl('showStatus'))
@@ -1579,7 +1377,7 @@ class DefaultController extends AbstractController
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->debug(
+        $this->logger->debug(
             'View scripts',
             array(),
             array('link' => $this->generateUrl('showScripts'))
@@ -1662,7 +1460,7 @@ EOF;
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->debug(
+        $this->logger->debug(
             'View logs',
             array(),
             array('link' => $this->generateUrl('showLogs'))
@@ -1738,7 +1536,7 @@ EOF;
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->debug(
+        $this->logger->debug(
             'View policies',
             array(),
             array('link' => $this->generateUrl('showPolicies'))
@@ -1860,7 +1658,7 @@ EOF;
                 ))
             );
             $manager->persist($msg);
-            $this->info(
+            $this->logger->info(
                 'Updating key file %keys%',
                 array('%keys%' => $serializedKeys)
             );
@@ -1910,10 +1708,10 @@ EOF;
             array( 'fs' => $this->isAutoFsAvailable(), 'translator' => $t)
         );
         
-        $this->debug(
+        $this->logger->debug(
             'View location %backupLocationName%.',
             array('%backupLocationName%' => $backupLocation->getName()),
-            array('link' => $this->generateBackupLocationRoute($id))
+            array('link' => $this->router->generateBackupLocationRoute($id))
         );
         $this->getDoctrine()->getManager()->flush();
         
@@ -1969,10 +1767,10 @@ EOF;
         } elseif ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($backupLocation);
-            $this->info(
+            $this->logger->info(
                 'Save backup location %locationName%.',
                 array('%locationName%' => $backupLocation->getName()),
-                array('link' => $this->generateBackupLocationRoute($id))
+                array('link' => $this->router->generateBackupLocationRoute($id))
             );
             $em->flush();
             $result = $this->redirect($this->generateUrl('manageBackupLocations'));
@@ -2004,10 +1802,10 @@ EOF;
         $backupLocation = $repository->find($id);
         try {
             $manager->remove($backupLocation);
-            $this->info(
+            $this->logger->info(
                 'Delete backup location %locationName%',
                 array('%locationName%' => $backupLocation->getName()),
-                array('link' => $this->generateBackupLocationRoute($id))
+                array('link' => $this->router->generateBackupLocationRoute($id))
             );
             $manager->flush();
         } catch (Exception $e) {
@@ -2039,7 +1837,7 @@ EOF;
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->debug(
+        $this->logger->debug(
             'View backup locations',
             array(),
             array('link' => $this->generateUrl('manageBackupLocations'))
@@ -2297,13 +2095,13 @@ EOF;
         $updated = preg_replace("/$name:.*/", "$name: $value", $paramsFile);
         $ok = file_put_contents($paramsFilename, $updated);
         if ($ok) {
-            $this->info(
+            $this->logger->info(
                 'Set Parameter %paramname%',
                 array('%paramname%' => $name),
                 array('link' => $this->generateUrl($from))
             );
         } else {
-            $this->info(
+            $this->logger->info(
                 'Warning: Parameter %paramname% not set',
                 array('%paramname%' => $name),
                 array('link' => $this->generateUrl($from))
@@ -2362,10 +2160,10 @@ EOF;
                     'changePassword',
                     $t->trans("Passwords do not match", array(), 'BinovoElkarBackup')
                 );
-                $this->info(
+                $this->logger->info(
                     'Change password for user %username% failed. Passwords do not match.',
                     array('%username%' => $user->getUsername()),
-                    array('link' => $this->generateUserRoute($user->getId()))
+                    array('link' => $this->router->generateUserRoute($user->getId()))
                 );
             }
             if ($encoder->encodePassword($data['oldPassword'], $user->getSalt()) !== $user->getPassword()) {
@@ -2374,10 +2172,10 @@ EOF;
                     'changePassword',
                     $t->trans("Wrong old password", array(), 'BinovoElkarBackup')
                 );
-                $this->info(
+                $this->logger->info(
                     'Change password for user %username% failed. Wrong old password.',
                     array('%username%' => $user->getUsername()),
-                    array('link' => $this->generateUserRoute($user->getId()))
+                    array('link' => $this->router->generateUserRoute($user->getId()))
                 );
             }
             if ($ok) {
@@ -2391,10 +2189,10 @@ EOF;
                     'changePassword',
                     $t->trans("Password changed", array(), 'BinovoElkarBackup')
                 );
-                $this->info(
+                $this->logger->info(
                     'Change password for user %username%.',
                     array('%username%' => $user->getUsername()),
-                    array('link' => $this->generateUserRoute($user->getId()))
+                    array('link' => $this->router->generateUserRoute($user->getId()))
                 );
                 $manager->flush();
             }
@@ -2430,7 +2228,7 @@ EOF;
         $response = new Response();
         if (is_file($log->getLogfilePath())) {
             // Logfile exists
-            $this->info(
+            $this->logger->info(
                 'Download log %logfile%',
                 array('%logfile%' => $log->getLogfile()),
                 array('link' => $this->generateUrl('downloadLog', array('id' => $id)))
@@ -2448,7 +2246,7 @@ EOF;
             );
         } elseif (is_file($log->getLogFilePath() . ".gz")) {
             // Logfile is compressed (gz)
-            $this->info(
+            $this->logger->info(
                 'Download log %logfile%.gz',
                 array('%logfile%' => $log->getLogfile()),
                 array('link' => $this->generateUrl('downloadLog', array('id' => $id)))
@@ -2466,7 +2264,7 @@ EOF;
             );
         } else {
             // Logfile does not exist
-            $this->info(
+            $this->logger->info(
                 'Log not found: %logfile%',
                 array('%logfile%' => $log->getLogfilePath()),
                 array('link' => $this->generateUrl('downloadLog', array('id' => $id)))
@@ -2495,10 +2293,10 @@ EOF;
         $script = $repository->find($id);
         try {
             $manager->remove($script);
-            $this->info(
+            $this->logger->info(
                 'Delete script %scriptname%',
                 array('%scriptname%' => $script->getName()),
-                array('link' => $this->generateScriptRoute($id))
+                array('link' => $this->router->generateScriptRoute($id))
             );
             $manager->flush();
         } catch (PDOException $e) {
@@ -2532,10 +2330,10 @@ EOF;
                 'BinovoElkarBackup'
             ));
         }
-        $this->info(
+        $this->logger->info(
             'Download script %scriptname%',
             array('%scriptname%' => $script->getName()),
-            array('link' => $this->generateScriptRoute($id))
+            array('link' => $this->router->generateScriptRoute($id))
         );
         $manager->flush();
         $response = new Response();
@@ -2577,10 +2375,10 @@ EOF;
                 'translator' => $t
             )
         );
-        $this->debug(
+        $this->logger->debug(
             'View script %scriptname%.',
             array('%scriptname%' => $script->getName()),
-            array('link' => $this->generateScriptRoute($id))
+            array('link' => $this->router->generateScriptRoute($id))
         );
         $this->getDoctrine()->getManager()->flush();
         
@@ -2626,10 +2424,10 @@ EOF;
                 $em = $this->getDoctrine()->getManager();
                 $script->setLastUpdated(new DateTime()); // we to this to force the PostPersist script to run.
                 $em->persist($script);
-                $this->info(
+                $this->logger->info(
                     'Save script %scriptname%.',
                     array('%scriptname%' => $script->getScriptname()),
-                    array('link' => $this->generateScriptRoute($id))
+                    array('link' => $this->router->generateScriptRoute($id))
                 );
                 $em->flush();
                 $result = $this->redirect($this->generateUrl('showScripts'));
@@ -2656,10 +2454,10 @@ EOF;
             $manager = $db->getManager();
             $user = $repository->find($id);
             $manager->remove($user);
-            $this->info(
+            $this->logger->info(
                 'Delete user %username%.',
                 array('%username%' => $user->getUsername()),
-                array('link' => $this->generateUserRoute($id))
+                array('link' => $this->router->generateUserRoute($id))
             );
             $manager->flush();
         }
@@ -2680,10 +2478,10 @@ EOF;
             $user = $repository->find($id);
         }
         $form = $this->createForm(UserType::class, $user, array('translator' => $t));
-        $this->debug(
+        $this->logger->debug(
             'View user %username%.',
             array('%username%' => $user->getUsername()),
-            array('link' => $this->generateUserRoute($id))
+            array('link' => $this->router->generateUserRoute($id))
         );
         $this->getDoctrine()->getManager()->flush();
         
@@ -2716,10 +2514,10 @@ EOF;
             }
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
-            $this->info(
+            $this->logger->info(
                 'Save user %username%.',
                 array('%username%' => $user->getUsername()),
-                array('link' => $this->generateUserRoute($id))
+                array('link' => $this->router->generateUserRoute($id))
             );
             $em->flush();
             
@@ -2759,7 +2557,7 @@ EOF;
             $request->query->get('page', 1)/*page number*/,
             $request->get('lines', $this->getUserPreference($request, 'linesperpage'))
         );
-        $this->debug(
+        $this->logger->debug(
             'View users',
             array(),
             array('link' => $this->generateUrl('showUsers'))
@@ -2921,10 +2719,10 @@ EOF;
             $data = $form->getData();
             $em = $this->getDoctrine()->getManager();
             $em->persist($data);
-            $this->info(
+            $this->logger->info(
                 'Save preferences for user %username%.',
                 array('%username%' => $user->getUsername()),
-                array('link' => $this->generateUserRoute($user->getId()))
+                array('link' => $this->router->generateUserRoute($user->getId()))
             );
             $em->flush();
             
@@ -2932,10 +2730,10 @@ EOF;
             $this->setLanguage($request, $language);
             return $this->redirect($this->generateUrl('managePreferences'));
         } else {
-            $this->info(
+            $this->logger->info(
                 'Manage preferences for user %username%.',
                 array('%username%' => $user->getUsername()),
-                array('link' => $this->generateUserRoute($user->getId()))
+                array('link' => $this->router->generateUserRoute($user->getId()))
             );
             $this->getDoctrine()->getManager()->flush();
             

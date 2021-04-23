@@ -77,4 +77,23 @@ services:
     App\Migrations\MigrationFactoryDecorator:
         decorates: Doctrine\Migrations\Version\DbalMigrationFactory
         arguments: ['@App\Migrations\MigrationFactoryDecorator.inner', '%upload_dir%', "@=container.hasParameter('backup_dir') ? parameter('backup_dir') : null", '@service_container']
-        
+    App\Api\DataProviders\ClientCollectionDataProvider:
+        arguments:
+             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+    App\Api\DataProviders\ClientItemDataProvider:
+    App\Api\DataProviders\ScriptCollectionDataProvider:
+        arguments:
+             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+    App\Api\DataProviders\JobCollectionDataProvider:
+        arguments:
+             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+    App\Api\DataProviders\UserCollectionDataProvider:
+        arguments:
+             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+    App\Api\DataProviders\PolicyCollectionDataProvider:
+        arguments:
+             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+    App\Api\DataProviders\BackupLocationCollectionDataProvider:
+        arguments:
+             $collectionExtensions: !tagged api_platform.doctrine.orm.query_extension.collection
+             
