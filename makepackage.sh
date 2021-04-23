@@ -40,6 +40,7 @@ mkdir -p .debian/var/cache/elkarbackup
 mkdir -p .debian/var/log/elkarbackup
 mkdir -p .debian/var/log/elkarbackup/jobs
 mkdir -p .debian/var/lib/elkarbackup/sessions
+mkdir -p .debian/usr/share/elkarbackup/var/
 ln -s /var/cache/elkarbackup        .debian/usr/share/elkarbackup/var/cache
 ln -s /var/log/elkarbackup          .debian/usr/share/elkarbackup/var/log
 ln -s /var/lib/elkarbackup/sessions .debian/usr/share/elkarbackup/var/sessions

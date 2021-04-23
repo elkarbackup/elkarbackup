@@ -370,7 +370,7 @@ user_help: |
  <h4>Role</h4>
  <ul>
   <li><b>Admin</b>: admin users will be able to change anything</li>
-  <li><b>User</b>: limited users can only manage their own clients and jobs. Caution: they are able to see other users activity logs</li>
+  <li><b>User</b>: <span style="font-weight: bold; color: red">DEPRECATED</span> due to security <a href="https://github.com/elkarbackup/elkarbackup/issues/157">issue#157</a>. Can't login. Please change role to Admin or remove user.</li>
  </ul>
  <h4>Password</h4>
  You can't read the password in this field, you can only use it to change it. If you put anything but the empty string in this field and save the password will be updated.

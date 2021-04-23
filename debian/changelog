@@ -1,4 +1,4 @@
-elkarbackup (2.0.0~rc1) stable; urgency=medium
+elkarbackup (2.0.0) stable; urgency=medium
 
   [ Uxue Anabitarte ]
   * Remove Tahoe integration (closes #458)
@@ -9,6 +9,7 @@ elkarbackup (2.0.0~rc1) stable; urgency=medium
   * [Security] Generate new Symfony secret on install or on upgrade if it was left unchanged (closes #481)
   * Pre/post script execution order changed to be alphabetic, pre ascending and post descending (closes #466)
   * Debian 11 Bullseye support (requires Debian 10 rsnaphost package installation, closes #456)
+  * [Security] Deprecate USER role users, blocking login, due to security issues (closes #157)
 
  --  Eneko Lacunza <elacunza@binovo.es>  Thu, 21 Apr 2021 16:00:00 +0100
 
