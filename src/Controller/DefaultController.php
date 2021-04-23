@@ -196,14 +196,16 @@ class DefaultController extends AbstractController
     {
         $t = $this->translator;
         try {
+            $repository = $this->getDoctrine()->getRepository('App:Client');
+            $clientName = $repository->find($id)->getName();
             $clientService->delete($id);
             $response = new JsonResponse(array(
                 'error' => false,
                 'msg' => $t->trans(
-                    'Client %clientId% deleted successfully.',
-                    array('%clientId%' => $id),
+                    'Client %clientName% deleted successfully.',
+                    array('%clientName%' => $clientName),
                     'BinovoElkarBackup'
-                    ),
+                ),
                 'action' => 'deleteClientRow',
                 'data' => array($id)
             ));
@@ -212,7 +214,7 @@ class DefaultController extends AbstractController
                 'error' => false,
                 'msg' => $t->trans(
                     'Unable to delete client: Permission denied.',
-                    ),
+                ),
             ));
         } catch (Exception $e) {
             $response = new JsonResponse(array(
@@ -221,7 +223,7 @@ class DefaultController extends AbstractController
                     'Unable to delete client: %extrainfo%',
                     array('%extrainfo%' => $e->getMessage()),
                     'BinovoElkarBackup'
-                    ),
+                ),
             ));
         }
         

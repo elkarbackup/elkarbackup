@@ -3,8 +3,8 @@ namespace App\Api\Dto;
 
 class PolicyOutput
 {
-    private $id;
     private $description;
+    private $id;
     private $name;
 
     /**

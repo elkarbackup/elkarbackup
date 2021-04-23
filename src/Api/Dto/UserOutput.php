@@ -6,8 +6,8 @@ class UserOutput
     private $email;
     private $id;
     private $isActive;
-    private $username;
     private $roles;
+    private $username;
 
     /**
      * @return string
@@ -36,17 +36,17 @@ class UserOutput
     /**
      * @return string
      */
-    public function getUsername()
+    public function getRoles()
     {
-        return $this->username;
+        return $this->roles;
     }
 
     /**
      * @return string
      */
-    public function getRoles()
+    public function getUsername()
     {
-        return $this->roles;
+        return $this->username;
     }
 
     /**
@@ -74,14 +74,6 @@ class UserOutput
     }
 
     /**
-     * @param string $username
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-    }
-
-    /**
      * @param string $roles
      */
     public function setRoles($roles)
@@ -89,5 +81,12 @@ class UserOutput
         $this->roles = $roles;
     }
 
+    /**
+     * @param string $username
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
 }
 

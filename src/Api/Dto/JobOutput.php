@@ -15,10 +15,10 @@ class JobOutput
     private $name;
     private $notificationsEmail;
     private $notificationsTo = '["owner"]';
+    private $path;
     private $policy;
     private $postScripts;
     private $preScripts;
-    private $path;
     private $token = null;
     private $useLocalPermissions = true;
 
@@ -119,6 +119,14 @@ class JobOutput
     }
 
     /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
      * @return integer
      */
     public function getPolicy()
@@ -140,14 +148,6 @@ class JobOutput
     public function getPreScripts()
     {
         return $this->preScripts;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPath()
-    {
-        return $this->path;
     }
 
     /**
@@ -263,6 +263,14 @@ class JobOutput
     }
 
     /**
+     * @param string $path
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
+
+    /**
      * @param integer $policy
      */
     public function setPolicy($policy)
@@ -284,14 +292,6 @@ class JobOutput
     public function setPreScripts($preScripts)
     {
         $this->preScripts = $preScripts;
-    }
-
-    /**
-     * @param string $path
-     */
-    public function setPath($path)
-    {
-        $this->path = $path;
     }
 
     /**

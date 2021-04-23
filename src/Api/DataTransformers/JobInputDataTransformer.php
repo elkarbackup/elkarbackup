@@ -23,6 +23,18 @@ class JobInputDataTransformer implements DataTransformerInterface
         $this->security      = $security;
     }
 
+    private function setBackupLocation (Job $job, $backupLocationId)
+    {
+        $repository = $this->entityManager->getRepository('App:BackupLocation');
+        $query = $repository->createQueryBuilder('c');
+        $query->where($query->expr()->eq('c.id', $backupLocationId));
+        if (null == $query->getQuery()->getOneOrNullResult()) {
+            throw new InvalidArgumentException ("Incorrect backup location id");
+        } else {
+            $job->setBackupLocation($query->getQuery()->getOneOrNullResult());
+        }
+    }
+
     private function setClient (Job $job, $clientId) {
         $repository = $this->entityManager->getRepository('App:Client');
         $query = $repository->createQueryBuilder('c');
@@ -48,6 +60,25 @@ class JobInputDataTransformer implements DataTransformerInterface
         } else {
             throw new InvalidArgumentException("Incorrect notification level (0, 200, 300, 400, 1000)");
         }
+    }
+
+    private function setNotificationsEmail (Job $job, $notificationsEmail)
+    {
+        if (isset($notificationsEmail) && !filter_var($notificationsEmail, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidArgumentException("Incorrect notification email address");
+        }
+        
+        $job->setNotificationsEmail($notificationsEmail);
+    }
+
+    private function setNotificationsTo (Job $job, $notificationsTo)
+    {
+        foreach ($notificationsTo as $to) {
+            if ("admin" != $to && "owner"!=$to && "email"!=$to) {
+                throw new InvalidArgumentException("Incorrect notifications to argument (owner, admin, email)");
+            }
+        }
+        $job->setNotificationsTo($notificationsTo);
     }
 
     private function setPolicy (Job $job, $policyId)
@@ -100,37 +131,6 @@ class JobInputDataTransformer implements DataTransformerInterface
                 throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
             }
         }
-    }
-
-    private function setBackupLocation (Job $job, $backupLocationId)
-    {
-        $repository = $this->entityManager->getRepository('App:BackupLocation');
-        $query = $repository->createQueryBuilder('c');
-        $query->where($query->expr()->eq('c.id', $backupLocationId));
-        if (null == $query->getQuery()->getOneOrNullResult()) {
-            throw new InvalidArgumentException ("Incorrect backup location id");
-        } else {
-            $job->setBackupLocation($query->getQuery()->getOneOrNullResult());
-        }
-    }
-
-    private function setNotificationsTo (Job $job, $notificationsTo)
-    {
-        foreach ($notificationsTo as $to) {
-            if ("admin" != $to && "owner"!=$to && "email"!=$to) {
-                throw new InvalidArgumentException("Incorrect notifications to argument (owner, admin, email)");
-            }
-        }
-        $job->setNotificationsTo($notificationsTo);
-    }
-
-    private function setNotificationsEmail (Job $job, $notificationsEmail)
-    {
-        if (isset($notificationsEmail) && !filter_var($notificationsEmail, FILTER_VALIDATE_EMAIL)) {
-            throw new InvalidArgumentException("Incorrect notification email address");
-        }
-        
-        $job->setNotificationsEmail($notificationsEmail);
     }
 
     /**
