@@ -1,3 +1,5 @@
+# 2.0
+
 ## 2.0.0 (2021/04/21)
 Security fixes:
   * Generate new Symfony secret on install or on upgrade if it was left unchanged (closes #481)
@@ -12,6 +14,8 @@ Enhacements:
 Bugfixes:
   * Fix missing php-xml dependency in package (closes #473)
 
+# 1.4
+
 ## 1.4.0~rc2 (2021/02/24)
   * Fix critical bug in elkarbackup:tick that fails running client pre-scripts, aborting all backup jobs.
 
@@ -22,6 +26,8 @@ Bugfixes:
   * Ubuntu 20.04 support (closes #432)
   * Remove installation script (#436)
   * Remove all distro/version support except Debian 10, Ubuntu 20.04 and docker image.
+
+# 1.3
 
 ## 1.3.5 (2021/01/01)
 Security fix:
@@ -69,6 +75,8 @@ Bugfixes:
 - Username regular expression modified (#285)
 - Tahoe variable misspelling fixed (#269)
 - Fixed tahoe navar bug (#268)
+
+# 1.2
 
 ## 1.2.7 (2017/12/20)
 Bugfixes:
@@ -133,6 +141,8 @@ Features:
 Bugfixes:
   - Missing html tag (fixes #113)
   - Logger shows wrong message (fixes #114)
+
+# 1.1
 
 ## 1.1.5 (2015/10/14)
 Bugfixes:
@@ -207,6 +217,8 @@ Features:
 
 Bugfixes:
   - Fix dpkg-reconfigure error (#54 @xezpeleta)
+
+# 1.0
 
 ## 1.0.23 (2014/07/04)
 
