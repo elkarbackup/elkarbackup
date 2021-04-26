@@ -6,15 +6,15 @@
 
 namespace App\Entity;
 
-use App\Lib\Globals;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use App\Api\Dto\JobInput;
 use App\Api\Dto\JobOutput;
+use App\Api\Filter\SearchFilter;
+use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
 use Monolog\Logger;
 use \RuntimeException;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiFilter;
-use App\Api\Filter\SearchFilter;
 
 /**
  * @ApiResource(
