@@ -132,3 +132,5 @@ EXPOSE 80
 
 LABEL maintainer="Xabi Ezpeleta <xezpeleta@gmail.com>"
 LABEL org.opencontainers.image.source=https://github.com/elkarbackup/elkarbackup
+LABEL org.opencontainers.image.url=https://github.com/elkarbackup/elkarbackup/blob/master/docker/README.md
+LABEL org.opencontainers.image.documentation=https://github.com/elkarbackup/elkarbackup/blob/master/docker/README.md
