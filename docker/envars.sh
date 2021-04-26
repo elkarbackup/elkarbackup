@@ -19,7 +19,7 @@ export SYMFONY__MAILER__PASSWORD=${SYMFONY__MAILER__PASSWORD:=null}
 export SYMFONY__MAILER__FROM=${SYMFONY__MAILER__FROM}
 
 # Elkarbackup default configuration
-export SYMFONY__EB__SECRET=${SYMFONY__EB__SECRET:=fba546d6ab6abc4a01391d161772a14e093c7aa2}
+export SYMFONY__EB__SECRET=${SYMFONY__EB__SECRET:=ThisTokenIsNotSoSecretChangeItElkarbackup}
 export SYMFONY__EB__UPLOAD__DIR=${SYMFONY__EB__UPLOAD__DIR:=/app/uploads}
 export SYMFONY__EB__BACKUP__DIR=${SYMFONY__EB__BACKUP__DIR:=/app/backups}
 export SYMFONY__EB__TMP__DIR=${SYMFONY__EB__TMP__DIR:=/app/tmp}
