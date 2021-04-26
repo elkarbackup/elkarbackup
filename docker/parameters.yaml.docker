@@ -15,7 +15,7 @@ parameters:
     secret: '%env(SYMFONY__EB__SECRET)%'
     upload_dir: '%env(SYMFONY__EB__UPLOAD__DIR)%'
     backup_dir: '%env(SYMFONY__EB__BACKUP__DIR)%'
-    public_key: '%env(SYMFONY__EB__BACKUP__DIR)%'
+    public_key: '%env(SYMFONY__EB__PUBLIC__KEY)%'
     max_log_age: P1Y
     tmp_dir: '%env(SYMFONY__EB__TMP__DIR)%'
     rsnapshot: /usr/bin/rsnapshot
