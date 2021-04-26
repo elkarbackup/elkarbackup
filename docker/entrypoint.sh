@@ -41,7 +41,7 @@ done
 cd "${EB_DIR}"
 
 # Create/update database
-php bin/console doctrine:database:create
+php bin/console doctrine:database:create --if-not-exists
 php bin/console doctrine:migrations:migrate --no-interaction
 # Create admin user
 php bin/console elkarbackup:create_admin
