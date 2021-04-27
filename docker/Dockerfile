@@ -40,26 +40,6 @@ RUN set -ex; \
       # copy a file to a hardcoded path it does not exist in this docker image.
       # We can disable it without negative consequences
       rm migrations/Version20130306101349.php;
-      
-## Download jquery
-ENV JQUERY_VERSION 1.12.0
-ENV JQUERY_SHA256 5f1ab65fe2ad6b381a1ae036716475bf78c9b2e309528cf22170c1ddeefddcbf
-RUN set -ex; \
-      cd /app/elkarbackup; \
-      mkdir -p public/js/jquery && cd public/js/jquery; \
-      curl -o jquery-"${JQUERY_VERSION}".min.js "http://code.jquery.com/jquery-${JQUERY_VERSION}.min.js"; \
-      echo "${JQUERY_SHA256}  jquery-${JQUERY_VERSION}.min.js" | sha256sum -c -;
-
-## Download Dojo
-ENV DOJO_VERSION 1.8.14
-ENV DOJO_SHA256 2023c8c8c8722b4c63976b7a269e20bda2fa09010706aef10b3821be81691727
-RUN set -ex; \
-      cd /app/elkarbackup; \
-      mkdir -p public/js && cd public/js; \
-      curl -o dojo.tar.gz "https://download.dojotoolkit.org/release-${DOJO_VERSION}/dojo-release-${DOJO_VERSION}.tar.gz"; \
-      echo "${DOJO_SHA256}  dojo.tar.gz" | sha256sum -c -; \
-      tar -xzf dojo.tar.gz && rm dojo.tar.gz;
-
 
 ## Custom composer.json (database not required)
 COPY $DOCKERDIR/composer.json.docker /app/elkarbackup/composer.json
