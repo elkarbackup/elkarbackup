@@ -38,7 +38,7 @@ class JobService
         {
             return;
         }
-        throw new PermissionException("Unable to delete client: Permission denied.");
+        throw new PermissionException("Unable to delete job: Permission denied.");
     }
 
     public function delete($id)
