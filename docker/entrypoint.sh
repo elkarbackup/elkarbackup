@@ -67,6 +67,7 @@ rm -rf var/cache/*
 
 # Clear cache and sessions..
 php bin/console cache:clear
+php bin/console assets:install
 
 apache2-foreground &
 
