@@ -37,9 +37,6 @@ class JobCollectionDataProvider implements ContextAwareCollectionDataProviderInt
         $queryNameGenerator = new QueryNameGenerator();
         foreach ($this->collectionExtensions as $extension) {
             $extension->applyToCollection($query, $queryNameGenerator, $resourceClass, $operationName);
-            if ($extension instanceof QueryResultCollectionExtensionInterface && $extension->supportsResult($resourceClass,$operationName)) {
-                return $extension->getResult($query, $resourceClass, $operationName);
-            }
         }
         
         return $query->getQuery()->getResult();
