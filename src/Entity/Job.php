@@ -10,6 +10,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use App\Api\Dto\JobInput;
 use App\Api\Dto\JobOutput;
+use App\Api\Filter\JobByNameFilter;
 use App\Api\Filter\JobClientFilter;
 use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
@@ -65,6 +66,7 @@ class Job
     protected $isActive = true;
 
     /**
+     * @ApiFilter(JobByNameFilter::class)
      * @ORM\Column(type="string", length=255)
      */
     protected $name;
