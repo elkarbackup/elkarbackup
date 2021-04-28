@@ -56,8 +56,8 @@ class ClientOutputDataTransformer implements DataTransformerInterface
         $output->setQuota($data->getQuota());
         $output->setDescription($data->getDescription());
         $output->setIsActive($data->getIsActive());
-        $output->setPreScript($this->getScriptsId($data->getPreScripts()));
-        $output->setPostScript($this->getScriptsId($data->getPostScripts()));
+        $output->setPreScripts($this->getScriptsId($data->getPreScripts()));
+        $output->setPostScripts($this->getScriptsId($data->getPostScripts()));
         $output->setMaxParallelJobs($data->getMaxParallelJobs());
         $output->setOwner($this->getOwnerId($data));
         $output->setSshArgs($data->getSshArgs());
