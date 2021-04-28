@@ -114,8 +114,8 @@ class ClientInputDataTransformer implements DataTransformerInterface
         $client->setQuota($data->getQuota());
         $client->setDescription($data->getDescription());
         $client->setIsActive($data->getIsActive());
-        $this->setPreScripts($client, $data->getPreScript());
-        $this->setPostScripts($client, $data->getPostScript());
+        $this->setPreScripts($client, $data->getPreScripts());
+        $this->setPostScripts($client, $data->getPostScripts());
         $client->setMaxParallelJobs($data->getMaxParallelJobs());
         $this->setOwner($client, $data->getOwner());
         $client->setSshArgs($data->getSshArgs());

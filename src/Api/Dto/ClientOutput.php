@@ -11,8 +11,8 @@ class ClientOutput
     private $maxParallelJobs = 1;
     private $name;
     private $owner;
-    private $postScript;
-    private $preScript;
+    private $postScripts;
+    private $preScripts;
     private $quota = -1;
     private $rsyncLongArgs;
     private $rsyncShortArgs;
@@ -69,17 +69,17 @@ class ClientOutput
     /**
      * @return array
      */
-    public function getPostScript()
+    public function getPostScripts()
     {
-        return $this->postScript;
+        return $this->postScripts;
     }
 
     /**
      * @return array
      */
-    public function getPreScript()
+    public function getPreScripts()
     {
-        return $this->preScript;
+        return $this->preScripts;
     }
 
     /**
@@ -171,19 +171,19 @@ class ClientOutput
     }
 
     /**
-     * @param array $postScript
+     * @param array $postScripts
      */
-    public function setPostScript($postScript)
+    public function setPostScripts($postScripts)
     {
-        $this->postScript = $postScript;
+        $this->postScripts = $postScripts;
     }
 
     /**
      * @param array $preScript
      */
-    public function setPreScript($preScript)
+    public function setPreScripts($preScripts)
     {
-        $this->preScript = $preScript;
+        $this->preScripts = $preScripts;
     }
 
     /**
