@@ -8,10 +8,10 @@ use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class SearchFilter
- * @package App\Filter
+ * Class JobClientFilter
+ * @package App\Api\Filter
  */
-class SearchFilter extends AbstractFilter
+class JobClientFilter extends AbstractFilter
 {
     protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null)
     {
