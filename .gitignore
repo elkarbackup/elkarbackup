@@ -30,3 +30,6 @@ Thumbs.db
 /.buildpath
 /.project
 /.settings/
+/composer
+/composer.phar
+/lintian.log

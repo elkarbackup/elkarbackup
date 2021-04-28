@@ -24,6 +24,13 @@ if [ ! -z "$PHP_TZ" ];then
   printf "[PHP]\ndate.timezone = ${PHP_TZ}\n" > /usr/local/etc/php/conf.d/tzone.ini
 fi
 
+## = Generate Symfony secret =
+## Only if SYMFONY__SECRET has the default value
+
+if [ ! -z "$SYMFONY__EB__SECRET" ] && [ "$SYMFONY__EB__SECRET" == "ThisTokenIsNotSoSecretChangeItElkarbackup" ];then
+  SYMFONY__EB__SECRET=`tr -dc A-Za-z0-9 </dev/urandom | head -c 40`
+fi
+
 # Run commands
 if [ ! -z "$1" ]; then
   command="$@"
@@ -41,7 +48,7 @@ done
 cd "${EB_DIR}"
 
 # Create/update database
-php bin/console doctrine:database:create
+php bin/console doctrine:database:create --if-not-exists
 php bin/console doctrine:migrations:migrate --no-interaction
 # Create admin user
 php bin/console elkarbackup:create_admin

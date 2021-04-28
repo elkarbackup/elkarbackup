@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Ask a question on how to use Elkarbackup
+    about: For general-purpose questions and answers, please use the mailing list.
+    url: https://groups.google.com/g/elkarbackup-users
