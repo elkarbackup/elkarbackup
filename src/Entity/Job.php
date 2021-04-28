@@ -10,7 +10,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use App\Api\Dto\JobInput;
 use App\Api\Dto\JobOutput;
-use App\Api\Filter\SearchFilter;
+use App\Api\Filter\JobClientFilter;
 use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
 use Monolog\Logger;
@@ -42,7 +42,7 @@ class Job
     const NOTIFICATION_LEVEL_NONE    = 1000;
 
     /**
-     * @ApiFilter(SearchFilter::class)
+     * @ApiFilter(JobClientFilter::class)
      * @ORM\ManyToOne(targetEntity="Client", inversedBy="jobs")
      */
     protected $client;
