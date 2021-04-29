@@ -93,14 +93,16 @@ class JobInputDataTransformer implements DataTransformerInterface
         }
     }
 
-    private function setPostScripts (Job $job, $postScripts)
+    private function setPostScripts (Job $job, $postScripts, $update)
     {
+        if ($update) {
+            foreach ($job->getPostScripts() as $script) {
+                $job->removePostScript($script);
+            }
+        }
         $repository = $this->entityManager->getRepository('App:Script');
-        $query = $repository->createQueryBuilder('s');
         foreach ($postScripts as $script) {
-            $query = $repository->createQueryBuilder('s');
-            $query->where($query->expr()->eq('s.id', $script));
-            $result = $query->getQuery()->getOneOrNullResult();
+            $result = $repository->find($script);
             if (null != $result) {
                 if ($result->getIsJobPost()) {
                     $job->addPostScript($result);
@@ -113,14 +115,16 @@ class JobInputDataTransformer implements DataTransformerInterface
         }
     }
 
-    private function setPreScripts (Job $job, $preScripts)
+    private function setPreScripts (Job $job, $preScripts, $update)
     {
+        if ($update) {
+            foreach ($job->getPreScripts() as $script) {
+                $job->removePreScript($script);
+            }
+        }
         $repository = $this->entityManager->getRepository('App:Script');
-        $query = $repository->createQueryBuilder('s');
         foreach ($preScripts as $script) {
-            $query = $repository->createQueryBuilder('s');
-            $query->where($query->expr()->eq('s.id', $script));
-            $result = $query->getQuery()->getOneOrNullResult();
+            $result = $repository->find($script);
             if (null != $result) {
                 if ($result->getIsJobPre()) {
                     $job->addPreScript($result);
@@ -152,8 +156,10 @@ class JobInputDataTransformer implements DataTransformerInterface
     {
         if (isset($context[AbstractItemNormalizer::OBJECT_TO_POPULATE])) {
             $job = $context[AbstractItemNormalizer::OBJECT_TO_POPULATE];
+            $update = true;
         } else {
             $job = new Job();
+            $update = false;
         }
         $job->setName($data->getName());
         $job->setDescription($data->getDescription());
@@ -165,8 +171,8 @@ class JobInputDataTransformer implements DataTransformerInterface
         $job->setExclude($data->getExclude());
         $job->setInclude($data->getInclude());
         $this->setPolicy($job, $data->getPolicy());
-        $this->setPostScripts($job, $data->getPostScripts());
-        $this->setPreScripts($job, $data->getPreScripts());
+        $this->setPostScripts($job, $data->getPostScripts(), $update);
+        $this->setPreScripts($job, $data->getPreScripts(), $update);
         $job->setPath($data->getPath());
         $job->setUseLocalPermissions($data->getUseLocalPermissions());
         $job->setToken($data->getToken());
