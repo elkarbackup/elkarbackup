@@ -107,6 +107,9 @@
     "incenteev/composer-parameter-handler": {
         "version": "v2.1.4"
     },
+    "justinrainbow/json-schema": {
+        "version": "5.2.10"
+    },
     "knplabs/knp-components": {
         "version": "v3.0.0"
     },
@@ -185,6 +188,9 @@
     "symfony/asset": {
         "version": "v4.4.20"
     },
+    "symfony/browser-kit": {
+        "version": "v4.4.20"
+    },
     "symfony/cache": {
         "version": "v4.4.19"
     },
@@ -207,6 +213,9 @@
             "config/bootstrap.php"
         ]
     },
+    "symfony/css-selector": {
+        "version": "v4.4.20"
+    },
     "symfony/debug": {
         "version": "v4.4.19"
     },
@@ -215,6 +224,9 @@
     },
     "symfony/doctrine-bridge": {
         "version": "v4.4.19"
+    },
+    "symfony/dom-crawler": {
+        "version": "v4.4.20"
     },
     "symfony/dotenv": {
         "version": "v4.4.19"
@@ -273,6 +285,9 @@
             "src/Kernel.php"
         ]
     },
+    "symfony/http-client": {
+        "version": "v4.4.21"
+    },
     "symfony/http-client-contracts": {
         "version": "v2.3.1"
     },
@@ -326,6 +341,21 @@
     },
     "symfony/orm-pack": {
         "version": "v2.1.0"
+    },
+    "symfony/phpunit-bridge": {
+        "version": "5.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "5.1",
+            "ref": "bf16921ef8309a81d9f046e9b6369c46bcbd031f"
+        },
+        "files": [
+            ".env.test",
+            "bin/phpunit",
+            "phpunit.xml.dist",
+            "tests/bootstrap.php"
+        ]
     },
     "symfony/polyfill-intl-icu": {
         "version": "v1.22.1"
@@ -423,6 +453,9 @@
     },
     "symfony/templating": {
         "version": "v4.4.19"
+    },
+    "symfony/test-pack": {
+        "version": "v1.0.7"
     },
     "symfony/translation": {
         "version": "3.3",
