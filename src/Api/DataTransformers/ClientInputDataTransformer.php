@@ -68,7 +68,7 @@ class ClientInputDataTransformer implements DataTransformerInterface
         }
     }
 
-    private function setPreScripts(Client $client, $preScripts): void
+    private function setPreScripts($client, $preScripts): void
     {
         foreach ($client->getPreScripts()->toArray() as $script) {
             $client->removePreScript($script);
