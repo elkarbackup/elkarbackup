@@ -48,10 +48,12 @@ class ClientInputDataTransformer implements DataTransformerInterface
         }
     }
 
-    private function setPostScripts($client, $postScripts): void
+    private function setPostScripts($client, $postScripts, $update): void
     {
-        foreach ($client->getPostScripts() as $script) {
-            $client->removePostScript($script);
+        if ($update) {
+            foreach ($client->getPostScripts() as $script) {
+                $client->removePostScript($script);
+            }
         }
         $repository = $this->entityManager->getRepository('App:Script');
         foreach ($postScripts as $script) {
@@ -68,10 +70,12 @@ class ClientInputDataTransformer implements DataTransformerInterface
         }
     }
 
-    private function setPreScripts($client, $preScripts): void
+    private function setPreScripts($client, $preScripts, $update): void
     {
-        foreach ($client->getPreScripts()->toArray() as $script) {
-            $client->removePreScript($script);
+        if ($update) {
+            foreach ($client->getPreScripts() as $script) {
+                $client->removePreScript($script);
+            }
         }
         $repository = $this->entityManager->getRepository('App:Script');
         foreach ($preScripts as $script) {
@@ -106,16 +110,18 @@ class ClientInputDataTransformer implements DataTransformerInterface
     {
         if (isset($context[AbstractItemNormalizer::OBJECT_TO_POPULATE])) {
             $client = $context[AbstractItemNormalizer::OBJECT_TO_POPULATE];
+            $update = true;
         } else {
             $client = new Client();
+            $update = false;
         }
         $client->setName($data->getName());
         $client->setUrl($data->getUrl());
         $client->setQuota($data->getQuota());
         $client->setDescription($data->getDescription());
         $client->setIsActive($data->getIsActive());
-        $this->setPreScripts($client, $data->getPreScripts());
-        $this->setPostScripts($client, $data->getPostScripts());
+        $this->setPreScripts($client, $data->getPreScripts(), $update);
+        $this->setPostScripts($client, $data->getPostScripts(), $update);
         $client->setMaxParallelJobs($data->getMaxParallelJobs());
         $this->setOwner($client, $data->getOwner());
         $client->setSshArgs($data->getSshArgs());
