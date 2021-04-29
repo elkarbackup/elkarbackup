@@ -2,6 +2,7 @@
 namespace App\Api\DataPersisters;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
+use ApiPlatform\Core\Exception\InvalidArgumentException;
 use App\Entity\Job;
 use App\Exception\APIException;
 use App\Exception\PermissionException;
