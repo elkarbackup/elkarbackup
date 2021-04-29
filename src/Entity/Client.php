@@ -8,6 +8,8 @@ namespace App\Entity;
 
 use App\Api\Dto\ClientInput;
 use App\Api\Dto\ClientOutput;
+use App\Api\Filter\ClientByNameFilter;
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
@@ -54,6 +56,7 @@ class Client
     protected $jobs;
 
     /**
+     * @ApiFilter(ClientByNameFilter::class)
      * @ORM\Column(type="string", length=255, unique=true)
      */
     protected $name;
