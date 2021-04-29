@@ -42,8 +42,8 @@ class Job
     const NOTIFICATION_LEVEL_ERROR   = Logger::ERROR;
     const NOTIFICATION_LEVEL_NONE    = 1000;
 
-
     /**
+     * @ApiFilter(JobClientFilter::class)
      * @ORM\ManyToOne(targetEntity="Client", inversedBy="jobs")
      */
     protected $client;

@@ -44,9 +44,6 @@ class ClientCollectionDataProvider implements ContextAwareCollectionDataProvider
         
         foreach ($this->collectionExtensions as $extension) {
             $extension->applyToCollection($query, $queryNameGenerator, $resourceClass, $operationName);
-            if ($extension instanceof QueryResultCollectionExtensionInterface && $extension->supportsResult($resourceClass,$operationName)) {
-                return $extension->getResult($query, $resourceClass, $operationName);
-            }
         }
         $this->logger->debug(
             'View clients',
