@@ -50,12 +50,12 @@ class ClientInputDataTransformer implements DataTransformerInterface
 
     private function setPostScripts($client, $postScripts): void
     {
+        foreach ($client->getPostScripts() as $script) {
+            $client->removePostScript($script);
+        }
         $repository = $this->entityManager->getRepository('App:Script');
-        $query = $repository->createQueryBuilder('s');
         foreach ($postScripts as $script) {
-            $query = $repository->createQueryBuilder('s');
-            $query->where($query->expr()->eq('s.id', $script));
-            $result = $query->getQuery()->getOneOrNullResult();
+            $result = $repository->find($script);
             if (null != $result) {
                 if ($result->getIsClientPost()) {
                     $client->addPostScript($result);
@@ -68,14 +68,14 @@ class ClientInputDataTransformer implements DataTransformerInterface
         }
     }
 
-    private function setPreScripts($client, $preScripts): void
+    private function setPreScripts(Client $client, $preScripts): void
     {
+        foreach ($client->getPreScripts()->toArray() as $script) {
+            $client->removePreScript($script);
+        }
         $repository = $this->entityManager->getRepository('App:Script');
-        $query = $repository->createQueryBuilder('s');
         foreach ($preScripts as $script) {
-            $query = $repository->createQueryBuilder('s');
-            $query->where($query->expr()->eq('s.id', $script));
-            $result = $query->getQuery()->getOneOrNullResult();
+            $result = $repository->find($script);
             if (null != $result) {
                 if ($result->getIsClientPre()) {
                     $client->addPreScript($result);
