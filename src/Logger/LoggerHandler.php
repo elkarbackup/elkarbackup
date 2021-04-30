@@ -8,6 +8,7 @@ namespace App\Logger;
 
 use App\Entity\Job;
 use App\Entity\LogRecord;
+use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -21,12 +22,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class LoggerHandler extends AbstractProcessingHandler implements ContainerAwareInterface
 {
     private $container;
+    private $em;
     private $messages;
     private $isRecordingMessage;
 
-    public function __construct($level = Logger::DEBUG, $bubble = true)
+    public function __construct($level = Logger::DEBUG, $bubble = true, EntityManagerInterface $em)
     {
         parent::__construct($level, $bubble);
+        $this->em = $em;
         $this->messages = array();
         $this->isRecordingMessages = false;
     }
@@ -36,7 +39,6 @@ class LoggerHandler extends AbstractProcessingHandler implements ContainerAwareI
      */
     protected function write(array $record)
     {
-        $em = $this->container->get('doctrine')->getManager();
         $logRecord = new LogRecord($record['channel'],
                                    $record['datetime'],
                                    $record['level'],
@@ -47,7 +49,7 @@ class LoggerHandler extends AbstractProcessingHandler implements ContainerAwareI
                                    !empty($record['extra']['user_id'])   ? $record['extra']['user_id']   : null,
                                    isset($record['extra']['user_name']) ? $record['extra']['user_name'] : null,
                                    isset($record['context']['logfile']) ? $record['context']['logfile'] : null);
-        $em->persist($logRecord);
+        $this->em->persist($logRecord);
         if ($this->isRecordingMessages) {
             $this->messages[] = $logRecord;
         }
