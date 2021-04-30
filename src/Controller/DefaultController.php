@@ -500,61 +500,60 @@ class DefaultController extends AbstractController
      */
     public function runRestoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
-       $t = $this->translator;
-       $user = $this->security->getToken()->getUser();
-       $actualuserid = $user->getId();
-       $granted = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
-       $suggestedPath = mb_substr($path, mb_strpos($path, '/'));
-       $suggestedPath = mb_substr($suggestedPath, 0, mb_strrpos($suggestedPath, '/'));
-      
-       
+        $t = $this->translator;
+        $user = $this->security->getToken()->getUser();
+        $actualuserid = $user->getId();
+        $granted = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
+        $suggestedPath = mb_substr($path, mb_strpos($path, '/'));
+        $suggestedPath = mb_substr($suggestedPath, 0, mb_strrpos($suggestedPath, '/'));
+
         $form = $this->createForm(
             RestoreBackupType::class,
             array('path' => $suggestedPath,'source' => $path),
             array('translator' => $this->translator, 'actualuserid' => $actualuserid, 'granted' => $granted));
-       $form->handleRequest($request);
+        $form->handleRequest($request);
 
-       if (!$form->isSubmitted() || !$form->isValid()) {
-           $this->get('session')->getFlashBag()->add('error',
-           $t->trans('There was an error in your restore backup process', array(), 'BinovoElkarBackup'));
-           return $this->redirect($this->generateUrl('showClients'));
-       }
-        
-       $data = $form->getData();
-       $targetPath = $data['path'];
-       $targetIdClient = $data['client'];
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->get('session')->getFlashBag()->add('error',
+            $t->trans('There was an error in your restore backup process', array(), 'BinovoElkarBackup'));
+            return $this->redirect($this->generateUrl('showClients'));
+        }
 
-       $backupLocation = $this->getDoctrine()->getRepository('App:BackupLocation')->find($idBackupLocation);
-       $sourcePath = sprintf("%s/%s/%s/%s", $backupLocation->getDirectory(), sprintf('%04d', $idClient), sprintf('%04d', $idJob), $path);
+        $data = $form->getData();
+        $targetPath = $data['path'];
+        $targetIdClient = $data['client'];
 
-       $clientRepo = $this->getDoctrine()
+        $backupLocation = $this->getDoctrine()->getRepository('App:BackupLocation')->find($idBackupLocation);
+        $sourcePath = sprintf("%s/%s/%s/%s", $backupLocation->getDirectory(), sprintf('%04d', $idClient), sprintf('%04d', $idJob), $path);
+
+        $clientRepo = $this->getDoctrine()
             ->getRepository('App:Client');
-       $targetClient = $clientRepo->find($targetIdClient);
-       $url = $targetClient->getUrl();
-       $sshArgs = $targetClient->getSshArgs();
+        $targetClient = $clientRepo->find($targetIdClient);
+        $url = $targetClient->getUrl();
+        $sshArgs = $targetClient->getSshArgs();
 
-       $manager = $this->getDoctrine()->getManager();
-       $msg = new Message(
-              'DefaultController',
-              'TickCommand',
-              json_encode(array(
-                  'command' => "elkarbackup:restore_backup",
-                  'url' => $url,
-                  'sourcePath' => $sourcePath,
-                  'remotePath' => $targetPath,
-                  'sshArgs'    => $sshArgs
-              ))
+        $manager = $this->getDoctrine()->getManager();
+        $msg = new Message(
+            'DefaultController',
+            'TickCommand',
+            json_encode(array(
+                'command' => "elkarbackup:restore_backup",
+                'url' => $url,
+                'sourcePath' => $sourcePath,
+                'remotePath' => $targetPath,
+                'sshArgs'    => $sshArgs
+            ))
         );
-       $manager->persist($msg);
-       $manager->flush();
+        $manager->persist($msg);
+        $manager->flush();
         $this->logger->info(
-              'Client "%clientid%" restore started',
-              array('%clientid%' => $idClient),
-              array('link' => $this->router->generateClientRoute($idClient))
+            'Client "%clientid%" restore started',
+            array('%clientid%' => $idClient),
+            array('link' => $this->router->generateClientRoute($idClient))
         );
         
         $this->get('session')->getFlashBag()->add('success',
-              $t->trans('Your backup restore process has been enqueued', array(), 'BinovoElkarBackup'));
+            $t->trans('Your backup restore process has been enqueued', array(), 'BinovoElkarBackup'));
         return $this->redirect($this->generateUrl('showClients'));
     }
     
