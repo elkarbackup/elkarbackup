@@ -16,8 +16,8 @@
     </php>
 
     <testsuites>
-        <testsuite name="Project Test Suite">
-            <directory>tests</directory>
+        <testsuite name="Elkarbackup API Tests">
+            <directory>src/Api/Test</directory>
         </testsuite>
     </testsuites>
 
