@@ -53,6 +53,7 @@ class LoggerHandler extends AbstractProcessingHandler implements ContainerAwareI
         if ($this->isRecordingMessages) {
             $this->messages[] = $logRecord;
         }
+        $this->em->flush();
     }
 
     public function setContainer(ContainerInterface $container = null)
