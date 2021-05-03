@@ -54,7 +54,6 @@ class JobService
                 ), array(
                     'link' => $this->router->generateJobRoute($id, $idClient)
                 ));
-                $this->em->flush();
                 throw new Exception(sprintf('Could not delete job %s, it is enqueued.', $job->getName()));
             }
         }
@@ -65,18 +64,19 @@ class JobService
             'job' => (int) $id
         )));
         $this->em->persist($msg);
+        $this->em->flush();
         $this->logger->info('Client %clientid%, job "%jobid%" deleted successfully.', array(
             '%clientid%' => $idClient,
             '%jobid%' => $id
         ), array(
             'link' => $this->router->generateJobRoute($id, $idClient)
         ));
-        $this->em->flush();
     }
 
     public function save($job)
     {
         $this->em->persist($job);
+        $this->em->flush();
         $this->logger->info('Save client %clientid%, job %jobid%', array(
             '%clientid%' => $job->getClient()
                 ->getId(),
@@ -85,7 +85,6 @@ class JobService
             'link' => $this->router->generateJobRoute($job->getId(), $job->getClient()
                 ->getId())
         ));
-        $this->em->flush();
     }
 }
 

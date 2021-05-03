@@ -46,10 +46,7 @@ class ClientService
         $client = $repository->find($id);
         $queue = $this->em->getRepository('App:Queue')->findAll();
         foreach ($queue as $item) {
-            if ($item->getJob()
-                ->getClient()
-                ->getId() == $id) {
-                $this->em->flush();
+            if ($item->getJob()->getClient()->getId() == $id) {
                 $this->logger->err('Could not delete client %clientName%, it has jobs enqueued.', array(
                     '%clientName%' => $client->getName()
                 ), array(
@@ -66,12 +63,12 @@ class ClientService
             'client' => (int) $id
         )));
         $this->em->persist($msg);
+        $this->em->flush();
         $this->logger->info('Client "%clientid%" deleted', array(
             '%clientid%' => $id
         ), array(
             'link' => $this->router->generateClientRoute($id)
         ));
-        $this->em->flush();
     }
 
     public function save($client)
@@ -103,12 +100,12 @@ class ClientService
             throw new Exception('Max parallel jobs parameter should be positive integer');
         }
         $this->em->persist($client);
+        $this->em->flush();
         $this->logger->info('Save client %clientid%', array(
             '%clientid%' => $client->getId()
         ), array(
             'link' => $this->router->generateClientRoute($client->getId())
         ));
-        $this->em->flush();
     }
 }
 

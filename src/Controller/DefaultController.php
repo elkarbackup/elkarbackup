@@ -175,8 +175,8 @@ class DefaultController extends AbstractController
             json_encode(array('command' => "elkarbackup:generate_keypair"))
         );
         $manager->persist($msg);
-        $this->logger->info('Public key generation requested');
         $manager->flush();
+        $this->logger->info('Public key generation requested');
         $this->get('session')->getFlashBag()->add(
             'manageParameters', 
             $t->trans(
@@ -250,7 +250,6 @@ class DefaultController extends AbstractController
             'Log in attempt with user: %username%',
             array('%username%' => $session->get(Security::LAST_USERNAME))
         );
-        $this->getDoctrine()->getManager()->flush();
         $locales = $this->getParameter('supported_locales');
         $localesWithNames = array();
         foreach ($locales as $locale) {
@@ -331,7 +330,6 @@ class DefaultController extends AbstractController
             array('%clientid%' => $id),
             array('link' => $this->router->generateClientRoute($id))
         );
-        $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
             'default/client.html.twig',
@@ -454,7 +452,6 @@ class DefaultController extends AbstractController
             array('%clientid%' => $idClient,'%jobid%' => $idJob),
             array('link' => $this->router->generateJobRoute($idJob, $idClient))
         );
-        $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
             'default/job.html.twig',
@@ -481,8 +478,6 @@ class DefaultController extends AbstractController
             'Unautorized access attempt by user: %username% into %path% by idclient: %clientid%. / idjob: %jobid%' ,
             array('%username%' => $actualusername, '%path%' => $path, '%clientid%' => $idClient,'%jobid%' => $idJob )
             );
-
-            $this->getDoctrine()->getManager()->flush();
             return $this->redirect($this->generateUrl('showClients'));
         }
 
@@ -505,61 +500,60 @@ class DefaultController extends AbstractController
      */
     public function runRestoreJobBackupAction(Request $request, $idClient, $idJob, $idBackupLocation, $path)
     {
-       $t = $this->translator;
-       $user = $this->security->getToken()->getUser();
-       $actualuserid = $user->getId();
-       $granted = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
-       $suggestedPath = mb_substr($path, mb_strpos($path, '/'));
-       $suggestedPath = mb_substr($suggestedPath, 0, mb_strrpos($suggestedPath, '/'));
-      
-       
+        $t = $this->translator;
+        $user = $this->security->getToken()->getUser();
+        $actualuserid = $user->getId();
+        $granted = $this->get('security.authorization_checker')->isGranted('ROLE_ADMIN');
+        $suggestedPath = mb_substr($path, mb_strpos($path, '/'));
+        $suggestedPath = mb_substr($suggestedPath, 0, mb_strrpos($suggestedPath, '/'));
+
         $form = $this->createForm(
             RestoreBackupType::class,
             array('path' => $suggestedPath,'source' => $path),
             array('translator' => $this->translator, 'actualuserid' => $actualuserid, 'granted' => $granted));
-       $form->handleRequest($request);
+        $form->handleRequest($request);
 
-       if (!$form->isSubmitted() || !$form->isValid()) {
-           $this->get('session')->getFlashBag()->add('error',
-           $t->trans('There was an error in your restore backup process', array(), 'BinovoElkarBackup'));
-           return $this->redirect($this->generateUrl('showClients'));
-       }
-        
-       $data = $form->getData();
-       $targetPath = $data['path'];
-       $targetIdClient = $data['client'];
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->get('session')->getFlashBag()->add('error',
+            $t->trans('There was an error in your restore backup process', array(), 'BinovoElkarBackup'));
+            return $this->redirect($this->generateUrl('showClients'));
+        }
 
-       $backupLocation = $this->getDoctrine()->getRepository('App:BackupLocation')->find($idBackupLocation);
-       $sourcePath = sprintf("%s/%s/%s/%s", $backupLocation->getDirectory(), sprintf('%04d', $idClient), sprintf('%04d', $idJob), $path);
+        $data = $form->getData();
+        $targetPath = $data['path'];
+        $targetIdClient = $data['client'];
 
-       $clientRepo = $this->getDoctrine()
+        $backupLocation = $this->getDoctrine()->getRepository('App:BackupLocation')->find($idBackupLocation);
+        $sourcePath = sprintf("%s/%s/%s/%s", $backupLocation->getDirectory(), sprintf('%04d', $idClient), sprintf('%04d', $idJob), $path);
+
+        $clientRepo = $this->getDoctrine()
             ->getRepository('App:Client');
-       $targetClient = $clientRepo->find($targetIdClient);
-       $url = $targetClient->getUrl();
-       $sshArgs = $targetClient->getSshArgs();
+        $targetClient = $clientRepo->find($targetIdClient);
+        $url = $targetClient->getUrl();
+        $sshArgs = $targetClient->getSshArgs();
 
-       $manager = $this->getDoctrine()->getManager();
-       $msg = new Message(
-              'DefaultController',
-              'TickCommand',
-              json_encode(array(
-                  'command' => "elkarbackup:restore_backup",
-                  'url' => $url,
-                  'sourcePath' => $sourcePath,
-                  'remotePath' => $targetPath,
-                  'sshArgs'    => $sshArgs
-              ))
+        $manager = $this->getDoctrine()->getManager();
+        $msg = new Message(
+            'DefaultController',
+            'TickCommand',
+            json_encode(array(
+                'command' => "elkarbackup:restore_backup",
+                'url' => $url,
+                'sourcePath' => $sourcePath,
+                'remotePath' => $targetPath,
+                'sshArgs'    => $sshArgs
+            ))
         );
         $manager->persist($msg);
-        $this->logger->info(
-              'Client "%clientid%" restore started',
-              array('%clientid%' => $idClient),
-              array('link' => $this->router->generateClientRoute($idClient))
-        );
         $manager->flush();
+        $this->logger->info(
+            'Client "%clientid%" restore started',
+            array('%clientid%' => $idClient),
+            array('link' => $this->router->generateClientRoute($idClient))
+        );
         
         $this->get('session')->getFlashBag()->add('success',
-              $t->trans('Your backup restore process has been enqueued', array(), 'BinovoElkarBackup'));
+            $t->trans('Your backup restore process has been enqueued', array(), 'BinovoElkarBackup'));
         return $this->redirect($this->generateUrl('showClients'));
     }
     
@@ -646,6 +640,7 @@ class DefaultController extends AbstractController
                 $status = 'QUEUED';
                 $queue = new Queue($job);
                 $em->persist($queue);
+                $em->flush();
                 $response = new JsonResponse(array(
                     'error' => false,
                     'msg' => $t->trans(
@@ -670,7 +665,6 @@ class DefaultController extends AbstractController
                 ));
                 $this->logger->warn($status, array(), $context);
             }
-            $em->flush();
             return $response;
         }
     }
@@ -777,7 +771,6 @@ class DefaultController extends AbstractController
             array('%clientid%' => $idClient,'%jobid%' => $idJob),
             array('link' => $this->router->generateJobRoute($idJob, $idClient))
         );
-        $this->getDoctrine()->getManager()->flush();
         $preCommand = '';
         $postCommand = '';
         foreach ($job->getPreScripts() as $script) {
@@ -943,7 +936,6 @@ class DefaultController extends AbstractController
                             'idJob' => $idJob,
                             'path' => $path
                         ))));
-                    $this->getDoctrine()->getManager()->flush();
                     
                     return new StreamedResponse($f, 200, $headers);
                 } elseif ('downloadzip' == $action) {
@@ -972,7 +964,6 @@ class DefaultController extends AbstractController
                             'path' => $path
                         )))
                         );
-                    $this->getDoctrine()->getManager()->flush();
                     
                     return new StreamedResponse($f, 200, $headers);
                 } else {
@@ -1006,7 +997,6 @@ class DefaultController extends AbstractController
                             'path' => $path
                         )))
                         );
-                    $this->getDoctrine()->getManager()->flush();
                     
                     $params = array(
                         'dirContent' => $dirContent,
@@ -1031,7 +1021,6 @@ class DefaultController extends AbstractController
                     'idJob' => $idJob,
                     'path' => $path
                 ))));
-                $this->getDoctrine()->getManager()->flush();
                 
                 return $response;
             }
@@ -1068,7 +1057,6 @@ class DefaultController extends AbstractController
                     'idJob' => $idJob,
                 )))
             );
-            $this->getDoctrine()->getManager()->flush();
             
             $params = array(
                 'dirContent' => $dirContent,
@@ -1129,7 +1117,6 @@ class DefaultController extends AbstractController
             array('%policyname%' => $policy->getName()), 
             array('link' => $this->router->generatePolicyRoute($policy->getId()))
         );
-        $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
             'default/policy.html.twig',
@@ -1154,12 +1141,12 @@ class DefaultController extends AbstractController
         $policy = $repository->find($id);
         try {
             $manager->remove($policy);
+            $manager->flush();
             $this->logger->info(
                 'Delete policy %policyname%',
                 array('%policyname%' => $policy->getName()),
                 array('link' => $this->router->generatePolicyRoute($id))
             );
-            $manager->flush();
         } catch (PDOException $e) {
             $this->get('session')->getFlashBag()->add('showPolicies', $t->trans(
                 'Removing the policy %name% failed. Check that it is not in use.',
@@ -1192,12 +1179,12 @@ class DefaultController extends AbstractController
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($policy);
+            $em->flush();
             $this->logger->info(
                 'Save policy %policyname%',
                 array('%policyname%' => $policy->getName()),
                 array('link' => $this->router->generatePolicyRoute($id))
             );
-            $em->flush();
             
             return $this->redirect($this->generateUrl('showPolicies'));
         } else {
@@ -1248,7 +1235,6 @@ class DefaultController extends AbstractController
                 array(),
                 array('link' => $this->generateUrl('showClients'))
             );
-            $this->getDoctrine()->getManager()->flush();
             $this->get('session')->getFlashBag()->add(
                 'sortJobs',
                 $t->trans('Jobs prioritized', array(), 'BinovoElkarBackup')
@@ -1321,7 +1307,6 @@ class DefaultController extends AbstractController
             array(),
             array('link' => $this->generateUrl('showClients'))
         );
-        $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
             'default/clients.html.twig',
@@ -1354,7 +1339,6 @@ class DefaultController extends AbstractController
             array(),
             array('link' => $this->generateUrl('showStatus'))
             );
-        $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
             'default/status.html.twig',
@@ -1382,7 +1366,6 @@ class DefaultController extends AbstractController
             array(),
             array('link' => $this->generateUrl('showScripts'))
         );
-        $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
             'default/scripts.html.twig',
@@ -1465,7 +1448,6 @@ EOF;
             array(),
             array('link' => $this->generateUrl('showLogs'))
         );
-        $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
             'default/logs.html.twig',
@@ -1541,7 +1523,6 @@ EOF;
             array(),
             array('link' => $this->generateUrl('showPolicies'))
         );
-        $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
             'default/policies.html.twig',
@@ -1658,11 +1639,11 @@ EOF;
                 ))
             );
             $manager->persist($msg);
+            $manager->flush();
             $this->logger->info(
                 'Updating key file %keys%',
                 array('%keys%' => $serializedKeys)
             );
-            $manager->flush();
             $this->get('session')->getFlashBag()->add(
                 'backupScriptConfig',
                 $t->trans(
@@ -1713,7 +1694,6 @@ EOF;
             array('%backupLocationName%' => $backupLocation->getName()),
             array('link' => $this->router->generateBackupLocationRoute($id))
         );
-        $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
             'default/backuplocation.html.twig',
@@ -1767,12 +1747,12 @@ EOF;
         } elseif ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($backupLocation);
+            $em->flush();
             $this->logger->info(
                 'Save backup location %locationName%.',
                 array('%locationName%' => $backupLocation->getName()),
                 array('link' => $this->router->generateBackupLocationRoute($id))
             );
-            $em->flush();
             $result = $this->redirect($this->generateUrl('manageBackupLocations'));
         } else {
             $result = $this->render(
@@ -1802,12 +1782,12 @@ EOF;
         $backupLocation = $repository->find($id);
         try {
             $manager->remove($backupLocation);
+            $manager->flush();
             $this->logger->info(
                 'Delete backup location %locationName%',
                 array('%locationName%' => $backupLocation->getName()),
                 array('link' => $this->router->generateBackupLocationRoute($id))
             );
-            $manager->flush();
         } catch (Exception $e) {
             $this->get('session')->getFlashBag()->add(
                 'manageBackupLocations',
@@ -1842,7 +1822,6 @@ EOF;
             array(),
             array('link' => $this->generateUrl('manageBackupLocations'))
         );
-        $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
             'default/backuplocations.html.twig',
@@ -2185,6 +2164,7 @@ EOF;
                 ));
                 $manager = $this->getDoctrine()->getManager();
                 $manager->persist($user);
+                $manager->flush();
                 $this->get('session')->getFlashBag()->add(
                     'changePassword',
                     $t->trans("Password changed", array(), 'BinovoElkarBackup')
@@ -2194,7 +2174,6 @@ EOF;
                     array('%username%' => $user->getUsername()),
                     array('link' => $this->router->generateUserRoute($user->getId()))
                 );
-                $manager->flush();
             }
             
             return $this->redirect($this->generateUrl('changePassword'));
@@ -2233,7 +2212,6 @@ EOF;
                 array('%logfile%' => $log->getLogfile()),
                 array('link' => $this->generateUrl('downloadLog', array('id' => $id)))
             );
-            $manager->flush();
             
             $response->setContent(file_get_contents($log->getLogfilePath()));
             $response->headers->set('Content-Type', 'application/octet-stream');
@@ -2251,7 +2229,6 @@ EOF;
                 array('%logfile%' => $log->getLogfile()),
                 array('link' => $this->generateUrl('downloadLog', array('id' => $id)))
             );
-            $manager->flush();
             
             $response->setContent(file_get_contents($log->getLogfilePath() . ".gz"));
             $response->headers->set('Content-Type', 'application/octet-stream');
@@ -2269,7 +2246,6 @@ EOF;
                 array('%logfile%' => $log->getLogfilePath()),
                 array('link' => $this->generateUrl('downloadLog', array('id' => $id)))
             );
-            $manager->flush();
             $response = $this->redirect($this->generateUrl('showLogs'));
         }
         
@@ -2293,12 +2269,12 @@ EOF;
         $script = $repository->find($id);
         try {
             $manager->remove($script);
+            $manager->flush();
             $this->logger->info(
                 'Delete script %scriptname%',
                 array('%scriptname%' => $script->getName()),
                 array('link' => $this->router->generateScriptRoute($id))
             );
-            $manager->flush();
         } catch (PDOException $e) {
             $this->get('session')->getFlashBag()->add(
                 'showScripts',
@@ -2335,7 +2311,6 @@ EOF;
             array('%scriptname%' => $script->getName()),
             array('link' => $this->router->generateScriptRoute($id))
         );
-        $manager->flush();
         $response = new Response();
         $response->setContent(file_get_contents($script->getScriptPath()));
         $response->headers->set('Content-Type', 'application/octet-stream');
@@ -2380,7 +2355,6 @@ EOF;
             array('%scriptname%' => $script->getName()),
             array('link' => $this->router->generateScriptRoute($id))
         );
-        $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
             'default/script.html.twig',
@@ -2424,12 +2398,12 @@ EOF;
                 $em = $this->getDoctrine()->getManager();
                 $script->setLastUpdated(new DateTime()); // we to this to force the PostPersist script to run.
                 $em->persist($script);
+                $em->flush();
                 $this->logger->info(
                     'Save script %scriptname%.',
                     array('%scriptname%' => $script->getScriptname()),
                     array('link' => $this->router->generateScriptRoute($id))
                 );
-                $em->flush();
                 $result = $this->redirect($this->generateUrl('showScripts'));
             }
         }
@@ -2454,12 +2428,12 @@ EOF;
             $manager = $db->getManager();
             $user = $repository->find($id);
             $manager->remove($user);
+            $manager->flush();
             $this->logger->info(
                 'Delete user %username%.',
                 array('%username%' => $user->getUsername()),
                 array('link' => $this->router->generateUserRoute($id))
             );
-            $manager->flush();
         }
         
         return $this->redirect($this->generateUrl('showUsers'));
@@ -2483,7 +2457,6 @@ EOF;
             array('%username%' => $user->getUsername()),
             array('link' => $this->router->generateUserRoute($id))
         );
-        $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
             'default/user.html.twig',
@@ -2514,12 +2487,12 @@ EOF;
             }
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
+            $em->flush();
             $this->logger->info(
                 'Save user %username%.',
                 array('%username%' => $user->getUsername()),
                 array('link' => $this->router->generateUserRoute($id))
             );
-            $em->flush();
             
             return $this->redirect($this->generateUrl('showUsers'));
         } else {
@@ -2562,7 +2535,6 @@ EOF;
             array(),
             array('link' => $this->generateUrl('showUsers'))
         );
-        $this->getDoctrine()->getManager()->flush();
         
         return $this->render(
             'default/users.html.twig',
@@ -2719,12 +2691,12 @@ EOF;
             $data = $form->getData();
             $em = $this->getDoctrine()->getManager();
             $em->persist($data);
+            $em->flush();
             $this->logger->info(
                 'Save preferences for user %username%.',
                 array('%username%' => $user->getUsername()),
                 array('link' => $this->router->generateUserRoute($user->getId()))
             );
-            $em->flush();
             
             $language = $form['language']->getData();
             $this->setLanguage($request, $language);
@@ -2735,7 +2707,6 @@ EOF;
                 array('%username%' => $user->getUsername()),
                 array('link' => $this->router->generateUserRoute($user->getId()))
             );
-            $this->getDoctrine()->getManager()->flush();
             
             return $this->render(
                 'default/preferences.html.twig',
