@@ -50,8 +50,10 @@ class ClientInputDataTransformer implements DataTransformerInterface
 
     private function setPostScripts($client, $postScripts): void
     {
-        foreach ($client->getPostScripts() as $script) {
-            $client->removePostScript($script);
+        if (null != $client->getPostScripts()) {
+            foreach ($client->getPostScripts() as $script) {
+                $client->removePostScript($script);
+            }
         }
         $repository = $this->entityManager->getRepository('App:Script');
         foreach ($postScripts as $script) {
@@ -70,8 +72,10 @@ class ClientInputDataTransformer implements DataTransformerInterface
 
     private function setPreScripts($client, $preScripts): void
     {
-        foreach ($client->getPreScripts()->toArray() as $script) {
-            $client->removePreScript($script);
+        if (null != $client->getPreScripts()) {
+            foreach ($client->getPreScripts() as $script) {
+                $client->removePreScript($script);
+            }
         }
         $repository = $this->entityManager->getRepository('App:Script');
         foreach ($preScripts as $script) {
