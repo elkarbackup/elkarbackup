@@ -155,13 +155,16 @@ then
     mkdir -p /var/log/elkarbackup/jobs
 fi
 
+echo Setting permissions
 # set rwx permissions for www-data and the backup user in the cache and log directories
 # as described in http://symfony.com/doc/current/book/installation.html#configuration-and-setup
 setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/cache/elkarbackup 2>/dev/null || ( echo "ACLs not supported. Remount with ACL and reconfigure with 'dpkg --configure --pending'" && false )
 setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/cache/elkarbackup 2>/dev/null
 setfacl  -R -m u:www-data:rwx -m u:$username:rwx /var/log/elkarbackup 2>/dev/null
 setfacl -dR -m u:www-data:rwx -m u:$username:rwx /var/log/elkarbackup 2>/dev/null
-chown -R $username.$username /var/cache/elkarbackup /var/spool/elkarbackup
+chown -R $username.$username /var/cache/elkarbackup
+chown $username.$username /var/spool/elkarbackup
+chown $username.$username /var/spool/elkarbackup/backups
 chown -R $username.root /var/log/elkarbackup
 chown -R www-data.www-data /var/lib/elkarbackup/sessions /etc/elkarbackup/parameters.yaml /var/spool/elkarbackup/uploads
 
