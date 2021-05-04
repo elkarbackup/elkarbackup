@@ -755,7 +755,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/client/{idClient}/job/{idJob}/run", requirements={"idClient" = "\d+", "idJob" = "\d+"}, name="enqueueJob", methods={"POST"})
      */
-    public function enqueueJobAction(Request $request, $idClient, $idJob)
+    public function enqueueJobAction(Request $request, RequestStack $rs, $idClient, $idJob)
     {
         $t = $this->translator;
         $user = $this->security->getToken();
@@ -766,7 +766,7 @@ class DefaultController extends AbstractController
             $trustable = true;
         } else {
             // Anonymous access
-            $token = $this->get('request')->request->get('token');
+            $token = $rs->getCurrentRequest()->get('token');
             if ('' == $token) {
                 $response = new JsonResponse(array(
                     'status' => 'true',
@@ -782,7 +782,7 @@ class DefaultController extends AbstractController
                 $job = $repository->findOneById($idJob);
                 if ($token == $job->getToken()) {
                     // Valid token, but let's require HTTPS
-                    if ($this->requestStack->getCurrentRequest()->isSecure()) {
+                    if ($rs->getCurrentRequest()->isSecure()) {
                         $trustable = true;
                     } else {
                         $response = new JsonResponse(array(
