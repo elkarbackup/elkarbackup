@@ -95,12 +95,14 @@ class JobInputDataTransformer implements DataTransformerInterface
 
     private function setPostScripts (Job $job, $postScripts)
     {
+        if (null != $job->getPostScripts()) {
+            foreach ($job->getPostScripts() as $script) {
+                $job->removePostScript($script);
+            }
+        }
         $repository = $this->entityManager->getRepository('App:Script');
-        $query = $repository->createQueryBuilder('s');
         foreach ($postScripts as $script) {
-            $query = $repository->createQueryBuilder('s');
-            $query->where($query->expr()->eq('s.id', $script));
-            $result = $query->getQuery()->getOneOrNullResult();
+            $result = $repository->find($script);
             if (null != $result) {
                 if ($result->getIsJobPost()) {
                     $job->addPostScript($result);
@@ -115,12 +117,14 @@ class JobInputDataTransformer implements DataTransformerInterface
 
     private function setPreScripts (Job $job, $preScripts)
     {
+        if (null != $job->getPreScripts()) {
+            foreach ($job->getPreScripts() as $script) {
+                $job->removePreScript($script);
+            }
+        }
         $repository = $this->entityManager->getRepository('App:Script');
-        $query = $repository->createQueryBuilder('s');
         foreach ($preScripts as $script) {
-            $query = $repository->createQueryBuilder('s');
-            $query->where($query->expr()->eq('s.id', $script));
-            $result = $query->getQuery()->getOneOrNullResult();
+            $result = $repository->find($script);
             if (null != $result) {
                 if ($result->getIsJobPre()) {
                     $job->addPreScript($result);
