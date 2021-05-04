@@ -13,5 +13,10 @@ class BaseApiTestCase extends ApiTestCase
             'base_uri' => 'http://127.0.0.1'
         ]);
     }
+    protected function getTimestamp(): string
+    {
+        $time = new \DateTime();
+        return $time->getTimestamp();
+    }
 }
 
