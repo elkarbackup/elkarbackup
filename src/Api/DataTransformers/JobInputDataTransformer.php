@@ -93,9 +93,9 @@ class JobInputDataTransformer implements DataTransformerInterface
         }
     }
 
-    private function setPostScripts (Job $job, $postScripts, $update)
+    private function setPostScripts (Job $job, $postScripts)
     {
-        if ($update) {
+        if (null != $job->getPostScripts()) {
             foreach ($job->getPostScripts() as $script) {
                 $job->removePostScript($script);
             }
@@ -115,9 +115,9 @@ class JobInputDataTransformer implements DataTransformerInterface
         }
     }
 
-    private function setPreScripts (Job $job, $preScripts, $update)
+    private function setPreScripts (Job $job, $preScripts)
     {
-        if ($update) {
+        if (null != $job->getPreScripts()) {
             foreach ($job->getPreScripts() as $script) {
                 $job->removePreScript($script);
             }
@@ -156,10 +156,8 @@ class JobInputDataTransformer implements DataTransformerInterface
     {
         if (isset($context[AbstractItemNormalizer::OBJECT_TO_POPULATE])) {
             $job = $context[AbstractItemNormalizer::OBJECT_TO_POPULATE];
-            $update = true;
         } else {
             $job = new Job();
-            $update = false;
         }
         $job->setName($data->getName());
         $job->setDescription($data->getDescription());
@@ -171,8 +169,8 @@ class JobInputDataTransformer implements DataTransformerInterface
         $job->setExclude($data->getExclude());
         $job->setInclude($data->getInclude());
         $this->setPolicy($job, $data->getPolicy());
-        $this->setPostScripts($job, $data->getPostScripts(), $update);
-        $this->setPreScripts($job, $data->getPreScripts(), $update);
+        $this->setPostScripts($job, $data->getPostScripts());
+        $this->setPreScripts($job, $data->getPreScripts());
         $job->setPath($data->getPath());
         $job->setUseLocalPermissions($data->getUseLocalPermissions());
         $job->setToken($data->getToken());
