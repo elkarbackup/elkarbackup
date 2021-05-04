@@ -4,7 +4,6 @@ parameters:
     database_host: localhost
     database_port: null
     database_name: elkarbackup
-    database_test_name: test_elkarbackup
     database_user: elkarbackup
     database_password: elkarbackup
     mailer_transport: smtp
