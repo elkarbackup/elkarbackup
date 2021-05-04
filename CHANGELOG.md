@@ -1,3 +1,14 @@
+## 2.0.1 (2021/05/04)
+
+Bugfixes:
+  * Fix tick command locking. This was creating various issues. Closes #530 .
+  * Fix running a job remotely with token. Closes #533 .
+  * Fix jon token generation. Closes #514 .
+  * Don't set /var/spool/elkarbackup/backups permissions on install/update.
+    It can be very slow if there are existing backups. Also, could remove
+    user/groups of backups done with local permissions. Closes #529 #528 .
+  * Fix public key download. Closes #500 . 
+
 ## 2.0.0 (2021/04/21)
 Security fixes:
   * Generate new Symfony secret on install or on upgrade if it was left unchanged (closes #481)
