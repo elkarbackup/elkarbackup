@@ -258,7 +258,7 @@ class ClientTest extends BaseApiTestCase
             '@context' => '/api/contexts/Error',
             '@type' => 'hydra:Error',
             'hydra:title' => 'An error occurred',
-            'hydra:description' => 'Client "0" does not exist.',
+            'hydra:description' => 'The client "0" does not exist.',
         ]);
     }
 
