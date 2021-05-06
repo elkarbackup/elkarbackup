@@ -348,7 +348,6 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $timestamp = $this->getTimestamp();
-        //load fixtures for scripts
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'description' => 'description',
@@ -481,7 +480,6 @@ class ClientTest extends BaseApiTestCase
             '@context' => '/api/contexts/Error',
             '@type' => 'hydra:Error',
             'hydra:title' => 'An error occurred',
-//            'hydra:description' => "An exception occurred while executing 'UPDATE Client SET description = ?, name = ?, url = ?, quota = ? WHERE id = ?\' with params [null, 'clientToRepeat', '', -1, 8]::\n\nSQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'clientToRepeat' for key 'Client.UNIQ_C0E801635E237E06'"
         ]);
     }
     
