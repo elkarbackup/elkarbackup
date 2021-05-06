@@ -12,16 +12,15 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $timestamp = $this->getTimestamp();
-        //load fixtures for scripts
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'description' => 'description',
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client' . $timestamp . '4',
+                'name' => 'client' . $timestamp,
                 'owner' => 1,
-                'postScripts' => [],
-                'preScripts' => [],
+                'postScripts' => [101],
+                'preScripts' => [101],
                 'quota' => - 1,
                 'rsyncLongArgs' => '',
                 'rsyncShortArgs' => '',
@@ -51,7 +50,7 @@ class ClientTest extends BaseApiTestCase
             ],
             '@type' => 'Client'
         ]);
-        $this->assertJsonContains(['name' => 'client' . $timestamp . '4']);
+        $this->assertJsonContains(['name' => 'client' . $timestamp]);
     }
 
     public function testCreateClientInvalidMaxParallelJobs(): void
@@ -229,6 +228,40 @@ class ClientTest extends BaseApiTestCase
         ]);
     }
 
+    public function testDeleteClient(): void
+    {
+        $httpClient = $this->authenticate();
+        $timestamp = $this->getTimestamp();
+        $httpClient->request('POST', '/api/clients', [
+            'json' => [
+                'isActive' => true,
+                'maxParallelJobs' => 1,
+                'name' => 'client' . $timestamp,
+                'owner' => 1,
+                'quota' => - 1
+            ]
+        ]);
+        $iri = $this->findIriBy(Client::class, [
+            'name' => 'client' . $timestamp
+        ]);
+        $response = $httpClient->request('DELETE', $iri);
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testDeleteClientNotFound(): void
+    {
+        $httpClient = $this->authenticate();
+        $response = $httpClient->request('DELETE', 'api/clients/0');
+        $this->assertResponseStatusCodeSame(404);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertJsonContains([
+            '@context' => '/api/contexts/Error',
+            '@type' => 'hydra:Error',
+            'hydra:title' => 'An error occurred',
+            'hydra:description' => 'Client "0" does not exist.',
+        ]);
+    }
+
     public function testGetCollection(): void
     {
         $httpClient = $this->authenticate();
@@ -310,41 +343,7 @@ class ClientTest extends BaseApiTestCase
             'url' => ""
         ]);
     }
- 
-    public function testDeleteClient(): void
-    {
-        $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
-        $httpClient->request('POST', '/api/clients', [
-            'json' => [
-                'isActive' => true,
-                'maxParallelJobs' => 1,
-                'name' => 'client' . $timestamp,
-                'owner' => 1,
-                'quota' => - 1
-            ]
-        ]);
-        $iri = $this->findIriBy(Client::class, [
-            'name' => 'client' . $timestamp
-        ]);
-        $response = $httpClient->request('DELETE', $iri);
-        $this->assertResponseIsSuccessful();
-    }
-    
-    public function testDeleteClientNotFound(): void
-    {
-        $httpClient = $this->authenticate();
-        $response = $httpClient->request('DELETE', 'api/clients/0');
-        $this->assertResponseStatusCodeSame(404);
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/Error',
-            '@type' => 'hydra:Error',
-            'hydra:title' => 'An error occurred',
-            'hydra:description' => 'Client "0" does not exist.',
-        ]);
-    }
-    
+
     public function testUpdateClient(): void
     {
         $httpClient = $this->authenticate();
