@@ -310,7 +310,41 @@ class ClientTest extends BaseApiTestCase
             'url' => ""
         ]);
     }
-
+ 
+    public function testDeleteClient(): void
+    {
+        $httpClient = $this->authenticate();
+        $timestamp = $this->getTimestamp();
+        $httpClient->request('POST', '/api/clients', [
+            'json' => [
+                'isActive' => true,
+                'maxParallelJobs' => 1,
+                'name' => 'client' . $timestamp,
+                'owner' => 1,
+                'quota' => - 1
+            ]
+        ]);
+        $iri = $this->findIriBy(Client::class, [
+            'name' => 'client' . $timestamp
+        ]);
+        $response = $httpClient->request('DELETE', $iri);
+        $this->assertResponseIsSuccessful();
+    }
+    
+    public function testDeleteClientNotFound(): void
+    {
+        $httpClient = $this->authenticate();
+        $response = $httpClient->request('DELETE', 'api/clients/0');
+        $this->assertResponseStatusCodeSame(404);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertJsonContains([
+            '@context' => '/api/contexts/Error',
+            '@type' => 'hydra:Error',
+            'hydra:title' => 'An error occurred',
+            'hydra:description' => 'Client "0" does not exist.',
+        ]);
+    }
+    
     public function testUpdateClient(): void
     {
         $httpClient = $this->authenticate();
@@ -452,6 +486,22 @@ class ClientTest extends BaseApiTestCase
         ]);
     }
     
+    public function testUpdateClientNotFound(): void
+    {
+        $httpClient = $this->authenticate();
+        $timestamp = $this->getTimestamp();
+        $httpClient->request('PUT', '/api/clients/0', [
+            'json' => [
+                'isActive' => true,
+                'maxParallelJobs' => 1,
+                'name' => 'client'.$timestamp,
+                'owner' => 1,
+                'quota' => -1
+            ]
+        ]);
+        $this->assertResponseStatusCodeSame(404);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+    }
     public function testUpdateClientUnexistentPostScript(): void
     {
         $httpClient = $this->authenticate();
