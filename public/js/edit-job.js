@@ -23,8 +23,8 @@ if (runNowtrue == 'new'){
                 toggler.hide();
             }
         };
-        toggler = new Toggler({node:'Job_notificationsEmail'});
-        checkbox = dojo.byId('Job_notificationsTo_2');
+        toggler = new Toggler({node:'job_notificationsEmail'});
+        checkbox = dojo.byId('job_notificationsTo_2');
         dojo.connect(checkbox, 'onchange', showHideEmailBox);
         showHideEmailBox();
     };
