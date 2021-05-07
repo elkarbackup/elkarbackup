@@ -195,6 +195,8 @@ class ClientTest extends BaseApiTestCase
         ]);
         $response = $httpClient->request('DELETE', $iri);
         $this->assertResponseIsSuccessful();
+        $response = $httpClient->request('GET', $iri);
+        $this->assertResponseStatusCodeSame(404);
     }
 
     public function testDeleteClientNotFound(): void
