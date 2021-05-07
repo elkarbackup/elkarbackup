@@ -13,10 +13,12 @@ class BaseApiTestCase extends ApiTestCase
             'base_uri' => 'http://127.0.0.1'
         ]);
     }
-    protected function getTimestamp(): string
+
+    protected function createClientName(): string
     {
         $time = new \DateTime();
-        return $time->getTimestamp();
+        $clientName = 'client_'.$time->getTimestamp().rand(1000, 9999);
+        return $clientName;
     }
 }
 

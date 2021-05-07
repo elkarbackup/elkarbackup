@@ -10,13 +10,13 @@ class ClientTest extends BaseApiTestCase
     public function testCreateClient(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'description' => 'description',
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client' . $timestamp,
+                'name' => $clientName,
                 'owner' => 1,
                 'postScripts' => [],
                 'preScripts' => [],
@@ -49,18 +49,18 @@ class ClientTest extends BaseApiTestCase
             ],
             '@type' => 'Client'
         ]);
-        $this->assertJsonContains(['name' => 'client' . $timestamp]);
+        $this->assertJsonContains(['name' => $clientName]);
     }
 
     public function testCreateClientInvalidMaxParallelJobs(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => -1,
-                'name' => 'client' . $timestamp,
+                'name' => $clientName,
                 'owner' => 1,
                 'quota' => -1
             ]
@@ -78,12 +78,12 @@ class ClientTest extends BaseApiTestCase
     public function testCreateClientInvalidName(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client' . $timestamp,
+                'name' => $clientName,
                 'owner' => 1,
                 'quota' => -1
             ]
@@ -92,7 +92,7 @@ class ClientTest extends BaseApiTestCase
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client' . $timestamp,
+                'name' => $clientName,
                 'owner' => 1,
                 'quota' => -1
             ]
@@ -102,19 +102,19 @@ class ClientTest extends BaseApiTestCase
             '@context' => '/api/contexts/Error',
             '@type' => 'hydra:Error',
             'hydra:title' => 'An error occurred',
-            'hydra:description' => "An exception occurred while executing 'INSERT INTO Client (description, isActive, name, url, quota, sshArgs, rsyncShortArgs, rsyncLongArgs, state, maxParallelJobs, data, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' with params [null, 1, \"".'client'.$timestamp."\", \"\", -1, null, null, null, \"NOT READY\", 1, null, 1]:\n\nSQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '".'client'.$timestamp."' for key 'Client.UNIQ_C0E801635E237E06'"
+            'hydra:description' => "An exception occurred while executing 'INSERT INTO Client (description, isActive, name, url, quota, sshArgs, rsyncShortArgs, rsyncLongArgs, state, maxParallelJobs, data, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' with params [null, 1, \"".$clientName."\", \"\", -1, null, null, null, \"NOT READY\", 1, null, 1]:\n\nSQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '".$clientName."' for key 'Client.UNIQ_C0E801635E237E06'"
         ]);
     }
 
     public function testCreateClientInvalidOwner(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client' . $timestamp,
+                'name' => $clientName,
                 'owner' => 2,
                 'quota' => -1
             ]
@@ -132,12 +132,12 @@ class ClientTest extends BaseApiTestCase
     public function testCreateClientUnexistentPostScript(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'isActive'        => true,
                 'maxParallelJobs' => 1,
-                'name'            => 'client' . $timestamp,
+                'name'            => $clientName,
                 'owner'           => 1,
                 'postScripts'     => [1],
                 'quota'           => -1
@@ -156,12 +156,12 @@ class ClientTest extends BaseApiTestCase
     public function testCreateClientUnexistentPreScript(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();;
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'isActive'        => true,
                 'maxParallelJobs' => 1,
-                'name'            => 'client' . $timestamp,
+                'name'            => $clientName,
                 'owner'           => 1,
                 'preScripts'     => [1],
                 'quota'           => -1
@@ -180,18 +180,18 @@ class ClientTest extends BaseApiTestCase
     public function testDeleteClient(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client' . $timestamp,
+                'name' => $clientName,
                 'owner' => 1,
                 'quota' => - 1
             ]
         ]);
         $iri = $this->findIriBy(Client::class, [
-            'name' => 'client' . $timestamp
+            'name' => $clientName
         ]);
         $response = $httpClient->request('DELETE', $iri);
         $this->assertResponseIsSuccessful();
@@ -214,12 +214,12 @@ class ClientTest extends BaseApiTestCase
     public function testGetClients(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client' . $timestamp,
+                'name' => $clientName,
                 'owner' => 1,
                 'quota' => - 1
             ]
@@ -243,17 +243,17 @@ class ClientTest extends BaseApiTestCase
     public function testGetNonexistentClient(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client' . $timestamp,
+                'name' => $clientName,
                 'owner' => 1,
                 'quota' => - 1
             ]
         ]);
-        $response = $httpClient->request('GET', '/api/clients/' . $timestamp);
+        $response = $httpClient->request('GET', '/api/clients/0');
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
     }
@@ -261,18 +261,18 @@ class ClientTest extends BaseApiTestCase
     public function testGetClient(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client' . $timestamp,
+                'name' => $clientName,
                 'owner' => 1,
                 'quota' => - 1
             ]
         ]);
         $iri = $this->findIriBy(Client::class, [
-            'name' => 'client' . $timestamp
+            'name' => $clientName
         ]);
         $response = $httpClient->request('GET', $iri);
 
@@ -281,7 +281,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertJsonContains([
             'isActive' => true,
             'maxParallelJobs' => 1,
-            'name' => 'client' . $timestamp,
+            'name' => $clientName,
             'owner' => 1,
             'postScripts' => [],
             'preScripts' => [],
@@ -296,13 +296,13 @@ class ClientTest extends BaseApiTestCase
     public function testUpdateClient(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'description' => 'description',
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client'.$timestamp.'0',
+                'name' => $clientName,
                 'owner' => 1,
                 'postScripts' => [],
                 'preScripts' => [],
@@ -313,14 +313,14 @@ class ClientTest extends BaseApiTestCase
                 'url' => 'root@172.17.0.1'
             ]
         ]);
-        $iri = $this->findIriBy(Client::class, ['name' => 'client'.$timestamp.'0']);
-        
+        $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
+        $updatedName = $this->createClientName();
         $httpClient->request('PUT', $iri, [
             'json' => [
                 'description' => 'description updated',
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client',
+                'name' => $updatedName,
                 'owner' => 1,
                 'quota' => - 1,
                 'url' => 'root@172.17.0.1'
@@ -348,33 +348,33 @@ class ClientTest extends BaseApiTestCase
             ],
             '@type' => 'Client'
         ]);
-        $this->assertJsonContains(['name' => 'client']);
+        $this->assertJsonContains(['name' => $updatedName]);
         $this->assertJsonContains(['description' => 'description updated']);
     }
 
     public function testUpdateClientInvalidMaxParallelJobs(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'description' => 'description',
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client'.$timestamp,
+                'name' => $clientName,
                 'owner' => 1,
                 'quota' => -1,
                 'url' => 'root@172.17.0.1'
             ]
         ]);
-        $iri = $this->findIriBy(Client::class, ['name' => 'client'.$timestamp]);
+        $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
         
         $httpClient->request('PUT', $iri, [
             'json' => [
                 'description' => 'description updated',
                 'isActive' => true,
                 'maxParallelJobs' => -1,
-                'name' => 'client'.$timestamp,
+                'name' => $clientName,
                 'owner' => 1,
                 'quota' => -1,
                 'url' => 'root@172.17.0.1'
@@ -393,34 +393,35 @@ class ClientTest extends BaseApiTestCase
     public function testUpdateClientInvalidName(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'clientToRepeat',
+                'name' => $clientName,
                 'owner' => 1,
                 'quota' => -1
             ]
         ]);
+        $updateName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'description' => 'description',
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'clientToUpdate',
+                'name' => $updateName,
                 'owner' => 1,
                 'quota' => -1,
                 'url' => 'root@172.17.0.1'
             ]
         ]);
-        $iri = $this->findIriBy(Client::class, ['name' => 'clientToUpdate']);
+        $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
         
         $httpClient->request('PUT', $iri, [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'clientToRepeat',
+                'name' => $updateName,
                 'owner' => 1,
                 'quota' => -1
             ]
@@ -436,12 +437,12 @@ class ClientTest extends BaseApiTestCase
     public function testUpdateClientNotFound(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('PUT', '/api/clients/0', [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client'.$timestamp,
+                'name' => $clientName,
                 'owner' => 1,
                 'quota' => -1
             ]
@@ -453,23 +454,23 @@ class ClientTest extends BaseApiTestCase
     public function testUpdateClientUnexistentPostScript(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client'.$timestamp,
+                'name' => $clientName,
                 'owner' => 1,
                 'quota' => -1
             ]
         ]);
-        $iri = $this->findIriBy(Client::class, ['name' => 'client'.$timestamp]);
+        $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
         
         $httpClient->request('PUT', $iri, [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client'.$timestamp,
+                'name' => $clientName,
                 'postScripts' => [0],
                 'owner' => 1,
                 'quota' => -1
@@ -488,23 +489,23 @@ class ClientTest extends BaseApiTestCase
     public function testUpdateClientUnexistentPreScript(): void
     {
         $httpClient = $this->authenticate();
-        $timestamp = $this->getTimestamp();
+        $clientName = $this->createClientName();
         $httpClient->request('POST', '/api/clients', [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client'.$timestamp,
+                'name' => $clientName,
                 'owner' => 1,
                 'quota' => -1
             ]
         ]);
-        $iri = $this->findIriBy(Client::class, ['name' => 'client'.$timestamp]);
+        $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
         
         $httpClient->request('PUT', $iri, [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => 'client'.$timestamp,
+                'name' => $clientName,
                 'preScripts' => [0],
                 'owner' => 1,
                 'quota' => -1
