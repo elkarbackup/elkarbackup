@@ -16,7 +16,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="Elkarbackup API Tests">
+        <testsuite name="Elkarbackup API">
             <directory>src/Api/Test</directory>
         </testsuite>
     </testsuites>
