@@ -7,7 +7,6 @@ use App\Entity\Client;
 
 class ClientTest extends BaseApiTestCase
 {
-    
     public function testCreateClient(): void
     {
         $httpClient = $this->authenticate();
@@ -107,8 +106,6 @@ class ClientTest extends BaseApiTestCase
         ]);
     }
 
-
-    
     public function testCreateClientInvalidOwner(): void
     {
         $httpClient = $this->authenticate();
@@ -569,4 +566,3 @@ class ClientTest extends BaseApiTestCase
         ]);
     }
 }
-
