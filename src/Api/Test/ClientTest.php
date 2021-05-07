@@ -399,6 +399,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertJsonContains(['name' => 'client']);
         $this->assertJsonContains(['description' => 'description updated']);
     }
+
     public function testUpdateClientInvalidMaxParallelJobs(): void
     {
         $httpClient = $this->authenticate();
@@ -496,6 +497,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
     }
+
     public function testUpdateClientUnexistentPostScript(): void
     {
         $httpClient = $this->authenticate();
