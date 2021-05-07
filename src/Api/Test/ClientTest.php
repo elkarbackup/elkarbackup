@@ -211,7 +211,7 @@ class ClientTest extends BaseApiTestCase
         ]);
     }
 
-    public function testGetCollection(): void
+    public function testGetClients(): void
     {
         $httpClient = $this->authenticate();
         $timestamp = $this->getTimestamp();
@@ -234,7 +234,7 @@ class ClientTest extends BaseApiTestCase
         ]);
     }
 
-    public function testGetCollectionUnauthenticated(): void
+    public function testGetClientsUnauthenticated(): void
     {
         $response = static::createClient()->request('GET', '/api/clients');
         $this->assertResponseStatusCodeSame(401);
