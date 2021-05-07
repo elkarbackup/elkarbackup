@@ -129,54 +129,6 @@ class ClientTest extends BaseApiTestCase
         ]);
     }
 
-//     public function testCreateClientInvalidPostScript(): void
-//     {
-//         $httpClient = $this->authenticate();
-//         $timestamp = $this->getTimestamp();
-//         $httpClient->request('POST', '/api/clients', [
-//             'json' => [
-//                 'isActive'        => true,
-//                 'maxParallelJobs' => 1,
-//                 'name'            => 'client' . $timestamp,
-//                 'owner'           => 1,
-//                 'postScripts'     => [106],
-//                 'quota'           => -1
-//             ]
-//         ]);
-//         $this->assertResponseStatusCodeSame(400);
-//         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-//         $this->assertJsonContains([
-//             '@context' => '/api/contexts/Error',
-//             '@type' => 'hydra:Error',
-//             'hydra:title' => 'An error occurred',
-//             'hydra:description' => 'Script "106" is no a client post script',
-//         ]);
-//     }
-
-//     public function testCreateClientInvalidPreScript(): void
-//     {
-//         $httpClient = $this->authenticate();
-//         $timestamp = $this->getTimestamp();
-//         $httpClient->request('POST', '/api/clients', [
-//             'json' => [
-//                 'isActive'        => true,
-//                 'maxParallelJobs' => 1,
-//                 'name'            => 'client' . $timestamp,
-//                 'owner'           => 1,
-//                 'postScripts'     => [101],
-//                 'quota'           => -1
-//             ]
-//         ]);
-//         $this->assertResponseStatusCodeSame(400);
-//         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-//         $this->assertJsonContains([
-//             '@context' => '/api/contexts/Error',
-//             '@type' => 'hydra:Error',
-//             'hydra:title' => 'An error occurred',
-//             'hydra:description' => 'Script "%s" is no a client pre script',
-//         ]);
-//     }
-
     public function testCreateClientUnexistentPostScript(): void
     {
         $httpClient = $this->authenticate();
