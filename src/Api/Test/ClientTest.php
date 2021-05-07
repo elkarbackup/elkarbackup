@@ -163,7 +163,7 @@ class ClientTest extends BaseApiTestCase
                 'maxParallelJobs' => 1,
                 'name'            => 'client' . $timestamp,
                 'owner'           => 1,
-                'postScripts'     => [1],
+                'preScripts'     => [1],
                 'quota'           => -1
             ]
         ]);
