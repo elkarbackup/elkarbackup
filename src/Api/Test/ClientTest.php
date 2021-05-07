@@ -240,7 +240,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseStatusCodeSame(401);
     }
 
-    public function testGetInvalidItem(): void
+    public function testGetNonexistentClient(): void
     {
         $httpClient = $this->authenticate();
         $timestamp = $this->getTimestamp();
@@ -258,7 +258,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
     }
 
-    public function testGetItem(): void
+    public function testGetClient(): void
     {
         $httpClient = $this->authenticate();
         $timestamp = $this->getTimestamp();
