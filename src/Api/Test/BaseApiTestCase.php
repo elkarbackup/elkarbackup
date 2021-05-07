@@ -6,6 +6,8 @@ use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
 
 class BaseApiTestCase extends ApiTestCase
 {
+    const UNEXISTING_ID = 726358291635;
+    
     protected function authenticate(): Client
     {
         return static::createClient([], [

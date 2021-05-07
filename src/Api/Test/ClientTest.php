@@ -139,7 +139,7 @@ class ClientTest extends BaseApiTestCase
                 'maxParallelJobs' => 1,
                 'name'            => $clientName,
                 'owner'           => 1,
-                'postScripts'     => [1],
+                'postScripts'     => [self::UNEXISTING_ID],
                 'quota'           => -1
             ]
         ]);
@@ -149,7 +149,7 @@ class ClientTest extends BaseApiTestCase
             '@context' => '/api/contexts/Error',
             '@type' => 'hydra:Error',
             'hydra:title' => 'An error occurred',
-            'hydra:description' => 'Script "1" does not exist',
+            'hydra:description' => 'Script "'.self::UNEXISTING_ID.'" does not exist',
         ]);
     }
 
@@ -163,7 +163,7 @@ class ClientTest extends BaseApiTestCase
                 'maxParallelJobs' => 1,
                 'name'            => $clientName,
                 'owner'           => 1,
-                'preScripts'     => [1],
+                'preScripts'     => [self::UNEXISTING_ID],
                 'quota'           => -1
             ]
         ]);
@@ -173,7 +173,7 @@ class ClientTest extends BaseApiTestCase
             '@context' => '/api/contexts/Error',
             '@type' => 'hydra:Error',
             'hydra:title' => 'An error occurred',
-            'hydra:description' => 'Script "1" does not exist',
+            'hydra:description' => 'Script "'.self::UNEXISTING_ID.'" does not exist',
         ]);
     }
 
@@ -200,14 +200,14 @@ class ClientTest extends BaseApiTestCase
     public function testDeleteClientNotFound(): void
     {
         $httpClient = $this->authenticate();
-        $response = $httpClient->request('DELETE', 'api/clients/0');
+        $response = $httpClient->request('DELETE', 'api/clients/'.self::UNEXISTING_ID);
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
             '@context' => '/api/contexts/Error',
             '@type' => 'hydra:Error',
             'hydra:title' => 'An error occurred',
-            'hydra:description' => 'The client "0" does not exist.',
+            'hydra:description' => 'The client "'.self::UNEXISTING_ID.'" does not exist.',
         ]);
     }
 
@@ -253,7 +253,7 @@ class ClientTest extends BaseApiTestCase
                 'quota' => - 1
             ]
         ]);
-        $response = $httpClient->request('GET', '/api/clients/0');
+        $response = $httpClient->request('GET', '/api/clients/'.self::UNEXISTING_ID);
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
     }
@@ -438,7 +438,7 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $httpClient->request('PUT', '/api/clients/0', [
+        $httpClient->request('PUT', '/api/clients/'.self::UNEXISTING_ID, [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
@@ -471,7 +471,7 @@ class ClientTest extends BaseApiTestCase
                 'isActive' => true,
                 'maxParallelJobs' => 1,
                 'name' => $clientName,
-                'postScripts' => [0],
+                'postScripts' => [self::UNEXISTING_ID],
                 'owner' => 1,
                 'quota' => -1
             ]
@@ -482,7 +482,7 @@ class ClientTest extends BaseApiTestCase
             '@context' => '/api/contexts/Error',
             '@type' => 'hydra:Error',
             'hydra:title' => 'An error occurred',
-            'hydra:description' => 'Script "0" does not exist',
+            'hydra:description' => 'Script "'.self::UNEXISTING_ID.'" does not exist',
         ]);
     }
     
@@ -506,7 +506,7 @@ class ClientTest extends BaseApiTestCase
                 'isActive' => true,
                 'maxParallelJobs' => 1,
                 'name' => $clientName,
-                'preScripts' => [0],
+                'preScripts' => [self::UNEXISTING_ID],
                 'owner' => 1,
                 'quota' => -1
             ]
@@ -517,7 +517,7 @@ class ClientTest extends BaseApiTestCase
             '@context' => '/api/contexts/Error',
             '@type' => 'hydra:Error',
             'hydra:title' => 'An error occurred',
-            'hydra:description' => 'Script "0" does not exist',
+            'hydra:description' => 'Script "'.self::UNEXISTING_ID.'" does not exist',
         ]);
     }
 }
