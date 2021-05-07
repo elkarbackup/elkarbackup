@@ -258,6 +258,12 @@ class ClientTest extends BaseApiTestCase
         $response = $httpClient->request('GET', '/api/clients/'.self::UNEXISTING_ID);
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertJsonContains([
+            '@context' => '/api/contexts/Error',
+            '@type' => 'hydra:Error',
+            'hydra:title' => 'An error occurred',
+            'hydra:description' => 'The client "'.self::UNEXISTING_ID.'" does not exist.',
+        ]);
     }
 
     public function testGetClient(): void
