@@ -7,7 +7,25 @@ use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client;
 class BaseApiTestCase extends ApiTestCase
 {
     const UNEXISTING_ID = 726358291635;
-    
+
+    protected function assertHydraError(string $description = null): void
+    {
+        if(isset($description)){
+            $this->assertJsonContains([
+                '@context' => '/api/contexts/Error',
+                '@type' => 'hydra:Error',
+                'hydra:title' => 'An error occurred',
+                'hydra:description' => $description,
+            ]);
+        } else {
+            $this->assertJsonContains([
+                '@context' => '/api/contexts/Error',
+                '@type' => 'hydra:Error',
+                'hydra:title' => 'An error occurred'
+            ]);
+        }
+    }
+
     protected function authenticate(): Client
     {
         return static::createClient([], [

@@ -98,12 +98,7 @@ class ClientTest extends BaseApiTestCase
             ]
         ]);
         $this->assertResponseStatusCodeSame(400);
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/Error',
-            '@type' => 'hydra:Error',
-            'hydra:title' => 'An error occurred',
-            'hydra:description' => "An exception occurred while executing 'INSERT INTO Client (description, isActive, name, url, quota, sshArgs, rsyncShortArgs, rsyncLongArgs, state, maxParallelJobs, data, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' with params [null, 1, \"".$clientName."\", \"\", -1, null, null, null, \"NOT READY\", 1, null, 1]:\n\nSQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '".$clientName."' for key 'Client.UNIQ_C0E801635E237E06'"
-        ]);
+        $this->assertHydraError("An exception occurred while executing 'INSERT INTO Client (description, isActive, name, url, quota, sshArgs, rsyncShortArgs, rsyncLongArgs, state, maxParallelJobs, data, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' with params [null, 1, \"".$clientName."\", \"\", -1, null, null, null, \"NOT READY\", 1, null, 1]:\n\nSQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '".$clientName."' for key 'Client.UNIQ_C0E801635E237E06'");
     }
 
     public function testCreateClientInvalidOwner(): void
@@ -121,12 +116,7 @@ class ClientTest extends BaseApiTestCase
         ]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/Error',
-            '@type' => 'hydra:Error',
-            'hydra:title' => 'An error occurred',
-            'hydra:description' => 'Incorrect owner id',
-        ]);
+        $this->assertHydraError('Incorrect owner id');
     }
 
     public function testCreateClientUnexistentPostScript(): void
@@ -145,12 +135,7 @@ class ClientTest extends BaseApiTestCase
         ]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/Error',
-            '@type' => 'hydra:Error',
-            'hydra:title' => 'An error occurred',
-            'hydra:description' => 'Script "'.self::UNEXISTING_ID.'" does not exist',
-        ]);
+        $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
     }
 
     public function testCreateClientUnexistentPreScript(): void
@@ -169,12 +154,7 @@ class ClientTest extends BaseApiTestCase
         ]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/Error',
-            '@type' => 'hydra:Error',
-            'hydra:title' => 'An error occurred',
-            'hydra:description' => 'Script "'.self::UNEXISTING_ID.'" does not exist',
-        ]);
+        $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
     }
 
     public function testDeleteClient(): void
@@ -205,12 +185,7 @@ class ClientTest extends BaseApiTestCase
         $response = $httpClient->request('DELETE', 'api/clients/'.self::UNEXISTING_ID);
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/Error',
-            '@type' => 'hydra:Error',
-            'hydra:title' => 'An error occurred',
-            'hydra:description' => 'The client "'.self::UNEXISTING_ID.'" does not exist.',
-        ]);
+        $this->assertHydraError('The client "'.self::UNEXISTING_ID.'" does not exist.');
     }
 
     public function testGetClients(): void
@@ -258,12 +233,7 @@ class ClientTest extends BaseApiTestCase
         $response = $httpClient->request('GET', '/api/clients/'.self::UNEXISTING_ID);
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/Error',
-            '@type' => 'hydra:Error',
-            'hydra:title' => 'An error occurred',
-            'hydra:description' => 'The client "'.self::UNEXISTING_ID.'" does not exist.',
-        ]);
+        $this->assertHydraError('The client "'.self::UNEXISTING_ID.'" does not exist.');
     }
 
     public function testGetClient(): void
@@ -435,11 +405,7 @@ class ClientTest extends BaseApiTestCase
             ]
         ]);
         $this->assertResponseStatusCodeSame(400);
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/Error',
-            '@type' => 'hydra:Error',
-            'hydra:title' => 'An error occurred',
-        ]);
+        $this->assertHydraError();
     }
     
     public function testUpdateClientNotFound(): void
@@ -486,12 +452,7 @@ class ClientTest extends BaseApiTestCase
         ]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/Error',
-            '@type' => 'hydra:Error',
-            'hydra:title' => 'An error occurred',
-            'hydra:description' => 'Script "'.self::UNEXISTING_ID.'" does not exist',
-        ]);
+        $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
     }
     
     public function testUpdateClientUnexistentPreScript(): void
@@ -521,11 +482,6 @@ class ClientTest extends BaseApiTestCase
         ]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/Error',
-            '@type' => 'hydra:Error',
-            'hydra:title' => 'An error occurred',
-            'hydra:description' => 'Script "'.self::UNEXISTING_ID.'" does not exist',
-        ]);
+        $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
     }
 }
