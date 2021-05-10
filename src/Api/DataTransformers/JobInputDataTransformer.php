@@ -64,7 +64,7 @@ class JobInputDataTransformer implements DataTransformerInterface
 
     private function setNotificationsEmail (Job $job, $notificationsEmail)
     {
-        if (isset($notificationsEmail) && !filter_var($notificationsEmail, FILTER_VALIDATE_EMAIL) && !empty($notificationsEmail)) {
+        if (isset($notificationsEmail) && !filter_var($notificationsEmail, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException("Incorrect notification email address");
         }
         
