@@ -176,60 +176,25 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-//         $this->createClient($httpClient, 'description', true, 1, $clientName, 1, [], [], -1, null, null, null, 'root@172.17.0.1')
-        $httpClient->request('POST', '/api/clients', [
-            'json' => [
-                'description' => 'description',
-                'isActive' => true,
-                'maxParallelJobs' => 1,
-                'name' => $clientName,
-                'owner' => 1,
-                'postScripts' => [],
-                'preScripts' => [],
-                'quota' => - 1,
-                'rsyncLongArgs' => '',
-                'rsyncShortArgs' => '',
-                'sshArgs' => '',
-                'url' => 'root@172.17.0.1'
-            ]
-        ]);
+        $this->createClientEntity($httpClient, $clientName, 1, "some description", true, 1, null, null, -1, null, null, null, "root@172.17.0.1");
         $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
         $updatedName = $this->createClientName();
         $httpClient->request('PUT', $iri, [
             'json' => [
                 'description' => 'description updated',
-                'isActive' => true,
+                'isActive' => false,
                 'maxParallelJobs' => 1,
                 'name' => $updatedName,
                 'owner' => 1,
-                'quota' => - 1,
-                'url' => 'root@172.17.0.1'
+                'quota' => - 1
             ]
         ]);
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            '@context' => [
-                '@vocab' => 'http://127.0.0.1/api/docs.jsonld#',
-                'hydra' => 'http://www.w3.org/ns/hydra/core#',
-                'description' => 'ClientOutput/description',
-                'id' => 'ClientOutput/id',
-                'isActive' => 'ClientOutput/isActive',
-                'maxParallelJobs' => 'ClientOutput/maxParallelJobs',
-                'name' => 'ClientOutput/name',
-                'owner' => 'ClientOutput/owner',
-                'postScripts' => 'ClientOutput/postScripts',
-                'preScripts' => 'ClientOutput/preScripts',
-                'quota' => 'ClientOutput/quota',
-                'rsyncLongArgs' => 'ClientOutput/rsyncLongArgs',
-                'rsyncShortArgs' => 'ClientOutput/rsyncShortArgs',
-                'sshArgs' => 'ClientOutput/sshArgs',
-                'url' => 'ClientOutput/url'
-            ],
-            '@type' => 'Client'
-        ]);
         $this->assertJsonContains(['name' => $updatedName]);
         $this->assertJsonContains(['description' => 'description updated']);
+        $this->assertJsonContains(['isActive' => false]);
+        $this->assertJsonContains(['url' => '']);
     }
 
     public function testUpdateClientInvalidMaxParallelJobs(): void
