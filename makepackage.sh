@@ -24,6 +24,7 @@ mkdir .debian
 cp -a debian/* .debian
 mkdir -p .debian/usr/share/elkarbackup
 cp -a * .debian/usr/share/elkarbackup
+cp -a .env .debian/usr/share/elkarbackup/
 
 # remove unneeded files from copy to package
 find .debian -type f -name "*.deb"| xargs rm -rf
@@ -49,7 +50,7 @@ mkdir -p .debian/etc/elkarbackup/
 cp .debian/usr/share/elkarbackup/config/parameters.yaml.dist .debian/etc/elkarbackup/parameters.yaml
 rm .debian/usr/share/elkarbackup/config/parameters.yaml
 ln -s /etc/elkarbackup/parameters.yaml .debian/usr/share/elkarbackup/config/parameters.yaml
-mv .debian/env.local.php .debian/usr/share/elkarbackup/.env.local.php
+mv .debian/env.local .debian/usr/share/elkarbackup/.env.local
 # put copyright notices and changelog in its place
 mkdir -p .debian/usr/share/doc/elkarbackup
 # Copy changelog and copyright files
