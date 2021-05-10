@@ -99,7 +99,6 @@ class JobInputDataTransformer implements DataTransformerInterface
             $repository = $this->entityManager->getRepository('App:Script');
             $query = $repository->createQueryBuilder('s');
             foreach ($postScripts as $script) {
-                $query = $repository->createQueryBuilder('s');
                 $query->where($query->expr()->eq('s.id', $script));
                 $result = $query->getQuery()->getOneOrNullResult();
                 if (null != $result) {
@@ -121,7 +120,6 @@ class JobInputDataTransformer implements DataTransformerInterface
             $repository = $this->entityManager->getRepository('App:Script');
             $query = $repository->createQueryBuilder('s');
             foreach ($preScripts as $script) {
-                $query = $repository->createQueryBuilder('s');
                 $query->where($query->expr()->eq('s.id', $script));
                 $result = $query->getQuery()->getOneOrNullResult();
                 if (null != $result) {
