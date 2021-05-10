@@ -100,17 +100,21 @@ class JobInputDataTransformer implements DataTransformerInterface
                 $job->removePostScript($script);
             }
         }
-        $repository = $this->entityManager->getRepository('App:Script');
-        foreach ($postScripts as $script) {
-            $result = $repository->find($script);
-            if (null != $result) {
-                if ($result->getIsJobPost()) {
-                    $job->addPostScript($result);
-                }else {
-                    throw new InvalidArgumentException(sprintf('Script "%s" is not a job post script', $result->getId()));
+        if (null != $postScripts){
+            $repository = $this->entityManager->getRepository('App:Script');
+            $query = $repository->createQueryBuilder('s');
+            foreach ($postScripts as $script) {
+                $query->where($query->expr()->eq('s.id', $script));
+                $result = $query->getQuery()->getOneOrNullResult();
+                if (null != $result) {
+                    if ($result->getIsJobPost()) {
+                        $job->addPostScript($result);
+                    }else {
+                        throw new InvalidArgumentException(sprintf('Script "%s" is not a job post script', $result->getId()));
+                    }
+                } else {
+                    throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
                 }
-            } else {
-                throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
             }
         }
     }
@@ -122,17 +126,21 @@ class JobInputDataTransformer implements DataTransformerInterface
                 $job->removePreScript($script);
             }
         }
-        $repository = $this->entityManager->getRepository('App:Script');
-        foreach ($preScripts as $script) {
-            $result = $repository->find($script);
-            if (null != $result) {
-                if ($result->getIsJobPre()) {
-                    $job->addPreScript($result);
-                }else {
-                    throw new InvalidArgumentException(sprintf('Script "%s" is not a job pre script', $result->getId()));
+        if (null != $preScripts){
+            $repository = $this->entityManager->getRepository('App:Script');
+            $query = $repository->createQueryBuilder('s');
+            foreach ($preScripts as $script) {
+                $query->where($query->expr()->eq('s.id', $script));
+                $result = $query->getQuery()->getOneOrNullResult();
+                if (null != $result) {
+                    if ($result->getIsJobPre()) {
+                        $job->addPreScript($result);
+                    }else {
+                        throw new InvalidArgumentException(sprintf('Script "%s" is not a job pre script', $result->getId()));
+                    }
+                } else {
+                    throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
                 }
-            } else {
-                throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
             }
         }
     }
