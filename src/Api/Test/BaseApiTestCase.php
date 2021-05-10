@@ -57,7 +57,7 @@ class BaseApiTestCase extends ApiTestCase
     protected function createClientName(): string
     {
         $time = new \DateTime();
-        $clientName = 'client_'.$time->getTimestamp().rand(1000, 9999);
+        $clientName = 'client_'.$time->getTimestamp().'_'.rand(1000, 9999);
         return $clientName;
     }
 }
