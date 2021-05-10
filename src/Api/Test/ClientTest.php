@@ -14,26 +14,6 @@ class ClientTest extends BaseApiTestCase
         $this->createClientEntity($httpClient, $clientName, 1);
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            '@context' => [
-                '@vocab' => 'http://127.0.0.1/api/docs.jsonld#',
-                'hydra' => 'http://www.w3.org/ns/hydra/core#',
-                'description' => 'ClientOutput/description',
-                'id' => 'ClientOutput/id',
-                'isActive' => 'ClientOutput/isActive',
-                'maxParallelJobs' => 'ClientOutput/maxParallelJobs',
-                'name' => 'ClientOutput/name',
-                'owner' => 'ClientOutput/owner',
-                'postScripts' => 'ClientOutput/postScripts',
-                'preScripts' => 'ClientOutput/preScripts',
-                'quota' => 'ClientOutput/quota',
-                'rsyncLongArgs' => 'ClientOutput/rsyncLongArgs',
-                'rsyncShortArgs' => 'ClientOutput/rsyncShortArgs',
-                'sshArgs' => 'ClientOutput/sshArgs',
-                'url' => 'ClientOutput/url'
-            ],
-            '@type' => 'Client'
-        ]);
         $this->assertJsonContains(['name' => $clientName]);
     }
 
