@@ -4,6 +4,7 @@ namespace App\Api\Test;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client as TestClient;
 use App\Api\Test\BaseApiTestCase;
 use App\Entity\Client;
+use App\Entity\Script;
 
 class ClientTest extends BaseApiTestCase
 {
@@ -52,6 +53,63 @@ class ClientTest extends BaseApiTestCase
         $this->assertHydraError('Incorrect owner id');
     }
 
+    public function testCreateClientInvalidPostScript(): void
+    {
+        $httpClient = $this->authenticate();
+        $iri = $this->findIriBy(Script::class, [
+            'name' => 'script_not_client_post'
+        ]);
+        $response = $httpClient->request('GET', $iri);
+        $scriptId = $response->toArray()['id'];
+        $clientName = $this->createClientName();
+        $httpClient->request('POST', '/api/clients', [
+            'json' => [
+                'isActive'        => true,
+                'maxParallelJobs' => 1,
+                'name'            => $clientName,
+                'owner'           => 1,
+                'postScripts'     => [$scriptId],
+                'quota'           => -1
+            ]
+        ]);
+        $this->assertResponseStatusCodeSame(400);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertJsonContains([
+            '@context' => '/api/contexts/Error',
+            '@type' => 'hydra:Error',
+            'hydra:title' => 'An error occurred',
+            'hydra:description' => 'Script "'.$scriptId.'" is not a client post script',
+        ]);
+    }
+
+    public function testCreateClientInvalidPreScript(): void
+    {
+        $httpClient = $this->authenticate();
+        $iri = $this->findIriBy(Script::class, [
+            'name' => 'script_not_client_pre'
+        ]);
+        $response = $httpClient->request('GET', $iri);
+        $scriptId = $response->toArray()['id'];
+        $clientName = $this->createClientName();
+        $httpClient->request('POST', '/api/clients', [
+            'json' => [
+                'isActive'        => true,
+                'maxParallelJobs' => 1,
+                'name'            => $clientName,
+                'owner'           => 1,
+                'preScripts'     => [$scriptId],
+                'quota'           => -1
+            ]
+        ]);
+        $this->assertResponseStatusCodeSame(400);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertJsonContains([
+            '@context' => '/api/contexts/Error',
+            '@type' => 'hydra:Error',
+            'hydra:title' => 'An error occurred',
+            'hydra:description' => 'Script "'.$scriptId.'" is not a client pre script',
+        ]);
+    }
     public function testCreateClientUnexistentPostScript(): void
     {
         $httpClient = $this->authenticate();
