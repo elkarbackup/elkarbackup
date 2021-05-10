@@ -14,15 +14,15 @@ class ClientInput
     private $postScripts = [];
     private $preScripts = [];
     private $quota = -1;
-    private $rsyncLongArgs=null;
-    private $rsyncShortArgs = null;
-    private $sshArgs = null;
-    private $url = null;
+    private $rsyncLongArgs;
+    private $rsyncShortArgs;
+    private $sshArgs;
+    private $url;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -30,7 +30,7 @@ class ClientInput
     /**
      * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -38,7 +38,7 @@ class ClientInput
     /**
      * @return boolean
      */
-    public function getIsActive()
+    public function getIsActive(): bool
     {
         return $this->isActive;
     }
@@ -46,7 +46,7 @@ class ClientInput
     /**
      * @return integer
      */
-    public function getMaxParallelJobs()
+    public function getMaxParallelJobs(): int
     {
         return $this->maxParallelJobs;
     }
@@ -54,7 +54,7 @@ class ClientInput
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -62,23 +62,23 @@ class ClientInput
     /**
      * @return integer
      */
-    public function getOwner()
+    public function getOwner(): int
     {
         return $this->owner;
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getPostScripts()
+    public function getPostScripts(): ?array
     {
         return $this->postScripts;
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getPreScripts()
+    public function getPreScripts(): ?array
     {
         return $this->preScripts;
     }
@@ -86,47 +86,47 @@ class ClientInput
     /**
      * @return integer
      */
-    public function getQuota()
+    public function getQuota(): int
     {
         return $this->quota;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRsyncLongArgs()
+    public function getRsyncLongArgs(): ?string
     {
         return $this->rsyncLongArgs;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRsyncShortArgs()
+    public function getRsyncShortArgs(): ?string
     {
         return $this->rsyncShortArgs;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSshArgs()
+    public function getSshArgs(): ?string
     {
         return $this->sshArgs;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUrl()
+    public function getUrl(): ?string
     {
         return $this->url;
     }
 
     /**
-     * @param string $description
+     * @param string|null $description
      */
-    public function setDescription($description)
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
@@ -134,7 +134,7 @@ class ClientInput
     /**
      * @param boolean $isActive
      */
-    public function setIsActive($isActive)
+    public function setIsActive(bool $isActive): void
     {
         $this->isActive = $isActive;
     }
@@ -142,14 +142,14 @@ class ClientInput
     /**
      * @param integer $maxParallelJobs
      */
-    public function setMaxParallelJobs($maxParallelJobs)
+    public function setMaxParallelJobs(int $maxParallelJobs): void
     {
         $this->maxParallelJobs = $maxParallelJobs;
     }
     /**
      * @param string $name
      */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
@@ -157,23 +157,23 @@ class ClientInput
     /**
      * @param integer $owner
      */
-    public function setOwner($owner)
+    public function setOwner(int $owner): void
     {
         $this->owner = $owner;
     }
 
     /**
-     * @param array $postScripts
+     * @param array|null $postScripts
      */
-    public function setPostScripts($postScripts)
+    public function setPostScripts(?array $postScripts): void
     {
         $this->postScripts = $postScripts;
     }
 
     /**
-     * @param array $preScripts
+     * @param array|null $preScripts
      */
-    public function setPreScripts($preScripts)
+    public function setPreScripts(?array $preScripts): void
     {
         $this->preScripts = $preScripts;
     }
@@ -181,39 +181,39 @@ class ClientInput
     /**
      * @param integer $quota
      */
-    public function setQuota($quota)
+    public function setQuota(int $quota): void
     {
         $this->quota = $quota;
     }
 
     /**
-     * @param string $rsyncLongArgs
+     * @param string|null $rsyncLongArgs
      */
-    public function setRsyncLongArgs($rsyncLongArgs)
+    public function setRsyncLongArgs(?string $rsyncLongArgs): void
     {
         $this->rsyncLongArgs = $rsyncLongArgs;
     }
 
     /**
-     * @param string $rsyncShortArgs
+     * @param string|null $rsyncShortArgs
      */
-    public function setRsyncShortArgs($rsyncShortArgs)
+    public function setRsyncShortArgs(?string $rsyncShortArgs): void
     {
         $this->rsyncShortArgs = $rsyncShortArgs;
     }
 
     /**
-     * @param string $sshArgs
+     * @param string|null $sshArgs
      */
-    public function setSshArgs($sshArgs)
+    public function setSshArgs(?string $sshArgs): void
     {
         $this->sshArgs = $sshArgs;
     }
 
     /**
-     * @param string $url
+     * @param string|null $url
      */
-    public function setUrl($url)
+    public function setUrl(?string $url): void
     {
         $this->url = $url;
     }
