@@ -64,7 +64,7 @@ class JobInputDataTransformer implements DataTransformerInterface
 
     private function setNotificationsEmail (Job $job, $notificationsEmail)
     {
-        if (isset($notificationsEmail) && !filter_var($notificationsEmail, FILTER_VALIDATE_EMAIL)) {
+        if (isset($notificationsEmail) && !filter_var($notificationsEmail, FILTER_VALIDATE_EMAIL) && !empty($notificationsEmail)) {
             throw new InvalidArgumentException("Incorrect notification email address");
         }
         
@@ -95,40 +95,44 @@ class JobInputDataTransformer implements DataTransformerInterface
 
     private function setPostScripts (Job $job, $postScripts)
     {
-        $repository = $this->entityManager->getRepository('App:Script');
-        $query = $repository->createQueryBuilder('s');
-        foreach ($postScripts as $script) {
+        if (null != $postScripts){
+            $repository = $this->entityManager->getRepository('App:Script');
             $query = $repository->createQueryBuilder('s');
-            $query->where($query->expr()->eq('s.id', $script));
-            $result = $query->getQuery()->getOneOrNullResult();
-            if (null != $result) {
-                if ($result->getIsJobPost()) {
-                    $job->addPostScript($result);
-                }else {
-                    throw new InvalidArgumentException(sprintf('Script "%s" is not a job post script', $result->getId()));
+            foreach ($postScripts as $script) {
+                $query = $repository->createQueryBuilder('s');
+                $query->where($query->expr()->eq('s.id', $script));
+                $result = $query->getQuery()->getOneOrNullResult();
+                if (null != $result) {
+                    if ($result->getIsJobPost()) {
+                        $job->addPostScript($result);
+                    }else {
+                        throw new InvalidArgumentException(sprintf('Script "%s" is not a job post script', $result->getId()));
+                    }
+                } else {
+                    throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
                 }
-            } else {
-                throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
             }
         }
     }
 
     private function setPreScripts (Job $job, $preScripts)
     {
-        $repository = $this->entityManager->getRepository('App:Script');
-        $query = $repository->createQueryBuilder('s');
-        foreach ($preScripts as $script) {
+        if (null != $preScripts){
+            $repository = $this->entityManager->getRepository('App:Script');
             $query = $repository->createQueryBuilder('s');
-            $query->where($query->expr()->eq('s.id', $script));
-            $result = $query->getQuery()->getOneOrNullResult();
-            if (null != $result) {
-                if ($result->getIsJobPre()) {
-                    $job->addPreScript($result);
-                }else {
-                    throw new InvalidArgumentException(sprintf('Script "%s" is not a job pre script', $result->getId()));
+            foreach ($preScripts as $script) {
+                $query = $repository->createQueryBuilder('s');
+                $query->where($query->expr()->eq('s.id', $script));
+                $result = $query->getQuery()->getOneOrNullResult();
+                if (null != $result) {
+                    if ($result->getIsJobPre()) {
+                        $job->addPreScript($result);
+                    }else {
+                        throw new InvalidArgumentException(sprintf('Script "%s" is not a job pre script', $result->getId()));
+                    }
+                } else {
+                    throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
                 }
-            } else {
-                throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
             }
         }
     }

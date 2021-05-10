@@ -50,40 +50,48 @@ class ClientInputDataTransformer implements DataTransformerInterface
 
     private function setPostScripts($client, $postScripts): void
     {
-        $repository = $this->entityManager->getRepository('App:Script');
-        $query = $repository->createQueryBuilder('s');
-        foreach ($postScripts as $script) {
-            $query = $repository->createQueryBuilder('s');
-            $query->where($query->expr()->eq('s.id', $script));
-            $result = $query->getQuery()->getOneOrNullResult();
-            if (null != $result) {
-                if ($result->getIsClientPost()) {
-                    $client->addPostScript($result);
-                }else {
-                    throw new InvalidArgumentException(sprintf('Script "%s" is not a client post script', $result->getId()));
+        if (null != $client->getPostScripts()) {
+            foreach ($client->getPostScripts() as $script) {
+                $client->removePostScript($script);
+            }
+        }
+        if (null != $postScripts){
+            $repository = $this->entityManager->getRepository('App:Script');
+            foreach ($postScripts as $script) {
+                $result = $repository->find($script);
+                if (null != $result) {
+                    if ($result->getIsClientPost()) {
+                        $client->addPostScript($result);
+                    }else {
+                        throw new InvalidArgumentException(sprintf('Script "%s" is not a client post script', $result->getId()));
+                    }
+                } else {
+                    throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
                 }
-            } else {
-                throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
             }
         }
     }
 
     private function setPreScripts($client, $preScripts): void
     {
-        $repository = $this->entityManager->getRepository('App:Script');
-        $query = $repository->createQueryBuilder('s');
-        foreach ($preScripts as $script) {
-            $query = $repository->createQueryBuilder('s');
-            $query->where($query->expr()->eq('s.id', $script));
-            $result = $query->getQuery()->getOneOrNullResult();
-            if (null != $result) {
-                if ($result->getIsClientPre()) {
-                    $client->addPreScript($result);
-                }else {
-                    throw new InvalidArgumentException(sprintf('Script "%s" is not a client pre script', $result->getId()));
+        if (null != $client->getPreScripts()) {
+            foreach ($client->getPreScripts() as $script) {
+                $client->removePreScript($script);
+            }
+        }
+        if (null != $preScripts) {
+            $repository = $this->entityManager->getRepository('App:Script');
+            foreach ($preScripts as $script) {
+                $result = $repository->find($script);
+                if (null != $result) {
+                    if ($result->getIsClientPre()) {
+                        $client->addPreScript($result);
+                    }else {
+                        throw new InvalidArgumentException(sprintf('Script "%s" is not a client pre script', $result->getId()));
+                    }
+                } else {
+                    throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
                 }
-            } else {
-                throw new InvalidArgumentException(sprintf('Script "%s" does not exist', $script));
             }
         }
     }

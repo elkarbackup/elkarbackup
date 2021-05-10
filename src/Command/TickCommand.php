@@ -79,7 +79,7 @@ class TickCommand extends LoggingCommand
         
         $store    = new FlockStore(sys_get_temp_dir());
         $factory  = new Factory($store);
-        $lockHandler = $factory->createLock('tick.lock');
+        $lockHandler = $factory->createLock('tick.lock', null, false);
         
             if ($lockHandler->acquire()) {
                 try {
@@ -146,6 +146,8 @@ EOF;
                     $this->err('Exception running queued commands: %exceptionmsg%', array('%exceptionmsg%' => $e->getMessage()));
                     $this->manager->flush();
                     $errors = true;
+                } finally {
+                    $lockHandler->release();
                 }
                 $logHandler->stopRecordingMessages();
                 if (false == $errors) {
