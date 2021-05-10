@@ -1,0 +1,473 @@
+'A month': 'Un mois'
+'A year': 'Un an'
+'About': 'A propos'
+'Actions': 'Actions'
+'active': 'actif'
+'Active': 'Actif'
+'Add job': 'Ajouter une tâche'
+'Add key': 'Ajouter une clef'
+'Add': 'Ajouter'
+'Admin': 'Admin'
+'Advanced': 'Avancé'
+'All messages': 'Tous les messages'
+'All': 'Tous'
+'Authorized keys': 'Clefs autorisées'
+'Authorized_keys file (%filename%) updated.': 'Fichier Authorized_keys (%filename%) mis-à-jour.'
+'Back to client': 'Revenir au client'
+'Back to job': 'Revenir à la tâche'
+'Backup location': 'Emplacement du Backup'
+'Backup Locations': 'Emplacements des Backups'
+'Backup script': 'Script de backup'
+'Backup server login': 'Connexion'
+'Backups dir': 'Répertoire des Backups'
+'Backups': 'Backups'
+'Browse': 'Naviguer'
+'Can not have the retention count of the first backup level set to 1, and have a second backup level': 'Impossible d''avoir un niveau de rétention pour le premier niveau de backup à 1, et d''avoir un second niveau de backup'
+'Change password': 'Changer le mot de passe'
+'Change': 'Changer'
+'Client "%clientid%" %scripttype% script "%scriptname%" execution failed. Diagnostic information follows: %output%': 'L''exécution du script "%scriptname%" de %scripttype% du Client "%clientid%" a échouée. Information de diagnostic: %output%'
+'Client "%clientid%" %scripttype% script "%scriptname%" execution succeeded. Output follows: %output%': 'L''exécution du script "%scriptname%" de %scripttype% du Client "%clientid%" a réussie. Traces de sortie: %output%'
+'Client "%clientid%" %scripttype% script "%scriptname%" present but file "%scriptfile%" missing.': 'Le script "%scriptname%" de %scripttype% du client "%clientid%" est défini, mais le fichier "%scriptfile%" est manquant.'
+'Client "%clientid%" at %loadLevel% of quota (%quota%MB).': 'Le client "%clientid%" a atteint %loadLevel% du quota (%quota%MB).'
+'Client "%clientid%" post script error.': 'Erreur du post script du Client "%clientid%".'
+'Client "%clientid%" post script ok.': 'Post script du Client "%clientid%" ok.'
+'Client "%clientid%" pre script failed. Aborting backup.': 'Erreur du pre script du Client "%clientid%". Abandon du backup.'
+'Client "%clientid%" pre script ok.': 'Client "%clientid%" pre script ok.'
+'Client "%clientid%" quota exceeded (quota: %quota%MB, disk usage: %du%MB).': 'Client "%clientid%" quota dépassé (quota: %quota%MB, utilisation disque: %du%MB).'
+'Client "%clientid%", Job "%jobid%" du begin.': 'Client "%clientid%", Tâche "%jobid%" démarrage.'
+'Client "%clientid%", Job "%jobid%" du end.': 'Client "%clientid%", Tâche "%jobid%" fin.'
+'Client "%clientid%", Job "%jobid%" error.': 'Client "%clientid%", Tâche "%jobid%" erreur.'
+'Client "%clientid%", Job "%jobid%" ok.': 'Client "%clientid%", Tâche "%jobid%" ok.'
+'Client %name% as post script': 'Le Client %name% a un post script'
+'Client %name% as pre script': 'Le Client %name% a un pre script'
+'Client': 'Client'
+'Clients': 'Clients'
+'Command %command% failed. Diagnostic information follows: %output%': 'La commande %command% a échouée. Information de diagnostic: %output%'
+'Command %command% succeeded with output: %output%': 'La commande %command% a réussie avec la sortie: %output%'
+'Command was unable to send the notification message: %exception%': 'La commande n''a pas réussi à envoyer un message de notification: %exception%'
+'Comment': 'Commentaire'
+'Comment / Key': 'Commentaire / Clef'
+'Config': 'Configuration'
+'Confirm new password': 'Confirmer le nouveau mot de passe'
+'Currently not used': 'Actuellement non utilisé'
+'Daily backups activated, daily count can not be 0': 'Backups journaliés activés, le compteur ne peut pas être 0'
+'Daily': 'Journalier'
+'Day of month:': 'Jour du mois:'
+'Day of week:': 'Jour de la semaine'
+'Day of year:': 'Jour de l''année:'
+'Days of the week': 'Jours de la semaine'
+'Delete client %clientid%, job %jobid%': 'Supprimer la tâche %jobid% du client %clientid%'
+'Delete script %scriptname%': 'Supprimer le script %scriptname%'
+'Delete': 'Supprimer'
+'Description': 'Description'
+'Directory': 'Répertoire'
+'Disk usage': 'Utilisation disque'
+'Documentation will be available soon': 'La documentation sera bientôt disponible'
+'Download as .tgz': 'Télécharger comme .tgz'
+'Download as .zip': 'Télécharger comme .zip'
+'Download': 'Télécharger'
+'During the day': 'Pendant la journée'
+'Edit backup location': 'Editer l''emplacement de backup'
+'Edit client': 'Editer le client'
+'Edit Job': 'Editer la tâche'
+'Edit policy': 'Editer la politique'
+'Edit script': 'Editer le script'
+'Edit User': 'Editer l''utilisateur'
+'Edit': 'Editer'
+'Email': 'Email'
+'Enqueue now': 'Déclencher maintenant'
+'Error closing config file %filename%.': 'Erreur de fermeture du fichier de configuration %filename%.'
+'Error log for backup from job %joburl%': 'Erreur de log du backup de la tâche %joburl%'
+'Error opening config file %filename%. Aborting backup.': 'Erreur d''ouverture du fichier de configuration %filename%. Abandon du backup.'
+'Error saving parameter "%param%"': 'Erreur de sauvegarde du paramètre "%param%"'
+'Error unlinking config file %filename%.': 'Erreur de suppression du fichier de configuration %filename%.'
+'Error updating authorized_keys file (%filename%)': 'Erreur de mise à jour de la clef d''authentification (%filename%)'
+'Error writing to config file %filename%. Aborting backup.': 'Erreur d''écriture du fichier de configuration %filename%. Abandon du backup.'
+'Errors and up': 'Erreurs et supérieur'
+'Exclude': 'Exclure'
+'File': 'Fichier'
+'Five years': 'Cinq ans'
+'Four years': 'Quatre ans'
+'Friday': 'Vendredi'
+'Help': 'Aide'
+'Home': 'Accueil'
+'Host': 'Hôte'
+'Hourly backups activated, hourly count can not be 0': 'Les Backups horaires sont activées, le compteur ne peut pas être 0'
+'Hourly': 'Horaire'
+'Hours': 'Heures'
+'Id': 'Identifiant'
+'Inactive': 'Inactif'
+'Include': 'Inclure'
+'Invalid time specified.': 'Date définie invalide.'
+'Is active': 'Actif'
+'Job %jobid% has no policy': 'La tâche %jobid% n''a pas de politique'
+'Job %name% as post script': 'La tâche %name% a un post script'
+'Job %name% as pre script': 'La tâche %name% a un pre script'
+'Job execution requested successfully': 'L''exécution de la tâche a été demandé avec succès'
+'Jobs prioritized': 'Tâche passée prioritaire'
+'Jobs reordered': 'Tâches réordonées'
+'Jobs': 'Tâches'
+'Key file updated. The update should be effective in less than 2 minutes.': 'Mise à jour du fichier des clefs. La mise à jour sera effective dans moins de 2 minutes.'
+'Key': 'Clef'
+'Language': Langue
+'language_de': Allemand
+'language_en': Anglais
+'language_es': Espagnol
+'language_eu': Basque
+'language_fr': Français
+'Last log entry': 'Dernière entrée du journal'
+'Last Result': 'Dernier résultat'
+'Level': 'Niveau'
+'Link': 'Lien'
+'Login': 'Connexion'
+'Logout': 'Deconnexion'
+'Logs': 'Journal'
+'Mailer host': 'Mailer host'
+'Mailer password': 'Mailer password'
+'Mailer transport': 'Mailer transport'
+'Mailer user': 'Mailer user'
+'Make backups during the day': 'Faire des backups pendant la journée'
+'Make daily backups': 'Faire des backups quotidiens'
+'Make weekly backups': 'Faire des backups hebdomadaires'
+'Make monthly backups': 'Faire des backups mensuels'
+'Make yearly backups': 'Faire des backups annuels'
+'Manage backup locations': 'Gérer l''emplacement des backups'
+'Manage parameters': 'Gérer les paramètres'
+'Max parallel jobs': 'Nombre maximal de tâches en parallèle'
+'Message': 'Message'
+'Missing job.': 'Tache manquante.'
+'Modification date': 'Date de modification'
+'Monday': 'Lundi'
+'Monthly backups activated, monthly count can not be 0': 'Les backups mensuels sont activés, le compteur ne peut pas être à 0'
+'Monthly': 'Mensuel'
+'MySQL DB name': 'MySQL DB name'
+'MySQL host': 'MySQL host'
+'MySQL password': 'MySQL password'
+'MySQL port': 'MySQL port'
+'MySQL user': 'MySQL user'
+'Name': 'Nom'
+'Never': 'Jamais'
+'New password': 'Nouveau mot de passe'
+'New': 'Nouveau'
+'No keys defined': 'Pas de clef définie'
+'No script': 'Pas de script'
+'No such job.': 'Tâche introuvable.'
+'None': 'Aucun'
+'Nothing to run.': 'Rien à exécuter.'
+'Notices and up': 'Notifications et supérieur'
+'Notify only': 'Notifier seulement'
+'Object': 'Objet'
+'Old password': 'Ancien mot de passe'
+'One day': 'Un jour'
+'One week': 'Une semaine'
+'Owner': 'Propriétaire'
+'Parameters updated': 'Paramètres mis à jour'
+'Password changed': 'Mot de passe changé'
+'Password': 'Mot de passe'
+'Password:': 'Mot de passe:'
+'Passwords do not match': 'Les mots de passe ne correspondent pas'
+'Path not found:': 'Chemin introuvable: '
+'Path': 'Chemin'
+'Policies': 'Politiques'
+'Policy %policyid% has no active retains': 'La politique %policyid% n''a pas de retention active'
+'Policy': 'Politique'
+'Post script': 'Post script'
+'Pre script': 'Pre script'
+'Public key generation requested': 'Génération de la Clef Publique demandée'
+'Public key': 'Clef Publique'
+'Queued': 'En file d''attente'
+'Queue status': 'Statut de la file d''attente'
+'Quota warning level': 'Niveau d''alerte sur le quota'
+'Quota': 'Quota (GB)'
+'Really delete client %name%? This will remove all related jobs and backups': 'Voulez-vous vraiment supprimer le client %name%? Cela supprimera toutes les tâches et backups associés.'
+'Really delete job %name%? This will remove all related backups': 'Voulez-vous vraiment supprimer la tâche %name%? Cela supprimera tous les backups associés.'
+'Really delete policy %name%?': 'Voulez-vous vraiment supprimer la politique %name%?'
+'Really delete script %name%?': 'Voulez-vous vraiment supprimer le script %name%?'
+'Records per page': 'Enregistrements par page'
+'Remote path': 'Chemin distant'
+'Removing the policy %name% failed. Check that it is not in use.': 'La suppression de la politique %name% a échouée. Vérifier qu''elle n''est pas utilisée.'
+'Removing the script %name% failed. Check that it is not in use.': 'La suppression du script %name% a échouée. Vérifier qu''il n''est pas utilisé.'
+'Repository backup script': 'Script de duplication du dépôt'
+'Restore': 'Restaurer'
+'Restore host': 'Restaurer un hôte'
+'Retention policy': 'Politique de retention'
+'Run now': 'Exécuter maintenant'
+'Running %command%': 'Exécution de %command%'
+'Running Since': 'En cours depuis'
+'Saturday': 'Samedi'
+'Save client %clientid%': 'Sauvegarder le client %clientid%'
+'Save': 'Sauver'
+'Saved': 'Sauvé'
+'Script "%id%" not found': 'Script "%id%" introuvable'
+'Scripts': 'Scripts'
+'Send notices to': 'Envoyé les notifications à'
+'Set Parameter %paramname%': 'Définir le paramètre %paramname%'
+'Show home page': 'Montrer la page d''accueil'
+'Show Logs': 'Montrer le journal'
+'Show': 'Montrer'
+'Six months': 'Six mois'
+'Sort jobs': 'Trier les tâches'
+'Source': 'Source'
+'Source path': 'Chemin source'
+'Status': 'Statut'
+'Sunday': 'Dimanche'
+'Sync first': 'Synchroniser d''abord'
+'Number of copies to keep': 'Nombre de copies à garder'
+'The number of copies to make during the day': 'Le nombre de copies à faire pendant la journée'
+'There are no enqueued jobs yet.': 'Il n''y a pas encore de tâche.'
+'Three weeks': 'Trois semaines'
+'Three years': 'Trois ans'
+'Thursday': 'Jeudi'
+'Time': 'Date'
+'Time of day': 'Heure'
+'TODO': 'A faire'
+'Tuesday': 'Mardi'
+'Two weeks': 'Deux semaines'
+'Two years': 'Deux ans'
+'Unable to delete client: %extrainfo%': 'Impossible de supprimer le client: %extrainfo%'
+'Unable to delete job: %extrainfo%': 'Impossible de supprimer la tâche: %extrainfo%'
+'Unable to find Client entity': 'Impossible de trouver le client:'
+'Unable to find Job entity:': 'Impossible de trouver la tâche: '
+'Unable to find public key:': 'Impossible de trouver la clef publique:'
+'Unable to save your changes: %extrainfo%': 'Impossible de sauvegarder les changements: %extrainfo%'
+'Updating key file %keys%': 'Mise à jour du fichier de clefs %keys%'
+'Upload dir': 'Téléverser un répertoire'
+'Upload post script': 'Téléverser un post script'
+'Upload pre script': 'Téléverser un pre script'
+'Uploading a script is mandatory for script creation.': 'Téléverser un script est obligatoire pour créer un script.'
+'Url': 'Url'
+'Url prefix': 'Préfixe d''Url'
+'Use local permissions': 'Utiliser les droits locaux'
+'Used by': 'Utilisé par'
+'User %username% logged in.': 'Utilisateur %username% connecté.'
+'User': 'Utilisateur'
+'Username': 'Nom d''utilisateur'
+'Username:': 'Nom d''utilisateur:'
+'Users': 'Utilisateurs'
+'Wait for key generation. It should be available in less than 2 minutes. Check logs if otherwise': 'Attendez la générationd de la clef. Elle devrait être disponible en moins de 2 minutes. Vérifier le journal dans le cas contraire'
+'Warning: the directory does not exist': 'Attention: le répertoire n''existe pas'
+'Warnings and up': 'Avertissements et supérieur'
+'Wednesday': 'Mercredi'
+'Weekly backups activated, weekly count can not be 0': 'Les backups hebdomadaires sont activés, le compteur ne peut pas être à 0'
+'Weekly': 'Hebdomadaire'
+'Welcome to the backup server configuration application.': 'Bienvenue sur l''application de configuration du serveur de backup.'
+'Wrong old password': 'Mauvais ancien mot de passe'
+'Yearly backups activated, yearly count can not be 0': 'Les backups annuels sont activés, le compteur ne peut être à 0'
+'Yearly': 'Annuel'
+'Yes': 'Oui'
+'You forgot to specify hours during the day': 'Vous avez oublié de définir les heures pendant la journée'
+'Add client': 'Ajouter un client'
+'Backup not found': 'Backup non trouvé'
+'Client has not yet been saved': 'Le client n''a pas été sauvegarder'
+'Job has not yet been saved': 'La tâche n''a pas été sauvegardé'
+'Impossible to delete superuser account': 'Impossible de supprimer le compte de l''administrateur'
+'This script is used by some client or job': 'Le script est utilisé par un client ou une tâche'
+'Run as': 'Exécuté en tant que'
+'Job': 'Tâche'
+'Before': 'Avant'
+'After': 'Après'
+'Size' : 'Taille'
+'Back to root' : 'Revenir à la racine'
+'Preferences': 'Préférences'
+'Manage preferences': 'Gérer les préférences'
+'Abort': 'Annuler'
+'More': 'Plus'
+'Clone': 'Cloner'
+'Abort job': 'Annuler la tâche'
+'Test connection': 'Tester'
+policy_help: |
+ <h4>Nom</h4>
+ C'est l'identifiant de la politique. Il sera affiché dans les listes et boîtes combinées. Le nom doit être unique parmis toutes les politiques, l'application refusera d'utiliser un nom déjà utilisé.
+ <h4>Description</h4>
+ Texte libre pour décrire la politique. Ajouter ici ce que vous pensez utile.
+ <h4>Exclusion et inclusions</h4>
+ L'application interprête chaque ligne du champ d'exclusion comme un modèle à exclure et chaque ligne d'inclusion comme un modèle à inclure. En utilisant ces champs intelligemment vous pouvez facilement choisir quels fichiers inclure dans l'instantané et lesquels ignorer. Les deux champs intéragissent selon le modèle suivant pour chaque fichier et répertoire de l'instantané:
+ <ol>
+  <li>Si le fichier ou répertoire correspond à une ligne dans le champ d'inclusion, alors l'application incluera ce fichier. </li>
+  <li>Si le fichier ou répertoire correspond à une ligne dans le champ d'exclusion, alors l'application ignorera ce fichier et il ne sera pas sauvegardé. </li>
+  <li>Si le fichier ou répertoire ne correspond à rien, alors il est inclus dans l'instantané.</li>
+ </ol>
+ Comme vous pouvez le remarqué l'application sauvegarde tous les fichiers par défaut, excluant seulement ceux correspondant au modèle d''exclusion et qui ne correspondent par à un modèle d'inclusion.
+ Remarquer que chaque tâche a sa propre définition des inclusions et exclusions. Ceux définis dans la tâches sont prioritaires sur ceux définis dans la politique.
+ <h4>Synchroniser d'abord</h4>
+ Quand Synchroniser d'abord est activé, toute la synchronisation est fait dans une étape supplémentaire. Même les appels à chaque heure ne font que faire tourner les répertoires, sans même se connecter au client. Cela permet de garantir que les instantanés sont cohérents avec le coût additionel d'un instantané utilisé seulement pour la synchronisation.
+ <h4>Pendant la journée</h4>
+ Instantanés faits pendant la journée.
+ <h4>Journalier</h4>
+ Instantanés faits une fois par jour à un moment donné.
+ <h4>Hebdomadaire</h4>
+ Instantanés faits une fois par semaine.
+ <h4>Mensuel</h4>
+ Instantanés faits une fois par mois.
+ <h4>Annuel</h4>
+ Instantanés faits une fois par an.
+client_help: |
+ <h4>Nom</h4>
+ C'est l'identifiant du client. Il sera affiché dans les listes et les boîtes combinées. Le nom doit être unique parmis tous les clients, l'application refusera d'utiliser un nom déjà utilisé.
+ <h4>Url</h4>
+ C'est la chaîne texte de connexion pour le client. L'application utilisera cette valeur avec le chemin de la tâche pour définir le chemin complet de la tâche. Les valeurs typiques pour ce champ sont:
+ <ul>
+   <li>Il peut être vide. C'est utile lorsque le chemin à sauvegarder est dans le système de fichier local.</li>
+   <li><i>user@domain.name</i> se connectera par ssh à la machine <i>domain.name</i> en utilisant l'utilisateur <i>user</i> pour la connexion.</li>
+   <li><i>user@domain.name:</i> Attention au "2 points". Comme ci dessus, mais utilisera le serveur rsync distant à la place de la connexion ssh.</li>
+ </ul>
+ <h4>Quota</h4>
+ La quantité d'espace disque en GB que ce client est autorisé à utilisé. -1 signifie "sans limite". Quand le seuil configuré est atteint (80% par défaut) l'application annoncera un avertissement à la liste des abonnés à chaque tâche. L'application rejetera les tâches de sauvegarde avec une erreur si l'utilisation disque est supérieure au quota.
+ <h4>Utilisation disque</h4>
+ L'espace disque actuellement utilisé par ce client.
+ <h4>Description</h4>
+ Texte libre pour décrire le client. Ajouter ici ce que vous pensez utile.
+ <h4>Actif</h4>
+ Si cette case à cocher est non marquée, alors aucun instantané ne sera pas pris.
+ <h4>Pre et post scripts</h4>
+ Les scripts à exécuter avant et après chaque tâche appartenant à ce client. Pensez à l'ouverture d'une connexion VPN, la configuration d'un partage de fichier, etc. Si plusieurs pre ou post scripts sont selectionné l'ordre d''exécution et alphabétique (croissant pour les pre scripts et décroissant pour les post scripts).
+ <h4>Nombre maximal de tâches en parallèle</h4>
+ Ce paramètre définit le nombre maximum de tâches parallèles autorisées pour ce client.
+ <h4>Propriétaire</h4>
+ Cet utilisateur sera capable de gérer le client et ces tâches. Seuls les administrateurs peuvent changer le propriétaire.
+ <h4>Avancé</h4>
+ <ul>
+ <li><b>SSH args</b>: Arguments SSH personnalisés. Exemple: -p2222 (se connectera à SSH par le port TCP/2222)</li>
+ <li><b>Rsync short args</b>: Arguments Rsync courts personnalisés. Déjà inclus: -a</li>
+ <li><b>Rsync long args</b>: Arguments Rsync longs personnalisés. Exemple: --bwlimit=500 (limitera la bande passante à 200kb/s). Déjà inclus: --delete --numeric-ids --relative --delete-excluded --stats</li>
+ </ul>
+client_job_help: |
+ <h4>Tâches</h4>
+ Vous pouvez éditer les paramètres les plus imortants d'une tâche appartenant à ce client ici. N'oubliez pas de sauvegarder vos changements après avoir fait vos modifications.
+job_help: |
+ <h4>Nom</h4>
+ C'est l'identifiant de la tâche. Il sera affiché dans les listes et les boîtes combinées. Le nom doit être unique parmis toutes les tâches, l'application refusera d'utiliser un nom déjà utilisé.
+ <h4>Chemin</h4>
+ Le chemin ou le nom de la ressource rsync sur le client.
+ <h4>Utilisation disque</h4>
+ L'espace disque actuellement utilisé par cette tâche.
+ <h4>Description</h4>
+ Texte libre pour décrire la tâche. Ajouter ici ce que vous pensez utile.
+ <h4>Actif</h4>
+ Si cette case à cocher est non marquée, alors aucun instantané ne sera pas pris.
+ <h4>Envoyer des notifications à</h4>
+ Vous pouvez demander à l'application de notifier une ou plusieurs personnes (par email) de n'importe quel évènement. L'application decide quel évènement sera notifié seulement à partir des paramètres de notification. Si vous choisissez un email quelconque vous devez remplir avec cet email.
+ <h4>Notifier seulement</h4>
+ Afin de réduire le flux de messages aux minimum vous pouvez notifier seulement les évènements supérieur au seuil choisi.
+ <h4>Pre et post scripts</h4>
+ Les scripts à exécuter avant et après cette tâche. Pensez à l'ouverture d'une connexion VPN, la configuration d'un partage de fichier, etc. Si plusieurs pre ou post scripts sont selectionné l'ordre d''exécution et alphabétique (croissant pour les pre scripts et décroissant pour les post scripts).
+ <h4>Politique</h4>
+ Choisir la politique de la tâche. La politique définit quand les instantanés sont pris et combien en garder, parmis d'autres choses. Si vous laissez ce champ vide l'application ne fera pas d'instantané pour cette tâche.
+ <h4>Utiliser les droits locaux</h4>
+ Rsnapshot essayes de garder les droits identiques à ceux des fichiers sources. Cela peut poser des problèmes sous Windows, donc si vous avez des problèmes de droits avec des tâches sous Windows essayer d'activer ce réglage. Cela peut aussi rendre les fichiers non lisible par le serveur web.
+ <h4>Exclure et Inclure</h4>
+ L'application interprête chaque ligne du champ d'exclusion comme un modèle à exclure et chaque ligne d'inclusion comme un modèle à inclure. En utilisant ces champs intelligemment vous pouvez facilement choisir quels fichiers inclure dans l'instantané et lesquels ignorer. Les deux champs intéragissent selon le modèle suivant pour chaque fichier et répertoire de l'instantané:
+ <ol>
+  <li>Si le fichier ou répertoire correspond à une ligne dans le champ d'inclusion, alors l'application incluera ce fichier. </li>
+  <li>Si le fichier ou répertoire correspond à une ligne dans le champ d'exclusion, alors l'application ignorera ce fichier et il ne sera pas sauvegardé. </li>
+  <li>Si le fichier ou répertoire ne correspond à rien, alors il est inclus dans l'instantané.</li>
+ </ol>
+ Comme vous pouvez le remarqué l'application sauvegarde tous les fichiers par défaut, excluant seulement ceux correspondant au modèle d''exclusion et qui ne correspondent par à un modèle d'inclusion.
+ Si et seulement si le champ d'inclusion est vide l'application utilisera la directive définie dans l'inclusion de la politique. Le même principe s'applique au champ d'exclusions.
+ <h4>Emplacement du Backup</h4>
+ Choisir l'emplacement pour cette tâche. Le backup sera sauvegarder dans l'emplacement choisi.
+ <h4>Avancé</h4>
+ <ul>
+  <li><b>Token</b>: Ce jeton de la tâche sera utilisé pour l'exécution de tâches distantes. Supprimer ce jeton si vous voulez désactiver cette fonctionnalité.</li>
+ </ul>
+user_help: |
+ <h4>Nom</h4>
+ C'est l'identifiant de l'utilisateur. Il sera affiché dans les listes et les boîtes combinées. Le nom doit être unique parmis tous les utilisateurs, l'application refusera d'utiliser un nom déjà utilisé.
+ <h4>Email</h4>
+ L'email est très important. Toutes les notifications pour cet utilisateur seront envoyées à l'email défini ici.
+ <h4>Actif</h4>
+ Si cette case à cocher est non marquée l'utilisateur ne pourra pas se connecter.
+ <h4>Rôle</h4>
+ <ul>
+  <li><b>Admin</b>: les utilisateurs administrateur peuvent tout modifier</li>
+  <li><b>User</b>: <span style="font-weight: bold; color: red">OBSOLETE</span> pour des raisons de sécurité <a href="https://github.com/elkarbackup/elkarbackup/issues/157">issue#157</a>. Ne peut pas se connecter. Changer le rôle pour Admin ou supprimer l'utilisateur.</li>
+ </ul>
+ <h4>Mot de passe</h4>
+ Vous ne pouvez pas lire le mot de passe ici, vous pouvez seulement le changer. Si vous mettez ici n'importe quoi sauf une chaîne texte vide et sauvegardez le mot de passe sera mis à jour.
+params_help: |
+ <h4>Configuration MySQL</h4>
+ Ces paramètres configurent la connexion à la BD. Faites attention, si vous vous trompez l'application ne fonctionnera plus.
+ <h4>Configuration du Mailer</h4>
+ Ces paramètres configurent comment l'application envoie des emails. Faites attention, si vous vous trompez l'application ne pourra pas envoyer de notification. <a href="http://symfony.com/doc/current/cookbook/email/email.html">La documentation du projet Symfony</a> peut être utile.
+ <h4>Répertoire de téléversement</h4>
+ L'application sotcke les pre et post scripts dans ce répertoire. Le web serveur doit pouvoir y écrire.
+ <h4>Suppression des journaux plus anciens que</h4>
+ L'application supprimera les journaux périodiquement afin de ne pas occupé trop d'espace. Toutes les entrées du journal plus anciennes que cette valeur seront supprimées.
+ <h4>Niveau d'avertissement pour les Quota</h4>
+ Quand l'espace disque d'un client dépasse ce pourcentage de son quota une notification sera envoyée.
+ <h4>Nombre d'entrées par page</h4>
+ Nombre de lignes à afficher dans chaque page.
+ <h4>Prefix d'Url/h4>
+ Selon votre configuration d'Apache, l'url des backups affichée dans les journaux peut être erronée. Par exemple, si http://your.host/client/1 est généré quand vous attendez http://your.host/elkarbackup/client/1 définissez ce paramètre à /elkarbackup.
+ <h4>Nombre maximal de tâches en parallèle</h4>
+ Le nombre maximal de tâche qui peuvent exécutées en parallèle globalement. 
+ <h4>Exécuter les post scripts lors des échecs des pre scripts</h4>
+ Si un pre script de tâche échoue alors les post scripts seront exécutés selon ce paramètre.
+backupscriptconfig_help: |
+ <h4>Clefs authorisées</h4>
+ Il est nécessaire d'ajouter vos clefs ssh publique pour faire des backups du dépot.
+managebackups_help: |
+ <h4>Hôte</h4>
+ Le nom de l'hôte ou l'adresse IP du serveur NFS. Laissez le vide pour utiliser le système de fichier local.
+ <p>Cette application utilise autofs pour monter les systèmes de fichiers distant. Si autofs n'est pas configuré comme attendu ce champ ne sera pas éditable.</p>
+ <h4>Répertoire</h4>
+ Le chemin complet dans le système de fichiers local ou le nom de l'export NFS. Dans tous les cas il doit commencer par '/'.
+ <h4>Nombre maximal de tâches en parallèle</h4>
+ Le nombre maximal de tâches en parallèle autorisées pour cet emplacement de backups.
+managerestore_help: |
+ <h4>Rétablir l'hôte</h4>
+ Le nom de l'hôte ou l'adresse IP de l'hôte où vous voulez rétablir votre backup.
+ <h4>Chemin source</h4>
+ Le chemin complet sur l'hôte local de elkarbackup d'où rétablir les données.
+ <h4>Chemin distant</h4>
+ Le chemin complet sur l'hôte distant sur lequel rétablir les données.
+ <p>Il est conseillé de ne pas rétablir les données sur l'emplacement original. Pour des raisons de sécurité elkarbackup n'a pas le propriétaire original des fichiers.</p> 
+script_help: |
+ <h4>A propos des scripts</h4>
+ L'application exécute le script en tant que l'utilisateur des backups. L'application définit les variables d'environement suivantes avant l'exécution de chacun des scripts:
+ <ul>
+  <li>ELKARBACKUP_LEVEL:  les valeurs possibles sont JOB ou CLIENT</li>
+  <li>ELKARBACKUP_EVENT:  les valeurs possibles sont PRE ou POST</li>
+  <li>ELKARBACKUP_URL:    la valeur est l'URL complète de la tâche ou du client</li>
+  <li>ELKARBACKUP_ID:     l'identifiant numérique de la tâche ou du client</li>
+  <li>ELKARBACKUP_PATH:   le chemin complet de la racine de l'instantané (disponible seulement pour les scripts de tâche)</li>
+  <li>ELKARBACKUP_STATUS: le statut de retour de rsnapshot dans les post scripts, -1 si les pre scripts ont échoués, -2 si rsnapshot a été passé, toujours 0 sinon</li>
+  <li>ELKARBACKUP_CLIENT_NAME:  nom du client</li>
+  <li>ELKARBACKUP_JOB_NAME: nom de la tâche (vide dans le client)</li>
+  <li>ELKARBACKUP_OWNER_EMAIL: l'adresse email du propriétaire de la tâche (vide dans le client)</li>
+  <li>ELKARBACKUP_RECIPIENT_LIST: les adresses email des destinataires de la tâche (vide dans le client)</li>
+  <li>ELKARBACKUP_CLIENT_TOTAL_SIZE: utilisation disque du client (en KB)</li>
+  <li>ELKARBACKUP_JOB_TOTAL_SIZE: utilisation disque de la tâche (en KB, vide dans le client)</li>
+  <li>ELKARBACKUP_JOB_RUN_SIZE: quantité de données backupées pendant cette exécution (en KB, vide dans le client)</li>
+  <li>ELKARBACKUP_CLIENT_STARTTIME: horodatage du début de backup du client (seulement disponible dans les scripts client)</li>
+  <li>ELKARBACKUP_CLIENT_ENDTIME: horodatage de fin de backup du client (seulement disponible dans les scripts client)</li>
+  <li>ELKARBACKUP_JOB_STARTTIME: horodatage du début de la tâche (seulement disponible dans les scripts de tâche)</li>
+  <li>ELKARBACKUP_JOB_ENDTIME: horodatage de fin de la tâche (seulement disponible dans les scripts de tâche)</li>
+  <li>ELKARBACKUP_SSH_ARGS: arguments avancés pour la connexion ssh</li>
+ </ul>
+ Si n'importe quel pre script retourne un code d'erreur autre que 0 l'application annule le processus et empêche les tâches du client de s'exécutées. D'un autre côté, l'application déclenchera une alerte si un pre script de tâche retourne autre chose que 0 (le backup ne sera pas annulé).
+ <h4>Nom</h4>
+ C'est l'identifiant du script. Il sera affiché dans les listes et les boîtes combinées. Le nom doit être unique parmis tous les scripts, l'application refusera d'utiliser un nom déjà utilisé.
+ <h4>Description</h4>
+ Texte libre pour décrire le script. Ajouter ici ce que vous pensez utile.
+ <h4>Fichier</h4>
+ Choisissez le script à téléverser.
+ <h4>S'exécute comme script avant le client</h4>
+ Cochez la case si le script est fait pour s'exécuter avant l'ouverture du client.
+ <h4>S'exécute comme script après le client</h4>
+ Cochez la case si le script est fait pour s'exécuter après la fermeture du client.
+ <h4>S'exécute comme script avant la tâche</h4>
+ Cochez la case si le script est fait pour s'exécuter avant l'ouverture de la tâche.
+ <h4>S'exécute comme script après la tâche</h4>
+ Cochez la case si le script est fait pour s'exécuter avant la fermeture de la tâche.
+sort_jobs_help: |
+ <h4>Trier les tâches</h4>
+ Vous pouvez changer l'ordre d'exécution des tâches. C'est très utile si vous avez plusieurs tâches planifiées au même horaire.
+ <p>Vous pouvez réorganisez à votre guise en drag & drop-ant</p>
+preferences_help: |
+ <h4>Gestion des préférences utilisateur</h4>
+ Tout ce que vous changez ici n'affectera pas les autres utilisateurs.
+ <h4>Langue</h4>
+ Choisissez votre langue préférée
+ <h4>Entrées par page</h4>
+ Choisissez le nombre de lignes que vous voulez afficher par page

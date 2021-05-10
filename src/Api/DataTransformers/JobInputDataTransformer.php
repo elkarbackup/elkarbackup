@@ -95,6 +95,11 @@ class JobInputDataTransformer implements DataTransformerInterface
 
     private function setPostScripts (Job $job, $postScripts)
     {
+        if (null != $job->getPostScripts()) {
+            foreach ($job->getPostScripts() as $script) {
+                $job->removePostScript($script);
+            }
+        }
         if (null != $postScripts){
             $repository = $this->entityManager->getRepository('App:Script');
             $query = $repository->createQueryBuilder('s');
@@ -116,6 +121,11 @@ class JobInputDataTransformer implements DataTransformerInterface
 
     private function setPreScripts (Job $job, $preScripts)
     {
+        if (null != $job->getPreScripts()) {
+            foreach ($job->getPreScripts() as $script) {
+                $job->removePreScript($script);
+            }
+        }
         if (null != $preScripts){
             $repository = $this->entityManager->getRepository('App:Script');
             $query = $repository->createQueryBuilder('s');

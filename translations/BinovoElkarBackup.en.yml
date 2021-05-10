@@ -289,7 +289,7 @@ policy_help: |
  Snapshots once a week.
  <h4>Monthly</h4>
  Snapshots once a month.
- <h4>Monthly</h4>
+ <h4>Yearly</h4>
  Snapshots once a year.
 client_help: |
  <h4>Name</h4>
@@ -433,7 +433,7 @@ script_help: |
   <li>ELKARBACKUP_CLIENT_ENDTIME: client backup end timestamp (only available in post client scripts)</li>
   <li>ELKARBACKUP_JOB_STARTTIME: job backup start timestamp (only available in job scripts)</li>
   <li>ELKARBACKUP_JOB_ENDTIME: job backup end timestamp (only available in post job scripts)</li>
-  <li>ELKARBACKUP_SSH_ARGS: advanced arguments for ssh conection</li>
+  <li>ELKARBACKUP_SSH_ARGS: advanced arguments for ssh connection</li>
  </ul>
  If any pre client script returns an exit status other than 0 the application aborts the process and prevents jobs of the client from running. On the other hand, the application will trigger a warning alert if the exit status of the pre job script is other than 0 (backup execution will not be aborted).
  <h4>Name</h4>
