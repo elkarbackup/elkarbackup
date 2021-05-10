@@ -22,6 +22,7 @@
 		"symfony/framework-bundle": "4.4.*",
 		"symfony/lock": "4.4.*",
 		"symfony/monolog-bundle": "^3.6",
+		"symfony/process": "4.4.*",
 		"symfony/security-bundle": "4.4.*",
 		"symfony/security-csrf": "4.4.*",
 		"symfony/swiftmailer-bundle": "^3.5",
