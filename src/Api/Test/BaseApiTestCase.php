@@ -34,24 +34,10 @@ class BaseApiTestCase extends ApiTestCase
         ]);
     }
 
-    protected function createClientEntity(Client $httpClient, string $clientName, int $owner, string $description = null, $isActive = true, $maxParallelJobs = 1, $postScripts = [], 
-        $preScripts = [], $quota = -1, string $rsyncLongArgs = null, string $rsyncShortArgs = null, string $sshArgs = null, string $url = null): void
+    protected function postClient(Client $httpClient, array $clientJson): void
     {
         $httpClient->request('POST', '/api/clients', [
-            'json' => [
-                'description' => $description,
-                'isActive' => $isActive,
-                'maxParallelJobs' => $maxParallelJobs,
-                'name' => $clientName,
-                'owner' => $owner,
-                'postScripts' => $postScripts,
-                'preScripts' => $preScripts,
-                'quota' => $quota,
-                'rsyncLongArgs' => $rsyncLongArgs,
-                'rsyncShortArgs' => $rsyncShortArgs,
-                'sshArgs' => $sshArgs,
-                'url' => $url
-            ]
+            'json' => $clientJson
         ]);
     }
     protected function createClientName(): string
