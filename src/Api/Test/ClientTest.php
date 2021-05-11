@@ -12,7 +12,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $this->createClientEntity($httpClient, $clientName, 1);
+        $clientJson = ClientMother::named($clientName);
+        $this->postClient($httpClient, $clientJson);
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains(['name' => $clientName]);
@@ -22,7 +23,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $this->createClientEntity($httpClient, $clientName, 1, null, true, -1, null, null);
+        $clientJson = ClientMother::withMaxParallelJobs($clientName, -1);
+        $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(422);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
@@ -37,8 +39,9 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $this->createClientEntity($httpClient, $clientName, 1);
-        $this->createClientEntity($httpClient, $clientName, 1);
+        $clientJson = ClientMother::named($clientName);
+        $this->postClient($httpClient, $clientJson);
+        $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertHydraError("An exception occurred while executing 'INSERT INTO Client (description, isActive, name, url, quota, sshArgs, rsyncShortArgs, rsyncLongArgs, state, maxParallelJobs, data, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' with params [null, 1, \"".$clientName."\", \"\", -1, null, null, null, \"NOT READY\", 1, null, 1]:\n\nSQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '".$clientName."' for key 'Client.UNIQ_C0E801635E237E06'");
     }
@@ -47,7 +50,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $this->createClientEntity($httpClient, $clientName, self::UNEXISTING_ID);
+        $clientJson = ClientMother::withOwner($clientName, self::UNEXISTING_ID);
+        $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Incorrect owner id');
@@ -62,16 +66,8 @@ class ClientTest extends BaseApiTestCase
         $response = $httpClient->request('GET', $iri);
         $scriptId = $response->toArray()['id'];
         $clientName = $this->createClientName();
-        $httpClient->request('POST', '/api/clients', [
-            'json' => [
-                'isActive'        => true,
-                'maxParallelJobs' => 1,
-                'name'            => $clientName,
-                'owner'           => 1,
-                'postScripts'     => [$scriptId],
-                'quota'           => -1
-            ]
-        ]);
+        $clientJson = ClientMother::withPostScripts($clientName, [$scriptId]);
+        $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
@@ -91,16 +87,8 @@ class ClientTest extends BaseApiTestCase
         $response = $httpClient->request('GET', $iri);
         $scriptId = $response->toArray()['id'];
         $clientName = $this->createClientName();
-        $httpClient->request('POST', '/api/clients', [
-            'json' => [
-                'isActive'        => true,
-                'maxParallelJobs' => 1,
-                'name'            => $clientName,
-                'owner'           => 1,
-                'preScripts'     => [$scriptId],
-                'quota'           => -1
-            ]
-        ]);
+        $clientJson = ClientMother::withPreScripts($clientName, [$scriptId]);
+        $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
@@ -114,16 +102,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $httpClient->request('POST', '/api/clients', [
-            'json' => [
-                'isActive'        => true,
-                'maxParallelJobs' => 1,
-                'name'            => $clientName,
-                'owner'           => 1,
-                'postScripts'     => [self::UNEXISTING_ID],
-                'quota'           => -1
-            ]
-        ]);
+        $clientJson = ClientMother::withPostScripts($clientName, [self::UNEXISTING_ID]);
+        $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
@@ -132,17 +112,9 @@ class ClientTest extends BaseApiTestCase
     public function testCreateClientUnexistentPreScript(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();;
-        $httpClient->request('POST', '/api/clients', [
-            'json' => [
-                'isActive'        => true,
-                'maxParallelJobs' => 1,
-                'name'            => $clientName,
-                'owner'           => 1,
-                'preScripts'     => [self::UNEXISTING_ID],
-                'quota'           => -1
-            ]
-        ]);
+        $clientName = $this->createClientName();
+        $clientJson = ClientMother::withPreScripts($clientName, [self::UNEXISTING_ID]);
+        $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
@@ -152,7 +124,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $this->createClientEntity($httpClient, $clientName, 1);
+        $clientJson = ClientMother::named($clientName);
+        $this->postClient($httpClient, $clientJson);
         $iri = $this->findIriBy(Client::class, [
             'name' => $clientName
         ]);
@@ -175,7 +148,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $this->createClientEntity($httpClient, $clientName, 1);
+        $clientJson = ClientMother::named($clientName);
+        $this->postClient($httpClient, $clientJson);
         $response = $httpClient->request('GET', '/api/clients');
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -196,7 +170,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $this->createClientEntity($httpClient, $clientName, 1);
+        $clientJson = ClientMother::named($clientName);
+        $this->postClient($httpClient, $clientJson);
         $response = $httpClient->request('GET', '/api/clients/'.self::UNEXISTING_ID);
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -207,7 +182,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $this->createClientEntity($httpClient, $clientName, 1);
+        $clientJson = ClientMother::named($clientName);
+        $this->postClient($httpClient, $clientJson);
         $iri = $this->findIriBy(Client::class, [
             'name' => $clientName
         ]);
@@ -234,7 +210,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $this->createClientEntity($httpClient, $clientName, 1, "some description", true, 1, null, null, -1, null, null, null, "root@172.17.0.1");
+        $clientJson = ClientMother::withAllParameters($clientName, 1, $description, $isActive, $maxParallelJobs, $postScripts, $preScripts, $quota, $rsyncLongArgs, $rsyncShortArgs, $sshArgs, $url);
+        $this->postClient($httpClient, $clientJson);
         $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
         $updatedName = $this->createClientName();
         $httpClient->request('PUT', $iri, [
@@ -259,19 +236,9 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $httpClient->request('POST', '/api/clients', [
-            'json' => [
-                'description' => 'description',
-                'isActive' => true,
-                'maxParallelJobs' => 1,
-                'name' => $clientName,
-                'owner' => 1,
-                'quota' => -1,
-                'url' => 'root@172.17.0.1'
-            ]
-        ]);
+        $clientJson = ClientMother::named($clientName);
+        $this->postClient($httpClient, $clientJson);
         $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
-        
         $httpClient->request('PUT', $iri, [
             'json' => [
                 'description' => 'description updated',
@@ -297,21 +264,12 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $this->createClientEntity($httpClient, $clientName, 1);
+        $clientJson = ClientMother::named($clientName);
+        $this->postClient($httpClient, $clientJson);
         $updateName = $this->createClientName();
-        $httpClient->request('POST', '/api/clients', [
-            'json' => [
-                'description' => 'description',
-                'isActive' => true,
-                'maxParallelJobs' => 1,
-                'name' => $updateName,
-                'owner' => 1,
-                'quota' => -1,
-                'url' => 'root@172.17.0.1'
-            ]
-        ]);
+        $updateClientJson = ClientMother::named($updateName);
+        $this->postClient($httpClient, $updateClientJson);
         $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
-        
         $httpClient->request('PUT', $iri, [
             'json' => [
                 'isActive' => true,
@@ -346,9 +304,9 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $this->createClientEntity($httpClient, $clientName, 1);
+        $clientJson = ClientMother::named($clientName);
+        $this->postClient($httpClient, $clientJson);
         $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
-        
         $httpClient->request('PUT', $iri, [
             'json' => [
                 'isActive' => true,
@@ -368,17 +326,9 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $httpClient->request('POST', '/api/clients', [
-            'json' => [
-                'isActive' => true,
-                'maxParallelJobs' => 1,
-                'name' => $clientName,
-                'owner' => 1,
-                'quota' => -1
-            ]
-        ]);
+        $clientJson = ClientMother::named($clientName);
+        $this->postClient($httpClient, $clientJson);
         $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
-        
         $httpClient->request('PUT', $iri, [
             'json' => [
                 'isActive' => true,
