@@ -1,13 +1,13 @@
 App\Entity\Script:
-    script{1..10}:
+    script_all_true:
       __construct: ['/var/spool/elkarbackup/uploads']
       description: <text()>
-      name: 'script<current()>'
+      name: 'script_all_true'
       scriptFile: <upload('/home/uanabitarte/script.sh')>
-      isClientPre: <boolean()>
-      isJobPre: <boolean()>
-      isClientPost: <boolean()>
-      isJobPost: <boolean()>
+      isClientPre: true
+      isJobPre: true
+      isClientPost: true
+      isJobPost: true
 
     script_not_client_post:
       __construct: ['/var/spool/elkarbackup/uploads']
