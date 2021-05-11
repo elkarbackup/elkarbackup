@@ -53,7 +53,7 @@ class ClientOutputDataTransformer implements DataTransformerInterface
         $output->setId($data->getId());
         $output->setName($data->getName());
         $output->setUrl($data->getUrl());
-        $output->setQuota($data->getQuota());
+        $output->setQuota((int)$data->getQuota());
         $output->setDescription($data->getDescription());
         $output->setIsActive($data->getIsActive());
         $output->setPreScripts($this->getScriptsId($data->getPreScripts()));
