@@ -76,7 +76,7 @@ class ClientMother
         'maxParallelJobs' => 1,
         'name'            => $clientName,
         'owner'           => 1,
-        'postScripts'     => [self::UNEXISTING_ID],
+        'postScripts'     => $postScripts,
         'quota'           => -1
         ];
         return $json;
@@ -89,7 +89,7 @@ class ClientMother
             'maxParallelJobs' => 1,
             'name'            => $clientName,
             'owner'           => 1,
-            'preScripts'     => [self::UNEXISTING_ID],
+            'preScripts'     => $preScripts,
             'quota'           => -1
         ];
         return $json;
