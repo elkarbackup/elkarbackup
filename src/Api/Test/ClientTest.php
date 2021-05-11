@@ -16,9 +16,35 @@ class ClientTest extends BaseApiTestCase
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains(['name' => $clientName]);
+        $this->assertJsonContains($clientJson);
+        $this->assertHydraContext();
     }
 
+    public function testCreateClientAllParameters(): void 
+    {
+        $httpClient = $this->authenticate();
+        $clientName = $this->createClientName();
+        $scriptId = $this->getScriptId($httpClient, 'script_all_true');
+        $clientJson = ClientMother::withAllParameters(
+            $clientName, 
+            1, 
+            "some description", 
+            false, 
+            2, 
+            [$scriptId], 
+            [$scriptId],
+            -1, 
+            "rsync long arguments", 
+            "rsync short arguments", 
+            "ssh arguments", 
+            "root@172.0.0.1"
+        );
+        $this->postClient($httpClient, $clientJson);
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertJsonContains($clientJson);
+        $this->assertHydraContext();
+    }
     public function testCreateClientInvalidMaxParallelJobs(): void
     {
         $httpClient = $this->authenticate();
@@ -60,43 +86,25 @@ class ClientTest extends BaseApiTestCase
     public function testCreateClientInvalidPostScript(): void
     {
         $httpClient = $this->authenticate();
-        $iri = $this->findIriBy(Script::class, [
-            'name' => 'script_not_client_post'
-        ]);
-        $response = $httpClient->request('GET', $iri);
-        $scriptId = $response->toArray()['id'];
+        $scriptId = $this->getScriptId($httpClient, 'script_not_client_post');
         $clientName = $this->createClientName();
         $clientJson = ClientMother::withPostScripts($clientName, [$scriptId]);
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/Error',
-            '@type' => 'hydra:Error',
-            'hydra:title' => 'An error occurred',
-            'hydra:description' => 'Script "'.$scriptId.'" is not a client post script',
-        ]);
+        $this->assertHydraError('Script "'.$scriptId.'" is not a client post script');
     }
 
     public function testCreateClientInvalidPreScript(): void
     {
         $httpClient = $this->authenticate();
-        $iri = $this->findIriBy(Script::class, [
-            'name' => 'script_not_client_pre'
-        ]);
-        $response = $httpClient->request('GET', $iri);
-        $scriptId = $response->toArray()['id'];
+        $scriptId = $this->getScriptId($httpClient, 'script_not_client_pre');
         $clientName = $this->createClientName();
         $clientJson = ClientMother::withPreScripts($clientName, [$scriptId]);
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/Error',
-            '@type' => 'hydra:Error',
-            'hydra:title' => 'An error occurred',
-            'hydra:description' => 'Script "'.$scriptId.'" is not a client pre script',
-        ]);
+        $this->assertHydraError('Script "'.$scriptId.'" is not a client pre script');
     }
     public function testCreateClientUnexistentPostScript(): void
     {
@@ -191,45 +199,53 @@ class ClientTest extends BaseApiTestCase
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains([
-            'isActive' => true,
-            'maxParallelJobs' => 1,
-            'name' => $clientName,
-            'owner' => 1,
-            'postScripts' => [],
-            'preScripts' => [],
-            'quota' => '-1',
-            'rsyncLongArgs' => null,
-            'rsyncShortArgs' => null,
-            'sshArgs' => null,
-            'url' => ""
-        ]);
+        $this->assertJsonContains($clientJson);
+        $this->assertHydraContext();
     }
 
     public function testUpdateClient(): void
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $clientJson = ClientMother::withAllParameters($clientName, 1, $description, $isActive, $maxParallelJobs, $postScripts, $preScripts, $quota, $rsyncLongArgs, $rsyncShortArgs, $sshArgs, $url);
+        $scriptId = $this->getScriptId($httpClient, 'script_all_true');
+        $clientJson = ClientMother::withAllParameters(
+            $clientName,
+            1,
+            "some description",
+            false,
+            2,
+            [$scriptId],
+            [$scriptId],
+            -1,
+            "rsync long arguments",
+            "rsync short arguments",
+            "ssh arguments",
+            "root@172.0.0.1"
+        );
         $this->postClient($httpClient, $clientJson);
         $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
         $updatedName = $this->createClientName();
+        $updateClientJson = ClientMother::withAllParameters(
+            $updatedName,
+            1,
+            "description updated",
+            true,
+            5,
+            [$scriptId],
+            [],
+            -1,
+            "rsync long arguments updated",
+            "rsync short arguments updated",
+            "ssh arguments updated",
+            "root@172.0.0.2"
+        );
         $httpClient->request('PUT', $iri, [
-            'json' => [
-                'description' => 'description updated',
-                'isActive' => false,
-                'maxParallelJobs' => 1,
-                'name' => $updatedName,
-                'owner' => 1,
-                'quota' => - 1
-            ]
+            'json' => $updateClientJson
         ]);
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertJsonContains(['name' => $updatedName]);
-        $this->assertJsonContains(['description' => 'description updated']);
-        $this->assertJsonContains(['isActive' => false]);
-        $this->assertJsonContains(['url' => '']);
+        $this->assertJsonContains($updateClientJson);
+        $this->assertHydraContext();
     }
 
     public function testUpdateClientInvalidMaxParallelJobs(): void
