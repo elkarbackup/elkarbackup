@@ -9,7 +9,7 @@ class BaseApiTestCase extends ApiTestCase
 {
     const UNEXISTING_ID = 726358291635;
 
-    protected function assertHydraContext(): void
+    protected function assertClientHydraContext(): void
     {
         $this->assertJsonContains([
             '@context' => [

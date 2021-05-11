@@ -17,7 +17,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($clientJson);
-        $this->assertHydraContext();
+        $this->assertClientHydraContext();
     }
 
     public function testCreateClientAllParameters(): void 
@@ -43,7 +43,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($clientJson);
-        $this->assertHydraContext();
+        $this->assertClientHydraContext();
     }
     public function testCreateClientInvalidMaxParallelJobs(): void
     {
@@ -191,7 +191,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($clientJson);
-        $this->assertHydraContext();
+        $this->assertClientHydraContext();
     }
 
     public function testUpdateClient(): void
@@ -220,7 +220,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($updateClientJson);
-        $this->assertHydraContext();
+        $this->assertClientHydraContext();
     }
 
     public function testUpdateClientInvalidMaxParallelJobs(): void
