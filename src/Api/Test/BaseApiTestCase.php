@@ -50,6 +50,34 @@ class BaseApiTestCase extends ApiTestCase
         }
     }
 
+    protected function assertJobHydraContext(): void
+    {
+        $this->assertJsonContains([
+            "@context" => [
+                "@vocab" => "http://127.0.0.1/api/docs.jsonld#",
+                "hydra" => "http://www.w3.org/ns/hydra/core#",
+                "backupLocation" => "JobOutput/backupLocation",
+                "client" => "JobOutput/client",
+                "description" => "JobOutput/description",
+                "diskUsage" => "JobOutput/diskUsage",
+                "exclude" => "JobOutput/exclude",
+                "id" => "JobOutput/id",
+                "include" => "JobOutput/include",
+                "isActive" => "JobOutput/isActive",
+                "minNotificationLevel" => "JobOutput/minNotificationLevel",
+                "name" => "JobOutput/name",
+                "notificationsEmail" => "JobOutput/notificationsEmail",
+                "notificationsTo" => "JobOutput/notificationsTo",
+                "path" => "JobOutput/path",
+                "policy" => "JobOutput/policy",
+                "postScripts" => "JobOutput/postScripts",
+                "preScripts" => "JobOutput/preScripts",
+                "token" => "JobOutput/token",
+                "useLocalPermissions" => "JobOutput/useLocalPermissions"
+            ],
+            "@type" => "Job"]
+        );
+    }
     protected function authenticate(): Client
     {
         return static::createClient([], [
@@ -58,6 +86,20 @@ class BaseApiTestCase extends ApiTestCase
         ]);
     }
 
+    protected function createClientName(): string
+    {
+        $time = new \DateTime();
+        $clientName = 'client_'.$time->getTimestamp().'_'.rand(1000, 9999);
+        return $clientName;
+    }
+    
+    protected function createJobName(): string
+    {
+        $time = new \DateTime();
+        $jobName = 'job_'.$time->getTimestamp().'_'.rand(1000, 9999);
+        return $jobName;
+    }
+    
     protected function getScriptId(Client $httpClient, string $scriptName): int
     {
         $iri = $this->findIriBy(Script::class, [
@@ -74,11 +116,12 @@ class BaseApiTestCase extends ApiTestCase
             'json' => $clientJson
         ]);
     }
-    protected function createClientName(): string
+    
+    protected function postJob(Client $httpClient, array $jobJson): void
     {
-        $time = new \DateTime();
-        $clientName = 'client_'.$time->getTimestamp().'_'.rand(1000, 9999);
-        return $clientName;
+        $httpClient->request('POST', '/api/jobs', [
+            'json' => $jobJson
+        ]);
     }
 }
 
