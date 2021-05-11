@@ -131,11 +131,8 @@ class ClientTest extends BaseApiTestCase
     public function testDeleteClient(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $clientJson = ClientMother::named($clientName);
-        $this->postClient($httpClient, $clientJson);
         $iri = $this->findIriBy(Client::class, [
-            'name' => $clientName
+            'name' => 'client_to_delete'
         ]);
         $response = $httpClient->request('DELETE', $iri);
         $this->assertResponseIsSuccessful();
@@ -155,9 +152,6 @@ class ClientTest extends BaseApiTestCase
     public function testGetClients(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $clientJson = ClientMother::named($clientName);
-        $this->postClient($httpClient, $clientJson);
         $response = $httpClient->request('GET', '/api/clients');
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -177,9 +171,6 @@ class ClientTest extends BaseApiTestCase
     public function testGetNonexistentClient(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $clientJson = ClientMother::named($clientName);
-        $this->postClient($httpClient, $clientJson);
         $response = $httpClient->request('GET', '/api/clients/'.self::UNEXISTING_ID);
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -206,24 +197,8 @@ class ClientTest extends BaseApiTestCase
     public function testUpdateClient(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
+        $iri = $this->findIriBy(Client::class, ['name' => 'client_2']);
         $scriptId = $this->getScriptId($httpClient, 'script_all_true');
-        $clientJson = ClientMother::withAllParameters(
-            $clientName,
-            1,
-            "some description",
-            false,
-            2,
-            [$scriptId],
-            [$scriptId],
-            -1,
-            "rsync long arguments",
-            "rsync short arguments",
-            "ssh arguments",
-            "root@172.0.0.1"
-        );
-        $this->postClient($httpClient, $clientJson);
-        $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
         $updatedName = $this->createClientName();
         $updateClientJson = ClientMother::withAllParameters(
             $updatedName,
@@ -252,9 +227,7 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $clientJson = ClientMother::named($clientName);
-        $this->postClient($httpClient, $clientJson);
-        $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
+        $iri = $this->findIriBy(Client::class, ['name' => 'client_3']);
         $httpClient->request('PUT', $iri, [
             'json' => [
                 'description' => 'description updated',
@@ -279,18 +252,12 @@ class ClientTest extends BaseApiTestCase
     public function testUpdateClientInvalidName(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $clientJson = ClientMother::named($clientName);
-        $this->postClient($httpClient, $clientJson);
-        $updateName = $this->createClientName();
-        $updateClientJson = ClientMother::named($updateName);
-        $this->postClient($httpClient, $updateClientJson);
-        $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
+        $iri = $this->findIriBy(Client::class, ['name' => 'client_4']);
         $httpClient->request('PUT', $iri, [
             'json' => [
                 'isActive' => true,
                 'maxParallelJobs' => 1,
-                'name' => $updateName,
+                'name' => 'client_8',
                 'owner' => 1,
                 'quota' => -1
             ]
@@ -320,9 +287,7 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $clientJson = ClientMother::named($clientName);
-        $this->postClient($httpClient, $clientJson);
-        $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
+        $iri = $this->findIriBy(Client::class, ['name' => 'client_5']);
         $httpClient->request('PUT', $iri, [
             'json' => [
                 'isActive' => true,
@@ -342,9 +307,7 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $clientJson = ClientMother::named($clientName);
-        $this->postClient($httpClient, $clientJson);
-        $iri = $this->findIriBy(Client::class, ['name' => $clientName]);
+        $iri = $this->findIriBy(Client::class, ['name' => 'client_6']);
         $httpClient->request('PUT', $iri, [
             'json' => [
                 'isActive' => true,
