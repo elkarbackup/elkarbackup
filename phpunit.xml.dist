@@ -17,7 +17,7 @@
 
     <testsuites>
         <testsuite name="Elkarbackup API">
-            <directory>src/Api/Test</directory>
+            <directory>tests/api</directory>
         </testsuite>
     </testsuites>
 

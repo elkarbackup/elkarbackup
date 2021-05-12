@@ -1,10 +1,10 @@
 <?php
-namespace App\Api\Test;
+namespace App\Tests\api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client as TestClient;
-use App\Api\Test\BaseApiTestCase;
 use App\Entity\Client;
 use App\Entity\Script;
+use App\Tests\api\BaseApiTestCase;
 
 class ClientTest extends BaseApiTestCase
 {

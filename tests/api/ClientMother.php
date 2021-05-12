@@ -1,5 +1,5 @@
 <?php
-namespace App\Api\Test;
+namespace App\Tests\api;
 
 class ClientMother
 {
