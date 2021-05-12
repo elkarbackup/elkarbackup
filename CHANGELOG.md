@@ -1,3 +1,11 @@
+## 2.0.2 (2021/05/12)
+
+  * Fix #543: Restore to client gets stuck at Starting restore job (by Xabier Ezpeleta)
+  * Fix #536: Button "Run now" in edit job form doesn't work (by Uxue Anabitarte)
+  * Fix #540 Job execution bogus error emails (by Eneko Lacunza)
+  * Fix #538 Parameters form not showing the updated values, review&suggestions by Igor Blanco (by Eneko Lacunza)
+  * Merge to 2.0.x #492 Add alternative mysql providers support by Russell Knighton (by Eneko Lacunza)
+
 ## 2.0.1 (2021/05/04)
 
 Bugfixes:
