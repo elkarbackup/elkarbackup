@@ -19,6 +19,45 @@ class JobMother
         return $json;
     }
 
+    public static function withAllParameters(
+        string $jobName, 
+        int $backupLocationId, 
+        int $client, 
+        string $description, 
+        string $exclude, 
+        string $include, 
+        bool $isActive, 
+        int $notificationsLevel, 
+        string $notificationsEmail,
+        array $notificationsTo, 
+        string $path, 
+        int $policy, 
+        array $postScripts, 
+        array $preScripts, 
+        string $token, 
+        bool $localPermissions
+    ): array {
+        $json = [
+            'backupLocation' => $backupLocationId,
+            'client' => $client,
+            'description' => $description,
+            'exclude' => $exclude,
+            'include' => $include,
+            'isActive' => true,
+            'minNotificationLevel' => $notificationsLevel,
+            'name' => $jobName,
+            'notificationsEmail' => $notificationsEmail,
+            'notificationsTo' => $notificationsTo,
+            'path' => $path,
+            'policy' => $policy,
+            'postScripts' => $postScripts,
+            'preScripts' => $preScripts,
+            'token' => $token,
+            'useLocalPermissions' => $localPermissions
+        ];
+        return $json;
+    }
+
     public static function withBackupLocation(string $jobName, int $backupLocationId): array
     {
         $json = [
