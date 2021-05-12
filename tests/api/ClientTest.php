@@ -1,55 +1,55 @@
 <?php
-namespace App\Api\Test;
+namespace App\Tests\api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Client as TestClient;
-use App\Api\Test\BaseApiTestCase;
 use App\Entity\Client;
 use App\Entity\Script;
+use App\Tests\api\BaseApiTestCase;
 
 class ClientTest extends BaseApiTestCase
 {
     public function testCreateClient(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $clientJson = ClientMother::named($clientName);
+        $client = ClientMother::base();
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($clientJson);
-        $this->assertClientHydraContext();
+        $this->assertJsonContains($client->getContext());
     }
 
     public function testCreateClientAllParameters(): void 
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $scriptId = $this->getScriptId($httpClient, 'script_all_true');
-        $clientJson = ClientMother::withAllParameters(
-            $clientName, 
+        $preScript = $this->getScriptId($httpClient, 'script_client_pre');
+        $postScript = $this->getScriptId($httpClient, 'script_client_post');
+        $client = ClientMother::withAllParameters(
             1, 
             "some description", 
             false, 
             2, 
-            [$scriptId], 
-            [$scriptId],
+            [$postScript], 
+            [$preScript],
             -1, 
             "rsync long arguments", 
             "rsync short arguments", 
             "ssh arguments", 
             "root@172.0.0.1"
         );
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($clientJson);
-        $this->assertClientHydraContext();
+        $this->assertJsonContains($client->getContext());
     }
     public function testCreateClientInvalidMaxParallelJobs(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $clientJson = ClientMother::withMaxParallelJobs($clientName, -1);
+        $client = ClientMother::withInvalidMaxParallelJobs();
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(422);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -61,22 +61,22 @@ class ClientTest extends BaseApiTestCase
         ]);
     }
 
-    public function testCreateClientInvalidName(): void
+    public function testCreateClientRepeatedName(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $clientJson = ClientMother::named($clientName);
+        $client = ClientMother::base();
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
-        $this->assertHydraError("An exception occurred while executing 'INSERT INTO Client (description, isActive, name, url, quota, sshArgs, rsyncShortArgs, rsyncLongArgs, state, maxParallelJobs, data, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' with params [null, 1, \"".$clientName."\", \"\", -1, null, null, null, \"NOT READY\", 1, null, 1]:\n\nSQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '".$clientName."' for key 'Client.UNIQ_C0E801635E237E06'");
+        $this->assertHydraError("An exception occurred while executing 'INSERT INTO Client (description, isActive, name, url, quota, sshArgs, rsyncShortArgs, rsyncLongArgs, state, maxParallelJobs, data, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' with params [null, 1, \"".$client->getName()."\", \"\", -1, null, null, null, \"NOT READY\", 1, null, 1]:\n\nSQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '".$client->getName()."' for key 'Client.UNIQ_C0E801635E237E06'");
     }
 
-    public function testCreateClientInvalidOwner(): void
+    public function testCreateClientNonExistentOwner(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $clientJson = ClientMother::withOwner($clientName, self::UNEXISTING_ID);
+        $client = ClientMother::withNonExistentOwner();
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -87,8 +87,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $scriptId = $this->getScriptId($httpClient, 'script_not_client_post');
-        $clientName = $this->createClientName();
-        $clientJson = ClientMother::withPostScripts($clientName, [$scriptId]);
+        $client = ClientMother::withPostScripts([$scriptId]);
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -99,33 +99,35 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $scriptId = $this->getScriptId($httpClient, 'script_not_client_pre');
-        $clientName = $this->createClientName();
-        $clientJson = ClientMother::withPreScripts($clientName, [$scriptId]);
+        $client = ClientMother::withPreScripts([$scriptId]);
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Script "'.$scriptId.'" is not a client pre script');
     }
-    public function testCreateClientUnexistentPostScript(): void
+    public function testCreateClientNonExistentPostScript(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $clientJson = ClientMother::withPostScripts($clientName, [self::UNEXISTING_ID]);
+        $client = ClientMother::withNonExistentPostScripts();
+        $clientJson = $client->getData();
+        $script = $clientJson['postScripts'][0];
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
+        $this->assertHydraError('Script "'.$script.'" does not exist');
     }
 
-    public function testCreateClientUnexistentPreScript(): void
+    public function testCreateClientNonExistentPreScript(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $clientJson = ClientMother::withPreScripts($clientName, [self::UNEXISTING_ID]);
+        $client = ClientMother::withNonExistentPreScripts();
+        $clientJson = $client->getData();
+        $script = $clientJson['preScripts'][0];
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
+        $this->assertHydraError('Script "'.$script.'" does not exist');
     }
 
     public function testDeleteClient(): void
@@ -143,10 +145,10 @@ class ClientTest extends BaseApiTestCase
     public function testDeleteClientNotFound(): void
     {
         $httpClient = $this->authenticate();
-        $response = $httpClient->request('DELETE', 'api/clients/'.self::UNEXISTING_ID);
+        $response = $httpClient->request('DELETE', ClientMother::getNonExistentIri());
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('The client "'.self::UNEXISTING_ID.'" does not exist.');
+        $this->assertHydraError('The client "'.ClientMother::UNEXISTING_ID.'" does not exist.');
     }
 
     public function testGetClients(): void
@@ -168,77 +170,67 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseStatusCodeSame(401);
     }
 
-    public function testGetNonexistentClient(): void
+    public function testGetNonExistentClient(): void
     {
         $httpClient = $this->authenticate();
-        $response = $httpClient->request('GET', '/api/clients/'.self::UNEXISTING_ID);
+        $response = $httpClient->request('GET', ClientMother::getNonExistentIri());
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('The client "'.self::UNEXISTING_ID.'" does not exist.');
+        $this->assertHydraError('The client "'.ClientMother::UNEXISTING_ID.'" does not exist.');
     }
 
     public function testGetClient(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $clientJson = ClientMother::named($clientName);
+        $client = ClientMother::base();
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $iri = $this->findIriBy(Client::class, [
-            'name' => $clientName
+            'name' => $client->getName()
         ]);
         $response = $httpClient->request('GET', $iri);
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($clientJson);
-        $this->assertClientHydraContext();
+        $this->assertJsonContains($client->getContext());
     }
 
     public function testUpdateClient(): void
     {
         $httpClient = $this->authenticate();
         $iri = $this->findIriBy(Client::class, ['name' => 'client_2']);
-        $scriptId = $this->getScriptId($httpClient, 'script_all_true');
-        $updatedName = $this->createClientName();
-        $updateClientJson = ClientMother::withAllParameters(
-            $updatedName,
+        $postScript = $this->getScriptId($httpClient, 'script_client_post');
+        $preScript = $this->getScriptId($httpClient, 'script_client_pre');
+        $updateClient = ClientMother::withAllParameters(
             1,
             "description updated",
             true,
             5,
-            [$scriptId],
-            [],
+            [$postScript],
+            [$preScript],
             -1,
             "rsync long arguments updated",
             "rsync short arguments updated",
             "ssh arguments updated",
             "root@172.0.0.2"
         );
+        $updateClientJson = $updateClient->getData();
         $httpClient->request('PUT', $iri, [
             'json' => $updateClientJson
         ]);
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($updateClientJson);
-        $this->assertClientHydraContext();
+        $this->assertJsonContains($updateClient->getContext());
     }
 
     public function testUpdateClientInvalidMaxParallelJobs(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
         $iri = $this->findIriBy(Client::class, ['name' => 'client_3']);
-        $httpClient->request('PUT', $iri, [
-            'json' => [
-                'description' => 'description updated',
-                'isActive' => true,
-                'maxParallelJobs' => -1,
-                'name' => $clientName,
-                'owner' => 1,
-                'quota' => -1,
-                'url' => 'root@172.17.0.1'
-            ]
-        ]);
+        $updateClient = ClientMother::withInvalidMaxParallelJobs();
+        $httpClient->request('PUT', $iri, ['json' => $updateClient->getData()]);
         $this->assertResponseStatusCodeSame(422);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
@@ -249,19 +241,12 @@ class ClientTest extends BaseApiTestCase
         ]);
     }
     
-    public function testUpdateClientInvalidName(): void
+    public function testUpdateClientRepeatedName(): void
     {
         $httpClient = $this->authenticate();
         $iri = $this->findIriBy(Client::class, ['name' => 'client_4']);
-        $httpClient->request('PUT', $iri, [
-            'json' => [
-                'isActive' => true,
-                'maxParallelJobs' => 1,
-                'name' => 'client_8',
-                'owner' => 1,
-                'quota' => -1
-            ]
-        ]);
+        $updateClient = ClientMother::named('client_8');
+        $httpClient->request('PUT', $iri, ['json' => $updateClient->getData()]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertHydraError();
     }
@@ -269,57 +254,36 @@ class ClientTest extends BaseApiTestCase
     public function testUpdateClientNotFound(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $httpClient->request('PUT', '/api/clients/'.self::UNEXISTING_ID, [
-            'json' => [
-                'isActive' => true,
-                'maxParallelJobs' => 1,
-                'name' => $clientName,
-                'owner' => 1,
-                'quota' => -1
-            ]
+        $httpClient->request('PUT', ClientMother::getNonExistentIri(), [
+            'json' => ClientMother::base()
         ]);
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
     }
 
-    public function testUpdateClientUnexistentPostScript(): void
+    public function testUpdateClientNonExistentPostScript(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
         $iri = $this->findIriBy(Client::class, ['name' => 'client_5']);
-        $httpClient->request('PUT', $iri, [
-            'json' => [
-                'isActive' => true,
-                'maxParallelJobs' => 1,
-                'name' => $clientName,
-                'postScripts' => [self::UNEXISTING_ID],
-                'owner' => 1,
-                'quota' => -1
-            ]
-        ]);
+        $updateClient = ClientMother::withNonExistentPostScripts();
+        $updateClientJson = $updateClient->getData();
+        $script = $updateClientJson['postScripts'][0];
+        $httpClient->request('PUT', $iri, ['json' => $updateClientJson]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
+        $this->assertHydraError('Script "'.$script.'" does not exist');
     }
     
-    public function testUpdateClientUnexistentPreScript(): void
+    public function testUpdateClientNonExistentPreScript(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
         $iri = $this->findIriBy(Client::class, ['name' => 'client_6']);
-        $httpClient->request('PUT', $iri, [
-            'json' => [
-                'isActive' => true,
-                'maxParallelJobs' => 1,
-                'name' => $clientName,
-                'preScripts' => [self::UNEXISTING_ID],
-                'owner' => 1,
-                'quota' => -1
-            ]
-        ]);
+        $updateClient = ClientMother::withNonExistentPreScripts();
+        $updateClientJson = $updateClient->getData();
+        $script = $updateClientJson['preScripts'][0];
+        $httpClient->request('PUT', $iri, ['json' =>$updateClientJson]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
+        $this->assertHydraError('Script "'.$script.'" does not exist');
     }
 }
