@@ -1,0 +1,5 @@
+services:
+    App\Api\Test\fixtures\ScriptFileFaker:
+        arguments:
+            - '@Faker\Generator'
+        tags: [ { name: nelmio_alice.faker.provider } ]
