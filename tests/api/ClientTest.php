@@ -23,7 +23,6 @@ class ClientTest extends BaseApiTestCase
     public function testCreateClientAllParameters(): void 
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
         $scriptId = $this->getScriptId($httpClient, 'script_all_true');
         $client = ClientMother::withAllParameters(
             1, 
@@ -276,7 +275,6 @@ class ClientTest extends BaseApiTestCase
     public function testUpdateClientNonExistentPreScript(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
         $iri = $this->findIriBy(Client::class, ['name' => 'client_6']);
         $updateClient = ClientMother::withNonExistentPreScripts();
         $updateClientJson = $updateClient->getData();

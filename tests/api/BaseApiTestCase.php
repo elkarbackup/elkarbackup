@@ -49,11 +49,5 @@ class BaseApiTestCase extends ApiTestCase
             'json' => $clientJson
         ]);
     }
-    protected function createClientName(): string
-    {
-        $time = new \DateTime();
-        $clientName = 'client_'.$time->getTimestamp().'_'.rand(1000, 9999);
-        return $clientName;
-    }
 }
 
