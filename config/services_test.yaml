@@ -1,5 +1,11 @@
 services:
-    App\Api\Test\fixtures\ScriptFileFaker:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        
+    App\Api\ScriptFileFaker:
+        public: true
         arguments:
             - '@Faker\Generator'
         tags: [ { name: nelmio_alice.faker.provider } ]
