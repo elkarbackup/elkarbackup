@@ -9,29 +9,6 @@ class BaseApiTestCase extends ApiTestCase
 {
     const UNEXISTING_ID = 726358291635;
 
-    protected function assertHydraContext(): void
-    {
-        $this->assertJsonContains([
-            '@context' => [
-                '@vocab' => 'http://127.0.0.1/api/docs.jsonld#',
-                'hydra' => 'http://www.w3.org/ns/hydra/core#',
-                'description' => 'ClientOutput/description',
-                'id' => 'ClientOutput/id',
-                'isActive' => 'ClientOutput/isActive',
-                'maxParallelJobs' => 'ClientOutput/maxParallelJobs',
-                'name' => 'ClientOutput/name',
-                'owner' => 'ClientOutput/owner',
-                'postScripts' => 'ClientOutput/postScripts',
-                'preScripts' => 'ClientOutput/preScripts',
-                'quota' => 'ClientOutput/quota',
-                'rsyncLongArgs' => 'ClientOutput/rsyncLongArgs',
-                'rsyncShortArgs' => 'ClientOutput/rsyncShortArgs',
-                'sshArgs' => 'ClientOutput/sshArgs',
-                'url' => 'ClientOutput/url'
-            ],
-            '@type' => 'Client'
-        ]);
-    }
     protected function assertHydraError(string $description = null): void
     {
         if(isset($description)){
