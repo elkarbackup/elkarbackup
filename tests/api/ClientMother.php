@@ -3,16 +3,38 @@ namespace App\Tests\api;
 
 class ClientMother
 {
-    public static function named(string $clientName): array
+    const CLIENT_CONTEXT = [
+        '@context' => [
+            '@vocab' => 'http://127.0.0.1/api/docs.jsonld#',
+            'hydra' => 'http://www.w3.org/ns/hydra/core#',
+            'description' => 'ClientOutput/description',
+            'id' => 'ClientOutput/id',
+            'isActive' => 'ClientOutput/isActive',
+            'maxParallelJobs' => 'ClientOutput/maxParallelJobs',
+            'name' => 'ClientOutput/name',
+            'owner' => 'ClientOutput/owner',
+            'postScripts' => 'ClientOutput/postScripts',
+            'preScripts' => 'ClientOutput/preScripts',
+            'quota' => 'ClientOutput/quota',
+            'rsyncLongArgs' => 'ClientOutput/rsyncLongArgs',
+            'rsyncShortArgs' => 'ClientOutput/rsyncShortArgs',
+            'sshArgs' => 'ClientOutput/sshArgs',
+            'url' => 'ClientOutput/url'
+        ],
+        '@type' => 'Client'
+    ];
+
+    public static function named(string $clientName): RequestObject
     {
-        $json = [
+        $data = [
         'isActive' => true,
         'maxParallelJobs' => 1,
         'name' => $clientName,
         'owner' => 1,
         'quota' => -1
         ];
-        return $json;
+        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        return $response;
     }
     
     public static function withAllParameters(
@@ -28,8 +50,8 @@ class ClientMother
         string $rsyncShortArgs, 
         string $sshArgs, 
         string $url
-    ): array {
-        $json = [
+    ): RequestObject {
+        $data = [
             'description' => $description,
             'isActive' => $isActive,
             'maxParallelJobs' => $maxParallelJobs,
@@ -43,35 +65,39 @@ class ClientMother
             'sshArgs' => $sshArgs,
             'url' => $url
         ];
-        return $json;
+        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        return $response;
     }
     
-    public static function withMaxParallelJobs(string $clientName, int $maxParallelJobs): array
+    public static function withMaxParallelJobs(string $clientName, int $maxParallelJobs): RequestObject
     {
-        $json = [
+        
+        $data = [
             'isActive' => true,
             'maxParallelJobs' => $maxParallelJobs,
             'name' => $clientName,
             'owner' => 1,
             'quota' => -1
         ];
-        return $json;
+        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        return $response;
     }
     
-    public static function withOwner (string $clientName, int $owner): array
+    public static function withOwner (string $clientName, int $owner): RequestObject
     {
-        $json = [
+        $data = [
             'isActive' => true,
             'maxParallelJobs' => 1,
             'name' => $clientName,
             'owner' => $owner,
             'quota' => -1
         ];
-        return $json;
+        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        return $response;
     }
-    public static function withPostScripts(string $clientName, array $postScripts): array
+    public static function withPostScripts(string $clientName, array $postScripts): RequestObject
     {
-        $json = [
+        $data = [
         'isActive'        => true,
         'maxParallelJobs' => 1,
         'name'            => $clientName,
@@ -79,12 +105,13 @@ class ClientMother
         'postScripts'     => $postScripts,
         'quota'           => -1
         ];
-        return $json;
+        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        return $response;
     }
 
-    public static function withPreScripts(string $clientName, array $preScripts): array
+    public static function withPreScripts(string $clientName, array $preScripts): RequestObject
     {
-        $json = [
+        $data = [
             'isActive'        => true,
             'maxParallelJobs' => 1,
             'name'            => $clientName,
@@ -92,7 +119,8 @@ class ClientMother
             'preScripts'     => $preScripts,
             'quota'           => -1
         ];
-        return $json;
+        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        return $response;
     }
 }
 

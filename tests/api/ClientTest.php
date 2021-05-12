@@ -12,12 +12,13 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $clientJson = ClientMother::named($clientName);
+        $client = ClientMother::named($clientName);
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($clientJson);
-        $this->assertHydraContext();
+        $this->assertJsonContains($client->getContext());
     }
 
     public function testCreateClientAllParameters(): void 
@@ -25,7 +26,7 @@ class ClientTest extends BaseApiTestCase
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
         $scriptId = $this->getScriptId($httpClient, 'script_all_true');
-        $clientJson = ClientMother::withAllParameters(
+        $client = ClientMother::withAllParameters(
             $clientName, 
             1, 
             "some description", 
@@ -39,17 +40,19 @@ class ClientTest extends BaseApiTestCase
             "ssh arguments", 
             "root@172.0.0.1"
         );
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($clientJson);
-        $this->assertHydraContext();
+        $this->assertJsonContains($client->getContext());
     }
     public function testCreateClientInvalidMaxParallelJobs(): void
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $clientJson = ClientMother::withMaxParallelJobs($clientName, -1);
+        $client = ClientMother::withMaxParallelJobs($clientName, -1);
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(422);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -65,7 +68,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $clientJson = ClientMother::named($clientName);
+        $client = ClientMother::named($clientName);
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
@@ -76,7 +80,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $clientJson = ClientMother::withOwner($clientName, self::UNEXISTING_ID);
+        $client = ClientMother::withOwner($clientName, self::UNEXISTING_ID);
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -88,7 +93,8 @@ class ClientTest extends BaseApiTestCase
         $httpClient = $this->authenticate();
         $scriptId = $this->getScriptId($httpClient, 'script_not_client_post');
         $clientName = $this->createClientName();
-        $clientJson = ClientMother::withPostScripts($clientName, [$scriptId]);
+        $client = ClientMother::withPostScripts($clientName, [$scriptId]);
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -100,7 +106,8 @@ class ClientTest extends BaseApiTestCase
         $httpClient = $this->authenticate();
         $scriptId = $this->getScriptId($httpClient, 'script_not_client_pre');
         $clientName = $this->createClientName();
-        $clientJson = ClientMother::withPreScripts($clientName, [$scriptId]);
+        $client = ClientMother::withPreScripts($clientName, [$scriptId]);
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -110,7 +117,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $clientJson = ClientMother::withPostScripts($clientName, [self::UNEXISTING_ID]);
+        $client = ClientMother::withPostScripts($clientName, [self::UNEXISTING_ID]);
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -121,7 +129,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $clientJson = ClientMother::withPreScripts($clientName, [self::UNEXISTING_ID]);
+        $client = ClientMother::withPreScripts($clientName, [self::UNEXISTING_ID]);
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -181,7 +190,8 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
-        $clientJson = ClientMother::named($clientName);
+        $client = ClientMother::named($clientName);
+        $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $iri = $this->findIriBy(Client::class, [
             'name' => $clientName
@@ -191,7 +201,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($clientJson);
-        $this->assertHydraContext();
+        $this->assertJsonContains($client->getContext());
     }
 
     public function testUpdateClient(): void
@@ -200,7 +210,7 @@ class ClientTest extends BaseApiTestCase
         $iri = $this->findIriBy(Client::class, ['name' => 'client_2']);
         $scriptId = $this->getScriptId($httpClient, 'script_all_true');
         $updatedName = $this->createClientName();
-        $updateClientJson = ClientMother::withAllParameters(
+        $updateClient = ClientMother::withAllParameters(
             $updatedName,
             1,
             "description updated",
@@ -214,13 +224,14 @@ class ClientTest extends BaseApiTestCase
             "ssh arguments updated",
             "root@172.0.0.2"
         );
+        $updateClientJson = $updateClient->getData();
         $httpClient->request('PUT', $iri, [
             'json' => $updateClientJson
         ]);
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($updateClientJson);
-        $this->assertHydraContext();
+        $this->assertJsonContains($updateClient->getContext());
     }
 
     public function testUpdateClientInvalidMaxParallelJobs(): void
