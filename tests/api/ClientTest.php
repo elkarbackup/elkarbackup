@@ -23,14 +23,15 @@ class ClientTest extends BaseApiTestCase
     public function testCreateClientAllParameters(): void 
     {
         $httpClient = $this->authenticate();
-        $scriptId = $this->getScriptId($httpClient, 'script_all_true');
+        $preScript = $this->getScriptId($httpClient, 'script_client_pre');
+        $postScript = $this->getScriptId($httpClient, 'script_client_post');
         $client = ClientMother::withAllParameters(
             1, 
             "some description", 
             false, 
             2, 
-            [$scriptId], 
-            [$scriptId],
+            [$postScript], 
+            [$preScript],
             -1, 
             "rsync long arguments", 
             "rsync short arguments", 
@@ -199,14 +200,15 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $iri = $this->findIriBy(Client::class, ['name' => 'client_2']);
-        $scriptId = $this->getScriptId($httpClient, 'script_all_true');
+        $postScript = $this->getScriptId($httpClient, 'script_client_post');
+        $preScript = $this->getScriptId($httpClient, 'script_client_pre');
         $updateClient = ClientMother::withAllParameters(
             1,
             "description updated",
             true,
             5,
-            [$scriptId],
-            [],
+            [$postScript],
+            [$preScript],
             -1,
             "rsync long arguments updated",
             "rsync short arguments updated",
