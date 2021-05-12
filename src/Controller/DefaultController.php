@@ -202,6 +202,11 @@ class DefaultController extends AbstractController
             } else {
                 $this->err('Command failure: ' . $commandAndParams['command']);
             }
+            // UGLY and NOT TOTALLY CORRECT
+            // We have to sleep after clearing the cache, beause otherwise
+            // subsequent calls (i.e. a redirect) won't load the correct data.
+            // See https://github.com/elkarbackup/elkarbackup/pull/553
+            // 2s seems an "always works" value in my dev environment
             sleep(2);
         } catch (Exception $e) {
             $this->err('Exception %exceptionmsg% running command %command%: ',
