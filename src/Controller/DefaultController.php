@@ -33,7 +33,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bridge\Monolog\Logger;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -47,6 +50,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
@@ -65,24 +69,22 @@ use Symfony\Component\HttpKernel\CacheClearer\ChainCacheClearer;
 
 class DefaultController extends AbstractController
 {
+    private $kernel;
     private $security;
     private $translator;
     private $logger;
     private $supportedLocales;
     private $paginator;
-    private $cacheDir;
-    private $cacheClearer;
     private $encoderFactory;
     private $uploadDir;
 
-    public function __construct($cacheDir, $uploadDir, Security $security, TranslatorInterface $t, Logger $logger, PaginatorInterface $pag, ChainCacheClearer $cci, EncoderFactoryInterface $encoder)
+    public function __construct($uploadDir, Security $security, TranslatorInterface $t, Logger $logger, PaginatorInterface $pag, KernelInterface $kernel, EncoderFactoryInterface $encoder)
     {
-        $this->cacheDir = $cacheDir;
+        $this->kernel = $kernel;
         $this->security = $security;
         $this->translator = $t;
         $this->logger = $logger;
         $this->paginator = $pag;
-        $this->cacheClearer = $cci;
         $this->encoderFactory = $encoder;
         $this->uploadDir = $uploadDir;
     }
@@ -186,8 +188,31 @@ class DefaultController extends AbstractController
      */
     protected function clearCache()
     {
-        $realCacheDir = $this->cacheDir;
-        $this->cacheClearer->clear($realCacheDir);
+        try {
+            $commandAndParams = [
+                'command' => 'cache:clear'
+            ];
+            $application = new Application($this->kernel);
+            $application->setAutoExit(false);
+            $input = new ArrayInput($commandAndParams);
+            $output = new BufferedOutput();
+            $status = $application->run($input, $output);
+            if (0 == $status) {
+                $this->info('Command success: ' . $commandAndParams['command']);
+            } else {
+                $this->err('Command failure: ' . $commandAndParams['command']);
+            }
+            // UGLY and NOT TOTALLY CORRECT
+            // We have to sleep after clearing the cache, beause otherwise
+            // subsequent calls (i.e. a redirect) won't load the correct data.
+            // See https://github.com/elkarbackup/elkarbackup/pull/553
+            // 2s seems an "always works" value in my dev environment
+            sleep(2);
+        } catch (Exception $e) {
+            $this->err('Exception %exceptionmsg% running command %command%: ',
+                array('%exceptionmsg%' => $e->getMessage(), '%command%' => $commandAndParams['command'])
+            );
+        }
     }
 
     /**
@@ -2266,6 +2291,7 @@ EOF;
                     $t->trans('Parameters updated', array(), 'BinovoElkarBackup')
                 );
             }
+            $this->clearCache();
             $result = $this->redirect($this->generateUrl('manageParameters'));
         } else {
             $result = $this->render(
@@ -2279,8 +2305,6 @@ EOF;
             );
         }
         $this->getDoctrine()->getManager()->flush();
-        $this->clearCache();
-        
         return $result;
     }
 
