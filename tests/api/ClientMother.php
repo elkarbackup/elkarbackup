@@ -24,8 +24,16 @@ class ClientMother
         '@type' => 'Client'
     ];
 
-    public static function named(string $clientName): RequestObject
+    private function createClientName(): string
     {
+        $time = new \DateTime();
+        $clientName = 'client_'.$time->getTimestamp().'_'.rand(1000, 9999);
+        return $clientName;
+    }
+
+    public static function named(): RequestObject
+    {
+        $clientName = self::createClientName();
         $data = [
         'isActive' => true,
         'maxParallelJobs' => 1,
@@ -38,7 +46,6 @@ class ClientMother
     }
     
     public static function withAllParameters(
-        string $clientName, 
         int $owner, 
         string $description, 
         bool $isActive, 
@@ -49,8 +56,9 @@ class ClientMother
         string $rsyncLongArgs, 
         string $rsyncShortArgs, 
         string $sshArgs, 
-        string $url
+        string $url    
     ): RequestObject {
+        $clientName = self::createClientName();
         $data = [
             'description' => $description,
             'isActive' => $isActive,
@@ -69,9 +77,9 @@ class ClientMother
         return $response;
     }
     
-    public static function withMaxParallelJobs(string $clientName, int $maxParallelJobs): RequestObject
+    public static function withMaxParallelJobs(int $maxParallelJobs): RequestObject
     {
-        
+        $clientName = self::createClientName();
         $data = [
             'isActive' => true,
             'maxParallelJobs' => $maxParallelJobs,
@@ -83,8 +91,9 @@ class ClientMother
         return $response;
     }
     
-    public static function withOwner (string $clientName, int $owner): RequestObject
+    public static function withOwner (int $owner): RequestObject
     {
+        $clientName = self::createClientName();
         $data = [
             'isActive' => true,
             'maxParallelJobs' => 1,
@@ -95,8 +104,9 @@ class ClientMother
         $response = new RequestObject(self::CLIENT_CONTEXT, $data);
         return $response;
     }
-    public static function withPostScripts(string $clientName, array $postScripts): RequestObject
+    public static function withPostScripts(array $postScripts): RequestObject
     {
+        $clientName = self::createClientName();
         $data = [
         'isActive'        => true,
         'maxParallelJobs' => 1,
@@ -109,8 +119,9 @@ class ClientMother
         return $response;
     }
 
-    public static function withPreScripts(string $clientName, array $preScripts): RequestObject
+    public static function withPreScripts(array $preScripts): RequestObject
     {
+        $clientName = self::createClientName();
         $data = [
             'isActive'        => true,
             'maxParallelJobs' => 1,

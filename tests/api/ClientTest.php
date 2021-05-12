@@ -11,8 +11,7 @@ class ClientTest extends BaseApiTestCase
     public function testCreateClient(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $client = ClientMother::named($clientName);
+        $client = ClientMother::named();
         $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseIsSuccessful();
@@ -27,7 +26,6 @@ class ClientTest extends BaseApiTestCase
         $clientName = $this->createClientName();
         $scriptId = $this->getScriptId($httpClient, 'script_all_true');
         $client = ClientMother::withAllParameters(
-            $clientName, 
             1, 
             "some description", 
             false, 
@@ -50,8 +48,7 @@ class ClientTest extends BaseApiTestCase
     public function testCreateClientInvalidMaxParallelJobs(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $client = ClientMother::withMaxParallelJobs($clientName, -1);
+        $client = ClientMother::withMaxParallelJobs(-1);
         $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(422);
@@ -67,20 +64,18 @@ class ClientTest extends BaseApiTestCase
     public function testCreateClientRepeatedName(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $client = ClientMother::named($clientName);
+        $client = ClientMother::named();
         $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
-        $this->assertHydraError("An exception occurred while executing 'INSERT INTO Client (description, isActive, name, url, quota, sshArgs, rsyncShortArgs, rsyncLongArgs, state, maxParallelJobs, data, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' with params [null, 1, \"".$clientName."\", \"\", -1, null, null, null, \"NOT READY\", 1, null, 1]:\n\nSQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '".$clientName."' for key 'Client.UNIQ_C0E801635E237E06'");
+        $this->assertHydraError("An exception occurred while executing 'INSERT INTO Client (description, isActive, name, url, quota, sshArgs, rsyncShortArgs, rsyncLongArgs, state, maxParallelJobs, data, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' with params [null, 1, \"".$client->getName()."\", \"\", -1, null, null, null, \"NOT READY\", 1, null, 1]:\n\nSQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '".$client->getName()."' for key 'Client.UNIQ_C0E801635E237E06'");
     }
 
     public function testCreateClientNonExistentOwner(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $client = ClientMother::withOwner($clientName, self::UNEXISTING_ID);
+        $client = ClientMother::withOwner(self::UNEXISTING_ID);
         $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
@@ -92,8 +87,7 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $scriptId = $this->getScriptId($httpClient, 'script_not_client_post');
-        $clientName = $this->createClientName();
-        $client = ClientMother::withPostScripts($clientName, [$scriptId]);
+        $client = ClientMother::withPostScripts([$scriptId]);
         $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
@@ -105,8 +99,7 @@ class ClientTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $scriptId = $this->getScriptId($httpClient, 'script_not_client_pre');
-        $clientName = $this->createClientName();
-        $client = ClientMother::withPreScripts($clientName, [$scriptId]);
+        $client = ClientMother::withPreScripts([$scriptId]);
         $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
@@ -116,8 +109,7 @@ class ClientTest extends BaseApiTestCase
     public function testCreateClientNonExistentPostScript(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $client = ClientMother::withPostScripts($clientName, [self::UNEXISTING_ID]);
+        $client = ClientMother::withPostScripts([self::UNEXISTING_ID]);
         $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
@@ -128,8 +120,7 @@ class ClientTest extends BaseApiTestCase
     public function testCreateClientNonExistentPreScript(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $client = ClientMother::withPreScripts($clientName, [self::UNEXISTING_ID]);
+        $client = ClientMother::withPreScripts([self::UNEXISTING_ID]);
         $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $this->assertResponseStatusCodeSame(400);
@@ -189,12 +180,11 @@ class ClientTest extends BaseApiTestCase
     public function testGetClient(): void
     {
         $httpClient = $this->authenticate();
-        $clientName = $this->createClientName();
-        $client = ClientMother::named($clientName);
+        $client = ClientMother::named();
         $clientJson = $client->getData();
         $this->postClient($httpClient, $clientJson);
         $iri = $this->findIriBy(Client::class, [
-            'name' => $clientName
+            'name' => $client->getName()
         ]);
         $response = $httpClient->request('GET', $iri);
 
@@ -209,9 +199,7 @@ class ClientTest extends BaseApiTestCase
         $httpClient = $this->authenticate();
         $iri = $this->findIriBy(Client::class, ['name' => 'client_2']);
         $scriptId = $this->getScriptId($httpClient, 'script_all_true');
-        $updatedName = $this->createClientName();
         $updateClient = ClientMother::withAllParameters(
-            $updatedName,
             1,
             "description updated",
             true,
