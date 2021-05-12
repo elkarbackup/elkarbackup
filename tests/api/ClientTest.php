@@ -61,7 +61,7 @@ class ClientTest extends BaseApiTestCase
         ]);
     }
 
-    public function testCreateClientInvalidName(): void
+    public function testCreateClientRepeatedName(): void
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
@@ -72,7 +72,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertHydraError("An exception occurred while executing 'INSERT INTO Client (description, isActive, name, url, quota, sshArgs, rsyncShortArgs, rsyncLongArgs, state, maxParallelJobs, data, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' with params [null, 1, \"".$clientName."\", \"\", -1, null, null, null, \"NOT READY\", 1, null, 1]:\n\nSQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '".$clientName."' for key 'Client.UNIQ_C0E801635E237E06'");
     }
 
-    public function testCreateClientInvalidOwner(): void
+    public function testCreateClientNonExistentOwner(): void
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
@@ -106,7 +106,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Script "'.$scriptId.'" is not a client pre script');
     }
-    public function testCreateClientUnexistentPostScript(): void
+    public function testCreateClientNonExistentPostScript(): void
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
@@ -117,7 +117,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
     }
 
-    public function testCreateClientUnexistentPreScript(): void
+    public function testCreateClientNonExistentPreScript(): void
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
@@ -168,7 +168,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseStatusCodeSame(401);
     }
 
-    public function testGetNonexistentClient(): void
+    public function testGetNonExistentClient(): void
     {
         $httpClient = $this->authenticate();
         $response = $httpClient->request('GET', '/api/clients/'.self::UNEXISTING_ID);
@@ -249,7 +249,7 @@ class ClientTest extends BaseApiTestCase
         ]);
     }
     
-    public function testUpdateClientInvalidName(): void
+    public function testUpdateClientRepeatedName(): void
     {
         $httpClient = $this->authenticate();
         $iri = $this->findIriBy(Client::class, ['name' => 'client_4']);
@@ -283,7 +283,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
     }
 
-    public function testUpdateClientUnexistentPostScript(): void
+    public function testUpdateClientNonExistentPostScript(): void
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
@@ -303,7 +303,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
     }
     
-    public function testUpdateClientUnexistentPreScript(): void
+    public function testUpdateClientNonExistentPreScript(): void
     {
         $httpClient = $this->authenticate();
         $clientName = $this->createClientName();
