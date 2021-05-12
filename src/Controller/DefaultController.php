@@ -190,8 +190,7 @@ class DefaultController extends AbstractController
     {
         try {
             $commandAndParams = [
-                'command' => 'cache:clear',
-                '--env' => 'prod'
+                'command' => 'cache:clear'
             ];
             $application = new Application($this->kernel);
             $application->setAutoExit(false);
