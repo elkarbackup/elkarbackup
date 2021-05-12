@@ -1,8 +1,8 @@
 # ElkarBackup
 
 ## Images
-Latest stable version with Apache and PHP7
-- 1.4.0~rc1, **latest (default)**
+- 2.0.2, 2.0, 2, **latest (default)**
+- 1.3.5
 
 ## How to use this image
 
@@ -50,9 +50,6 @@ services:
       MYSQL_ROOT_PASSWORD: "your-password-here"
     volumes:
       - db:/var/lib/mysql
-
-  client:
-    image: elkarbackup/client
 
 volumes:
   db:
@@ -111,8 +108,7 @@ The following environment variables are also honored for configuring your ElkarB
 | SYMFONY__EB__BACKUP__DIR         | /app/backups | backups directory |
 | SYMFONY__EB__TMP__DIR            | /app/tmp     | tmp directory |
 | SYMFONY__EB__URL__PREFIX         | null         | url path prefix (i.e. /elkarbackup) |
-| SYMFONY__EB__PUBLIC__KEY         | /app/.ssh/id_rsa.pub | ssh publick key path |
-| SYMFONY__EB__TAHOE__ACTIVE       | false        | - |
-| SYMFONY__EB__MAX__PARALLEL__JOBS | 1            | v1.3 or higher |
-| SYMFONY__EB__POST__ON__PRE__FAIL | true         | v1.3 or higher |
+| SYMFONY__EB__PUBLIC__KEY         | /app/.ssh/id_rsa.pub | ssh public key path |
+| SYMFONY__EB__MAX__PARALLEL__JOBS | 1            | max parallel jobs |
+| SYMFONY__EB__POST__ON__PRE__FAIL | true         | post on pre fail |
 
