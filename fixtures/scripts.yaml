@@ -2,7 +2,7 @@ App\Entity\Script:
     script_client_post:
       __construct: ['/var/spool/elkarbackup/uploads']
       description: <text()>
-      name: 'script_client_post:'
+      name: 'script_client_post'
       scriptFile: <upload('/home/uanabitarte/script.sh')>
       isClientPre: <boolean()>
       isJobPre: <boolean()>
