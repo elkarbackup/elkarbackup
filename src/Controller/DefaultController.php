@@ -78,7 +78,7 @@ class DefaultController extends AbstractController
     private $encoderFactory;
     private $uploadDir;
 
-    public function __construct($cacheDir, $uploadDir, Security $security, TranslatorInterface $t, Logger $logger, PaginatorInterface $pag, KernelInterface $kernel, EncoderFactoryInterface $encoder)
+    public function __construct($uploadDir, Security $security, TranslatorInterface $t, Logger $logger, PaginatorInterface $pag, KernelInterface $kernel, EncoderFactoryInterface $encoder)
     {
         $this->kernel = $kernel;
         $this->security = $security;
