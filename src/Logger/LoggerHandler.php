@@ -60,9 +60,19 @@ class LoggerHandler extends AbstractProcessingHandler implements ContainerAwareI
         $this->container = $container;
     }
 
-    public function getMessages()
+    public function getMessages(string $link = null)
     {
-        return $this->messages;
+        if (!is_null($link)) {
+            $messages = [];
+            foreach ($this->messages as $m) {
+                if ($m->getLink() == $link) {
+                    $messages[] = $m;
+                }
+            }
+            return $messages;
+        } else {
+            return $this->messages;
+        }
     }
 
     public function clearMessages()

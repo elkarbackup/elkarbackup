@@ -480,7 +480,7 @@ EOF;
                         $this->manager->remove($task);
                     }
                 }
-                $clientMessages = $logHandler->getMessages();
+                $clientMessages = $logHandler->getMessages($context['link']);
                 $this->sendNotifications($job,$clientMessages);
 
                 break;
