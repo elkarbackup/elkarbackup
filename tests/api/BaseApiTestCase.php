@@ -49,5 +49,12 @@ class BaseApiTestCase extends ApiTestCase
             'json' => $clientJson
         ]);
     }
+
+    protected function postJob(Client $httpClient, array $jobJson): void
+    {
+        $httpClient->request('POST', '/api/jobs', [
+            'json' => $jobJson
+        ]);
+    }
 }
 
