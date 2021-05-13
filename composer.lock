@@ -2511,6 +2511,9 @@
                 "psr",
                 "psr-6"
             ],
+            "support": {
+                "source": "https://github.com/php-fig/cache/tree/master"
+            },
             "time": "2016-08-06T20:24:11+00:00"
         },
         {
@@ -2555,6 +2558,10 @@
                 "container-interop",
                 "psr"
             ],
+            "support": {
+                "issues": "https://github.com/php-fig/container/issues",
+                "source": "https://github.com/php-fig/container/tree/1.1.1"
+            },
             "time": "2021-03-05T17:36:06+00:00"
         },
         {
@@ -2955,21 +2962,21 @@
         },
         {
             "name": "symfony/cache-contracts",
-            "version": "v2.2.0",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/cache-contracts.git",
-                "reference": "8034ca0b61d4dd967f3698aaa1da2507b631d0cb"
+                "reference": "c0446463729b89dd4fa62e9aeecc80287323615d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache-contracts/zipball/8034ca0b61d4dd967f3698aaa1da2507b631d0cb",
-                "reference": "8034ca0b61d4dd967f3698aaa1da2507b631d0cb",
+                "url": "https://api.github.com/repos/symfony/cache-contracts/zipball/c0446463729b89dd4fa62e9aeecc80287323615d",
+                "reference": "c0446463729b89dd4fa62e9aeecc80287323615d",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
-                "psr/cache": "^1.0"
+                "psr/cache": "^1.0|^2.0|^3.0"
             },
             "suggest": {
                 "symfony/cache-implementation": ""
@@ -2977,7 +2984,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-main": "2.4-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -3013,6 +3020,9 @@
                 "interoperability",
                 "standards"
             ],
+            "support": {
+                "source": "https://github.com/symfony/cache-contracts/tree/v2.4.0"
+            },
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -3027,7 +3037,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-09-07T11:33:47+00:00"
+            "time": "2021-03-23T23:28:01+00:00"
         },
         {
             "name": "symfony/config",
@@ -3711,6 +3721,9 @@
                 "interoperability",
                 "standards"
             ],
+            "support": {
+                "source": "https://github.com/symfony/event-dispatcher-contracts/tree/v1.1.9"
+            },
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -4206,16 +4219,16 @@
         },
         {
             "name": "symfony/http-client-contracts",
-            "version": "v2.3.1",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client-contracts.git",
-                "reference": "41db680a15018f9c1d4b23516059633ce280ca33"
+                "reference": "7e82f6084d7cae521a75ef2cb5c9457bbda785f4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/41db680a15018f9c1d4b23516059633ce280ca33",
-                "reference": "41db680a15018f9c1d4b23516059633ce280ca33",
+                "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/7e82f6084d7cae521a75ef2cb5c9457bbda785f4",
+                "reference": "7e82f6084d7cae521a75ef2cb5c9457bbda785f4",
                 "shasum": ""
             },
             "require": {
@@ -4226,9 +4239,8 @@
             },
             "type": "library",
             "extra": {
-                "branch-version": "2.3",
                 "branch-alias": {
-                    "dev-main": "2.3-dev"
+                    "dev-main": "2.4-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -4264,6 +4276,9 @@
                 "interoperability",
                 "standards"
             ],
+            "support": {
+                "source": "https://github.com/symfony/http-client-contracts/tree/v2.4.0"
+            },
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -4278,7 +4293,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-14T17:08:19+00:00"
+            "time": "2021-04-11T23:07:08+00:00"
         },
         {
             "name": "symfony/http-foundation",
@@ -5497,6 +5512,9 @@
                 "portable",
                 "shim"
             ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php80/tree/v1.22.1"
+            },
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -5978,16 +5996,16 @@
         },
         {
             "name": "symfony/security-core",
-            "version": "v4.4.20",
+            "version": "v4.4.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/security-core.git",
-                "reference": "e185d3918539a9a7c794c20baa18f5e0333a826d"
+                "reference": "8188709909f1e980bd5d791aa9d85156204526e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-core/zipball/e185d3918539a9a7c794c20baa18f5e0333a826d",
-                "reference": "e185d3918539a9a7c794c20baa18f5e0333a826d",
+                "url": "https://api.github.com/repos/symfony/security-core/zipball/8188709909f1e980bd5d791aa9d85156204526e9",
+                "reference": "8188709909f1e980bd5d791aa9d85156204526e9",
                 "shasum": ""
             },
             "require": {
@@ -6001,7 +6019,7 @@
                 "symfony/security-guard": "<4.3"
             },
             "require-dev": {
-                "psr/container": "^1.0",
+                "psr/container": "^1.0|^2.0",
                 "psr/log": "~1.0",
                 "symfony/event-dispatcher": "^4.3",
                 "symfony/expression-language": "^3.4|^4.0|^5.0",
@@ -6043,6 +6061,9 @@
             ],
             "description": "Symfony Security Component - Core Library",
             "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/security-core/tree/v4.4.23"
+            },
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -6057,7 +6078,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-03-03T16:55:00+00:00"
+            "time": "2021-05-12T12:42:28+00:00"
         },
         {
             "name": "symfony/security-csrf",
@@ -6359,21 +6380,21 @@
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v2.2.0",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "d15da7ba4957ffb8f1747218be9e1a121fd298a1"
+                "reference": "f040a30e04b57fbcc9c6cbcf4dbaa96bd318b9bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/d15da7ba4957ffb8f1747218be9e1a121fd298a1",
-                "reference": "d15da7ba4957ffb8f1747218be9e1a121fd298a1",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/f040a30e04b57fbcc9c6cbcf4dbaa96bd318b9bb",
+                "reference": "f040a30e04b57fbcc9c6cbcf4dbaa96bd318b9bb",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.2.5",
-                "psr/container": "^1.0"
+                "psr/container": "^1.1"
             },
             "suggest": {
                 "symfony/service-implementation": ""
@@ -6381,7 +6402,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-main": "2.4-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -6417,6 +6438,9 @@
                 "interoperability",
                 "standards"
             ],
+            "support": {
+                "source": "https://github.com/symfony/service-contracts/tree/v2.4.0"
+            },
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -6431,7 +6455,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-09-07T11:33:47+00:00"
+            "time": "2021-04-01T10:43:52+00:00"
         },
         {
             "name": "symfony/stopwatch",
@@ -6720,16 +6744,16 @@
         },
         {
             "name": "symfony/translation-contracts",
-            "version": "v2.3.0",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation-contracts.git",
-                "reference": "e2eaa60b558f26a4b0354e1bbb25636efaaad105"
+                "reference": "95c812666f3e91db75385749fe219c5e494c7f95"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/e2eaa60b558f26a4b0354e1bbb25636efaaad105",
-                "reference": "e2eaa60b558f26a4b0354e1bbb25636efaaad105",
+                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/95c812666f3e91db75385749fe219c5e494c7f95",
+                "reference": "95c812666f3e91db75385749fe219c5e494c7f95",
                 "shasum": ""
             },
             "require": {
@@ -6741,7 +6765,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-main": "2.4-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -6777,6 +6801,9 @@
                 "interoperability",
                 "standards"
             ],
+            "support": {
+                "source": "https://github.com/symfony/translation-contracts/tree/v2.4.0"
+            },
             "funding": [
                 {
                     "url": "https://symfony.com/sponsor",
@@ -6791,7 +6818,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-09-28T13:05:58+00:00"
+            "time": "2021-03-23T23:28:01+00:00"
         },
         {
             "name": "symfony/twig-bridge",
