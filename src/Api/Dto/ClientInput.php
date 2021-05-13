@@ -62,7 +62,7 @@ class ClientInput
     /**
      * @return integer
      */
-    public function getOwner(): int
+    public function getOwner(): ?int
     {
         return $this->owner;
     }
