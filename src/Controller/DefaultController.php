@@ -137,9 +137,9 @@ class DefaultController extends AbstractController
             $output = new BufferedOutput();
             $status = $application->run($input, $output);
             if (0 == $status) {
-                $this->info('Command success: ' . $commandAndParams['command']);
+                $this->logger->info('Command success: ' . $commandAndParams['command']);
             } else {
-                $this->err('Command failure: ' . $commandAndParams['command']);
+                $this->logger->err('Command failure: ' . $commandAndParams['command']);
             }
             // UGLY and NOT TOTALLY CORRECT
             // We have to sleep after clearing the cache, beause otherwise
@@ -148,7 +148,7 @@ class DefaultController extends AbstractController
             // 2s seems an "always works" value in my dev environment
             sleep(2);
         } catch (Exception $e) {
-            $this->err('Exception %exceptionmsg% running command %command%: ',
+            $this->logger->err('Exception %exceptionmsg% running command %command%: ',
                 array('%exceptionmsg%' => $e->getMessage(), '%command%' => $commandAndParams['command'])
             );
         }
