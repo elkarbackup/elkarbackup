@@ -1,7 +1,8 @@
 <?php
-namespace App\Api\Test;
+namespace App\Tests\api;
 
-use App\Api\Test\BaseApiTestCase;
+use App\Tests\api\BaseApiTestCase;
+use App\Tests\api\JobMother;
 use App\Entity\Job;
 
 class JobTest extends BaseApiTestCase
@@ -9,43 +10,50 @@ class JobTest extends BaseApiTestCase
     public function testCreateJob(): void
     {
         $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
-        $jobJson = JobMother::named($jobName);
+        $job = JobMother::base();
+        $jobJson = $job->getData();
         $this->postJob($httpClient, $jobJson);
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($jobJson);
-        $this->assertJobHydraContext();
+        $this->assertJsonContains($job->getContext());
     }
 
-    //public function testCreateJobAllParameters(): void
-
-    public function testCreateJobInvalidBackupLocation(): void
+    public function testCreateJobAllParameters(): void
     {
         $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
-        $jobJson = JobMother::withBackupLocation($jobName, self::UNEXISTING_ID);
+        $preScript = $this->getScriptId($httpClient, 'script_job_pre');
+        $postScript = $this->getScriptId($httpClient, 'script_job_post');
+        $job = JobMother::withAllParameters(
+            1,
+            1,
+            "some description",
+            "exclude pattern",
+            "include pattern",
+            true,
+            400,
+            "example@example.com",
+            ["owner", "email"],
+            "/some/random/path",
+            1,
+            [$postScript],
+            [$preScript],
+            "randomtoken",
+            true
+        );
+        $jobJson = $job->getData();
         $this->postJob($httpClient, $jobJson);
-        $this->assertResponseStatusCodeSame(400);
+        $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('Incorrect backup location id');
-    }
-    public function testCreateJobInvalidClient(): void
-    {
-        $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
-        $jobJson = JobMother::withClient($jobName, self::UNEXISTING_ID);
-        $this->postJob($httpClient, $jobJson);
-        $this->assertResponseStatusCodeSame(400);
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('Incorrect client id');
+        $this->assertJsonContains($jobJson);
+        $this->assertJsonContains($job->getContext());
     }
 
     public function testCreateJobInvalidNotificationLevel(): void
     {
         $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
-        $jobJson = JobMother::withNotificationLevel($jobName, 333);
+        $job = JobMother::withInvalidNotificationLevel();
+        $jobJson = $job->getData();
         $this->postJob($httpClient, $jobJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -55,8 +63,8 @@ class JobTest extends BaseApiTestCase
     public function testCreateJobInvalidNotificationsEmail(): void
     {
         $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
-        $jobJson = JobMother::withNotificationsEmail($jobName, 'invalid email');
+        $job = JobMother::withInvalidNotificationsEmail();
+        $jobJson = $job->getData();
         $this->postJob($httpClient, $jobJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -66,31 +74,20 @@ class JobTest extends BaseApiTestCase
     public function testCreateJobInvalidNotificationsTo(): void
     {
         $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
-        $jobJson = JobMother::withNotificationsTo($jobName, ['invalid']);
+        $job = JobMother::withInvalidNotificationsTo();
+        $jobJson = $job->getData();
         $this->postJob($httpClient, $jobJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Incorrect notifications to argument (owner, admin, email)');
     }
 
-    public function testCreateJobInvalidPolicy(): void
-    {
-        $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
-        $jobJson = JobMother::withPolicy($jobName, self::UNEXISTING_ID);
-        $this->postJob($httpClient, $jobJson);
-        $this->assertResponseStatusCodeSame(400);
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('Incorrect policy id');
-    }
-
     public function testCreateJobInvalidPostScript(): void
     {
         $httpClient = $this->authenticate();
         $scriptId = $this->getScriptId($httpClient, 'script_not_job_post');
-        $jobName = $this->createJobName();
-        $jobJson = JobMother::withPostScripts($jobName, [$scriptId]);
+        $job = JobMother::withPostScripts([$scriptId]);
+        $jobJson = $job->getData();
         $this->postJob($httpClient, $jobJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -101,34 +98,73 @@ class JobTest extends BaseApiTestCase
     {
         $httpClient = $this->authenticate();
         $scriptId = $this->getScriptId($httpClient, 'script_not_job_pre');
-        $jobName = $this->createJobName();
-        $jobJson = JobMother::withPreScripts($jobName, [$scriptId]);
+        $job = JobMother::withPreScripts([$scriptId]);
+        $jobJson = $job->getData();
         $this->postJob($httpClient, $jobJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Script "'.$scriptId.'" is not a job pre script');
     }
 
-    public function testCreateJobUnexistentPostScript(): void
+    public function testCreateJobNonExistentBackupLocation(): void
     {
         $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
-        $jobJson = JobMother::withPostScripts($jobName, [self::UNEXISTING_ID]);
+        $job = JobMother::withNonExistentBackupLocation();
+        $jobJson = $job->getData();
         $this->postJob($httpClient, $jobJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
+        $this->assertHydraError('Incorrect backup location id');
     }
 
-    public function testCreateJobUnexistentPreScript(): void
+    public function testCreateJobNonExistentClient(): void
     {
         $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
-        $jobJson = JobMother::withPreScripts($jobName, [self::UNEXISTING_ID]);
+        $job = JobMother::withNonExistentClient();
+        $jobJson = $job->getData();
         $this->postJob($httpClient, $jobJson);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
+        $this->assertHydraError('Incorrect client id');
+    }
+
+    
+
+    public function testCreateJobNonExistentPolicy(): void
+    {
+        $httpClient = $this->authenticate();
+        $job = JobMother::withNonExistentPolicy();
+        $jobJson = $job->getData();
+        $this->postJob($httpClient, $jobJson);
+        $this->assertResponseStatusCodeSame(400);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertHydraError('Incorrect policy id');
+    }
+
+    
+
+    public function testCreateJobNonExistentPostScript(): void
+    {
+        $httpClient = $this->authenticate();
+        $job = JobMother::withNonExistentPostScripts();
+        $jobJson = $job->getData();
+        $scriptId = $jobJson['postScripts'][0];
+        $this->postJob($httpClient, $jobJson);
+        $this->assertResponseStatusCodeSame(400);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertHydraError('Script "'.$scriptId.'" does not exist');
+    }
+
+    public function testCreateJobNonExistentPreScript(): void
+    {
+        $httpClient = $this->authenticate();
+        $job = JobMother::withNonExistentPreScripts();
+        $jobJson = $job->getData();
+        $scriptId = $jobJson['preScripts'][0];
+        $this->postJob($httpClient, $jobJson);
+        $this->assertResponseStatusCodeSame(400);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertHydraError('Script "'.$scriptId.'" does not exist');
     }
 
     public function testDeleteJob(): void
@@ -146,27 +182,27 @@ class JobTest extends BaseApiTestCase
     public function testDeleteJobNotFound(): void
     {
         $httpClient = $this->authenticate();
-        $response = $httpClient->request('DELETE', 'api/jobs/'.self::UNEXISTING_ID);
+        $response = $httpClient->request('DELETE', JobMother::getNonExistentIri());
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('The job "'.self::UNEXISTING_ID.'" does not exist.');
+        $this->assertHydraError('The job "'.JobMother::UNEXISTING_ID.'" does not exist.');
     }
 
     public function testGetJob(): void
     {
         $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
-        $jobJson = JobMother::named($jobName);
+        $job = JobMother::base();
+        $jobJson = $job->getData();
         $this->postJob($httpClient, $jobJson);
         $iri = $this->findIriBy(Job::class, [
-            'name' => $jobName
+            'name' => $job->getName()
         ]);
         $response = $httpClient->request('GET', $iri);
         
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($jobJson);
-        $this->assertJobHydraContext();
+        $this->assertJsonContains($job->getContext());
     }
 
     public function testGetJobs(): void
@@ -188,60 +224,54 @@ class JobTest extends BaseApiTestCase
         $this->assertResponseStatusCodeSame(401);
     }
 
-    public function testGetNonexistentJob(): void
+    public function testGetNonExistentJob(): void
     {
         $httpClient = $this->authenticate();
-        $response = $httpClient->request('GET', '/api/jobs/'.self::UNEXISTING_ID);
+        $response = $httpClient->request('GET', JobMother::getNonExistentIri());
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('The job "'.self::UNEXISTING_ID.'" does not exist.');
+        $this->assertHydraError('The job "'.JobMother::UNEXISTING_ID.'" does not exist.');
     }
 
     public function testUpdateJob(): void
     {
         $httpClient = $this->authenticate();
         $iri = $this->findIriBy(Job::class, ['name' => 'job_to_update_1']);
-        $updatedName = $this->createJobName();
-        $updateJobJson = JobMother::named($updatedName);
+        $preScript = $this->getScriptId($httpClient, 'script_job_pre');
+        $postScript = $this->getScriptId($httpClient, 'script_job_post');
+        $updateJob = JobMother::withAllParameters(
+            1,
+            1,
+            "description updated",
+            "updated exclude pattern",
+            "updated include pattern",
+            true,
+            400,
+            "example@example.com",
+            ["owner", "email"],
+            "/some/random/path",
+            1,
+            [$postScript],
+            [$preScript],
+            "randomtoken",
+            true
+            );
+        $updateJobJson = $updateJob->getData();
         $httpClient->request('PUT', $iri, [
             'json' => $updateJobJson
         ]);
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains($updateJobJson);
-        $this->assertJobHydraContext();
-    }
-
-    public function testUpdateJobInvalidBackupLocation(): void
-    {
-        $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
-        $iri = $this->findIriBy(Job::class, ['name' => 'job_to_update_2']);
-        $updateJobJson = JobMother::withBackupLocation($jobName, self::UNEXISTING_ID);
-        $httpClient->request('PUT', $iri, ['json' => $updateJobJson]);
-        $this->assertResponseStatusCodeSame(400);
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('Incorrect backup location id');
-    }
-
-    public function testUpdateJobInvalidClient(): void
-    {
-        $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
-        $iri = $this->findIriBy(Job::class, ['name' => 'job_to_update_3']);
-        $updateJobJson = JobMother::withClient($jobName, self::UNEXISTING_ID);
-        $httpClient->request('PUT', $iri, ['json' => $updateJobJson]);
-        $this->assertResponseStatusCodeSame(400);
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('Incorrect client id');
+        $this->assertJsonContains($updateJob->getContext());
     }
 
     public function testUpdateJobInvalidNotificationLevel(): void
     {
         $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
         $iri = $this->findIriBy(Job::class, ['name' => 'job_to_update_4']);
-        $updateJobJson = JobMother::withNotificationLevel($jobName, 333);
+        $updateJob = JobMother::withInvalidNotificationLevel();
+        $updateJobJson = $updateJob->getData();
         $httpClient->request('PUT', $iri, ['json' => $updateJobJson]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -251,9 +281,9 @@ class JobTest extends BaseApiTestCase
     public function testUpdateJobInvalidNotificationsEmail(): void
     {
         $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
         $iri = $this->findIriBy(Job::class, ['name' => 'job_to_update_5']);
-        $updateJobJson = JobMother::withNotificationsEmail($jobName, 'invalid email');
+        $updateJob = JobMother::withInvalidNotificationsEmail();
+        $updateJobJson = $updateJob->getData();
         $httpClient->request('PUT', $iri, ['json' => $updateJobJson]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -263,84 +293,111 @@ class JobTest extends BaseApiTestCase
     public function testUpdateJobInvalidNotificationsTo(): void
     {
         $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
         $iri = $this->findIriBy(Job::class, ['name' => 'job_to_update_6']);
-        $updateJobJson = JobMother::withNotificationsTo($jobName, ['invalid']);
+        $updateJob = JobMother::withInvalidNotificationsTo();
+        $updateJobJson = $updateJob->getData();
         $httpClient->request('PUT', $iri, ['json' => $updateJobJson]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Incorrect notifications to argument (owner, admin, email)');
     }
 
-    public function testUpdateJobInvalidPolicy(): void
-    {
-        $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
-        $iri = $this->findIriBy(Job::class, ['name' => 'job_to_update_7']);
-        $updateJobJson = JobMother::withPolicy($jobName, self::UNEXISTING_ID);
-        $httpClient->request('PUT', $iri, ['json' => $updateJobJson]);
-        $this->assertResponseStatusCodeSame(400);
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-    }
-
     public function testUpdateJobInvalidPostScript(): void
     {
         $httpClient = $this->authenticate();
         $scriptId = $this->getScriptId($httpClient, 'script_not_job_post');
-        $jobName = $this->createJobName();
         $iri = $this->findIriBy(Job::class, ['name' => 'job_to_update_8']);
-        $updateJobJson = JobMother::withPostScripts($jobName, [$scriptId]);
+        $updateJob = JobMother::withPostScripts([$scriptId]);
+        $updateJobJson = $updateJob->getData();
         $httpClient->request('PUT', $iri, ['json' => $updateJobJson]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Script "'.$scriptId.'" is not a job post script');
     }
-    
+
     public function testUpdateJobInvalidPreScript(): void
     {
         $httpClient = $this->authenticate();
         $scriptId = $this->getScriptId($httpClient, 'script_not_job_pre');
-        $jobName = $this->createJobName();
         $iri = $this->findIriBy(Job::class, ['name' => 'job_to_update_9']);
-        $updateJobJson = JobMother::withPreScripts($jobName, [$scriptId]);
+        $updateJob = JobMother::withPreScripts([$scriptId]);
+        $updateJobJson = $updateJob->getData();
         $httpClient->request('PUT', $iri, ['json' => $updateJobJson]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Script "'.$scriptId.'" is not a job pre script');
     }
 
+    public function testUpdateJobNonExistentBackupLocation(): void
+    {
+        $httpClient = $this->authenticate();
+        $iri = $this->findIriBy(Job::class, ['name' => 'job_to_update_2']);
+        $updateJob = JobMother::withNonExistentBackupLocation();
+        $updateJobJson = $updateJob->getData();
+        $httpClient->request('PUT', $iri, ['json' => $updateJobJson]);
+        $this->assertResponseStatusCodeSame(400);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertHydraError('Incorrect backup location id');
+    }
+
+    public function testUpdateJobNonExistentClient(): void
+    {
+        $httpClient = $this->authenticate();
+        $iri = $this->findIriBy(Job::class, ['name' => 'job_to_update_3']);
+        $updateJob = JobMother::withNonExistentClient();
+        $updateJobJson = $updateJob->getData();
+        $httpClient->request('PUT', $iri, ['json' => $updateJobJson]);
+        $this->assertResponseStatusCodeSame(400);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertHydraError('Incorrect client id');
+    }
+
+    public function testUpdateJobNonExistentPolicy(): void
+    {
+        $httpClient = $this->authenticate();
+        $iri = $this->findIriBy(Job::class, ['name' => 'job_to_update_7']);
+        $updateJob = JobMother::withNonExistentPolicy();
+        $updateJobJson = $updateJob->getData();
+        $httpClient->request('PUT', $iri, ['json' => $updateJobJson]);
+        $this->assertResponseStatusCodeSame(400);
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+    }
+
     public function testUpdateJobNotFound(): void
     {
         $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
-        $updateJobJson = JobMother::named($jobName);
-        $httpClient->request('PUT', 'api/jobs/'.self::UNEXISTING_ID, ['json' => $updateJobJson]);
+        $updateJob = JobMother::base();
+        $updateJobJson = $updateJob->getData();
+        $httpClient->request('PUT', JobMother::getNonExistentIri(), ['json' => $updateJobJson]);
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('The job "'.self::UNEXISTING_ID.'" does not exist.');
+        $this->assertHydraError('The job "'.JobMother::UNEXISTING_ID.'" does not exist.');
     }
-    public function testUpdateJobUnexistentPostScript(): void
+
+    public function testUpdateJobNonExistentPostScript(): void
     {
         $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
         $iri = $this->findIriBy(Job::class, ['name' => 'job_to_update_10']);
-        $updateJobJson = JobMother::withPostScripts($jobName, [self::UNEXISTING_ID]);
+        $updateJob = JobMother::withNonExistentPostScripts();
+        $updateJobJson = $updateJob->getData();
+        $scriptId = $updateJobJson['postScripts'][0];
         $httpClient->request('PUT', $iri, ['json' => $updateJobJson]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
+        $this->assertHydraError('Script "'.$scriptId.'" does not exist');
     }
-    
-    public function testUpdateJobUnexistentPreScript(): void
+
+    public function testUpdateJobNonExistentPreScript(): void
     {
         $httpClient = $this->authenticate();
-        $jobName = $this->createJobName();
         $iri = $this->findIriBy(Job::class, ['name' => 'job_to_update_11']);
-        $updateJobJson = JobMother::withPreScripts($jobName, [self::UNEXISTING_ID]);
+        $updateJob = JobMother::withNonExistentPreScripts();
+        $updateJobJson = $updateJob->getData();
+        $scriptId = $updateJobJson['preScripts'][0];
         $httpClient->request('PUT', $iri, ['json' => $updateJobJson]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
-        $this->assertHydraError('Script "'.self::UNEXISTING_ID.'" does not exist');
+        $this->assertHydraError('Script "'.$scriptId.'" does not exist');
     }
 }
 
