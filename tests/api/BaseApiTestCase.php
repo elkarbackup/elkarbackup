@@ -56,11 +56,17 @@ class BaseApiTestCase extends ApiTestCase
         return $client;
     }
 
-    protected function postJob(Client $httpClient, array $jobJson): void
+    protected function postJob(Client $httpClient, RequestObject $job): RequestObject
     {
-        $httpClient->request('POST', '/api/jobs', [
+        $jobJson = $job->getData();
+        $response = $httpClient->request('POST', '/api/jobs', [
             'json' => $jobJson
         ]);
+        if (201 == $response->getStatusCode()){
+            $json = json_decode($response->getContent(), true);
+            $job->setIri($json['@id']);
+        }
+        return $job;
     }
 }
 
