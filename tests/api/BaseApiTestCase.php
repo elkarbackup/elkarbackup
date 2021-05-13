@@ -43,11 +43,17 @@ class BaseApiTestCase extends ApiTestCase
         return $response->toArray()['id'];
     }
     
-    protected function postClient(Client $httpClient, array $clientJson): void
+    protected function postClient(Client $httpClient, RequestObject $client): RequestObject
     {
-        $httpClient->request('POST', '/api/clients', [
+        $clientJson = $client->getData();
+        $response = $httpClient->request('POST', '/api/clients', [
             'json' => $clientJson
         ]);
+        if (201 == $response->getStatusCode()){
+            $json = json_decode($response->getContent(), true);
+            $client->setIri($json['@id']);
+        }        
+        return $client;
     }
 }
 
