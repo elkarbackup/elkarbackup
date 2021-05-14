@@ -78,5 +78,3 @@ App\Entity\Script:
       isJobPre: false
       isClientPost: <boolean()>
       isJobPost: <boolean()>
-      
-      
