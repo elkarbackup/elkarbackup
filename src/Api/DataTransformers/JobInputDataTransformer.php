@@ -64,7 +64,7 @@ class JobInputDataTransformer implements DataTransformerInterface
 
     private function setNotificationsEmail (Job $job, $notificationsEmail)
     {
-        if (isset($notificationsEmail) && !filter_var($notificationsEmail, FILTER_VALIDATE_EMAIL) && !empty($notificationsEmail)) {
+        if (isset($notificationsEmail) && !filter_var($notificationsEmail, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException("Incorrect notification email address");
         }
         
@@ -95,11 +95,15 @@ class JobInputDataTransformer implements DataTransformerInterface
 
     private function setPostScripts (Job $job, $postScripts)
     {
+        if (null != $job->getPostScripts()) {
+            foreach ($job->getPostScripts() as $script) {
+                $job->removePostScript($script);
+            }
+        }
         if (null != $postScripts){
             $repository = $this->entityManager->getRepository('App:Script');
             $query = $repository->createQueryBuilder('s');
             foreach ($postScripts as $script) {
-                $query = $repository->createQueryBuilder('s');
                 $query->where($query->expr()->eq('s.id', $script));
                 $result = $query->getQuery()->getOneOrNullResult();
                 if (null != $result) {
@@ -117,11 +121,15 @@ class JobInputDataTransformer implements DataTransformerInterface
 
     private function setPreScripts (Job $job, $preScripts)
     {
+        if (null != $job->getPreScripts()) {
+            foreach ($job->getPreScripts() as $script) {
+                $job->removePreScript($script);
+            }
+        }
         if (null != $preScripts){
             $repository = $this->entityManager->getRepository('App:Script');
             $query = $repository->createQueryBuilder('s');
             foreach ($preScripts as $script) {
-                $query = $repository->createQueryBuilder('s');
                 $query->where($query->expr()->eq('s.id', $script));
                 $result = $query->getQuery()->getOneOrNullResult();
                 if (null != $result) {
