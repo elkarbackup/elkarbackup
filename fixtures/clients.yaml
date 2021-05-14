@@ -6,15 +6,7 @@ App\Entity\Client:
       quota: -1
       owner: '@user'
       maxParallelJobs: 1
-      
-    client_to_delete:
-      name: 'client_to_delete'
-      description: <text()>
-      isActive: <boolean()>
-      quota: -1
-      owner: '@user'
-      maxParallelJobs: 1
-      
+
 App\Entity\User:
     user:
       username: user
