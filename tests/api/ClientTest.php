@@ -65,6 +65,7 @@ class ClientTest extends BaseApiTestCase
         $this->postClient($httpClient, $client);
         $this->postClient($httpClient, $client);
         $this->assertResponseStatusCodeSame(400);
+        #Unsuitable error management issued in #554. Error message will change when issue is resolved
         $this->assertHydraError("An exception occurred while executing 'INSERT INTO Client (description, isActive, name, url, quota, sshArgs, rsyncShortArgs, rsyncLongArgs, state, maxParallelJobs, data, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)' with params [null, 1, \"".$client->getName()."\", \"\", -1, null, null, null, \"NOT READY\", 1, null, 1]:\n\nSQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry '".$client->getName()."' for key 'Client.UNIQ_C0E801635E237E06'");
     }
 
