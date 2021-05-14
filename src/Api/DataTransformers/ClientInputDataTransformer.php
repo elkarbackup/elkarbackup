@@ -102,6 +102,8 @@ class ClientInputDataTransformer implements DataTransformerInterface
     {
         if(self::MAX_SAFE_INTEGER < $quota){
             throw new InvalidArgumentException("Out of bounds. Quota must be lower than the maximum safe integer(9007199254740991)");
+        } else if (0 < $quota){
+            $client->setQuota($quota*1024);
         } else {
             $client->setQuota($quota);
         }
