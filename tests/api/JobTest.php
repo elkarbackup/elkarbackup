@@ -160,9 +160,9 @@ class JobTest extends BaseApiTestCase
     public function testDeleteJob(): void
     {
         $httpClient = $this->authenticate();
-        $iri = $this->findIriBy(Job::class, [
-            'name' => 'job_to_delete'
-        ]);
+        $job = JobMother::base();
+        $this->postJob($httpClient, $job);
+        $iri = $job->getIri();
         $response = $httpClient->request('DELETE', $iri);
         $this->assertResponseIsSuccessful();
         $response = $httpClient->request('GET', $iri);
