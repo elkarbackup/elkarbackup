@@ -25,6 +25,14 @@ class ClientOutputDataTransformer implements DataTransformerInterface
         return $data->getOwner();
     }
 
+    private function getQuota($quota): int
+    {
+        if (0 < $quota) {
+            return $quota/1024;
+        }
+        return $quota;
+    }
+
     private function getScriptsId ($scripts): array
     {
         $result = array();
@@ -53,7 +61,7 @@ class ClientOutputDataTransformer implements DataTransformerInterface
         $output->setId($data->getId());
         $output->setName($data->getName());
         $output->setUrl($data->getUrl());
-        $output->setQuota($data->getQuota());
+        $output->setQuota($this->getQuota($data->getQuota()));
         $output->setDescription($data->getDescription());
         $output->setIsActive($data->getIsActive());
         $output->setPreScripts($this->getScriptsId($data->getPreScripts()));

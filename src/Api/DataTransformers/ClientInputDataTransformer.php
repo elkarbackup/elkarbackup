@@ -14,6 +14,8 @@ use Symfony\Component\Security\Core\Security;
 
 class ClientInputDataTransformer implements DataTransformerInterface
 {
+    const MAX_SAFE_INTEGER = 9007199254740991;
+    
     private $authChecker;
     private $entityManager;
     private $security;
@@ -95,6 +97,17 @@ class ClientInputDataTransformer implements DataTransformerInterface
             }
         }
     }
+
+    private function setQuota(Client $client, int $quota): void
+    {
+        if(self::MAX_SAFE_INTEGER < $quota){
+            throw new InvalidArgumentException("Out of bounds. Quota must be lower than the maximum safe integer(9007199254740991)");
+        } else if (0 < $quota){
+            $client->setQuota($quota*1024);
+        } else {
+            $client->setQuota($quota);
+        }
+    }
     /**
      * {@inheritdoc}
      */
@@ -119,7 +132,7 @@ class ClientInputDataTransformer implements DataTransformerInterface
         }
         $client->setName($data->getName());
         $client->setUrl($data->getUrl());
-        $client->setQuota($data->getQuota());
+        $this->setQuota($client, $data->getQuota());
         $client->setDescription($data->getDescription());
         $client->setIsActive($data->getIsActive());
         $this->setPreScripts($client, $data->getPreScripts());
