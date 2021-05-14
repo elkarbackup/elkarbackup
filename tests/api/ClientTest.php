@@ -99,6 +99,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Script "'.$scriptId.'" is not a client pre script');
     }
+
     public function testCreateClientNonExistentPostScript(): void
     {
         $httpClient = $this->authenticate();
@@ -233,7 +234,7 @@ class ClientTest extends BaseApiTestCase
             'hydra:description' => 'maxParallelJobs: Max parallel jobs value must be a positive integer',
         ]);
     }
-    
+
     public function testUpdateClientRepeatedName(): void
     {
         $httpClient = $this->authenticate();
@@ -243,7 +244,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseStatusCodeSame(400);
         $this->assertHydraError();
     }
-    
+
     public function testUpdateClientNotFound(): void
     {
         $httpClient = $this->authenticate();
@@ -266,7 +267,7 @@ class ClientTest extends BaseApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Script "'.$script.'" does not exist');
     }
-    
+
     public function testUpdateClientNonExistentPreScript(): void
     {
         $httpClient = $this->authenticate();
