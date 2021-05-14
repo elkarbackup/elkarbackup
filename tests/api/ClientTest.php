@@ -227,9 +227,10 @@ class ClientTest extends BaseApiTestCase
     public function testUpdateClientInvalidMaxParallelJobs(): void
     {
         $httpClient = $this->authenticate();
-        $iri = $this->findIriBy(Client::class, ['name' => 'client_3']);
+        $client = ClientMother::base();
+        $client = $this->postClient($httpClient, $client);
         $updateClient = ClientMother::withInvalidMaxParallelJobs();
-        $httpClient->request('PUT', $iri, ['json' => $updateClient->getData()]);
+        $httpClient->request('PUT', $client->getIri(), ['json' => $updateClient->getData()]);
         $this->assertResponseStatusCodeSame(422);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertJsonContains([
@@ -243,9 +244,10 @@ class ClientTest extends BaseApiTestCase
     public function testUpdateClientRepeatedName(): void
     {
         $httpClient = $this->authenticate();
-        $iri = $this->findIriBy(Client::class, ['name' => 'client_4']);
+        $client = ClientMother::base();
+        $client = $this->postClient($httpClient, $client);
         $updateClient = ClientMother::named('client_8');
-        $httpClient->request('PUT', $iri, ['json' => $updateClient->getData()]);
+        $httpClient->request('PUT', $client->getIri(), ['json' => $updateClient->getData()]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertHydraError();
     }
@@ -263,11 +265,12 @@ class ClientTest extends BaseApiTestCase
     public function testUpdateClientNonExistentPostScript(): void
     {
         $httpClient = $this->authenticate();
-        $iri = $this->findIriBy(Client::class, ['name' => 'client_5']);
+        $client = ClientMother::base();
+        $client = $this->postClient($httpClient, $client);
         $updateClient = ClientMother::withNonExistentPostScripts();
         $updateClientJson = $updateClient->getData();
         $script = $updateClientJson['postScripts'][0];
-        $httpClient->request('PUT', $iri, ['json' => $updateClientJson]);
+        $httpClient->request('PUT', $client->getIri(), ['json' => $updateClientJson]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Script "'.$script.'" does not exist');
@@ -276,11 +279,12 @@ class ClientTest extends BaseApiTestCase
     public function testUpdateClientNonExistentPreScript(): void
     {
         $httpClient = $this->authenticate();
-        $iri = $this->findIriBy(Client::class, ['name' => 'client_6']);
+        $client = ClientMother::base();
+        $client = $this->postClient($httpClient, $client);
         $updateClient = ClientMother::withNonExistentPreScripts();
         $updateClientJson = $updateClient->getData();
         $script = $updateClientJson['preScripts'][0];
-        $httpClient->request('PUT', $iri, ['json' =>$updateClientJson]);
+        $httpClient->request('PUT', $client->ge, ['json' =>$updateClientJson]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Script "'.$script.'" does not exist');
