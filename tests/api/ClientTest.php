@@ -128,9 +128,9 @@ class ClientTest extends BaseApiTestCase
     public function testDeleteClient(): void
     {
         $httpClient = $this->authenticate();
-        $iri = $this->findIriBy(Client::class, [
-            'name' => 'client_to_delete'
-        ]);
+        $client = ClientMother::base();
+        $this->postClient($httpClient, $client);
+        $iri = $client->getIri();
         $response = $httpClient->request('DELETE', $iri);
         $this->assertResponseIsSuccessful();
         $response = $httpClient->request('GET', $iri);
