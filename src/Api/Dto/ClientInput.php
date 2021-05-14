@@ -84,6 +84,8 @@ class ClientInput
     }
 
     /**
+     * Quota given in MiB
+     * 
      * @return integer
      */
     public function getQuota(): int
