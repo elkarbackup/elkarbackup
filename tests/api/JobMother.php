@@ -121,294 +121,144 @@ class JobMother
 
     public static function withBackupLocation(int $backupLocationId): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => $backupLocationId,
-            'client' => 1,
-            'isActive' => true,
-            'minNotificationLevel' => 400,
-            'name' => $jobName,
-            'notificationsTo' => ['owner'],
-            'path' => '/some/default/path',
-            'policy' => 1,
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['backupLocation'] = $backupLocationId;
+        $response->setData($data);
         return $response;
     }
 
     public static function withClient (int $clientId): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => 1,
-            'client' => $clientId,
-            'isActive' => true,
-            'minNotificationLevel' => 400,
-            'name' => $jobName,
-            'notificationsTo' => ['owner'],
-            'path' => '/some/default/path',
-            'policy' => 1,
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['client'] = $clientId;
+        $response->setData($data);
         return $response;
     }
 
     public static function withInvalidNotificationLevel(): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => 1,
-            'client' => 1,
-            'isActive' => true,
-            'minNotificationLevel' => rand(0,199),
-            'name' => $jobName,
-            'notificationsTo' => ['owner'],
-            'path' => '/some/default/path',
-            'policy' => 1,
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['minNotificationLevel'] = rand(0,199);
+        $response->setData($data);
         return $response;
     }
 
     public static function withInvalidNotificationsEmail(): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => 1,
-            'client' => 1,
-            'isActive' => true,
-            'minNotificationLevel' => 400,
-            'name' => $jobName,
-            'notificationsEmail' => "This is not an email",
-            'notificationsTo' => ['owner'],
-            'path' => '/some/default/path',
-            'policy' => 1,
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['notificationsEmail'] = "This is not a email";
+        $response->setData($data);
         return $response;
     }
 
     public static function withInvalidNotificationsTo(): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => 1,
-            'client' => 1,
-            'isActive' => true,
-            'minNotificationLevel' => 400,
-            'name' => $jobName,
-            'notificationsTo' => ['invalid'],
-            'path' => '/some/default/path',
-            'policy' => 1,
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['notificationsTo'] = ['invalid'];
+        $response->setData($data);
         return $response;
     }
 
     public static function withNonExistentBackupLocation(): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => self::UNEXISTING_ID,
-            'client' => 1,
-            'isActive' => true,
-            'minNotificationLevel' => 400,
-            'name' => $jobName,
-            'notificationsTo' => ['owner'],
-            'path' => '/some/default/path',
-            'policy' => 1,
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['backupLocation'] = self::UNEXISTING_ID;
+        $response->setData($data);
         return $response;
     }
 
     public static function withNonExistentClient (): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => 1,
-            'client' => self::UNEXISTING_ID,
-            'isActive' => true,
-            'minNotificationLevel' => 400,
-            'name' => $jobName,
-            'notificationsTo' => ['owner'],
-            'path' => '/some/default/path',
-            'policy' => 1,
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['client'] = self::UNEXISTING_ID;
+        $response->setData($data);
         return $response;
     }
 
     public static function withNonExistentPolicy(): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => 1,
-            'client' => 1,
-            'isActive' => true,
-            'minNotificationLevel' => 400,
-            'name' => $jobName,
-            'notificationsTo' => ['owner'],
-            'path' => '/some/default/path',
-            'policy' => self::UNEXISTING_ID,
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['policy'] = self::UNEXISTING_ID;
+        $response->setData($data);
         return $response;
     }
 
     public static function withNonExistentPostScripts(): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => 1,
-            'client' => 1,
-            'isActive' => true,
-            'minNotificationLevel' => 400,
-            'name' => $jobName,
-            'notificationsTo' => ['owner'],
-            'path' => '/some/default/path',
-            'policy' => 1,
-            'postScripts' => [self::UNEXISTING_ID],
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['postScripts'] = [self::UNEXISTING_ID];
+        $response->setData($data);
         return $response;
     }
 
     public static function withNonExistentPreScripts(): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => 1,
-            'client' => 1,
-            'isActive' => true,
-            'minNotificationLevel' => 400,
-            'name' => $jobName,
-            'notificationsTo' => ['owner'],
-            'path' => '/some/default/path',
-            'policy' => 1,
-            'preScripts' => [self::UNEXISTING_ID],
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['preScripts'] = [self::UNEXISTING_ID];
+        $response->setData($data);
         return $response;
     }
 
     public static function withNotificationLevel(int $minNotificationLevel): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => 1,
-            'client' => 1,
-            'isActive' => true,
-            'minNotificationLevel' => $minNotificationLevel,
-            'name' => $jobName,
-            'notificationsTo' => ['owner'],
-            'path' => '/some/default/path',
-            'policy' => 1,
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['minNotificationLevel'] = $minNotificationLevel;
+        $response->setData($data);
         return $response;
     }
 
     public static function withNotificationsEmail(string $notificationsEmail): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => 1,
-            'client' => 1,
-            'isActive' => true,
-            'minNotificationLevel' => 400,
-            'name' => $jobName,
-            'notificationsEmail' => $notificationsEmail,
-            'notificationsTo' => ['owner'],
-            'path' => '/some/default/path',
-            'policy' => 1,
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['notificationsEmail'] = $notificationsEmail;
+        $response->setData($data);
         return $response;
     }
 
     public static function withNotificationsTo(array $notificationsTo): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => 1,
-            'client' => 1,
-            'isActive' => true,
-            'minNotificationLevel' => 400,
-            'name' => $jobName,
-            'notificationsTo' => $notificationsTo,
-            'path' => '/some/default/path',
-            'policy' => 1,
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['notificationsTo'] = $notificationsTo;
+        $response->setData($data);
         return $response;
     }
 
     public static function withPolicy(int $policyId): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => 1,
-            'client' => 1,
-            'isActive' => true,
-            'minNotificationLevel' => 400,
-            'name' => $jobName,
-            'notificationsTo' => ['owner'],
-            'path' => '/some/default/path',
-            'policy' => $policyId,
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['policy'] = $policyId;
+        $response->setData($data);
         return $response;
     }
     public static function withPostScripts(array $postScripts): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => 1,
-            'client' => 1,
-            'isActive' => true,
-            'minNotificationLevel' => 400,
-            'name' => $jobName,
-            'notificationsTo' => ['owner'],
-            'path' => '/some/default/path',
-            'policy' => 1,
-            'postScripts' => $postScripts,
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['postScripts'] = $postScripts;
+        $response->setData($data);
         return $response;
     }
 
     public static function withPreScripts(array $preScripts): RequestObject
     {
-        $jobName = self::createJobName();
-        $data = [
-            'backupLocation' => 1,
-            'client' => 1,
-            'isActive' => true,
-            'minNotificationLevel' => 400,
-            'name' => $jobName,
-            'notificationsTo' => ['owner'],
-            'path' => '/some/default/path',
-            'policy' => 1,
-            'preScripts' => $preScripts,
-            'useLocalPermissions' => true
-        ];
-        $response = new RequestObject(self::JOB_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['preScripts'] = $preScripts;
+        $response->setData($data);
         return $response;
     }
 }

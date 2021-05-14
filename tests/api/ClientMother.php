@@ -53,14 +53,10 @@ class ClientMother
 
     public static function named(string $clientName): RequestObject
     {
-        $data = [
-        'isActive' => true,
-        'maxParallelJobs' => 1,
-        'name' => $clientName,
-        'owner' => 1,
-        'quota' => -1
-        ];
-        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['name'] = $clientName;
+        $response->setData($data);
         return $response;
     }
 
@@ -98,115 +94,71 @@ class ClientMother
 
     public static function withInvalidMaxParallelJobs(): RequestObject
     {
-        $clientName = self::createClientName();
-        $data = [
-            'isActive' => true,
-            'maxParallelJobs' => -1,
-            'name' => $clientName,
-            'owner' => 1,
-            'quota' => -1
-        ];
-        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['maxParallelJobs'] = -1;
+        $response->setData($data);
         return $response;
     }
     public static function withMaxParallelJobs(int $maxParallelJobs): RequestObject
     {
-        $clientName = self::createClientName();
-        $data = [
-            'isActive' => true,
-            'maxParallelJobs' => $maxParallelJobs,
-            'name' => $clientName,
-            'owner' => 1,
-            'quota' => -1
-        ];
-        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['maxParallelJobs'] = $maxParallelJobs;
+        $response->setData($data);
         return $response;
     }
 
     public static function withNonExistentOwner(): RequestObject
     {
-        $clientName = self::createClientName();
-        $data = [
-            'isActive' => true,
-            'maxParallelJobs' => 1,
-            'name' => $clientName,
-            'owner' => self::UNEXISTING_ID,
-            'quota' => -1
-        ];
-        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['owner'] = self::UNEXISTING_ID;
+        $response->setData($data);
         return $response;
     }
 
     public static function withNonExistentPostScripts(): RequestObject
     {
-        $clientName = self::createClientName();
-        $data = [
-            'isActive'        => true,
-            'maxParallelJobs' => 1,
-            'name'            => $clientName,
-            'owner'           => 1,
-            'postScripts'     => [self::UNEXISTING_ID],
-            'quota'           => -1
-        ];
-        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['postScripts'] = [self::UNEXISTING_ID];
+        $response->setData($data);
         return $response;
     }
 
     public static function withNonExistentPreScripts(): RequestObject
     {
-        $clientName = self::createClientName();
-        $data = [
-            'isActive'        => true,
-            'maxParallelJobs' => 1,
-            'name'            => $clientName,
-            'owner'           => 1,
-            'preScripts'     => [self::UNEXISTING_ID],
-            'quota'           => -1
-        ];
-        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['preScripts'] = [self::UNEXISTING_ID];
+        $response->setData($data);
         return $response;
     }
 
     public static function withOwner(int $owner): RequestObject
     {
-        $clientName = self::createClientName();
-        $data = [
-            'isActive' => true,
-            'maxParallelJobs' => 1,
-            'name' => $clientName,
-            'owner' => $owner,
-            'quota' => -1
-        ];
-        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['owner'] = $owner;
+        $response->setData($data);
         return $response;
     }
     public static function withPostScripts(array $postScripts): RequestObject
     {
-        $clientName = self::createClientName();
-        $data = [
-        'isActive'        => true,
-        'maxParallelJobs' => 1,
-        'name'            => $clientName,
-        'owner'           => 1,
-        'postScripts'     => $postScripts,
-        'quota'           => -1
-        ];
-        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['postScripts'] = $postScripts;
+        $response->setData($data);
         return $response;
     }
 
     public static function withPreScripts(array $preScripts): RequestObject
     {
-        $clientName = self::createClientName();
-        $data = [
-            'isActive'        => true,
-            'maxParallelJobs' => 1,
-            'name'            => $clientName,
-            'owner'           => 1,
-            'preScripts'     => $preScripts,
-            'quota'           => -1
-        ];
-        $response = new RequestObject(self::CLIENT_CONTEXT, $data);
+        $response = self::base();
+        $data = $response->getData();
+        $data['preScripts'] = $preScripts;
+        $response->setData($data);
         return $response;
     }
 }
