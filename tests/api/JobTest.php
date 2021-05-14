@@ -21,8 +21,10 @@ class JobTest extends BaseApiTestCase
     public function testCreateJobAllParameters(): void
     {
         $httpClient = $this->authenticate();
-        $preScript = $this->getScriptId($httpClient, 'script_job_pre');
-        $postScript = $this->getScriptId($httpClient, 'script_job_post');
+        $preScript1 = $this->getScriptId($httpClient, 'script_job_pre_1');
+        $postScript1 = $this->getScriptId($httpClient, 'script_job_post_1');
+        $preScript2 = $this->getScriptId($httpClient, 'script_job_pre_2');
+        $postScript2 = $this->getScriptId($httpClient, 'script_job_post_2');
         $job = JobMother::withAllParameters(
             1,
             1,
@@ -35,8 +37,8 @@ class JobTest extends BaseApiTestCase
             ["owner", "email"],
             "/some/random/path",
             1,
-            [$postScript],
-            [$preScript],
+            [$postScript1, $postScript2],
+            [$preScript1, $preScript2],
             "randomtoken",
             true
         );
@@ -227,8 +229,10 @@ class JobTest extends BaseApiTestCase
         $httpClient = $this->authenticate();
         $job = JobMother::base();
         $job = $this->postJob($httpClient, $job);
-        $preScript = $this->getScriptId($httpClient, 'script_job_pre');
-        $postScript = $this->getScriptId($httpClient, 'script_job_post');
+        $preScript1 = $this->getScriptId($httpClient, 'script_job_pre_1');
+        $postScript1 = $this->getScriptId($httpClient, 'script_job_post_1');
+        $preScript2 = $this->getScriptId($httpClient, 'script_job_pre_2');
+        $postScript2 = $this->getScriptId($httpClient, 'script_job_post_2');
         $updateJob = JobMother::withAllParameters(
             1,
             1,
@@ -241,8 +245,8 @@ class JobTest extends BaseApiTestCase
             ["owner", "email"],
             "/some/random/path",
             1,
-            [$postScript],
-            [$preScript],
+            [$postScript1, $postScript2],
+            [$preScript1, $preScript2],
             "randomtoken",
             true
             );

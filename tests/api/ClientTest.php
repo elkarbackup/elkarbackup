@@ -22,15 +22,17 @@ class ClientTest extends BaseApiTestCase
     public function testCreateClientAllParameters(): void 
     {
         $httpClient = $this->authenticate();
-        $preScript = $this->getScriptId($httpClient, 'script_client_pre');
-        $postScript = $this->getScriptId($httpClient, 'script_client_post');
+        $preScript1 = $this->getScriptId($httpClient, 'script_client_pre_1');
+        $postScript1 = $this->getScriptId($httpClient, 'script_client_post_1');
+        $preScript2 = $this->getScriptId($httpClient, 'script_client_pre_2');
+        $postScript2 = $this->getScriptId($httpClient, 'script_client_post_2');
         $client = ClientMother::withAllParameters(
             1, 
             "some description", 
             false, 
             2, 
-            [$postScript], 
-            [$preScript],
+            [$postScript1, $postScript2], 
+            [$preScript1, $preScript2],
             -1, 
             "rsync long arguments", 
             "rsync short arguments", 
@@ -195,15 +197,17 @@ class ClientTest extends BaseApiTestCase
         $httpClient = $this->authenticate();
         $client = ClientMother::base();
         $client = $this->postClient($httpClient, $client);
-        $postScript = $this->getScriptId($httpClient, 'script_client_post');
-        $preScript = $this->getScriptId($httpClient, 'script_client_pre');
+        $postScript1 = $this->getScriptId($httpClient, 'script_client_post_1');
+        $preScript1 = $this->getScriptId($httpClient, 'script_client_pre_1');
+        $postScript2 = $this->getScriptId($httpClient, 'script_client_post_2');
+        $preScript2 = $this->getScriptId($httpClient, 'script_client_pre_2');
         $updateClient = ClientMother::withAllParameters(
             1,
             "description updated",
             true,
             5,
-            [$postScript],
-            [$preScript],
+            [$postScript1, $postScript2],
+            [$preScript1, $preScript2],
             -1,
             "rsync long arguments updated",
             "rsync short arguments updated",
