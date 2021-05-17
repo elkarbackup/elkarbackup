@@ -210,7 +210,7 @@ class JobTest extends BaseApiTestCase
             '@id' => '/api/jobs',
         ]);
         $collection = json_decode($response->getContent(), true)['hydra:member'];
-        self::assertTrue(in_array($job->getData(), $collection), "Assert job exists in collection");
+        self::assertTrue(in_array($job->getCompleteArray(), $collection), "Assert job exists in collection");
     }
 
     public function testGetJobsUnauthenticated(): void
