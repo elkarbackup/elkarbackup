@@ -39,6 +39,7 @@ class JobMother
             'backupLocation' => 1,
             'client' => 1,
             'description' => null,
+            'diskUsage' => 0,
             'exclude' => null,
             'include' => null,
             'isActive' => true,
