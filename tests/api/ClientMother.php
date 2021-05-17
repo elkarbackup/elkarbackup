@@ -29,11 +29,18 @@ class ClientMother
     {
         $clientName = self::createClientName();
         $data = [
+            'description' => null,
             'isActive' => true,
             'maxParallelJobs' => 1,
             'name' => $clientName,
             'owner' => 1,
-            'quota' => -1
+            'quota' => -1,
+            'postScripts' => [],
+            'preScripts' => [], 
+            'rsyncLongArgs' => null,
+            'rsyncShortArgs' => null,
+            'sshArgs' => null,
+            'url' => ""
         ];
         $response = new RequestObject(self::CLIENT_CONTEXT, $data);
         return $response;

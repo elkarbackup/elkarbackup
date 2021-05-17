@@ -38,12 +38,19 @@ class JobMother
         $data = [
             'backupLocation' => 1,
             'client' => 1,
+            'description' => null,
+            'exclude' => null,
+            'include' => null,
             'isActive' => true,
             'minNotificationLevel' => 400,
             'name' => $jobName,
+            'notificationsEmail' => null,
             'notificationsTo' => ['owner'],
             'path' => '/some/default/path',
             'policy' => 1,
+            'postScripts' => [],
+            'preScripts' => [],
+            'token' => null,
             'useLocalPermissions' => true
         ];
         $response = new RequestObject(self::JOB_CONTEXT, $data);
