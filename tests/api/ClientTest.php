@@ -162,7 +162,7 @@ class ClientTest extends BaseApiTestCase
         '@id' => '/api/clients',
         ]);
         $collection = json_decode($response->getContent(), true)['hydra:member'];
-        self::assertTrue(in_array($client->getCompleteArray(), $collection));
+        self::assertTrue(in_array($client->getCompleteArray(), $collection), "Assert client exists in collection");
     }
 
     public function testGetClientsUnauthenticated(): void
