@@ -1,0 +1,22 @@
+App\Entity\Job:
+  job_to_update_{1..15}:
+    backupLocation: '@backupLocation'
+    client: '@client_10'
+    isActive: true
+    minNotificationLevel: 400
+    name: 'job_to_update_<current()>'
+    notificationsTo: ['owner']
+    path: '/some/fake/path'
+    policy: '@policy1'
+    useLocalPermissions: true
+App\Entity\BackupLocation:
+  backupLocation:
+    name: 'backupLocation'
+    directory: '<lexify()>'
+    maxParallelJobs: 1
+    
+App\Entity\Policy:
+  policy1:
+    name: policy1
+    syncFirst: <boolean()>
+    

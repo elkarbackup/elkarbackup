@@ -1,0 +1,80 @@
+App\Entity\Script:
+    script_client_post_{1..2}:
+      __construct: ['/var/spool/elkarbackup/uploads']
+      description: <text()>
+      name: 'script_client_post_<current()>'
+      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      isClientPre: <boolean()>
+      isJobPre: <boolean()>
+      isClientPost: true
+      isJobPost: <boolean()>
+
+    script_client_pre_{1..2}:
+      __construct: ['/var/spool/elkarbackup/uploads']
+      description: <text()>
+      name: 'script_client_pre_<current()>'
+      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      isClientPre: true
+      isJobPre: <boolean()>
+      isClientPost: <boolean()>
+      isJobPost: <boolean()>
+
+    script_job_post_{1..2}:
+      __construct: ['/var/spool/elkarbackup/uploads']
+      description: <text()>
+      name: 'script_job_post_<current()>'
+      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      isClientPre: <boolean()>
+      isJobPre: <boolean()>
+      isClientPost: <boolean()>
+      isJobPost: true
+
+    script_job_pre_{1..2}:
+      __construct: ['/var/spool/elkarbackup/uploads']
+      description: <text()>
+      name: 'script_job_pre_<current()>'
+      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      isClientPre: <boolean()>
+      isJobPre: true
+      isClientPost: <boolean()>
+      isJobPost: <boolean()>
+
+    script_not_client_post:
+      __construct: ['/var/spool/elkarbackup/uploads']
+      description: <text()>
+      name: 'script_not_client_post'
+      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      isClientPre: <boolean()>
+      isJobPre: <boolean()>
+      isClientPost: false
+      isJobPost: <boolean()>
+
+    script_not_client_pre:
+      __construct: ['/var/spool/elkarbackup/uploads']
+      description: <text()>
+      name: 'script_not_client_pre'
+      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      isClientPre: false
+      isJobPre: <boolean()>
+      isClientPost: <boolean()>
+      isJobPost: <boolean()>
+      
+    script_not_job_post:
+      __construct: ['/var/spool/elkarbackup/uploads']
+      description: <text()>
+      name: 'script_not_job_post'
+      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      isClientPre: <boolean()>
+      isJobPre: <boolean()>
+      isClientPost: <boolean()>
+      isJobPost: false
+      
+    script_not_job_pre:
+      __construct: ['/var/spool/elkarbackup/uploads']
+      description: <text()>
+      name: 'script_not_job_pre'
+      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      isClientPre: <boolean()>
+      isJobPre: false
+      isClientPost: <boolean()>
+      isJobPost: <boolean()>
