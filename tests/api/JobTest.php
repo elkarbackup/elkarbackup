@@ -199,6 +199,8 @@ class JobTest extends BaseApiTestCase
     public function testGetJobs(): void
     {
         $httpClient = $this->authenticate();
+        $job = JobMother::base();
+        $job = $this->postJob($httpClient, $job);
         $response = $httpClient->request('GET', '/api/jobs');
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -207,6 +209,8 @@ class JobTest extends BaseApiTestCase
             '@type' => 'hydra:Collection',
             '@id' => '/api/jobs',
         ]);
+        $collection = json_decode($response->getContent(), true)['hydra:member'];
+        self::assertTrue(in_array($job->getCompleteArray(), $collection));
     }
 
     public function testGetJobsUnauthenticated(): void

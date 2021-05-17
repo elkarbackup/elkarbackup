@@ -151,6 +151,8 @@ class ClientTest extends BaseApiTestCase
     public function testGetClients(): void
     {
         $httpClient = $this->authenticate();
+        $client = ClientMother::base();
+        $client = $this->postClient($httpClient, $client);
         $response = $httpClient->request('GET', '/api/clients');
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
@@ -159,6 +161,8 @@ class ClientTest extends BaseApiTestCase
         '@type' => 'hydra:Collection',
         '@id' => '/api/clients',
         ]);
+        $collection = json_decode($response->getContent(), true)['hydra:member'];
+        self::assertTrue(in_array($client->getCompleteArray(), $collection));
     }
 
     public function testGetClientsUnauthenticated(): void
