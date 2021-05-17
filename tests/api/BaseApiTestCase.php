@@ -52,6 +52,7 @@ class BaseApiTestCase extends ApiTestCase
         if (201 == $response->getStatusCode()){
             $json = json_decode($response->getContent(), true);
             $client->setIri($json['@id']);
+            $client->setId(explode('/', $json['@id'])[3]);
         }        
         return $client;
     }
@@ -65,6 +66,7 @@ class BaseApiTestCase extends ApiTestCase
         if (201 == $response->getStatusCode()){
             $json = json_decode($response->getContent(), true);
             $job->setIri($json['@id']);
+            $job->setId(explode('/', $json['@id'])[3]);
         }
         return $job;
     }

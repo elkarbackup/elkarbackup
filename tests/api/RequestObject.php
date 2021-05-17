@@ -5,8 +5,9 @@ class RequestObject
 {
     private $context;
     private $data;
+    private $id;
     private $iri;
-    
+
     public function __construct(array $context, array $data)
     {
         $this->context = $context;
@@ -27,6 +28,14 @@ class RequestObject
     public function getData(): array
     {
         return $this->data;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -58,11 +67,28 @@ class RequestObject
     }
 
     /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
      * @param string $iri
      */
     public function setIri(string $iri): void
     {
         $this->iri = $iri;
+    }
+    
+    public function getCompleteArray(): array
+    {
+        $client = $this->data;
+        $client['@type'] = $this->context['@type'];
+        $client['@id'] = $this->iri;
+        $client['id'] = $this->id;
+        return $client;
     }
 }
 
