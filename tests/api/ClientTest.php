@@ -284,7 +284,7 @@ class ClientTest extends BaseApiTestCase
         $updateClient = ClientMother::withNonExistentPreScripts();
         $updateClientJson = $updateClient->getData();
         $script = $updateClientJson['preScripts'][0];
-        $httpClient->request('PUT', $client->ge, ['json' =>$updateClientJson]);
+        $httpClient->request('PUT', $client->getIri(), ['json' =>$updateClientJson]);
         $this->assertResponseStatusCodeSame(400);
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
         $this->assertHydraError('Script "'.$script.'" does not exist');
