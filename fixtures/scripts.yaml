@@ -3,7 +3,7 @@ App\Entity\Script:
       __construct: ['/var/spool/elkarbackup/uploads']
       description: <text()>
       name: 'script_client_post_<current()>'
-      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      scriptFile: <upload('fixtures/script.sh')>
       isClientPre: <boolean()>
       isJobPre: <boolean()>
       isClientPost: true
@@ -13,7 +13,7 @@ App\Entity\Script:
       __construct: ['/var/spool/elkarbackup/uploads']
       description: <text()>
       name: 'script_client_pre_<current()>'
-      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      scriptFile: <upload('fixtures/script.sh')>
       isClientPre: true
       isJobPre: <boolean()>
       isClientPost: <boolean()>
@@ -23,7 +23,7 @@ App\Entity\Script:
       __construct: ['/var/spool/elkarbackup/uploads']
       description: <text()>
       name: 'script_job_post_<current()>'
-      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      scriptFile: <upload('fixtures/script.sh')>
       isClientPre: <boolean()>
       isJobPre: <boolean()>
       isClientPost: <boolean()>
@@ -33,7 +33,7 @@ App\Entity\Script:
       __construct: ['/var/spool/elkarbackup/uploads']
       description: <text()>
       name: 'script_job_pre_<current()>'
-      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      scriptFile: <upload('fixtures/script.sh')>
       isClientPre: <boolean()>
       isJobPre: true
       isClientPost: <boolean()>
@@ -43,7 +43,7 @@ App\Entity\Script:
       __construct: ['/var/spool/elkarbackup/uploads']
       description: <text()>
       name: 'script_not_client_post'
-      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      scriptFile: <upload('fixtures/script.sh')>
       isClientPre: <boolean()>
       isJobPre: <boolean()>
       isClientPost: false
@@ -53,7 +53,7 @@ App\Entity\Script:
       __construct: ['/var/spool/elkarbackup/uploads']
       description: <text()>
       name: 'script_not_client_pre'
-      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      scriptFile: <upload('fixtures/script.sh')>
       isClientPre: false
       isJobPre: <boolean()>
       isClientPost: <boolean()>
@@ -63,7 +63,7 @@ App\Entity\Script:
       __construct: ['/var/spool/elkarbackup/uploads']
       description: <text()>
       name: 'script_not_job_post'
-      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      scriptFile: <upload('fixtures/script.sh')>
       isClientPre: <boolean()>
       isJobPre: <boolean()>
       isClientPost: <boolean()>
@@ -73,7 +73,7 @@ App\Entity\Script:
       __construct: ['/var/spool/elkarbackup/uploads']
       description: <text()>
       name: 'script_not_job_pre'
-      scriptFile: <upload('/home/uanabitarte/script.sh')>
+      scriptFile: <upload('fixtures/script.sh')>
       isClientPre: <boolean()>
       isJobPre: false
       isClientPost: <boolean()>
