@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  db:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: "your-password-here"
+    ports:
+      - 3306:3306
+
+  php:
+    image: elkarbackup/debug
+    build:
+      context: ./php
+    depends_on:
+      - db
+    environment:
+      APP_ENV: "dev"
+      SYMFONY__DATABASE__PASSWORD: "your-password-here"
+    volumes:
+      - ../..:/app/elkarbackup
+    ports:
+      - 8000:8000
+
