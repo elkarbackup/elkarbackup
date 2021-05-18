@@ -6,16 +6,6 @@ COPY entrypoint.sh /
 
 RUN chmod +x /entrypoint.sh
 
-#RUN apk --update --no-cache add \
-#        git \
-#        acl \
-#        rsnapshot \
-#        gzip \
-#        bash \
-#        mysql-client \
-#        fakeroot \
-#        lintian
-
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \        
         git \
         curl \
