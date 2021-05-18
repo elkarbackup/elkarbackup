@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  php:
+    image: elkarbackup/debpkg
+    build: ./php
+    command: ./makepackage.sh
+    environment:
+      APP_ENV: "prod"
+      DATABASE_WAIT: "false"
+    volumes:
+      - ../..:/app/elkarbackup
+
