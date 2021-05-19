@@ -12,7 +12,7 @@ class ScriptFileFaker extends \Faker\Provider\Base
             $filename = \Faker\Provider\Base::randomElement($filename);
         }
         
-        $path = sprintf('/tmp/elkarbackup-tests/%s', uniqid());
+        $path = sprintf('/tmp/elkarbackup-tests/uploads/%s', uniqid());
         
         $copy = copy($filename, $path);
         

@@ -1,6 +1,6 @@
 App\Entity\Script:
     script_client_post_{1..2}:
-      __construct: ['/tmp/elkarbackup-tests']
+      __construct: ['/tmp/elkarbackup-tests/uploads']
       description: <text()>
       name: 'script_client_post_<current()>'
       scriptFile: <upload('fixtures/script.sh')>
@@ -10,7 +10,7 @@ App\Entity\Script:
       isJobPost: <boolean()>
 
     script_client_pre_{1..2}:
-      __construct: ['/tmp/elkarbackup-tests']
+      __construct: ['/tmp/elkarbackup-tests/uploads']
       description: <text()>
       name: 'script_client_pre_<current()>'
       scriptFile: <upload('fixtures/script.sh')>
@@ -20,7 +20,7 @@ App\Entity\Script:
       isJobPost: <boolean()>
 
     script_job_post_{1..2}:
-      __construct: ['/tmp/elkarbackup-tests']
+      __construct: ['/tmp/elkarbackup-tests/uploads']
       description: <text()>
       name: 'script_job_post_<current()>'
       scriptFile: <upload('fixtures/script.sh')>
@@ -30,7 +30,7 @@ App\Entity\Script:
       isJobPost: true
 
     script_job_pre_{1..2}:
-      __construct: ['/tmp/elkarbackup-tests']
+      __construct: ['/tmp/elkarbackup-tests/uploads']
       description: <text()>
       name: 'script_job_pre_<current()>'
       scriptFile: <upload('fixtures/script.sh')>
@@ -40,7 +40,7 @@ App\Entity\Script:
       isJobPost: <boolean()>
 
     script_not_client_post:
-      __construct: ['/tmp/elkarbackup-tests']
+      __construct: ['/tmp/elkarbackup-tests/uploads']
       description: <text()>
       name: 'script_not_client_post'
       scriptFile: <upload('fixtures/script.sh')>
@@ -50,7 +50,7 @@ App\Entity\Script:
       isJobPost: <boolean()>
 
     script_not_client_pre:
-      __construct: ['/tmp/elkarbackup-tests']
+      __construct: ['/tmp/elkarbackup-tests/uploads']
       description: <text()>
       name: 'script_not_client_pre'
       scriptFile: <upload('fixtures/script.sh')>
@@ -60,7 +60,7 @@ App\Entity\Script:
       isJobPost: <boolean()>
       
     script_not_job_post:
-      __construct: ['/tmp/elkarbackup-tests']
+      __construct: ['/tmp/elkarbackup-tests/uploads']
       description: <text()>
       name: 'script_not_job_post'
       scriptFile: <upload('fixtures/script.sh')>
@@ -70,7 +70,7 @@ App\Entity\Script:
       isJobPost: false
       
     script_not_job_pre:
-      __construct: ['/tmp/elkarbackup-tests']
+      __construct: ['/tmp/elkarbackup-tests/uploads']
       description: <text()>
       name: 'script_not_job_pre'
       scriptFile: <upload('fixtures/script.sh')>
