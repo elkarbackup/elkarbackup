@@ -244,6 +244,20 @@ class ClientTest extends BaseApiTestCase
         ]);
     }
 
+    public function testUpdateClientKeepSameName(): void
+    {
+        $httpClient = $this->authenticate();
+        $client = ClientMother::base();
+        $client = $this->postClient($httpClient, $client);
+        $updateClient = ClientMother::named($client->getName());
+        $updateClientJson = $updateClient->getData();
+        $httpClient->request('PUT', $client->getIri(), ['json' => $updateClientJson]);
+        $this->assertResponseIsSuccessful();
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertJsonContains($updateClientJson);
+        $this->assertJsonContains($updateClient->getContext());
+    }
+
     public function testUpdateClientRepeatedName(): void
     {
         $httpClient = $this->authenticate();
