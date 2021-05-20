@@ -91,16 +91,17 @@ class ClientService
                 ));
             }
         }
-        $clientName = $client->getName();
-        $repository = $this->em->getRepository('App:Client');
-        if (null != $repository->findOneBy(['name' => $clientName])) {
-            throw new Exception("Client name ".$clientName." already exists");
+        if (!$client->getId()){
+            $clientName = $client->getName();
+            $repository = $this->em->getRepository('App:Client');
+            if (null != $repository->findOneBy(['name' => $clientName])) {
+                throw new Exception("Client name ".$clientName." already exists");
+            }
+            if ($client->getOwner() == null) {
+                $client->setOwner($this->security->getToken()
+                    ->getUser());
+            }
         }
-        if ($client->getOwner() == null) {
-            $client->setOwner($this->security->getToken()
-                ->getUser());
-        }
-
         if ($client->getMaxParallelJobs() < 1) {
             throw new Exception('Max parallel jobs parameter should be positive integer');
         }
