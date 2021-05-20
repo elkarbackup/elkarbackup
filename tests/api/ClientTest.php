@@ -251,6 +251,7 @@ class ClientTest extends BaseApiTestCase
         $client = $this->postClient($httpClient, $client);
         $updateClient = ClientMother::named($client->getName());
         $updateClientJson = $updateClient->getData();
+        $updateClientJson['description'] = "Updated client's description";
         $httpClient->request('PUT', $client->getIri(), ['json' => $updateClientJson]);
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
