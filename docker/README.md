@@ -11,6 +11,12 @@
 $ docker run --name my-elkarbackup --link some-mysql:mysql -d elkarbackup/elkarbackup:latest
 ```
 
+## Also hosted on GitHub Container Registry
+- DockerHub image is at `elkarbackup/elkarbackup:<version>`
+- GitHub image is at `ghcr.io/elkarbackup/elkarbackup:<version>`
+- Since v2.0.x they both carry the same images
+- This can be useful if you're already hitting DockerHub's rate limits and can't pull the proxy from DockerHub
+
 ### Where to store data
 Docker container does not come with persistent storage. However, there are
 several ways to store data in the host machine. We encourage users to
