@@ -1,3 +1,33 @@
+elkarbackup (2.0.2) stable; urgency=medium
+
+  [ Xabier Ezpeleta ]
+  * Fix #543: Restore to client gets stuck at Starting restore job
+   
+  [ Uxue Anabitarte ]
+  * Fix #536: Button "Run now" in edit job form doesn't work
+
+  [ Eneko Lacunza ]
+  * Merge #492 Add alternative mysql providers support to 2.0.x by Russell Knighton
+  * Fix #540 Job execution bogus error emails
+  * Fix #538 Parameters form not showing the updated values, review&suggestions by Igor Blanco
+
+ --  Eneko Lacunza <elacunza@binovo.es>  Thu, 12 May 2021 14:00:00 +0100
+
+elkarbackup (2.0.1) stable; urgency=medium
+
+  [ Uxue Anabitarte ]
+  * Fix running a job remotely with token. Closes #533 .
+  * Fix jon token generation. Closes #514 .
+  * Fix public key download. Closes #500 . 
+
+  [ Eneko Lacunza ]
+  * Fix tick command locking. This was creating various issues. Closes #530 .
+  * Don't set /var/spool/elkarbackup/backups permissions on install/update.
+    It can be very slow if there are existing backups. Also, could remove
+    user/groups of backups done with local permissions. Closes #529 #528 .
+
+ --  Eneko Lacunza <elacunza@binovo.es>  Thu, 04 May 2021 12:00:00 +0100
+
 elkarbackup (2.0.0) stable; urgency=medium
 
   [ Uxue Anabitarte ]
