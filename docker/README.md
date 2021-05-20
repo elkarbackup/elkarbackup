@@ -1,7 +1,8 @@
 # ElkarBackup
 
 ## Images
-- 2.0.2, 2.0, 2, **latest (default)**
+- 2.1.0, 2.1, 2, **latest (default)** 
+- 2.0.2, 2.0
 - 1.3.5
 
 ## How to use this image
@@ -58,10 +59,8 @@ volumes:
   sshkeys:
 ```
 
-Run `docker-compose up`, wait for it to initialize completely, and the address:
+Run `docker-compose up`, wait for it to initialize completely, and go the address:
 - http://localhost:8000
-
-[![Try in PWD](https://github.com/play-with-docker/stacks/raw/cff22438cb4195ace27f9b15784bbb497047afa7/assets/images/button.png)](https://labs.play-with-docker.com/?stack=https://raw.githubusercontent.com/elkarbackup/elkarbackup/master/docker/docker-compose.yml)
 
 ## Environment variables
 
@@ -103,7 +102,7 @@ The following environment variables are also honored for configuring your ElkarB
 
 | name                        | default value     | description |
 |-----------------------------|-------------------|-------------|
-| SYMFONY__EB__SECRET  | fba546d6ab6abc4a01391d161772a14e093c7aa2 | framework secret |
+| SYMFONY__EB__SECRET  | random value will be generated | framework secret |
 | SYMFONY__EB__UPLOAD__DIR         | /app/uploads | scripts directory |
 | SYMFONY__EB__BACKUP__DIR         | /app/backups | backups directory |
 | SYMFONY__EB__TMP__DIR            | /app/tmp     | tmp directory |
