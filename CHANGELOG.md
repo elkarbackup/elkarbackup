@@ -1,3 +1,20 @@
+# 2.1
+
+## 2.1.0 (2021/05/20)
+
+  * REST API for client, job management and policy, script, user retrieval (by Uxue Anabitarte)
+    - Automatic documentation on https://YOUR_ELKARBACKUP_SERVER/api
+    - Ansible collection (by Eneko Lacunza) - https://galaxy.ansible.com/elkarbackup/elkarbackup
+    - Command line client (by Uxue Anabitarte) - https://github.com/elkarbackup/elkarbackup-api-cli
+    	
+  * REST API automated tests for client and job management entrypoints (by Uxue Anabitarte)
+  * Security: update symfony/security-core and symfony/security-guard (by dependabot/Eneko Lacunza)
+  * Fixes in english strings (by Jérémy Viès)
+  * French translation (by Jérémy Viès)  
+  * Docker image: generate random value for SYMFONY__EB__SECRET if not set by user (by Xabier Ezpeleta)
+  
+  Many thanks to Igor Blanco for mentoring and reviews.
+
 # 2.0
 
 ## 2.0.2 (2021/05/12)
