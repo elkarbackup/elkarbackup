@@ -83,4 +83,7 @@ if [ -z "${EB_CRON}" ] || [ "${EB_CRON}" = "enabled" ]; then
     php bin/console elkarbackup:tick --env=prod &>/var/log/output.log &
     sleep 60
   done
+else
+  # Keep apache alive
+  tail -f /dev/null
 fi
