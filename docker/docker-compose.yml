@@ -8,7 +8,6 @@ services:
       dockerfile: ./docker/Dockerfile
     environment:
       SYMFONY__DATABASE__PASSWORD: "your-password-here"
-      EB_CRON: "enabled"
     #volumes:
     #- backups:/app/backups
     #- uploads:/app/uploads

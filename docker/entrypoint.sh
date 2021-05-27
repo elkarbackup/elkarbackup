@@ -76,8 +76,8 @@ php bin/console elkarbackup:tick --env=prod > /var/log/output.log
 setfacl -R -m u:www-data:rwX var/cache var/sessions var/log
 setfacl -dR -m u:www-data:rwX var/cache var/sessions var/log
 
-# Cron
-if [ "${EB_CRON}" == "enabled" ]; then
+# Cron (enabled by default)
+if [ -z "${EB_CRON}" ] || [ "${EB_CRON}" = "enabled" ]; then
   echo -e "\n\nEB_CRON is enabled. Running tick command every minute..."
   while true; do
     php bin/console elkarbackup:tick --env=prod &>/var/log/output.log &
