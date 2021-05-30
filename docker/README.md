@@ -43,7 +43,6 @@ services:
     image: elkarbackup/elkarbackup:latest
     environment:
       SYMFONY__DATABASE__PASSWORD: "your-password-here"
-      EB_CRON: "enabled"
       volumes:
       - backups:/app/backups
       - uploads:/app/uploads
@@ -78,7 +77,7 @@ The following environment variables are also honored for configuring your ElkarB
 |----------|---------------|---------------|
 | TZ       | Europe/Paris  | Timezone      |
 | PHP_TZ   | Europe/Paris  | Timezone (PHP)|
-| EB_CRON  | disabled      | run tick command periodically|
+| EB_CRON  | enabled       | run tick command periodically|
 
 ### Database configuration
 
