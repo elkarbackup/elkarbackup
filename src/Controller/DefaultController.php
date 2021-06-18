@@ -610,26 +610,9 @@ class DefaultController extends AbstractController
             } else {
                 $repository = $this->getDoctrine()->getRepository('App:Job');
                 $job = $repository->findOneById($idJob);
-                if ($token == $job->getToken()) {
-                    // Valid token, but let's require HTTPS
-                    if ($rs->getCurrentRequest()->isSecure()) {
-                        $trustable = true;
-                    } else {
-                        $response = new JsonResponse(array(
-                            'status' => 'false',
-                            'msg' => $t->trans(
-                                'Aborted: HTTPS required',
-                                array(),
-                                'BinovoElkarBackup'
-                            )
-                        ));
-                        return $response;
-                    }
-                } else {
-                    // Invalid token
-                    $trustable = false;
-                }
-                
+
+                $trustable = ($token == $job->getToken());
+
                 if (! $trustable) {
                     $response = new JsonResponse(array(
                         'status' => 'false',
