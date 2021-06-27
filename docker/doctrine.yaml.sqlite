@@ -1,0 +1,21 @@
+doctrine:
+    dbal:
+        driver:   '%database_driver%'
+        host:     '%database_host%'
+        port:     '%database_port%'
+        dbname:   '%database_name%'
+        user:     '%database_user%'
+        password: '%database_password%'
+        path:     '%database_path%'
+        charset:  UTF8
+    orm:
+        auto_generate_proxy_classes: '%kernel.debug%'
+        #naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App
