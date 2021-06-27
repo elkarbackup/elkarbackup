@@ -40,11 +40,15 @@ if [ ! -z "$1" ]; then
 fi
 
 # Check database connection
-if  [  -z "$SYMFONY__DATABASE__PATH" ] || [ ! "$SYMFONY__DATABASE__DRIVER" == "pdo_sqlite" ]; then
-until mysqladmin ping -h "${SYMFONY__DATABASE__HOST}" --silent; do
-  >&2 echo "MySQL is unavailable - sleeping"
-  sleep 1
-done
+if  [ ! -z "$SYMFONY__DATABASE__PATH" ] && [ "$SYMFONY__DATABASE__DRIVER" == "pdo_sqlite" ]; then
+  if [ ! -f "$SYMFONY__DATABASE__PATH" ]; then 
+    curl -L https://github.com/xlight/elkarbackup-sqlite/blob/master/elkarbackup-v2.1.sqlite?raw=true -o "$SYMFONY__DATABASE__PATH" 
+  fi
+else
+  until mysqladmin ping -h "${SYMFONY__DATABASE__HOST}" --silent; do
+    >&2 echo "MySQL is unavailable - sleeping"
+    sleep 1
+  done
 fi
 cd "${EB_DIR}"
 
