@@ -40,11 +40,12 @@ if [ ! -z "$1" ]; then
 fi
 
 # Check database connection
+if  [  -z "$SYMFONY__DATABASE__PATH" ] || [ ! "$SYMFONY__DATABASE__DRIVER" == "pdo_sqlite" ]; then
 until mysqladmin ping -h "${SYMFONY__DATABASE__HOST}" --silent; do
   >&2 echo "MySQL is unavailable - sleeping"
   sleep 1
 done
-
+fi
 cd "${EB_DIR}"
 
 # Create/update database
