@@ -43,6 +43,7 @@ fi
 if  [ ! -z "$SYMFONY__DATABASE__PATH" ] && [ "$SYMFONY__DATABASE__DRIVER" == "pdo_sqlite" ]; then
   if [ ! -f "$SYMFONY__DATABASE__PATH" ]; then 
     curl -L https://github.com/xlight/elkarbackup-sqlite/blob/master/elkarbackup-v2.1.sqlite?raw=true -o "$SYMFONY__DATABASE__PATH" 
+    cp -f docker/doctrine.yaml.sqlite config/packages/doctrine.yaml
   fi
 else
   until mysqladmin ping -h "${SYMFONY__DATABASE__HOST}" --silent; do
