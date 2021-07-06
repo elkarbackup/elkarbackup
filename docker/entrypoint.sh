@@ -76,6 +76,11 @@ php bin/console elkarbackup:tick --env=prod > /var/log/output.log
 setfacl -R -m u:www-data:rwX var/cache var/sessions var/log
 setfacl -dR -m u:www-data:rwX var/cache var/sessions var/log
 
+if [ ! -z "$ELKARBACKUP_RUN_TEST" ]; then
+  ./run-tests.sh
+  exit $?
+fi
+
 # Cron (enabled by default)
 if [ -z "${EB_CRON}" ] || [ "${EB_CRON}" = "enabled" ]; then
   echo -e "\n\nEB_CRON is enabled. Running tick command every minute..."
