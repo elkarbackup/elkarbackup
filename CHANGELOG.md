@@ -1,4 +1,40 @@
+# 2.1
+
+## 2.1.0 (2021/05/20)
+
+  * REST API for client, job management and policy, script, user retrieval (by Uxue Anabitarte)
+    - Automatic documentation on https://YOUR_ELKARBACKUP_SERVER/api
+    - Ansible collection (by Eneko Lacunza) - https://galaxy.ansible.com/elkarbackup/elkarbackup
+    - Command line client (by Uxue Anabitarte) - https://github.com/elkarbackup/elkarbackup-api-cli
+    	
+  * REST API automated tests for client and job management entrypoints (by Uxue Anabitarte)
+  * Security: update symfony/security-core and symfony/security-guard (by dependabot/Eneko Lacunza)
+  * Fixes in english strings (by Jérémy Viès)
+  * French translation (by Jérémy Viès)  
+  * Docker image: generate random value for SYMFONY__EB__SECRET if not set by user (by Xabier Ezpeleta)
+  
+  Many thanks to Igor Blanco for mentoring and reviews.
+
 # 2.0
+
+## 2.0.2 (2021/05/12)
+
+  * Fix #543: Restore to client gets stuck at Starting restore job (by Xabier Ezpeleta)
+  * Fix #536: Button "Run now" in edit job form doesn't work (by Uxue Anabitarte)
+  * Fix #540 Job execution bogus error emails (by Eneko Lacunza)
+  * Fix #538 Parameters form not showing the updated values, review&suggestions by Igor Blanco (by Eneko Lacunza)
+  * Merge to 2.0.x #492 Add alternative mysql providers support by Russell Knighton (by Eneko Lacunza)
+
+## 2.0.1 (2021/05/04)
+
+Bugfixes:
+  * Fix tick command locking. This was creating various issues. Closes #530 .
+  * Fix running a job remotely with token. Closes #533 .
+  * Fix jon token generation. Closes #514 .
+  * Don't set /var/spool/elkarbackup/backups permissions on install/update.
+    It can be very slow if there are existing backups. Also, could remove
+    user/groups of backups done with local permissions. Closes #529 #528 .
+  * Fix public key download. Closes #500 . 
 
 ## 2.0.0 (2021/04/21)
 Security fixes:
