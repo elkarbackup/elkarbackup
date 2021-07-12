@@ -70,6 +70,9 @@ RUN apt-get update && apt-get install -y \
       acl \
       rsnapshot \
       sudo \
+      git \
+      zip \
+      composer \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install \
       pdo_mysql \
