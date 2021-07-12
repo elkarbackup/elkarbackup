@@ -72,11 +72,13 @@ RUN apt-get update && apt-get install -y \
       sudo \
       git \
       zip \
-      composer \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install \
       pdo_mysql \
       pcntl
+
+# Download and install composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY --from=0 /app /app
 
