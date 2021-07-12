@@ -47,6 +47,10 @@ done
 
 cd "${EB_DIR}"
 
+# Empty sessions
+rm -rf var/sessions/*
+rm -rf var/cache/*
+
 # Create/update database
 php bin/console doctrine:database:create --if-not-exists
 php bin/console doctrine:migrations:migrate --no-interaction
@@ -60,10 +64,6 @@ setfacl -dR -m u:www-data:rwX var/cache var/sessions var/log
 if [ ! -z "$SYMFONY__EB__PUBLIC__KEY" ] && [ ! -f "$SYMFONY__EB__PUBLIC__KEY" ];then
   ssh-keygen -t rsa -N "" -C "Web requested key for elkarbackup." -f "${SYMFONY__EB__PUBLIC__KEY%.*}";
 fi
-
-# Empty sessions
-rm -rf var/sessions/*
-rm -rf var/cache/*
 
 # Clear cache and sessions..
 php bin/console cache:clear
