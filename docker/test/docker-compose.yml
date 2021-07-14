@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  elkarbackup:
+    build:
+      context: ../..
+      dockerfile: ./docker/Dockerfile
+    environment:
+      ELKARBACKUP_RUN_TEST: "true"
+      DATABASE_HOST: "db"
+      DATABASE_PORT: "3306"
+      DATABASE_NAME: "elkarbackuptests"
+      DATABASE_USER: "root"
+      DATABASE_PASSWORD: "root"
+      SYMFONY__DATABASE__PASSWORD: "root"
+    
+  db:
+    image: mysql:5.7.22
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+
+volumes:
+  db:
