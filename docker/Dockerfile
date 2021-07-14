@@ -78,7 +78,7 @@ RUN apt-get update && apt-get install -y \
       pcntl
 
 # Download and install composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.1 /usr/bin/composer /usr/bin/composer
 
 COPY --from=0 /app /app
 
