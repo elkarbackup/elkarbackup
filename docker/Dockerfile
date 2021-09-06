@@ -64,7 +64,7 @@ RUN set -ex; \
 ##
 
 
-FROM php:7.3-apache
+FROM php:7.3-apache-buster
 RUN apt-get update && apt-get install -y \
       default-mysql-client \
       acl \
