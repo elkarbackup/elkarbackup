@@ -47,6 +47,10 @@ done
 
 cd "${EB_DIR}"
 
+# Empty sessions
+rm -rf var/sessions/*
+rm -rf var/cache/*
+
 # Create/update database
 php bin/console doctrine:database:create --if-not-exists
 php bin/console doctrine:migrations:migrate --no-interaction
@@ -61,10 +65,6 @@ if [ ! -z "$SYMFONY__EB__PUBLIC__KEY" ] && [ ! -f "$SYMFONY__EB__PUBLIC__KEY" ];
   ssh-keygen -t rsa -N "" -C "Web requested key for elkarbackup." -f "${SYMFONY__EB__PUBLIC__KEY%.*}";
 fi
 
-# Empty sessions
-rm -rf var/sessions/*
-rm -rf var/cache/*
-
 # Clear cache and sessions..
 php bin/console cache:clear
 php bin/console assets:install
@@ -75,6 +75,11 @@ apache2-foreground &
 php bin/console elkarbackup:tick --env=prod > /var/log/output.log
 setfacl -R -m u:www-data:rwX var/cache var/sessions var/log
 setfacl -dR -m u:www-data:rwX var/cache var/sessions var/log
+
+if [ ! -z "$ELKARBACKUP_RUN_TEST" ]; then
+  ./run-tests.sh
+  exit $?
+fi
 
 # Cron (enabled by default)
 if [ -z "${EB_CRON}" ] || [ "${EB_CRON}" = "enabled" ]; then
