@@ -64,18 +64,32 @@ RUN set -ex; \
 ##
 
 
-FROM php:7.3-apache-buster
+FROM php:7.3-apache
 RUN apt-get update && apt-get install -y \
       default-mysql-client \
       acl \
-      rsnapshot \
       sudo \
       git \
       zip \
+      rsync \
+      logrotate \
+      liblchown-perl \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install \
       pdo_mysql \
       pcntl
+
+# Rsnapshot package has been removed in Bullsey
+# We need to download and install it manually
+ENV RSNAPSHOT_VERSION 1.4.2-1
+ENV RSNAPSHOT_SHA256 d49470c4700aba2b00187d6ff68781f869856ff1ef9aa98dcd73b672ffffa866
+RUN set -ex; \
+      curl -s -O -J http://ftp.de.debian.org/debian/pool/main/r/rsnapshot/rsnapshot_${RSNAPSHOT_VERSION}_all.deb; \
+      echo "${RSNAPSHOT_SHA256} rsnapshot_${RSNAPSHOT_VERSION}_all.deb" \
+      | sha256sum -c -; \
+      apt install ./rsnapshot_${RSNAPSHOT_VERSION}_all.deb; \
+      rm rsnapshot_${RSNAPSHOT_VERSION}_all.deb
+
 
 # Download and install composer
 COPY --from=composer:2.1 /usr/bin/composer /usr/bin/composer
