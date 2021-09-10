@@ -1,6 +1,7 @@
 # Elkarbackup
 
-[![Build Status](https://travis-ci.org/elkarbackup/elkarbackup.svg?branch=master)](https://travis-ci.org/elkarbackup/elkarbackup)
+[![Test](https://github.com/elkarbackup/elkarbackup/actions/workflows/run-tests.yml/badge.svg)](https://github.com/elkarbackup/elkarbackup/actions/workflows/run-tests.yml)
+[![Docker images](https://github.com/elkarbackup/elkarbackup/actions/workflows/publish-docker-images.yml/badge.svg)](https://github.com/elkarbackup/elkarbackup/actions/workflows/publish-docker-images.yml)
 
 ## What is it?
 ElkarBackup is a free open-source backup solution based on RSync/RSnapshot
@@ -14,25 +15,15 @@ ElkarBackup is a free open-source backup solution based on RSync/RSnapshot
 - Backup Linux/Windows clients
 - Instant recovery!
 - Pre-scripts & Post-scripts
-- Multilanguage (English, Basque, Spanish, German) - [Help us](https://crowdin.com/project/elkarbackup) to translate Elkarbackup in your language!
+- Multilanguage (English, Basque, Spanish, German, French)
 
 ## Documentation
-* [Installation](https://github.com/elkarbackup/elkarbackup/wiki/Installation)
-* [Configuration](https://github.com/elkarbackup/elkarbackup/wiki/Configuration)
-* [Saving backups to NFS directory](https://github.com/elkarbackup/elkarbackup/wiki/Saving-backups-to-NFS-directory)
-* [Redundant backup](https://github.com/elkarbackup/elkarbackup/wiki/RedundantBackup)
+* [User Guide](http://docs.elkarbackup.org/)
 * [FAQ](https://github.com/elkarbackup/elkarbackup/wiki/FAQ)
 
 Do you need more?
 
-- [User Guide (English)](http://docs.elkarbackup.org/)
-
 ## Mailing list
 
 Elkarbackup users can subscribe to our [mailing list](https://groups.google.com/forum/?hl=es#!forum/elkarbackup-users) to receive notifications about new versions or make any question.
-
-
-## Develop
-
-Elkarbackup is free open source software. Download the source code, make your changes and [create your own Debian package](https://github.com/elkarbackup/elkarbackup/wiki/BuildPackage)
 
