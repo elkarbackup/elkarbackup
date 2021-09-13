@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0ad49071d45785e6c57ad838c66188a0",
+    "content-hash": "f33586ff3605aa42ab8635a6b058f0a1",
     "packages": [
         {
             "name": "api-platform/core",
@@ -7932,12 +7932,12 @@
             "version": "2.9.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/hautelook/AliceBundle.git",
+                "url": "https://github.com/theofidry/AliceBundle.git",
                 "reference": "17c5199b2a6efbc1383b0afe1cddfa3c176b7b6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hautelook/AliceBundle/zipball/17c5199b2a6efbc1383b0afe1cddfa3c176b7b6f",
+                "url": "https://api.github.com/repos/theofidry/AliceBundle/zipball/17c5199b2a6efbc1383b0afe1cddfa3c176b7b6f",
                 "reference": "17c5199b2a6efbc1383b0afe1cddfa3c176b7b6f",
                 "shasum": ""
             },
@@ -7970,7 +7970,14 @@
                     "Hautelook\\AliceBundle\\": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Hautelook\\AliceBundle\\": [
+                        "fixtures",
+                        "tests"
+                    ]
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -7987,16 +7994,19 @@
             ],
             "description": "Symfony bundle to manage fixtures with Alice and Faker.",
             "keywords": [
+                "Alice",
+                "Faker",
                 "Fixture",
-                "alice",
-                "faker",
-                "orm",
-                "symfony"
+                "ORM",
+                "Symfony"
             ],
+            "support": {
+                "source": "https://github.com/theofidry/AliceBundle/tree/2.9.0"
+            },
             "funding": [
                 {
-                    "url": "https://github.com/theofidry",
-                    "type": "github"
+                    "type": "github",
+                    "url": "https://github.com/theofidry"
                 }
             ],
             "time": "2021-02-23T08:45:57+00:00"
@@ -8991,5 +9001,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.1.0"
 }
