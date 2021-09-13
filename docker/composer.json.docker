@@ -84,5 +84,11 @@
 		"incenteev-parameters" : {
 			"file" : "config/parameters.yaml"
 		}
-	}
+	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/theofidry/AliceBundle"
+		}
+	]
 }
