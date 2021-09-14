@@ -169,7 +169,6 @@ class JobInputDataTransformer implements DataTransformerInterface
         }
         $job->setName($data->getName());
         $job->setDescription($data->getDescription());
-        $job->setDiskUsage($data->getDiskUsage());
         $this->setClient($job, $data->getClient());
         $job->setIsActive($data->getIsActive());
         $this->setNotificationsEmail($job, $data->getNotificationsEmail());

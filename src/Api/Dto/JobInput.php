@@ -6,7 +6,6 @@ class JobInput
     private $backupLocation = 1;
     private $client;
     private $description;
-    private $diskUsage = 0;
     private $exclude;
     private $id;
     private $include;
@@ -43,14 +42,6 @@ class JobInput
     public function getDescription(): ?string
     {
         return $this->description;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getDiskUsage(): int
-    {
-	    return $this->diskUsage;
     }
     
     /**
@@ -187,14 +178,6 @@ class JobInput
     public function setDescription(?string $description): void
     {
         $this->description = $description;
-    }
-
-    /**
-     * @param int|null $diskUsage
-     */
-    public function setDiskUsage(?int $diskUsage): void
-    {
-	    $this->diskUsage = $diskUsage;
     }
     
     /**
