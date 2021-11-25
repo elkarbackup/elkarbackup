@@ -43,7 +43,7 @@ services:
     image: elkarbackup/elkarbackup:latest
     environment:
       SYMFONY__DATABASE__PASSWORD: "your-password-here"
-      volumes:
+    volumes:
       - backups:/app/backups
       - uploads:/app/uploads
       - sshkeys:/app/.ssh
