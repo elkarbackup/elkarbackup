@@ -35,49 +35,49 @@
                 <th>{% trans %}Modification date{% endtrans %}</th>
                 <th>{% trans %}Actions{% endtrans %}</th>
             </tr>
-            {% for file in content %}
-                {% if file.0 != "." %}
-                    {% if path|length > 1 or ( file.0 != ".." and file.0 != ".") %}
+            {% for file in content|sort((a, b) => a.key4 <=> b.key4 ?: a.key5 <=> b.key5 ?: a.key6 <=> b.key6 ?: a.key7 <=> b.key7) %}
+                {% if file.key0 != "." %}
+                    {% if path|length > 1 or ( file.key0 != ".." and file.key0 != ".") %}
                         <tr>
                             <td>
-                            {% if file.3 %}
+                            {% if file.key3 %}
                                 {# It's a symlink #}
-                                <span class="glyphicon glyphicon-link"></span>&nbsp;{{ file.0 }}
-                            {% elseif file.2 %}
+                                <span class="glyphicon glyphicon-link"></span>&nbsp;{{ file.key0 }}
+                            {% elseif file.key2 %}
                                 {# It's a directory #}
-                                <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, action: 'view', idBackupLocation: backupDirectories[key][0].id, path: path ~ file.0 ~ '/'}) }}">
+                                <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, action: 'view', idBackupLocation: backupDirectories[key][0].id, path: path ~ file.key0 ~ '/'}) }}">
                                     <span class="glyphicon glyphicon-folder-open"></span>
-                                    &nbsp;{{ file.0 }}
+                                    &nbsp;{{ file.key0 }}
                                 </a>
                             {% else %}
-                                <span class="glyphicon glyphicon-file"></span>&nbsp;{{ file.0 }}
+                                <span class="glyphicon glyphicon-file"></span>&nbsp;{{ file.key0 }}
                             {% endif %}
                             </td>
                             <td>
-                                {{ file.1.format('Y-m-d H:i:s') }}
+                                {{ file.key1.format('Y-m-d H:i:s') }}
                             </td>
                             <td>
-                            {% if file.0 != ".." and file.0 != "." and file.3 == false %}
-                                {% if file.2 %}
-                                    <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download', idBackupLocation: backupDirectories[key][0].id}) }}"><b>
+                            {% if file.key0 != ".." and file.key0 != "." and file.key3 == false %}
+                                {% if file.key2 %}
+                                    <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.key0, action: 'download', idBackupLocation: backupDirectories[key][0].id}) }}"><b>
                                         {% trans %}Download as .tgz{% endtrans %}
                                     </b></a>
                                     {% if isZipInstalled %}
                                         &nbsp;|&nbsp;
-                                        <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'downloadzip', idBackupLocation: backupDirectories[key][0].id}) }}"><b>
+                                        <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.key0, action: 'downloadzip', idBackupLocation: backupDirectories[key][0].id}) }}"><b>
                                           {% trans %}Download as .zip{% endtrans %}
                                         </b></a>
                                     {% endif %}
                                     &nbsp;|&nbsp;
-                                    <a href="{{ path('restoreJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ file.0, idBackupLocation: backupDirectories[key][0].id}) }}"><b>
+                                    <a href="{{ path('restoreJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ file.key0, idBackupLocation: backupDirectories[key][0].id}) }}"><b>
                                         {% trans %}Restore to client{% endtrans %}
                                     </b></a>
                                 {% else %}
-                                    <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.0, action: 'download', idBackupLocation: backupDirectories[key][0].id}) }}"><b>
+                                    <a href="{{ path('showJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ '/' ~ file.key0, action: 'download', idBackupLocation: backupDirectories[key][0].id}) }}"><b>
                                       {% trans %}Download{% endtrans %}
                                     </b></a>
                                     &nbsp;|&nbsp;
-                                    <a href="{{ path('restoreJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ file.0, idBackupLocation: backupDirectories[key][0].id}) }}"><b>
+                                    <a href="{{ path('restoreJobBackup', {idClient: job.client.id, idJob: job.id, path: path ~ file.key0, idBackupLocation: backupDirectories[key][0].id}) }}"><b>
                                         {% trans %}Restore to client{% endtrans %}
                                     </b></a>
                                 {% endif %}
