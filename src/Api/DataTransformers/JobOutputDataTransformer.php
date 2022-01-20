@@ -43,6 +43,7 @@ class JobOutputDataTransformer implements DataTransformerInterface
         $output->setId($data->getId());
         $output->setName($data->getName());
         $output->setDescription($data->getDescription());
+        $output->setDiskUsage($data->getDiskUsage());
         $output->setClient($data->getClient()->getId());
         $output->setIsActive($data->getIsActive());
         $output->setNotificationsEmail($data->getNotificationsEmail());
