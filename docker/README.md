@@ -77,6 +77,7 @@ The following environment variables are also honored for configuring your ElkarB
 |----------|---------------|---------------|
 | TZ       | Europe/Paris  | Timezone      |
 | PHP_TZ   | Europe/Paris  | Timezone (PHP)|
+| EB_ACL   | enabled       | use setfacl, otherwise use chown|
 | EB_CRON  | enabled       | run tick command periodically|
 
 ### Database configuration
