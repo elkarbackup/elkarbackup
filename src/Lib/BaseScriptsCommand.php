@@ -28,6 +28,22 @@ abstract class BaseScriptsCommand extends LoggingCommand
         return strcmp($a->getName(), $b->getName());
     }
     /**
+     * Execute script with output redirected
+     *
+     * @param    string     $command   Command to execute
+     *
+     * @return   array      $results   commandOutput and return status
+     *
+     */
+    protected function exec_bg($command) {
+        $tempfile = tempnam(sys_get_temp_dir(), "cmd_output");
+        $command .= "> $tempfile 2>&1";
+        exec($command, $commandOutput, $status);
+        $commandOutput = explode("\n", file_get_contents($tempfile));
+        unlink($tempfile);
+        return array($commandOutput, $status);
+    }
+    /**
      * Prepares the model with the necessary data to run Client scripts.
      *
      * @param   Client      $client     Client entity.
@@ -121,7 +137,7 @@ abstract class BaseScriptsCommand extends LoggingCommand
                 );
                 return self::ERR_CODE_NOT_FOUND;
             } else {
-                $command = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_CLIENT_TOTAL_SIZE="%s" ELKARBACKUP_CLIENT_STARTTIME="%s" ELKARBACKUP_CLIENT_ENDTIME="%s" ELKARBACKUP_SSH_ARGS="%s" sudo "%s" 2>&1',
+                $command = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_CLIENT_TOTAL_SIZE="%s" ELKARBACKUP_CLIENT_STARTTIME="%s" ELKARBACKUP_CLIENT_ENDTIME="%s" ELKARBACKUP_SSH_ARGS="%s" sudo "%s"',
                     $model['level'],
                     $model['type'],
                     $model['clientUrl'],
@@ -133,7 +149,7 @@ abstract class BaseScriptsCommand extends LoggingCommand
                     $model['clientEndTime'],
                     $model['clientSshArgs'],
                     $scriptFile);
-                exec($command, $commandOutput, $status);
+                list($commandOutput, $status) = \App\Lib\BaseScriptsCommand::exec_bg($command);
                 
                 $commandOutputString = substr("\n" . implode("\n", $commandOutput), 0, 500); // Let's limit the output
                 if (self::ERR_CODE_OK != $status) {
@@ -280,7 +296,7 @@ abstract class BaseScriptsCommand extends LoggingCommand
                 );
                 return self::ERR_CODE_NOT_FOUND;
             } else {
-                $command = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_JOB_NAME="%s" ELKARBACKUP_OWNER_EMAIL="%s" ELKARBACKUP_RECIPIENT_LIST="%s" ELKARBACKUP_CLIENT_TOTAL_SIZE="%s" ELKARBACKUP_JOB_TOTAL_SIZE="%s" ELKARBACKUP_JOB_RUN_SIZE="%s" ELKARBACKUP_JOB_STARTTIME="%s" ELKARBACKUP_JOB_ENDTIME="%s" ELKARBACKUP_SSH_ARGS="%s" sudo "%s" 2>&1',
+                $command = sprintf('env ELKARBACKUP_LEVEL="%s" ELKARBACKUP_EVENT="%s" ELKARBACKUP_URL="%s" ELKARBACKUP_ID="%s" ELKARBACKUP_PATH="%s" ELKARBACKUP_STATUS="%s" ELKARBACKUP_CLIENT_NAME="%s" ELKARBACKUP_JOB_NAME="%s" ELKARBACKUP_OWNER_EMAIL="%s" ELKARBACKUP_RECIPIENT_LIST="%s" ELKARBACKUP_CLIENT_TOTAL_SIZE="%s" ELKARBACKUP_JOB_TOTAL_SIZE="%s" ELKARBACKUP_JOB_RUN_SIZE="%s" ELKARBACKUP_JOB_STARTTIME="%s" ELKARBACKUP_JOB_ENDTIME="%s" ELKARBACKUP_SSH_ARGS="%s" sudo "%s"',
                     $model['level'],
                     $model['type'],
                     $model['clientUrl'],
@@ -298,8 +314,8 @@ abstract class BaseScriptsCommand extends LoggingCommand
                     $model['jobEndTime'],
                     $model['clientSshArgs'],
                     $scriptFile);
-                exec($command, $commandOutput, $status);
-                
+                list($commandOutput, $status) = \App\Lib\BaseScriptsCommand::exec_bg($command);
+
                 $commandOutputString = substr("\n" . implode("\n", $commandOutput), 0, 500); // Let's limit the output
                 if (self::ERR_CODE_OK != $status) {
                     $this->err(
