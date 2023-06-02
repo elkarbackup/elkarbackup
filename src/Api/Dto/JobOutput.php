@@ -21,6 +21,8 @@ class JobOutput
     private $preScripts;
     private $token = null;
     private $useLocalPermissions = true;
+    private $lastResult = null;
+    private $clientName;
 
     /**
      * @return integer
@@ -167,6 +169,22 @@ class JobOutput
     }
 
     /**
+     * @return string
+     */
+    public function getLastResult()
+    {
+        return $this->lastResult;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientName()
+    {
+        return $this->clientName;
+    }
+
+    /**
      * @param integer $backupLocation
      */
     public function setBackupLocation($backupLocation)
@@ -308,6 +326,22 @@ class JobOutput
     public function setUseLocalPermissions($useLocalPermissions)
     {
         $this->useLocalPermissions = $useLocalPermissions;
+    }
+
+    /**
+     * @param string $token
+     */
+    public function setLastResult($lastResult)
+    {
+        $this->lastResult = $lastResult;
+    }
+
+    /**
+     * @param string $token
+     */
+    public function setClientName($clientName)
+    {
+        $this->clientName = $clientName;
     }
 
 }

@@ -57,6 +57,8 @@ class JobOutputDataTransformer implements DataTransformerInterface
         $output->setUseLocalPermissions($data->getUseLocalPermissions());
         $output->setToken($data->getToken());
         $output->setBackupLocation($data->getBackupLocation()->getId());
+        $output->setLastResult($data->getLastResult());
+        $output->setClientName($data->getClient()->getName());
         return $output;
     }
 }
