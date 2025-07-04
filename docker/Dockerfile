@@ -94,7 +94,7 @@ RUN apt-get update && apt-get install -y autoconf automake \
     && rm -rf /var/lib/apt/lists/*
 
 # Download and install composer
-COPY --from=composer:2.1 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY --from=0 /app /app
 
@@ -132,6 +132,7 @@ VOLUME /app/backups
 EXPOSE 80
 
 LABEL maintainer="Xabi Ezpeleta <xezpeleta@gmail.com>"
+LABEL org.opencontainers.image.description="Elkarbackup Container Image"
 LABEL org.opencontainers.image.source=https://github.com/elkarbackup/elkarbackup
 LABEL org.opencontainers.image.url=https://github.com/elkarbackup/elkarbackup/blob/master/docker/README.md
 LABEL org.opencontainers.image.documentation=https://github.com/elkarbackup/elkarbackup/blob/master/docker/README.md
