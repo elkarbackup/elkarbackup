@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   elkarbackup:
     build:
@@ -15,7 +13,7 @@ services:
       SYMFONY__DATABASE__PASSWORD: "root"
     
   db:
-    image: mysql:5.7.22
+    image: mariadb:lts
     environment:
       MYSQL_ROOT_PASSWORD: "root"
 

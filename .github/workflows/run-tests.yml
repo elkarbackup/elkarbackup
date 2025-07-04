@@ -17,4 +17,4 @@ jobs:
         uses: docker/setup-compose-action@v1
 
       - name: Run test suite
-        run: docker compose -f docker/test/docker-compose.yml up --abort-on-container-exit --exit-code-from elkarbackup
+        run: docker/test/run-elkarbackup-tests.sh

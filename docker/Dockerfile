@@ -26,16 +26,24 @@ RUN mkdir -p -m 777 \
 # Download and install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set environment variable to allow Composer to run as root (inside Docker)
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
-ENV DOCKERDIR=./docker/
+ENV DOCKERDIR=./docker
+
+## Composer install
+COPY composer.json composer.lock .
+COPY $DOCKERDIR/parameters.yaml.docker /app/elkarbackup/config/parameters.yaml.dist
+RUN set -ex && \
+      cd /app/elkarbackup && \
+      mkdir -p public/css public/fonts public/js public/js/bootstrap public/js/moment public/js/jquery && \
+      composer update --no-interaction --no-audit
 
 ## Copy Elkarbackup from this repo
 COPY . /app/elkarbackup
 RUN set -ex; \
       cd /app/elkarbackup; \
       mkdir -p var/cache var/sessions var/log; \
-      # Remove leftover parameters file
-      rm -f config/parameters.yaml \
       # This doctrine migration file was provoking an error as it was trying to
       # copy a file to a hardcoded path it does not exist in this docker image.
       # We can disable it without negative consequences
@@ -98,6 +106,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY --from=0 /app /app
 
+ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV DOCKERDIR=./docker/
 
 # Apache configuration
@@ -124,6 +133,9 @@ RUN printf '[PHP]\ndate.timezone = "Europe/Paris"\n' > /usr/local/etc/php/conf.d
 
 COPY $DOCKERDIR/entrypoint.sh /
 COPY $DOCKERDIR/envars.sh /
+
+WORKDIR /app/elkarbackup
+
 RUN chmod u+x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
