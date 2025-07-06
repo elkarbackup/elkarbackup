@@ -49,9 +49,6 @@ RUN set -ex; \
       # We can disable it without negative consequences
       rm migrations/Version20130306101349.php;
 
-## Custom composer.json (database not required)
-COPY $DOCKERDIR/composer.json.docker /app/elkarbackup/composer.json
-
 ## Custom parameters.yml template with envars
 COPY $DOCKERDIR/parameters.yaml.docker /app/elkarbackup/config/parameters.yaml.dist
 
