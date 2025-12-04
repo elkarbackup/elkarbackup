@@ -2,7 +2,7 @@
 ## Bootstrap & Build elkarbackup
 ##
 
-FROM php:7.3-cli-alpine
+FROM php:7.4-cli-alpine
 
 RUN apk add --no-cache \
       git \
@@ -56,7 +56,7 @@ COPY $DOCKERDIR/src/Builder.php /app/elkarbackup/src/Menu/Builder.php
 ## Composer install
 RUN set -ex; \
       cd /app/elkarbackup; \
-      composer install --no-interaction
+      composer update --no-interaction --no-audit
 
 
 ##
@@ -64,18 +64,34 @@ RUN set -ex; \
 ##
 
 
-FROM php:7.3-apache-buster
+FROM php:7.4-apache-bullseye
 RUN apt-get update && apt-get install -y \
       default-mysql-client \
       acl \
-      rsnapshot \
       sudo \
       git \
       zip \
+      rsync \
+      perl \
+      libconfig-inifiles-perl \
+      liblchown-perl \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install \
       pdo_mysql \
       pcntl
+
+# Install rsnapshot from source (not available in bullseye repos)
+RUN apt-get update && apt-get install -y autoconf automake \
+    && cd /tmp \
+    && git clone https://github.com/rsnapshot/rsnapshot.git \
+    && cd rsnapshot \
+    && ./autogen.sh \
+    && ./configure --sysconfdir=/etc \
+    && make install \
+    && rm -rf /tmp/rsnapshot \
+    && apt-get purge -y autoconf automake \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
 
 # Download and install composer
 COPY --from=composer:2.1 /usr/bin/composer /usr/bin/composer

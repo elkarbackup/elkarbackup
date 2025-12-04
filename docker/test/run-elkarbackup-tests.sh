@@ -1,1 +1,1 @@
-docker-compose up --exit-code-from elkarbackup
+docker compose up --exit-code-from elkarbackup
