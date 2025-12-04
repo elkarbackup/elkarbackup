@@ -10,7 +10,7 @@
 		"doctrine/annotations" : "^1.12",
 		"doctrine/doctrine-bundle" : "^2.2",
 		"doctrine/doctrine-migrations-bundle" : "^3.0",
-		"doctrine/orm" : "^2.8",
+		"doctrine/orm" : "^2.8,<2.15",
 		"incenteev/composer-parameter-handler" : "^2.1",
 		"knplabs/knp-menu-bundle" : "^3.1",
 		"knplabs/knp-paginator-bundle" : "^5.4",
