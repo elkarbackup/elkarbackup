@@ -4,6 +4,8 @@
 
 FROM php:7.4-cli-alpine
 
+WORKDIR /app/elkarbackup
+
 RUN apk add --no-cache \
       git \
       curl \
@@ -39,6 +41,14 @@ RUN set -ex && \
       mkdir -p public/css public/fonts public/js public/js/bootstrap public/js/moment public/js/jquery && \
       composer update --no-interaction --no-audit
 
+## Composer install
+COPY composer.json composer.lock .
+COPY config/parameters.yaml.dist config/
+RUN set -ex && \
+      cd /app/elkarbackup && \
+      mkdir -p public/css public/fonts public/js public/js/bootstrap public/js/moment public/js/jquery && \
+      composer update --no-interaction --no-audit
+
 ## Copy Elkarbackup from this repo
 COPY . /app/elkarbackup
 RUN set -ex; \
@@ -57,11 +67,6 @@ COPY $DOCKERDIR/monolog.yaml.docker /app/elkarbackup/config/packages/dev/monolog
 
 ## Disable "Manage parameters" menu item
 COPY $DOCKERDIR/src/Builder.php /app/elkarbackup/src/Menu/Builder.php
-
-## Composer install
-RUN set -ex; \
-      cd /app/elkarbackup; \
-      composer update --no-interaction --no-audit
 
 
 ##

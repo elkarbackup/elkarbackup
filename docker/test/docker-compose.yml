@@ -1,8 +1,9 @@
 services:
   elkarbackup:
-    build:
-      context: ../..
-      dockerfile: ./docker/Dockerfile
+    #build:
+    #  context: ../..
+    #  dockerfile: ./docker/Dockerfile
+    image: elkarbackup:test
     environment:
       ELKARBACKUP_RUN_TEST: "true"
       DATABASE_HOST: "db"
