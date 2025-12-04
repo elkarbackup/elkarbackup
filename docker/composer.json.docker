@@ -5,6 +5,8 @@
 		"php" : ">=7.1.3",
 		"ext-ctype" : "*",
 		"ext-iconv" : "*",
+		"api-platform/core" : "^2.6",
+		"composer/package-versions-deprecated" : "1.11.99.1",
 		"doctrine/annotations" : "^1.12",
 		"doctrine/doctrine-bundle" : "^2.2",
 		"doctrine/doctrine-migrations-bundle" : "^3.0",
@@ -12,6 +14,8 @@
 		"incenteev/composer-parameter-handler" : "^2.1",
 		"knplabs/knp-menu-bundle" : "^3.1",
 		"knplabs/knp-paginator-bundle" : "^5.4",
+		"nelmio/cors-bundle" : "^2.1",
+		"phpdocumentor/reflection-docblock" : "^5.2",
 		"sensio/framework-extra-bundle" : "^6.1",
 		"symfony/asset" : "4.4.*",
 		"symfony/console" : "4.4.*",
@@ -22,8 +26,13 @@
 		"symfony/framework-bundle" : "4.4.*",
 		"symfony/lock" : "4.4.*",
 		"symfony/monolog-bundle" : "^3.6",
+		"symfony/process" : "4.4.*",
+		"symfony/property-access" : "4.4.*",
+		"symfony/property-info" : "4.4.*",
+		"symfony/proxy-manager-bridge" : "4.4.*",
 		"symfony/security-bundle" : "4.4.*",
 		"symfony/security-csrf" : "4.4.*",
+		"symfony/serializer" : "4.4.*",
 		"symfony/swiftmailer-bundle" : "^3.5",
 		"symfony/templating" : "4.4.*",
 		"symfony/twig-bundle" : "4.4.*",
@@ -31,7 +40,6 @@
 		"symfony/web-profiler-bundle" : "4.4.*",
 		"symfony/yaml" : "4.4.*",
 		"twbs/bootstrap" : "^3.3",
-		"twig/extensions" : "^1.5",
 		"twig/extra-bundle" : "^2.12|^3.0",
 		"twig/twig" : "^2.12"
 	},
@@ -53,7 +61,15 @@
 		"preferred-install" : {
 			"*" : "dist"
 		},
-		"sort-packages" : true
+		"sort-packages" : true,
+		"audit" : {
+			"abandoned" : "ignore",
+			"block-insecure" : false
+		},
+		"allow-plugins" : {
+			"symfony/flex" : true,
+			"incenteev/composer-parameter-handler" : true
+		}
 	},
 	"autoload" : {
 		"psr-4" : {
@@ -84,11 +100,5 @@
 		"incenteev-parameters" : {
 			"file" : "config/parameters.yaml"
 		}
-	},
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/theofidry/AliceBundle"
-		}
-	]
+	}
 }
