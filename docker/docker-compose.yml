@@ -1,5 +1,4 @@
-version: '3'
-
+---
 services:
   elkarbackup:
     image: elkarbackup/elkarbackup:2.1.0
@@ -16,9 +15,9 @@ services:
       - 8000:80
     
   db:
-    image: mysql:5.7.22
+    image: mariadb:lts
     environment:
-      MYSQL_ROOT_PASSWORD: "your-password-here"
+      MARIADB_ROOT_PASSWORD: "your-password-here"
     volumes:
       - db:/var/lib/mysql
 
