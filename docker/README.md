@@ -43,7 +43,7 @@ services:
     image: elkarbackup/elkarbackup:latest
     environment:
       SYMFONY__DATABASE__PASSWORD: "your-password-here"
-      volumes:
+    volumes:
       - backups:/app/backups
       - uploads:/app/uploads
       - sshkeys:/app/.ssh
@@ -77,6 +77,7 @@ The following environment variables are also honored for configuring your ElkarB
 |----------|---------------|---------------|
 | TZ       | Europe/Paris  | Timezone      |
 | PHP_TZ   | Europe/Paris  | Timezone (PHP)|
+| EB_ACL   | enabled       | use setfacl, otherwise use chown|
 | EB_CRON  | enabled       | run tick command periodically|
 
 ### Database configuration
