@@ -24,6 +24,12 @@ if [ ! -z "$PHP_TZ" ];then
   printf "[PHP]\ndate.timezone = ${PHP_TZ}\n" > /usr/local/etc/php/conf.d/tzone.ini
 fi
 
+# Ensure better experience for users of synology or qnap devices
+# Set EB_ACL automatically
+if [ -f /proc/syno_platform ] || [ $(uname -r) == *"qnap"* ]; then
+  EB_ACL="disabled"
+fi
+
 ## = Generate Symfony secret =
 ## Only if SYMFONY__SECRET has the default value
 
@@ -47,6 +53,10 @@ done
 
 cd "${EB_DIR}"
 
+# Empty sessions
+rm -rf var/sessions/*
+rm -rf var/cache/*
+
 # Create/update database
 php bin/console doctrine:database:create --if-not-exists
 php bin/console doctrine:migrations:migrate --no-interaction
@@ -54,16 +64,16 @@ php bin/console doctrine:migrations:migrate --no-interaction
 php bin/console elkarbackup:create_admin
 
 # Set permissions
-setfacl -R -m u:www-data:rwX var/cache var/sessions var/log
-setfacl -dR -m u:www-data:rwX var/cache var/sessions var/log
+if [ -z "${EB_ACL}" ] || [ "${EB_ACL}" = "enabled" ]; then
+  setfacl -R -m u:www-data:rwX var/cache var/sessions var/log
+  setfacl -dR -m u:www-data:rwX var/cache var/sessions var/log
+else
+  chown -R www-data var/cache var/sessions var/log
+fi
 
 if [ ! -z "$SYMFONY__EB__PUBLIC__KEY" ] && [ ! -f "$SYMFONY__EB__PUBLIC__KEY" ];then
   ssh-keygen -t rsa -N "" -C "Web requested key for elkarbackup." -f "${SYMFONY__EB__PUBLIC__KEY%.*}";
 fi
-
-# Empty sessions
-rm -rf var/sessions/*
-rm -rf var/cache/*
 
 # Clear cache and sessions..
 php bin/console cache:clear
@@ -73,14 +83,26 @@ apache2-foreground &
 
 ### Force tick execution and set permissions (again)
 php bin/console elkarbackup:tick --env=prod > /var/log/output.log
-setfacl -R -m u:www-data:rwX var/cache var/sessions var/log
-setfacl -dR -m u:www-data:rwX var/cache var/sessions var/log
+if [ -z "${EB_ACL}" ] || [ "${EB_ACL}" = "enabled" ]; then
+  setfacl -R -m u:www-data:rwX var/cache var/sessions var/log
+  setfacl -dR -m u:www-data:rwX var/cache var/sessions var/log
+else
+  chown -R www-data var/cache var/sessions var/log
+fi
 
-# Cron
-if [ "${EB_CRON}" == "enabled" ]; then
+if [ ! -z "$ELKARBACKUP_RUN_TEST" ]; then
+  ./run-tests.sh
+  exit $?
+fi
+
+# Cron (enabled by default)
+if [ -z "${EB_CRON}" ] || [ "${EB_CRON}" = "enabled" ]; then
   echo -e "\n\nEB_CRON is enabled. Running tick command every minute..."
   while true; do
     php bin/console elkarbackup:tick --env=prod &>/var/log/output.log &
     sleep 60
   done
+else
+  # Keep apache alive
+  tail -f /dev/null
 fi

@@ -2,7 +2,9 @@
 ## Bootstrap & Build elkarbackup
 ##
 
-FROM php:7.3-cli-alpine
+FROM php:7.4-cli-alpine
+
+WORKDIR /app/elkarbackup
 
 RUN apk add --no-cache \
       git \
@@ -26,23 +28,36 @@ RUN mkdir -p -m 777 \
 # Download and install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set environment variable to allow Composer to run as root (inside Docker)
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
-ENV DOCKERDIR=./docker/
+ENV DOCKERDIR=./docker
+
+## Composer install
+COPY composer.json composer.lock .
+COPY $DOCKERDIR/parameters.yaml.docker /app/elkarbackup/config/parameters.yaml.dist
+RUN set -ex && \
+      cd /app/elkarbackup && \
+      mkdir -p public/css public/fonts public/js public/js/bootstrap public/js/moment public/js/jquery && \
+      composer update --no-interaction --no-audit
+
+## Composer install
+COPY composer.json composer.lock .
+COPY config/parameters.yaml.dist config/
+RUN set -ex && \
+      cd /app/elkarbackup && \
+      mkdir -p public/css public/fonts public/js public/js/bootstrap public/js/moment public/js/jquery && \
+      composer update --no-interaction --no-audit
 
 ## Copy Elkarbackup from this repo
 COPY . /app/elkarbackup
 RUN set -ex; \
       cd /app/elkarbackup; \
       mkdir -p var/cache var/sessions var/log; \
-      # Remove leftover parameters file
-      rm -f config/parameters.yaml \
       # This doctrine migration file was provoking an error as it was trying to
       # copy a file to a hardcoded path it does not exist in this docker image.
       # We can disable it without negative consequences
       rm migrations/Version20130306101349.php;
-
-## Custom composer.json (database not required)
-COPY $DOCKERDIR/composer.json.docker /app/elkarbackup/composer.json
 
 ## Custom parameters.yml template with envars
 COPY $DOCKERDIR/parameters.yaml.docker /app/elkarbackup/config/parameters.yaml.dist
@@ -53,30 +68,47 @@ COPY $DOCKERDIR/monolog.yaml.docker /app/elkarbackup/config/packages/dev/monolog
 ## Disable "Manage parameters" menu item
 COPY $DOCKERDIR/src/Builder.php /app/elkarbackup/src/Menu/Builder.php
 
-## Composer install
-RUN set -ex; \
-      cd /app/elkarbackup; \
-      composer install --no-interaction
-
 
 ##
 ## PHP Apache image with Elkarbackup
 ##
 
 
-FROM php:7.3-apache
+FROM php:7.4-apache-bullseye
 RUN apt-get update && apt-get install -y \
       default-mysql-client \
       acl \
-      rsnapshot \
       sudo \
+      git \
+      zip \
+      rsync \
+      perl \
+      libconfig-inifiles-perl \
+      liblchown-perl \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install \
       pdo_mysql \
       pcntl
 
+# Install rsnapshot from source (not available in bullseye repos)
+RUN apt-get update && apt-get install -y autoconf automake \
+    && cd /tmp \
+    && git clone https://github.com/rsnapshot/rsnapshot.git \
+    && cd rsnapshot \
+    && ./autogen.sh \
+    && ./configure --sysconfdir=/etc \
+    && make install \
+    && rm -rf /tmp/rsnapshot \
+    && apt-get purge -y autoconf automake \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+# Download and install composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 COPY --from=0 /app /app
 
+ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV DOCKERDIR=./docker/
 
 # Apache configuration
@@ -103,6 +135,9 @@ RUN printf '[PHP]\ndate.timezone = "Europe/Paris"\n' > /usr/local/etc/php/conf.d
 
 COPY $DOCKERDIR/entrypoint.sh /
 COPY $DOCKERDIR/envars.sh /
+
+WORKDIR /app/elkarbackup
+
 RUN chmod u+x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
@@ -111,6 +146,7 @@ VOLUME /app/backups
 EXPOSE 80
 
 LABEL maintainer="Xabi Ezpeleta <xezpeleta@gmail.com>"
+LABEL org.opencontainers.image.description="Elkarbackup Container Image"
 LABEL org.opencontainers.image.source=https://github.com/elkarbackup/elkarbackup
 LABEL org.opencontainers.image.url=https://github.com/elkarbackup/elkarbackup/blob/master/docker/README.md
 LABEL org.opencontainers.image.documentation=https://github.com/elkarbackup/elkarbackup/blob/master/docker/README.md

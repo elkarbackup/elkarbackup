@@ -131,6 +131,8 @@ echo Create root user
 php /usr/share/elkarbackup/bin/console elkarbackup:create_admin >/dev/null || true
 echo Clean cache
 php /usr/share/elkarbackup/bin/console cache:clear >/dev/null || true
+echo Install assets
+php /usr/share/elkarbackup/bin/console assets:install
 echo Invalidate sessions
 rm -rf /var/lib/elkarbackup/sessions/*
 

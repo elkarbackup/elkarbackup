@@ -1,0 +1,23 @@
+services:
+  elkarbackup:
+    #build:
+    #  context: ../..
+    #  dockerfile: ./docker/Dockerfile
+    image: elkarbackup:test
+    environment:
+      ELKARBACKUP_RUN_TEST: "true"
+      DATABASE_HOST: "db"
+      DATABASE_PORT: "3306"
+      DATABASE_NAME: "elkarbackuptests"
+      DATABASE_USER: "root"
+      DATABASE_PASSWORD: "root"
+      SYMFONY__DATABASE__PASSWORD: "root"
+      SYMFONY_PHPUNIT_VERSION: "8.5.34"
+
+  db:
+    image: mariadb:lts
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+
+volumes:
+  db:
