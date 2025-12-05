@@ -80,6 +80,12 @@ RUN apt-get update && apt-get install -y \
       pdo_mysql \
       pcntl
 
+# Download and install diskus
+RUN curl -sL -o diskus.deb \
+    https://github.com/sharkdp/diskus/releases/download/v0.8.0/diskus_0.8.0_$(dpkg --print-architecture).deb && \
+    dpkg -i diskus.deb && \
+    rm -f diskus.deb
+
 # Install rsnapshot from source (not available in bullseye repos)
 RUN apt-get update && apt-get install -y autoconf automake \
     && cd /tmp \
