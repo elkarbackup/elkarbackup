@@ -1,7 +1,7 @@
 ---
 services:
   elkarbackup:
-    image: elkarbackup:2.1.0
+    image: ghcr.io/elkarbackup/elkarbackup:latest
     build:
       context: ../
       dockerfile: ./docker/Dockerfile
