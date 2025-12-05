@@ -1,5 +1,6 @@
 name: Publish Docker images
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'v*'
@@ -7,59 +8,53 @@ on:
 jobs:
   main:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v2
-    -
-      name: Docker meta
-      id: meta
-      uses: docker/metadata-action@v3
-      with:
-        # list of Docker images to use as base name for tags
-        images: |
-          elkarbackup/elkarbackup
-          ghcr.io/elkarbackup/elkarbackup
-        # generate Docker tags based on the following events/attributes
-        tags: |
-          type=semver,pattern={{version}}
-          type=semver,pattern={{major}}.{{minor}}
-          type=semver,pattern={{major}}
-        # WARNING: releasing older versions will overwrite "latest" tag
-        # Are we going to maintain older versions?
-        # We can specify our preferred "latest" version manually in that case:
-        #flavor: |
-        #  latest=${{ startsWith(github.ref, 'refs/tags/v2') }}
-    -
-      name: Set up Quemu
-      uses: docker/setup-qemu-action@v1
-    -
-      name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-    -
-      name: Login to DockerHub
-      uses: docker/login-action@v1 
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    -
-      name: Login to GHCR
-      uses: docker/login-action@v1
-      with:
-        registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    -
-      name: Build and push
-      id: docker_build
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        file: ./docker/Dockerfile
-        push: true
-        platforms: linux/amd64,linux/arm64,linux/arm/v7
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-    -
-      name: Image digest
-      run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Checkout source
+        uses: actions/checkout@v6
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value={{sha}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+          flavor: |
+            latest=true
+
+      - name: Set up Quemu
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./docker/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
