@@ -983,15 +983,26 @@ class DefaultController extends AbstractController
                     if (false === $content) {
                         $content = array();
                     }
+                    $counter = 0;
                     foreach ($content as &$aFile) {
                         $date = new \DateTime();
                         $date->setTimestamp(filemtime($realPath . '/' . $aFile));
+                        if (is_dir($realPath . '/' . $aFile)) {
+                            $groupsort = 1;
+                        } elseif (is_link($realPath . '/' . $aFile)) {
+                            $groupsort = 2;
+                        } else {
+                            $groupsort = 3;
+                        }
                         $aFile = array(
-                            $aFile,
-                            $date,
-                            is_dir($realPath . '/' . $aFile),
-                            is_link($realPath . '/' . $aFile)
+                            key0 => $aFile,
+                            key1 => $date,
+                            key2 => is_dir($realPath . '/' . $aFile),
+                            key3 => is_link($realPath . '/' . $aFile),
+                            key4 => $groupsort,
+                            key5 => $counter
                         );
+                        $counter++;
                     }
                     array_push($dirContent, $content);
                     $this->logger->debug(
@@ -1047,11 +1058,23 @@ class DefaultController extends AbstractController
                 foreach ($content as &$aFile) {
                     $date = new \DateTime();
                     $date->setTimestamp(filemtime($backupDir[1] . '/' . $aFile));
+                    $snaporder = explode(".", $aFile);
+                    if (is_dir($backupDir[1] . '/' . $aFile)) {
+                        $groupsort = 1;
+                    } elseif (is_link($backupDir[1] . '/' . $aFile)) {
+                        $groupsort = 2;
+                    } else {
+                        $groupsort = 3;
+                    }
                     $aFile = array(
-                        $aFile,
-                        $date,
-                        is_dir($backupDir[1] . '/' . $aFile),
-                        is_link($backupDir[1] . '/' . $aFile)
+                        key0 => $aFile,
+                        key1 => $date,
+                        key2 => is_dir($backupDir[1] . '/' . $aFile),
+                        key3 => is_link($backupDir[1] . '/' . $aFile),
+                        key4 => $groupsort,
+                        key5 => 0,
+                        key6 => $snaporder[0],
+                        key7 => $snaporder[1]
                     );
                 }
                 array_push($dirContent, $content);
