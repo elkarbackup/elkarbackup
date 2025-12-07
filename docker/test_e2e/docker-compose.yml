@@ -27,3 +27,12 @@ services:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "3306:3306"
+  client:
+    build:
+      context: ../test_e2e
+      dockerfile: client.Dockerfile
+    volumes:
+      - ./tmp/sshkeys/id_rsa.pub:/home/testuser/.ssh/authorized_keys:ro
+      - ./tmp/client_data:/home/testuser/backup_data
+    expose:
+      - "22"
