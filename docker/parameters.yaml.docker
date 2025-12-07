@@ -18,7 +18,7 @@ parameters:
     public_key: '%env(SYMFONY__EB__PUBLIC__KEY)%'
     max_log_age: P1Y
     tmp_dir: '%env(SYMFONY__EB__TMP__DIR)%'
-    rsnapshot: /usr/bin/rsnapshot
+    rsnapshot: /usr/local/bin/rsnapshot
     warning_load_level: 0.8
     pagination_lines_per_page: 20
     url_prefix: '%env(SYMFONY__EB__URL__PREFIX)%'

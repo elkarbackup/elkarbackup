@@ -1,0 +1,64 @@
+---
+name: Elkarbackup end2end Tests
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache pup binary
+        id: cache-pup
+        uses: actions/cache@v4
+        with:
+          path: pup
+          key: pup-v0.4.0-${{ runner.os }}-${{ runner.arch }}
+
+      - name: Download pup (HTML parser)
+        if: steps.cache-pup.outputs.cache-hit != 'true'
+        run: |
+          curl -L \
+            https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_$(dpkg --print-architecture).zip \
+              -o pup.zip
+          unzip pup.zip
+          rm pup.zip
+
+      - name: Install pup
+        run: sudo cp pup /usr/local/bin/
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and cache application image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile
+          tags: elkarbackup:test
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Cache mariadb:lts base image
+        uses: docker/build-push-action@v6
+        with:
+          context: docker/test
+          file: docker/test/Dockerfile.cache-mariadb
+          tags: local/mariadb-cache:latest
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run test suite
+        run: docker/test_e2e/run_end2end_tests.sh
