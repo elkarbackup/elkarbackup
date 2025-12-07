@@ -39,3 +39,6 @@ Thumbs.db
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
+
+# Test data
+docker/test_e2e/tmp/
