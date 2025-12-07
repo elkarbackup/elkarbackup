@@ -1,0 +1,29 @@
+---
+services:
+  elkarbackup:
+    #build:
+    #  context: ../..
+    #  dockerfile: ./docker/Dockerfile
+    image: elkarbackup:test
+    environment:
+      SYMFONY_ENV: e2e
+      DATABASE_HOST: "db"
+      DATABASE_PORT: "3306"
+      DATABASE_NAME: "elkarbackuptests"
+      DATABASE_USER: "root"
+      DATABASE_PASSWORD: "root"
+      SYMFONY__DATABASE__PASSWORD: "root"
+      EB_CRON: "enabled"
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    volumes:
+      - ./tmp/backups:/var/spool/elkarbackup/backups
+      - ./tmp/sshkeys:/app/.ssh
+  db:
+    image: mariadb:lts
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
