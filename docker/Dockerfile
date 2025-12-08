@@ -12,7 +12,6 @@ RUN apk add --no-cache \
       grep \
       mysql-client \
       acl \
-      rsnapshot \
     && docker-php-ext-install \
       pdo_mysql \
       pcntl
@@ -63,7 +62,7 @@ RUN set -ex; \
 COPY $DOCKERDIR/parameters.yaml.docker /app/elkarbackup/config/parameters.yaml.dist
 
 ## Custom monolog.yaml (to log to stderr)
-COPY $DOCKERDIR/monolog.yaml.docker /app/elkarbackup/config/packages/dev/monolog.yaml
+COPY $DOCKERDIR/monolog.yaml.docker /app/elkarbackup/config/packages/monolog.yaml
 
 ## Disable "Manage parameters" menu item
 COPY $DOCKERDIR/src/Builder.php /app/elkarbackup/src/Menu/Builder.php
@@ -133,7 +132,7 @@ RUN echo "elkarbackup ALL = NOPASSWD: ELKARBACKUP_SCRIPTS" >> /etc/sudoers.d/elk
 RUN echo "    IdentityFile /app/.ssh/id_rsa" >> /etc/ssh/ssh_config
 
 # Console commands log output
-RUN ln -sf /proc/1/fd/1 /var/log/output.log
+RUN ln -sf /dev/stdout /var/log/output.log
 
 ## Set timezone
 RUN ln -snf /usr/share/zoneinfo/Europe/Paris /etc/localtime && echo "Europe/Paris" > /etc/timezone

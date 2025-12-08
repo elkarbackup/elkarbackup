@@ -17,18 +17,30 @@ if ! command -v curl > /dev/null 2>&1; then
 	exit 1
 fi
 
-NO_CLEAN=0
-usage() { echo "Usage: $0 [-n]" 1>&2; exit 1; }
+function cleanup() {
+	set +e
+	echo "::group::🧼 Cleaning up..."
+	docker compose -f "${DIR}/docker-compose.yml" down --remove-orphans
+	sudo rm -rf "${DIR}/tmp"
+	echo "::endgroup::"
+}
 
-while getopts ":n" o; do
-    case "${o}" in
-        n)
-            NO_CLEAN=1
-            ;;
-        *)
-            usage
-            ;;
-    esac
+NO_CLEAN=0
+usage() { echo "Usage: $0 [-n] [-c]" 1>&2; exit 1; }
+
+while getopts ":nc" o; do
+	case "${o}" in
+		n)
+			NO_CLEAN=1
+			;;
+		c)
+			cleanup
+			exit 0
+			;;
+		*)
+			usage
+			;;
+	esac
 done
 shift $((OPTIND-1))
 
@@ -112,14 +124,6 @@ function get_job_status() {
 		pup "tr[class*=\"client-${client_id} job-${job_id}\"] td[class\$=\"status\"] span text{}" | \
 		xargs \
 		|| echo "unknown"
-}
-
-function cleanup() {
-	set +e
-	echo "::group::🧼 Cleaning up..."
-	docker compose -f "${DIR}/docker-compose.yml" down --remove-orphans
-	sudo rm -rf "${DIR}/tmp"
-	echo "::endgroup::"
 }
 
 mkdir -p "${DIR}/tmp"
