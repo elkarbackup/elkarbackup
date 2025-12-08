@@ -746,7 +746,7 @@ class DefaultController extends AbstractController
         }
         $backupDir = $job->getBackupLocation()->getEffectiveDir();
         $client = $job->getClient();
-        $logDir = $this->container->get('kernel')->getLogDir();
+        $logDir = $this->kernel->getLogDir();
         $tmpDir = $this->tmp_dir;
         $sshArgs = $client->getSshArgs();
         $rsyncShortArgs = $client->getRsyncShortArgs();
