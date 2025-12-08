@@ -90,7 +90,8 @@
 		"symfony/polyfill-php56" : "*"
 	},
 	"conflict" : {
-		"symfony/symfony" : "*"
+		"symfony/symfony" : "*",
+		"doctrine/dbal": "^3.0"
 	},
 	"extra" : {
 		"symfony" : {

@@ -6,7 +6,7 @@
 	},
 	"main": "main",
 	"dependencies": {
-		"dojo":"1.8.1",
+		"dojo":"1.16.5",
 		"dijit":"1.13.8"
 	},
 	"description": "Dojo eXtensions, a rollup of many useful sub-projects and varying states of maturity – from very stable and robust, to alpha and experimental. See individual projects contain README files for details.",
