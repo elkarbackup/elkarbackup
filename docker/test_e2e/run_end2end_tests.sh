@@ -17,7 +17,26 @@ if ! command -v curl > /dev/null 2>&1; then
 	exit 1
 fi
 
-trap cleanup EXIT
+NO_CLEAN=0
+usage() { echo "Usage: $0 [-n]" 1>&2; exit 1; }
+
+while getopts ":n" o; do
+    case "${o}" in
+        n)
+            NO_CLEAN=1
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ "$NO_CLEAN" -eq 1 ]; then
+	trap - EXIT
+else
+	trap cleanup EXIT
+fi
 
 function log_ok() {
 	echo -e "\033[1;32m✅ $1\033[0m"
@@ -210,5 +229,5 @@ for i in $(seq 1 $cnt); do
 	sleep 5
 done
 
-log_ok "Success: All checks passed!"
+echo -e "\033[1;32m🥳 Success: All checks passing!\033[0m"
 exit 0
