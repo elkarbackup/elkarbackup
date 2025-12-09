@@ -1001,6 +1001,7 @@ class DefaultController extends AbstractController
                         );
                     }
                     array_push($dirContent, $content);
+                    $this->sortBackupDirContent($dirContent);
                     $this->logger->debug(
                         'View backup directory %clientid%, %jobid% %path%',
                         array('%clientid%' => $idClient,'%jobid%' => $idJob, '%idBackupLocation%' => $idBackupLocation, '%path%' => $path),
@@ -1073,6 +1074,7 @@ class DefaultController extends AbstractController
                 )))
             );
             
+            $this->sortBackupDirContent($dirContent);
             $params = array(
                 'dirContent' => $dirContent,
                 'job' => $job,
@@ -2779,5 +2781,61 @@ EOF;
         }
         
         return $jobLocations;
+    }
+
+    /**
+     * sortBackupDirContent
+     *
+     * Sorts the content of a backup directory according to the following rules:
+     * 1. Special entries "." and ".." always come first, in that order.
+     * 2. Other entries are sorted by PERIOD alphabetically.
+     * 3. If PERIOD is the same, sort by N numerically.
+     *
+     * @param  mixed $dirContent
+     * @return void
+     */
+    public function sortBackupDirContent(&$dirContent) {
+        usort($dirContent[0], function ($a, $b) {
+
+            $nameA = $a[0];
+            $nameB = $b[0];
+
+            // Special entries that must remain on top in fixed order.
+            $special = ['.', '..'];
+
+            $aIsSpecial = in_array($nameA, $special, true);
+            $bIsSpecial = in_array($nameB, $special, true);
+
+            // If both are special, preserve order "." then ".."
+            if ($aIsSpecial && $bIsSpecial) {
+                return array_search($nameA, $special, true) <=> array_search($nameB, $special, true);
+            }
+
+            // Special entries always before normal ones
+            if ($aIsSpecial) return -1;
+            if ($bIsSpecial) return 1;
+
+            // Now handle normal PERIOD.N entries
+            // Split on ".", but without using regex
+            $partsA = explode('.', $nameA, 2);
+            $partsB = explode('.', $nameB, 2);
+
+            // Period part (string before the dot)
+            $defA = $partsA[0];
+            $defB = $partsB[0];
+
+            // Number part (after the dot), cast to int if it exists
+            $numA = isset($partsA[1]) && is_numeric($partsA[1]) ? (int)$partsA[1] : -1;
+            $numB = isset($partsB[1]) && is_numeric($partsB[1]) ? (int)$partsB[1] : -1;
+
+            // Sort by Period alphabetically
+            $defCompare = strcmp($defA, $defB);
+            if ($defCompare !== 0) {
+                return $defCompare;
+            }
+
+            // Same Period, then sort the number numerically
+            return $numA <=> $numB;
+        });
     }
 }
