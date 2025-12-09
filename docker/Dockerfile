@@ -114,8 +114,6 @@ RUN apt-get update && apt-get install -y autoconf automake \
 # Download and install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-COPY --from=0 /app /app
-
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV DOCKERDIR=./docker/
 
@@ -145,6 +143,8 @@ COPY $DOCKERDIR/entrypoint.sh /
 COPY $DOCKERDIR/envars.sh /
 
 WORKDIR /app/elkarbackup
+
+COPY --from=0 /app /app
 
 RUN chmod u+x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
