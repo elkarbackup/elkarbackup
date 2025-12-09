@@ -13,6 +13,8 @@ services:
       DATABASE_PASSWORD: "root"
       SYMFONY__DATABASE__PASSWORD: "root"
       SYMFONY_PHPUNIT_VERSION: "8.5.34"
+    depends_on:
+      - db
 
   db:
     image: mariadb:lts

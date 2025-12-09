@@ -63,6 +63,7 @@ class ClientOutputDataTransformer implements DataTransformerInterface
         $output->setUrl($data->getUrl());
         $output->setQuota($this->getQuota($data->getQuota()));
         $output->setDescription($data->getDescription());
+        $output->setDiskUsage((int) $data->getDiskUsage());
         $output->setIsActive($data->getIsActive());
         $output->setPreScripts($this->getScriptsId($data->getPreScripts()));
         $output->setPostScripts($this->getScriptsId($data->getPostScripts()));
@@ -71,6 +72,7 @@ class ClientOutputDataTransformer implements DataTransformerInterface
         $output->setSshArgs($data->getSshArgs());
         $output->setRsyncShortArgs($data->getRsyncShortArgs());
         $output->setRsyncLongArgs($data->getRsyncLongArgs());
+        $output->setState($data->getState());
         return $output;
     }
 }

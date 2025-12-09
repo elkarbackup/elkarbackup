@@ -8,6 +8,7 @@ class ClientMother
             '@vocab' => 'http://127.0.0.1/api/docs.jsonld#',
             'hydra' => 'http://www.w3.org/ns/hydra/core#',
             'description' => 'ClientOutput/description',
+            'diskUsage' => 'ClientOutput/diskUsage',
             'id' => 'ClientOutput/id',
             'isActive' => 'ClientOutput/isActive',
             'maxParallelJobs' => 'ClientOutput/maxParallelJobs',
@@ -19,7 +20,8 @@ class ClientMother
             'rsyncLongArgs' => 'ClientOutput/rsyncLongArgs',
             'rsyncShortArgs' => 'ClientOutput/rsyncShortArgs',
             'sshArgs' => 'ClientOutput/sshArgs',
-            'url' => 'ClientOutput/url'
+            'url' => 'ClientOutput/url',
+            'state' => 'ClientOutput/state'
         ],
         '@type' => 'Client'
     ];
@@ -30,6 +32,7 @@ class ClientMother
         $clientName = self::createClientName();
         $data = [
             'description' => null,
+            'diskUsage' => 0,
             'isActive' => true,
             'maxParallelJobs' => 1,
             'name' => $clientName,
@@ -40,7 +43,8 @@ class ClientMother
             'rsyncLongArgs' => null,
             'rsyncShortArgs' => null,
             'sshArgs' => null,
-            'url' => ""
+            'url' => "",
+            'state' => "NOT READY"
         ];
         $response = new RequestObject(self::CLIENT_CONTEXT, $data);
         return $response;
@@ -83,6 +87,7 @@ class ClientMother
         $clientName = self::createClientName();
         $data = [
             'description' => $description,
+            'diskUsage' => 0,
             'isActive' => $isActive,
             'maxParallelJobs' => $maxParallelJobs,
             'name' => $clientName,
@@ -93,7 +98,8 @@ class ClientMother
             'rsyncLongArgs' => $rsyncLongArgs,
             'rsyncShortArgs' => $rsyncShortArgs,
             'sshArgs' => $sshArgs,
-            'url' => $url
+            'url' => $url,
+            'state' => 'NOT READY'
         ];
         $response = new RequestObject(self::CLIENT_CONTEXT, $data);
         return $response;
