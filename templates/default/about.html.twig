@@ -7,6 +7,46 @@
 
 {% block body %}
 
-{% trans %}Documentation will be available soon{% endtrans %}
+<div class="row">
+<div class="col-md-8 col-md-offset-2 text-centered">
+<h3>{% trans %}About{% endtrans %} ElkarBackup</h3>
+<table id="about" class="table table-condensed table-bordered table-striped">
+    <tr>
+        <th>Version</th>
+        <td>{{ version }}</td>
+    </tr>
+    <tr>
+        <th>Symfony Version</th>
+        <td>{{ constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') }}</td>
+    </tr>
+    <tr>
+        <th>PHP Version</th>
+        <td>{{ php_version }}</td>
+    </tr>
+    <tr>
+        <th>HTTP Server</th>
+        <td>{{ http_server }}</td>
+    </tr>
+    <tr>
+        <th>App Environment</th>
+        <td>{{ app.environment }}</td>
+    </tr>
+    <tr>
+        <th>Hostname</th>
+        <td>{{ hostname }}</td>
+    </tr>
+    <tr>
+        <th>Current User</th>
+        <td>{{ app.user.username|default('Anonymous') }}</td>
+    </tr>
+</table>
+<div class="mb-4">
+    <a href="https://www.elkarbackup.org" target="_blank" class="btn btn-outline-primary mx-1">Website</a> |
+    <a href="https://github.com/elkarbackup/elkarbackup" target="_blank" class="btn btn-outline-secondary mx-1">GitHub</a> |
+    <a href="https://docs.elkarbackup.org/" target="_blank" class="btn btn-outline-info mx-1">Documentation</a>
+</div>
+</div>
+</div>
+</div>
 
 {% endblock %}

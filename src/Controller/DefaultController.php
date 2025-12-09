@@ -160,7 +160,13 @@ class DefaultController extends AbstractController
      */
     public function aboutAction(Request $request)
     {
-        return $this->render('default/about.html.twig');
+        $httpServer = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : 'Unknown';
+        return $this->render('default/about.html.twig', [
+            'version' => $this->getParameter('app.version'),
+            'hostname' => gethostname(),
+            'php_version' => phpversion(),
+            'http_server' => $httpServer
+        ]);
     }
 
     /**
@@ -318,7 +324,8 @@ class DefaultController extends AbstractController
                 'error' => $error,
                 'supportedLocales' => $localesWithNames,
                 'disable_background' => $disable_background,
-                'alert' => $alert
+                'alert' => $alert,
+                'version' => $this->getParameter('app.version')
             )
         );
     }

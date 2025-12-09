@@ -26,3 +26,4 @@ parameters:
     home: /app/elkarbackup
     max_parallel_jobs: '%env(SYMFONY__EB__MAX__PARALLEL__JOBS)%'
     post_on_pre_fail: '%env(SYMFONY__EB__POST__ON__PRE__FAIL)%'
+    app.version: 'v2.3.2'
