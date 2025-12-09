@@ -62,10 +62,12 @@ RUN set -ex; \
 COPY $DOCKERDIR/parameters.yaml.docker /app/elkarbackup/config/parameters.yaml.dist
 
 ## Custom monolog.yaml (to log to stderr)
-COPY $DOCKERDIR/monolog.yaml.docker /app/elkarbackup/config/packages/monolog.yaml
+COPY $DOCKERDIR/monolog.yaml.docker /app/elkarbackup/config/packages/prod/monolog.yaml
 
 ## Disable "Manage parameters" menu item
-COPY $DOCKERDIR/src/Builder.php /app/elkarbackup/src/Menu/Builder.php
+RUN sed -i \
+      "/array([[:space:]]*'label'[[:space:]]*=>[[:space:]]*\$t->trans('Manage parameters'/,/),/d" \
+      /app/elkarbackup/src/Menu/Builder.php
 
 
 ##

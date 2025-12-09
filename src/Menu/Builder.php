@@ -163,7 +163,12 @@ class Builder implements ContainerAwareInterface
                       array('label'     => $t->trans('Config', array(), 'BinovoElkarBackup'),
                             'class'    => 'Config dropdown dropdown-toggle',
                             'icon'     => '<i class="glyphicon glyphicon-cog"></i><span></span></a>',
-                            'children' => array(array('label'    => $t->trans('Preferences', array(), 'BinovoElkarBackup'),
+                            'children' => array(array('label'    => $t->trans('About', array(), 'BinovoElkarBackup'),
+                                                      'route'    => 'about',
+                                                      'class'    => 'About',
+                                                      'icon'     => '<i class="glyphicon glyphicon-info-sign"></i><span>'.$t->trans('About', array(), 'BinovoElkarBackup').'</span></a>'),
+
+                                                array('label'    => $t->trans('Preferences', array(), 'BinovoElkarBackup'),
                                                       'route'    => 'managePreferences',
                                                       'class'    => 'Preferences',
                                                       'icon'     => '<i class="glyphicon glyphicon-wrench"></i><span>'.$t->trans('Preferences', array(), 'BinovoElkarBackup').'</span></a>'),
