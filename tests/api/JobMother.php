@@ -152,7 +152,7 @@ class JobMother
     {
         $response = self::base();
         $data = $response->getData();
-        $data['minNotificationLevel'] = rand(0,199);
+        $data['minNotificationLevel'] = rand(1,199);
         $response->setData($data);
         return $response;
     }
