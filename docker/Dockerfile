@@ -34,7 +34,8 @@ ENV DOCKERDIR=./docker
 
 ## Composer install
 COPY composer.json composer.lock .
-COPY $DOCKERDIR/parameters.yaml.docker /app/elkarbackup/config/parameters.yaml.dist
+COPY config/parameters.yaml.dist /app/elkarbackup/config/parameters.yaml.dist
+COPY $DOCKERDIR/parameters.yaml.docker /app/elkarbackup/config/parameters.yaml
 RUN set -ex && \
       cd /app/elkarbackup && \
       mkdir -p public/css public/fonts public/js public/js/bootstrap public/js/moment public/js/jquery && \
