@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Dijit Tree Test</title>
+
+	<style type="text/css">
+		@import "../../../dojo/resources/dnd.css";
+		@import "../../../dojo/tests/dnd/dndDefault.css";
+	</style>
+
+	<style>
+		.myFolder{
+			width: 16px;
+			height: 16px;
+			background: blue;
+		}
+
+		.myItem{
+			width: 16px;
+			height: 16px;
+			background: green;
+
+		}
+	</style>
+</head>
+
+<body class="claro" role="main">
+	<h1 class="testTitle">Dijit Tree Test - Drag And Drop Support</h1>
+
+	<h2>Dojo Object Store (<code>dojo/store</code>) Examples</h2>
+
+	<p>
+		You can't drop items onto this tree, but you can reorder categories. The between threshold
+		is set to 5, so if you are near the top or bottom of a node the drop will be above or below it.
+	</p>
+	<div id="memoryStoreTree"></div>
+
+	<h2>Dojo.data (<code>dojo/data</code>) Examples</h2>
+	<div>
+		<div role="presentation" style="display: inline-block; vertical-align: top; width: 49%;">
+			<h3>Items: </h3>
+			<p>List of Items to be categorized</p>
+			<div data-dojo-id="c2" data-dojo-type="dojo/dnd/Source" class="container" style="height:175px; overflow:auto;">
+				<div class="dojoDndItem" id="1001">Apple</div>
+				<div class="dojoDndItem" id="1002">Orange</div>
+				<div class="dojoDndItem" id="1003">Banana</div>
+				<div class="dojoDndItem" id="1004">Tomato</div>
+				<div class="dojoDndItem" id="1005">Pepper</div>
+				<div class="dojoDndItem" id="1006">Wheat</div>
+				<div class="dojoDndItem" id="1007">Corn</div>
+				<div class="dojoDndItem" id="1008">Spinach</div>
+				<div class="dojoDndItem" id="1009">Cucumber</div>
+				<div class="dojoDndItem" id="1010">Carrot</div>
+				<div class="dojoDndItem" id="1011">Potato</div>
+				<div class="dojoDndItem" id="1012">Grape</div>
+				<div class="dojoDndItem" id="1013">Lemon</div>
+				<div class="dojoDndItem" id="1014">Lettuce</div>
+				<div class="dojoDndItem" id="1015">Peanut</div>
+			</div>
+		</div>
+
+		<div role="presentation" style="display: inline-block; width: 49%;">
+			<h3>Collection</h3>
+			<p>
+				Drop items from table on left onto this tree, only on to categories or between other items; should fail to let you drop on other items.
+				Can also move items within this tree. The drag threshold is set to 8, between threshold is set to 5, so you have a few pixels
+				of buffer before drag operations start.
+			</p>
+			<div data-dojo-id="itemModel"
+				data-dojo-type="dijit/tree/TreeStoreModel"
+				data-dojo-props="store: myStore,
+					query: {id: '0'},
+					childrenAttrs: ['items', 'children']">
+			</div>
+			<div id="itemTree"
+				data-dojo-type="dijit/Tree"
+				data-dojo-props="'class': 'container',
+					model: itemModel,
+					checkItemAcceptance: itemTreeCheckItemAcceptance,
+					dragThreshold: 8,
+					betweenThreshold: 5,
+					getIconClass: getIcon,
+					persist: false">
+			</div>
+		</div>
+	</div>
+
+	<h3>Collection Count Summary</h3>
+	<p>
+		You can't drop items onto this tree, but you can reorder categories. The between threshold
+		is set to 5, so if you are near the top or bottom of a node the drop will be above or below it.
+	</p>
+	<div id="collectionsTree"
+		data-dojo-type="dijit/Tree"
+		data-dojo-props="'class': 'container',
+			model: catModel,
+			getLabel: catTreeCustomLabel,
+			betweenThreshold: 5,
+			checkItemAcceptance: collectionTreeCheckItemAcceptance,
+			getIconClass: getIcon,
+			persist: false">
+	</div>
+
+	<h3>Custom</h3>
+	<p>Should add this category to the store.  The second parameter is the value for numberOfItems.</p>
+	<div class="container">
+		<label for="newCat">New category:</label><input id="newCat" type="text" value="Pottedmeat" />
+		<label for="numItems">numberOfItems:</label><input id="numItems" type="text" value="0" size="3"/>
+		<div id="addButton" data-dojo-type="dijit/form/Button">Add Category</div>
+	</div>
+
+	<script type="text/javascript" src="../boilerplate.js"></script>
+
+	<script type="text/javascript">
+		/* dojo/store examples */
+		require([
+			"dojo/_base/array",
+			"dojo/_base/lang",
+			"dojo/dom",
+			"dojo/store/Memory",
+			"dojo/store/Observable",
+			"dijit/Tree",
+			/testController=selector/.test(window.location.search) ? "dijit/tree/_dndSelector" : "dijit/tree/dndSource",
+			"dijit/tree/ObjectStoreModel",
+			"dojo/text!../_data/categories.json"
+		], function(arrayUtil, lang, dom, MemoryStore, Observable, Tree, testController, ObjectStoreModel, categoriesJson){
+			Tree.prototype.dndController = testController;
+
+			var TreeStore = MemoryStore.createSubclass([], {
+				getChildren: function(item){
+					return this.query({parentId: item.id});
+				},
+
+				mayHaveChildren: function(item){
+					return Boolean(item.numberOfItems);
+				},
+
+				put: function(object, options){
+					var id = this.inherited(arguments);
+					var parentId = options && options.parent && this.getIdentity(options.parent);
+					var oldParentId = options && options.oldParent && this.getIdentity(options.oldParent);
+
+					if(parentId !== oldParentId){
+						object.parentId = parentId;
+						if(isNaN(options.parent.numberOfItems)){
+							options.parent.numberOfItems = 1;
+						}
+						else{
+							options.parent.numberOfItems += 1;
+						}
+						this.put(options.parent);
+
+						if(options.oldParent){
+							options.oldParent.numberOfItems = Math.max(0, options.oldParent.numberOfItems - 1);
+							this.put(options.oldParent);
+						}
+					}
+
+					return id;
+				}
+			});
+
+			function transformData(data){
+				arrayUtil.forEach(data, function(item){
+					var children = item.children || item.items || [];
+
+					arrayUtil.forEach(children, function(child){
+						var childItem = arrayUtil.filter(data, function (o) {
+							return o.id === child._reference;
+						})[0];
+
+						if(childItem){
+							childItem.parentId = item.id;
+						}
+					});
+
+					item.children = undefined;
+					item.items = undefined;
+				});
+
+				return data;
+			}
+
+			memoryStore = new Observable(new TreeStore({
+				data: transformData(JSON.parse(categoriesJson).items)
+			}));
+
+			memoryStoreModel = new ObjectStoreModel({
+				store: memoryStore,
+				query: { id: "0" },
+				mayHaveChildren: function(item){
+					return Boolean(item.numberOfItems);
+				}
+			});
+
+			function getLabel(item){
+				return item.name + (item.numberOfItems ? (" (" + (item.numberOfItems || "0") + ")") : "");
+			};
+
+			function getIcon(item){
+				return ("numberOfItems" in item) ? "myFolder" : "myItem";
+			};
+
+			memoryStoreTree = new Tree({
+				className: "container",
+				model: memoryStoreModel,
+				betweenThreshold: 5,
+				persist: false,
+				getLabel: getLabel,
+				checkItemAcceptance: function(node, source){
+					return source.tree && source.tree.id === "memoryStoreTree";
+				},
+				getIconClass: getIcon
+			}, dom.byId("memoryStoreTree"));
+		});
+	</script>
+
+	<script type="text/javascript">
+		/* dojo/data examples */
+		require([
+			"dojo/aspect",
+			"dojo/data/ItemFileWriteStore",
+			"dojo/dom",
+			"dojo/parser",
+			"dojo/topic",
+			"dijit/registry",
+			"dijit/tree/TreeStoreModel",
+
+			// for parser
+			"dojo/dnd/Source",
+			"dijit/Menu",
+			"dijit/form/Button",
+			"dijit/focus",	// not used directly, but needed by robot test drivers, ex: Tree_Selector.html
+			"dijit/Tree"
+		], function(aspect, ItemFileWriteStore, dom, parser, topic, registry, TreeStoreModel){
+
+			myStore = new ItemFileWriteStore({
+				url: "../_data/categories.json"
+			});
+
+			catModel = new TreeStoreModel({
+				store: myStore,
+				query: {id: "0"}
+			});
+
+			//create a custom label for tree one consisting of the label property pluss the value of the numberOfItems Column
+			catTreeCustomLabel = function(item){
+				var label = myStore.getLabel(item);
+				var num = myStore.hasAttribute(item, "numberOfItems") ? myStore.getValues(item,"numberOfItems") : "?";
+				return label + ' (' + num+ ')';
+			};
+
+			// on collection tree, only accept itself as the source tree
+			collectionTreeCheckItemAcceptance = function(node, source, position){
+				return source.tree && source.tree.id == "collectionsTree";
+			}
+
+			//on item tree , we want to drop on containers, the root node itself, or between items in the containers
+			itemTreeCheckItemAcceptance = function(node, source, position){
+				/*
+				 source.forInSelectedItems(function(item){
+				 console.log("testing to drop item of type " + item.type[0] + " and data " + item.data + ", position " + position);
+				 });
+				 */
+				var item = registry.getEnclosingWidget(node).item;
+				if(item && (item.root || myStore.hasAttribute(item,"numberOfItems"))){
+					return true;
+				}
+				return position != "over";
+			};
+
+			getIcon = function(item){
+				if(!item || myStore.hasAttribute(item, "numberOfItems")){
+					return "myFolder";
+				}
+				return "myItem"
+			};
+
+			parser.parse();
+
+			selected = [];
+
+			globalId = 1000;
+			lastSelected = null;
+
+			// record the selection from tree 1
+			topic.subscribe("myTree", function(message){
+				if(message.event == "execute"){
+					// console.log("Tree1 Select: ",dijit.byId("myTree").store.getLabel(message.item));
+					lastSelected = selected["myTree"] = message.item;
+				}
+			});
+
+			// record the selection from tree 2
+			topic.subscribe("myTree2", function(message){
+				if(message.event == "execute"){
+					// console.log("Tree2 Select: ",dijit.byId("myTree2").store.getLabel(message.item));
+					lastSelected = selected["myTree2"] = message.item;
+				}
+			});
+
+			// connect to the add button and have it add a new container to the store as necessary
+			registry.byId("addButton").on("click", function(){
+				var pInfo = {
+					parent: lastSelected,
+					attribute: "children"
+				};
+
+				myStore.newItem({
+					name: dom.byId('newCat').value,
+					numberOfItems:0,
+					id:globalId++
+				}, pInfo);
+			});
+
+			// since we don't have a server, we're going to connect to the store and
+			// do a few things the server/store combination would normal be taking care of for us.
+			// TODO: This isn't monitoring moves, deletes, etc.  Instead of this code, why not monitor
+			// when an items children[] list changes?
+			aspect.after(myStore, "onNew", function(item, pInfo){
+				var p = pInfo && pInfo.item;
+				if(p){
+					var currentTotal = myStore.getValues(p, "numberOfItems")[0];
+					myStore.setValue(p, "numberOfItems", ++currentTotal);
+				}
+			}, true);
+		});
+	</script>
+</body>
+</html>
