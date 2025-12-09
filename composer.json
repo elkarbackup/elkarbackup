@@ -58,10 +58,6 @@
 		]
 	},
 	"config" : {
-		"preferred-install" : {
-			"*" : "dist"
-		},
-		"sort-packages" : true,
 		"audit" : {
 			"abandoned" : "ignore",
 			"block-insecure" : false
@@ -69,7 +65,14 @@
 		"allow-plugins" : {
 			"symfony/flex" : true,
 			"incenteev/composer-parameter-handler" : true
-		}
+		},
+		"preferred-install" : {
+			"*" : "dist"
+		},
+		"platform": {
+			"php" : "7.4.33"
+		},
+		"sort-packages" : true
 	},
 	"autoload" : {
 		"psr-4" : {
@@ -105,6 +108,7 @@
 	"require-dev": {
 		"hautelook/alice-bundle": "^2.9",
 		"justinrainbow/json-schema": "^5.2",
+		"phpunit/phpunit": "8.5.34",
 		"symfony/browser-kit": "^4.4",
 		"symfony/css-selector": "^4.4",
 		"symfony/http-client": "4.4.*",

@@ -16,4 +16,4 @@ mkdir -p /tmp/elkarbackup-tests/uploads
 $DIR/bin/console hautelook:fixtures:load --append
 
 echo "Running unit tests"
-$DIR/bin/phpunit "${@:1}"
+$DIR/vendor/bin/phpunit "${@:1}"
