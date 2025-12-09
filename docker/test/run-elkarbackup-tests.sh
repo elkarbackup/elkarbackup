@@ -2,6 +2,17 @@
 
 DIR="$(dirname "$(readlink -f "$0")")"
 
+if [ -z "${GITHUB_ACTIONS:-}" ]; then
+    echo "::group::🏗 ️ Building Elkarbackup Docker Image for E2E tests..."
+    (
+        cd $DIR/../.. && docker build \
+            -f docker/Dockerfile \
+            -t elkarbackup:test \
+            .
+    )
+    echo "::endgroup::"
+fi
+
 echo "::group::Dockerized tests"
 docker compose -f "${DIR}/docker-compose.yml" up --build --abort-on-container-exit --exit-code-from elkarbackup
 err=$?
