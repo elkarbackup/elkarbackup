@@ -6,6 +6,7 @@ namespace App\Api\Dto;
 class ClientOutput
 {
     private $description;
+    private $diskUsage = 0;
     private $id;
     private $isActive = true;
     private $maxParallelJobs = 1;
@@ -18,6 +19,7 @@ class ClientOutput
     private $rsyncShortArgs;
     private $sshArgs;
     private $url;
+    private $state;
 
     /**
      * @return string
@@ -25,6 +27,14 @@ class ClientOutput
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getDiskUsage()
+    {
+        return $this->diskUsage;
     }
 
     /**
@@ -125,11 +135,27 @@ class ClientOutput
     }
 
     /**
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
      * @param string $description
      */
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * @param integer $diskUsage
+     */
+    public function setDiskUsage($diskUsage)
+    {
+        $this->diskUsage = $diskUsage;
     }
 
     /**
@@ -226,5 +252,13 @@ class ClientOutput
     public function setUrl($url)
     {
         $this->url = $url;
+    }
+
+    /**
+     * @return string
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
     }
 }

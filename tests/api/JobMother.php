@@ -26,7 +26,8 @@ class JobMother
             "postScripts" => "JobOutput/postScripts",
             "preScripts" => "JobOutput/preScripts",
             "token" => "JobOutput/token",
-            "useLocalPermissions" => "JobOutput/useLocalPermissions"
+            "useLocalPermissions" => "JobOutput/useLocalPermissions",
+            "lastResult" => "JobOutput/lastResult"
         ],
         "@type" => "Job"
     ];
@@ -52,7 +53,8 @@ class JobMother
             'postScripts' => [],
             'preScripts' => [],
             'token' => null,
-            'useLocalPermissions' => true
+            'useLocalPermissions' => true,
+            'lastResult' => null
         ];
         $response = new RequestObject(self::JOB_CONTEXT, $data);
         return $response;
@@ -121,7 +123,8 @@ class JobMother
             'postScripts' => $postScripts,
             'preScripts' => $preScripts,
             'token' => $token,
-            'useLocalPermissions' => $localPermissions
+            'useLocalPermissions' => $localPermissions,
+            'lastResult' => null
         ];
         $response = new RequestObject(self::JOB_CONTEXT, $data);
         return $response;
