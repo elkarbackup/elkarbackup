@@ -26,7 +26,7 @@ class LoggerHandler extends AbstractProcessingHandler implements ContainerAwareI
     private $messages;
     private $isRecordingMessage;
 
-    public function __construct($level = Logger::DEBUG, $bubble = true, EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, $level = Logger::DEBUG, $bubble = true)
     {
         parent::__construct($level, $bubble);
         $this->em = $em;
