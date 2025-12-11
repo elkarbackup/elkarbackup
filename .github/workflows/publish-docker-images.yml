@@ -67,8 +67,8 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           tags: ${{ steps.meta_master.outputs.tags }}
           labels: ${{ steps.meta_master.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=repo
+          cache-to: type=gha,mode=max,scope=repo
 
       - name: Build and push (tag)
         if: startsWith(github.ref, 'refs/tags/v')
@@ -81,8 +81,8 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           tags: ${{ steps.meta_tag.outputs.tags }}
           labels: ${{ steps.meta_tag.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=repo
+          cache-to: type=gha,mode=max,scope=repo
 
       - name: Image digest (master)
         if: github.ref == 'refs/heads/master'
