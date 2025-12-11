@@ -135,14 +135,13 @@ The following environment variables are also honored for configuring your ElkarB
 
 ### Elkarbackup configuration
 
-| name                               | default value                  | description                                          |
-| ---------------------------------- | ------------------------------ | ---------------------------------------------------- |
-| SYMFONY__EB__SECRET                | random value will be generated | framework secret                                     |
-| SYMFONY__EB__UPLOAD\_\_DIR         | /app/uploads                   | scripts directory                                    |
-| SYMFONY__EB__BACKUP\_\_DIR         | /app/backups                   | backups directory                                    |
-| SYMFONY__EB__TMP\_\_DIR            | /app/tmp                       | tmp directory                                        |
-| SYMFONY__EB__URL\_\_PREFIX         | null                           | url path prefix (i.e. /elkarbackup)                  |
-| SYMFONY__EB__PUBLIC\_\_KEY         | /app/.ssh/id_rsa.pub           | ssh public key path                                  |
-| SYMFONY__EB__MAX**PARALLEL**JOBS   | 1                              | max parallel jobs                                    |
-| SYMFONY__EB__POST**ON**PRE\_\_FAIL | true                           | post on pre fail                                     |
-| SYMFONY__EB__TRUSTED_PROXIES       | null                           | Comma separated list of proxies we trust for headers |
+| name                             | default value                  | description                                          |
+| -------------------------------- | ------------------------------ | ---------------------------------------------------- |
+| SYMFONY__EB__SECRET              | random value will be generated | framework secret                                     |
+| SYMFONY__EB__UPLOAD__DIR         | /app/uploads                   | scripts directory                                    |
+| SYMFONY__EB__BACKUP__DIR         | /app/backups                   | backups directory                                    |
+| SYMFONY__EB__TMP__DIR            | /app/tmp                       | tmp directory                                        |
+| SYMFONY__EB__URL__PREFIX         | null                           | url path prefix (i.e. /elkarbackup)                  |
+| SYMFONY__EB__PUBLIC__KEY         | /app/.ssh/id_rsa.pub           | ssh public key path                                  |
+| SYMFONY__EB__MAX__PARALLEL__JOBS | 1                              | max parallel jobs                                    |
+| SYMFONY__EB__POST__ON__PRE__FAIL | true                           | post on pre fail                                     |
