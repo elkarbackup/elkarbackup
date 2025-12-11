@@ -2,8 +2,10 @@ name: Publish Docker images
 on:
   workflow_dispatch:
   push:
+    branches:
+      - master
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   main:
@@ -15,12 +17,23 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v6
 
-      - name: Docker meta
-        id: meta
+      - name: GHCR metadata (master)
+        if: github.ref == 'refs/heads/master'
+        id: meta_master
         uses: docker/metadata-action@v5
         with:
-          images: |
-            ghcr.io/${{ github.repository }}
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value={{sha}}
+          flavor: |
+            latest=false
+
+      - name: GHCR metadata (tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        id: meta_tag
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
           tags: |
             type=raw,value={{sha}}
             type=semver,pattern={{version}}
@@ -43,18 +56,38 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
-        id: docker_build
+      - name: Build and push (master)
+        if: github.ref == 'refs/heads/master'
+        id: docker_build_master
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./docker/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm64,linux/arm/v7
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta_master.outputs.tags }}
+          labels: ${{ steps.meta_master.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Build and push (tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        id: docker_build_tag
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./docker/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          tags: ${{ steps.meta_tag.outputs.tags }}
+          labels: ${{ steps.meta_tag.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Image digest (master)
+        if: github.ref == 'refs/heads/master'
+        run: echo ${{ steps.docker_build_master.outputs.digest }}
+
+      - name: Image digest (tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: echo ${{ steps.docker_build_tag.outputs.digest }}
