@@ -27,3 +27,4 @@ parameters:
     max_parallel_jobs: 1
     post_on_pre_fail: true
     app.version: 'v2.3.5'
+    trusted_proxies: null
