@@ -12,6 +12,15 @@ framework:
     templating:      { engines: ['twig'] } #assets_version: SomeVersionScheme
     default_locale:  '%locale%'
 
+    # Trusted proxies and headers for HTTPS scheme detection
+    trusted_proxies: '%trusted_proxies%'
+    trusted_headers:
+        - x-forwarded-for
+        - x-forwarded-proto
+        - x-forwarded-host
+        - x-forwarded-port
+        - x-forwarded-prefix
+
     session:
         handler_id: null
         cookie_secure: auto
