@@ -69,13 +69,33 @@ class LogRecord
       */
     protected $logFile;
 
+    /**
+     * Truncate message to given length
+     *
+     * @param mixed $msg
+     * @param integer $length
+     * @return mixed
+     */
+    private function truncateMsg($msg, $length = 255)
+    {
+        if ($msg === null) {
+            return null;
+        } else {
+            if (mb_strlen($msg) > $length) {
+                // Truncate to match column length (255 here)
+                return mb_substr($msg, 0, $length - 3) . "...";
+            }
+            return $msg;
+        }
+    }
+
     public function __construct($channel, $dateTime, $level, $levelName, $message, $link = NULL, $source = NULL, $userId = NULL, $userName = NULL, $logFile = NULL)
     {
         $this->channel   = $channel;
         $this->dateTime  = $dateTime;
         $this->level     = $level;
         $this->levelName = $levelName;
-        $this->link      = $link;
+        $this->link      = $this->truncateMsg($link, 255);
         $this->message   = $message;
         $this->source    = $source;
         $this->userId    = $userId;
