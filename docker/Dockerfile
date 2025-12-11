@@ -34,16 +34,9 @@ ENV DOCKERDIR=./docker
 
 ## Composer install
 COPY composer.json composer.lock .
-COPY config/parameters.yaml.dist /app/elkarbackup/config/parameters.yaml.dist
-COPY $DOCKERDIR/parameters.yaml.docker /app/elkarbackup/config/parameters.yaml
-RUN set -ex && \
-      cd /app/elkarbackup && \
-      mkdir -p public/css public/fonts public/js public/js/bootstrap public/js/moment public/js/jquery && \
-      composer update --no-interaction --no-audit
-
-## Composer install
-COPY composer.json composer.lock .
-COPY config/parameters.yaml.dist config/
+COPY config/parameters.yaml.dist ./config/parameters.yaml.dist
+COPY $DOCKERDIR/parameters.yaml.docker ./config/parameters_docker.yaml.dist
+COPY $DOCKERDIR/monolog.yaml.docker ./config/packages/prod/monolog.yaml
 RUN set -ex && \
       cd /app/elkarbackup && \
       mkdir -p public/css public/fonts public/js public/js/bootstrap public/js/moment public/js/jquery && \
@@ -59,16 +52,10 @@ RUN set -ex; \
       # We can disable it without negative consequences
       rm migrations/Version20130306101349.php;
 
-## Custom parameters.yml template with envars
-COPY $DOCKERDIR/parameters.yaml.docker /app/elkarbackup/config/parameters.yaml.dist
-
-## Custom monolog.yaml (to log to stderr)
-COPY $DOCKERDIR/monolog.yaml.docker /app/elkarbackup/config/packages/prod/monolog.yaml
-
 ## Disable "Manage parameters" menu item
 RUN sed -i \
       "/array([[:space:]]*'label'[[:space:]]*=>[[:space:]]*\$t->trans('Manage parameters'/,/),/d" \
-      /app/elkarbackup/src/Menu/Builder.php
+      ./src/Menu/Builder.php
 
 
 ##
