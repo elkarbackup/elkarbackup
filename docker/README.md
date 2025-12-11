@@ -1,10 +1,7 @@
 # ElkarBackup
 
 ## Images
-
-- 2.1.0, 2.1, 2, **latest (default)**
-- 2.0.2, 2.0
-- 1.3.5
+An overview of all container images is available at https://github.com/elkarbackup/elkarbackup/pkgs/container/elkarbackup
 
 ## How to use this image
 
