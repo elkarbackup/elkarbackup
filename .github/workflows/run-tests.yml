@@ -27,8 +27,8 @@ jobs:
           file: docker/Dockerfile
           tags: elkarbackup:test
           load: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=repo
+          cache-to: type=gha,mode=max,scope=repo
 
       - name: Cache mariadb:lts base image
         uses: docker/build-push-action@v6
@@ -37,8 +37,8 @@ jobs:
           file: docker/test/Dockerfile.cache-mariadb
           tags: local/mariadb-cache:latest
           load: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=repo
+          cache-to: type=gha,mode=max,scope=repo
 
       - name: Run test suite
         run: docker/test/run-elkarbackup-tests.sh
