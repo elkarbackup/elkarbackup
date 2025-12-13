@@ -19,5 +19,6 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         repository: ${{ github.repository }}
+        readme-filepath: ./docker/README.md
         short-description: ${{ github.event.repository.description }}
         enable-url-completion: true
