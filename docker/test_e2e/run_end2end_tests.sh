@@ -2,7 +2,9 @@
 
 set -euo pipefail
 
-set -x
+if [[ "${ACTIONS_STEP_DEBUG}" == "true" ]]; then
+  set -x
+fi
 
 credentials="root:root"
 host="http://localhost"
@@ -233,7 +235,7 @@ for i in $(seq 1 $cnt); do
 		echo "Container logs:"
 		docker compose -f "${DIR}/docker-compose.yml" logs elkarbackup
 		echo "Log records:"
-		docker exec -it test_e2e-elkarbackup-1 bash -c \
+		docker exec test_e2e-elkarbackup-1 bash -c \
 			"mysql \
 				-h\$DATABASE_HOST \
 				-u\$DATABASE_USER \
@@ -281,8 +283,10 @@ for i in $(seq 1 $cnt); do
 	if [ "$i" -eq $cnt ]; then
 		echo "Container logs:"
 		docker compose -f "${DIR}/docker-compose.yml" logs elkarbackup
+		echo "Directory contents:"
+		tree docker/test_e2e/tmp/client_restore/ || true
 		echo "Log records:"
-		docker exec -it test_e2e-elkarbackup-1 bash -c \
+		docker exec test_e2e-elkarbackup-1 bash -c \
 			"mysql \
 				-h\$DATABASE_HOST \
 				-u\$DATABASE_USER \
