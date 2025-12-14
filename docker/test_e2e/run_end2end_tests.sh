@@ -117,6 +117,28 @@ function run_job() {
 	curl -s -b "${DIR}/tmp/cookies.txt" -X POST ${host}/client/${client_id}/job/${job_id}/run
 }
 
+function restore_job() {
+	local client_id=$1
+	local job_id=$2
+	local backupLocation_id=$3
+	local path="$4"
+	local dest="$5"
+
+	token=$(curl -s -b "${DIR}/tmp/cookies.txt" -X GET "${host}/client/${client_id}/job/${job_id}/restore/${backupLocation_id}/${path}" | \
+		pup 'input[name="restore_backup[_token]"] attr{value}')
+	if [ -z "$token" ]; then
+		log_fail "Failed to get restore token."
+		echo "::endgroup::"
+		exit 1
+	fi
+	curl -s -L -b "${DIR}/tmp/cookies.txt" -X POST \
+		"${host}/client/${client_id}/job/${job_id}/restore/${backupLocation_id}/${path}" \
+		-F restore_backup[client]=${client_id} \
+		-F restore_backup[source]="${path}" \
+		-F restore_backup[path]="${dest}" \
+		-F restore_backup[_token]=$token
+}
+
 function get_job_status() {
 	local client_id=$1
 	local job_id=$2
@@ -190,7 +212,7 @@ echo "::endgroup::"
 
 login
 
-echo "::group::🚀 Running job ${client_id}.${job_id}..."
+echo "::group::📥 Running job ${client_id}.${job_id}..."
 if run_job "$client_id" "$job_id" | grep -q "Job queued successfully"; then
 	log_ok "Backup job queued successfully."
 else
@@ -232,6 +254,43 @@ for i in $(seq 1 $cnt); do
 	fi
 	sleep 5
 done
+echo "::endgroup::"
+
+echo "::group::↩️ Running restore job ${client_id}.${job_id}..."
+if restore_job "$client_id" "$job_id" 1 Daily.0/home/testuser/backup_data /home/testuser/restore_data | grep -q "Your backup restore process has been enqueued"; then
+	log_ok "Restore job queued successfully."
+else
+	log_fail "Failed to start restore job."
+	exit 1
+fi
+echo "::endgroup::"
+
+echo "::group::⌛ Waiting for Restore Job to complete..."
+cnt=40
+for i in $(seq 1 $cnt); do
+	if diff -r docker/test_e2e/tmp/client_data docker/test_e2e/tmp/client_restore/backup_data/ 2> /dev/null; then
+		log_ok "Restore job completed successfully."
+		break
+	fi
+		if [ "$i" -eq $cnt ]; then
+		echo "Container logs:"
+		docker compose -f "${DIR}/docker-compose.yml" logs elkarbackup
+		echo "Log records:"
+		docker exec -it test_e2e-elkarbackup-1 bash -c \
+			"mysql \
+				-h\$DATABASE_HOST \
+				-u\$DATABASE_USER \
+				-p\$DATABASE_PASSWORD \
+				-Delkarbackup \
+				-e 'SELECT datetime, level, link, message \
+					FROM LogRecord;"
+		log_fail "Restore job failed."
+		echo "::endgroup::"
+		exit 1
+	fi
+	sleep 5
+done
+echo "::endgroup::"
 
 echo -e "\033[1;32m🥳 Success: All checks passing!\033[0m"
 exit 0

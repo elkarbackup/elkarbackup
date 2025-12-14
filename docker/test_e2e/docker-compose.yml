@@ -6,7 +6,7 @@ services:
     #  dockerfile: ./docker/Dockerfile
     image: elkarbackup:test
     environment:
-      SYMFONY_ENV: e2e
+      SYMFONY_ENV: test
       DATABASE_HOST: "db"
       DATABASE_PORT: "3306"
       DATABASE_NAME: "elkarbackuptests"
@@ -34,5 +34,6 @@ services:
     volumes:
       - ./tmp/sshkeys/id_rsa.pub:/home/testuser/.ssh/authorized_keys:ro
       - ./tmp/client_data:/home/testuser/backup_data
+      - ./tmp/client_restore:/home/testuser/restore_data
     expose:
       - "22"
