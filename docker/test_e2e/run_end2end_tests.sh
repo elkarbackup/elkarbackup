@@ -190,7 +190,8 @@ echo "::endgroup::"
 
 echo "::group::⚙️ Setting up backup client and job..."
 # Create some data to backup
-mkdir -p "${DIR}/tmp/client_data"
+mkdir -p "${DIR}/tmp/client_data" "${DIR}/tmp/client_restore/"
+chmod 777 "${DIR}/tmp/client_restore/"
 for i in $(seq 1 5); do
 	echo "This is a test file number $i" > "${DIR}/tmp/client_data/file${i}.txt"
 done
