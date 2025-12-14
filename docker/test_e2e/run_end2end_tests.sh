@@ -257,10 +257,14 @@ done
 echo "::endgroup::"
 
 echo "::group::↩️ Running restore job ${client_id}.${job_id}..."
-if restore_job "$client_id" "$job_id" 1 Daily.0/home/testuser/backup_data /home/testuser/restore_data | grep -q "Your backup restore process has been enqueued"; then
+output=$(restore_job "$client_id" "$job_id" 1 Daily.0/home/testuser/backup_data /home/testuser/restore_data)
+if echo "$output" | grep -q "Your backup restore process has been enqueued"; then
 	log_ok "Restore job queued successfully."
 else
 	log_fail "Failed to start restore job."
+	echo "Web output:"
+	echo "$output"
+	echo "::endgroup::"
 	exit 1
 fi
 echo "::endgroup::"
