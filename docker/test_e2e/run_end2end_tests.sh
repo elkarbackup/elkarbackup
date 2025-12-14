@@ -293,7 +293,7 @@ for i in $(seq 1 $cnt); do
 				-p\$DATABASE_PASSWORD \
 				-Delkarbackup \
 				-e 'SELECT datetime, level, link, message \
-					FROM LogRecord;"
+					FROM LogRecord;'"
 		log_fail "Restore job failed."
 		echo "::endgroup::"
 		exit 1
