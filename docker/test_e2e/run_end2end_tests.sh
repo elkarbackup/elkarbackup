@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+set -x
+
 credentials="root:root"
 host="http://localhost"
 
@@ -276,7 +278,7 @@ for i in $(seq 1 $cnt); do
 		log_ok "Restore job completed successfully."
 		break
 	fi
-		if [ "$i" -eq $cnt ]; then
+	if [ "$i" -eq $cnt ]; then
 		echo "Container logs:"
 		docker compose -f "${DIR}/docker-compose.yml" logs elkarbackup
 		echo "Log records:"
