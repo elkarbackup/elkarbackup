@@ -40,7 +40,7 @@ class LogRecord
     protected $levelName;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $link;
 
