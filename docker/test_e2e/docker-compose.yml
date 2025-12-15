@@ -13,11 +13,13 @@ services:
       DATABASE_USER: "root"
       DATABASE_PASSWORD: "root"
       SYMFONY__DATABASE__PASSWORD: "root"
+      SYMFONY__MAILER__HOST: "mailhog"
       EB_CRON: "enabled"
     ports:
       - "80:80"
     depends_on:
       - db
+      - mailhog
     volumes:
       - ./tmp/backups:/var/spool/elkarbackup/backups
       - ./tmp/sshkeys:/app/.ssh
@@ -37,3 +39,9 @@ services:
       - ./tmp/client_restore:/home/testuser/restore_data
     expose:
       - "22"
+  mailhog:
+    image: mailhog/mailhog
+    environment:
+      MH_SMTP_BIND_ADDR: "0.0.0.0:25"
+    ports:
+      - "8025:8025"

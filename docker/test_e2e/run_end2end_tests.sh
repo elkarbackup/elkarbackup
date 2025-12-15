@@ -98,11 +98,12 @@ function create_client_and_job() {
 		"exclude": "",
 		"include": "",
 		"isActive": true,
-		"minNotificationLevel": 400,
+		"minNotificationLevel": 0,
 		"name": "Test Job",
-		"notificationsEmail": null,
+		"notificationsEmail": "report@example.com",
 		"notificationsTo": [
-				"owner"
+				"owner",
+				"email"
 		],
 		"path": "/home/testuser/backup_data",
 		"policy": 1,
@@ -150,6 +151,10 @@ function get_job_status() {
 		pup "tr[class*=\"client-${client_id} job-${job_id}\"] td[class\$=\"status\"] span text{}" | \
 		xargs \
 		|| echo "unknown"
+}
+
+function get_mail_subject() {
+	curl -s http://localhost:8025/api/v2/messages | jq -r '.items[0].Content.Headers.Subject[0]'
 }
 
 mkdir -p "${DIR}/tmp"
@@ -254,6 +259,24 @@ for i in $(seq 1 $cnt); do
 		echo "Web output:"
 		curl -s -b "${DIR}/tmp/cookies.txt" -X GET ${host}/clients || true
 		log_fail "ElkarBackup did not complete backup job after $cnt attempts..."
+		echo "::endgroup::"
+		exit 1
+	fi
+	sleep 5
+done
+echo "::endgroup::"
+
+echo "::group::📩 Checking for Mail notification..."
+cnt=10
+for i in $(seq 1 $cnt); do
+	if get_mail_subject | grep -q "Log for backup from job"; then
+		log_ok "Mail notification received successfully."
+		break
+	fi
+	if [ "$i" -eq $cnt ]; then
+		echo "Container logs:"
+		docker compose -f "${DIR}/docker-compose.yml" logs elkarbackup
+		log_fail "ElkarBackup did not send mail notification after $cnt attempts..."
 		echo "::endgroup::"
 		exit 1
 	fi
