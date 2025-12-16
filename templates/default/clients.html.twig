@@ -106,15 +106,17 @@
                 {% endif %}
 
                 {# human readable disk usage #}
-                {% if (client.diskUsage / 1024 / 1024) > 1024 %}
-                    {% set cdu = (client.diskUsage / 1024 / 1024 / 1024 ) | number_format(1) %}
-                    {% set cduunit = "TB" %}
-                {% elseif client.diskUsage / 1024 > 1024 %}
-                    {% set cdu = (client.diskUsage / 1024 / 1024 ) | number_format(1) %}
-                    {% set cduunit = "GB" %}
-                {% else %}
-                    {% set cdu = (client.diskUsage / 1024) | number_format(0) %}
-                    {% set cduunit = "MB" %}
+                {% if fsDiskUsageEnabled %}
+                    {% if (client.diskUsage / 1024 / 1024) > 1024 %}
+                        {% set cdu = (client.diskUsage / 1024 / 1024 / 1024 ) | number_format(1) %}
+                        {% set cduunit = "TB" %}
+                    {% elseif client.diskUsage / 1024 > 1024 %}
+                        {% set cdu = (client.diskUsage / 1024 / 1024 ) | number_format(1) %}
+                        {% set cduunit = "GB" %}
+                    {% else %}
+                        {% set cdu = (client.diskUsage / 1024) | number_format(0) %}
+                        {% set cduunit = "MB" %}
+                    {% endif %}
                 {% endif %}
     
                 {# used percentage (if quota is set) #}
@@ -127,7 +129,11 @@
                     <td><span class="client-icon"></span></td>
                     <td class="vert-align id"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" href="{{ path('editClient', {id: client.id}) }}"> {{ client.id }}</a></td>
                     <td class="vert-align name"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit client{% endtrans %}" href="{{ path('editClient', {id: client.id}) }}">{{ client.name }}</a></td>
-                    <td class="vert-align diskusage" style="text-align:center{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{{ cdu }} {{ cduunit }}{% if client.quota > 0 %} ({{ cduused }}%){% endif %}</td>
+                    {% if fsDiskUsageEnabled %}
+                        <td class="vert-align diskusage" style="text-align:center{% if client.quota > 0 and client.diskUsage / client.quota > warning_load_level %};color:red{% endif %}">{{ cdu }} {{ cduunit }}{% if client.quota > 0 %} ({{ cduused }}%){% endif %}</td>
+                    {% else %}
+                        <td class="vert-align diskusage" style="text-align:center"><span class="label label-default">Disabled</span></td>
+                    {% endif %}
                     <td class="vert-align logentry"> <a data-toggle="tooltip" data-placement="top" title="{{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }}" href="logs?filter[gte][l.level]=0&filter[eq][l.source]=&filter[like][l.link]=%2Fclient%2F{{ client.id }}"> {{ client.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }} </a></td>
                     <td class="vert-align status"><span class="label
                         {% if client.isActive %}
@@ -173,22 +179,30 @@
                 </tr>
                 {% for job in client.jobs %}
                     {# human readable disk usage #}
-                    {% if (job.diskUsage / 1024 / 1024) > 1024 %}
-                        {% set jdu = (job.diskUsage / 1024 / 1024 / 1024) | number_format(1) %}
-                        {% set jduunit = "TB" %}
-                    {% elseif job.diskUsage / 1024 > 1024 %}
-                        {% set jdu = (job.diskUsage / 1024 / 1024) | number_format(1) %}
-                        {% set jduunit = "GB" %}
+                    {% if fsDiskUsageEnabled %}
+                        {% if (job.diskUsage / 1024 / 1024) > 1024 %}
+                            {% set jdu = (job.diskUsage / 1024 / 1024 / 1024) | number_format(1) %}
+                            {% set jduunit = "TB" %}
+                        {% elseif job.diskUsage / 1024 > 1024 %}
+                            {% set jdu = (job.diskUsage / 1024 / 1024) | number_format(1) %}
+                            {% set jduunit = "GB" %}
+                        {% else %}
+                            {% set jdu = (job.diskUsage / 1024) | number_format(0) %}
+                            {% set jduunit = "MB" %}
+                        {% endif %}
                     {% else %}
-                        {% set jdu = (job.diskUsage / 1024) | number_format(0) %}
-                        {% set jduunit = "MB" %}
+                        {% set jdu_str = "Disabled" %}
                     {% endif %}
                     <tr id="job-{{job.id}}" class="job-row client-{{client.id}} job-{{job.id}} {% if (job.isActive == false) or (client.isActive == false) %}disabled{% endif %}">
                         <td><input class="select-toggle-check" type="checkbox" value="job"></td>
                         <td><span class="glyphicon glyphicon-folder-open"></span></td>
                         <td class="vert-align id"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.id }}.{{ job.id }}</a></td>
                         <td class="vert-align name"><a data-toggle="tooltip" data-placement="top" title="{% trans %}Edit Job{% endtrans %}" href="{{ path('editJob', {idClient: client.id, idJob:job.id}) }}">{{ client.name ~ "/" ~ job.name }}</a></td>
-                        <td class="vert-align diskusage" style="text-align:center;">{{ jdu }} {{ jduunit }}</td>
+                        {% if fsDiskUsageEnabled %}
+                            <td class="vert-align diskusage" style="text-align:center;">{{ jdu }} {{ jduunit}}</td>
+                        {% else %}
+                            <td class="vert-align diskusage" style="text-align:center;"><span class="label label-default">Disabled</span></td>
+                        {% endif %}
                         <td class="vert-align logentry"> <a data-toggle="tooltip" data-placement="top" title="{{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }}" href="logs?filter[gte][l.level]=0&filter[eq][l.source]=&filter[like][l.link]=%2Fclient%2F{{ client.id }}%2Fjob%2F{{ job.id }}"> {{ job.logEntry.dateTime.format('Y-m-d H:i:s')|default('') }}</a></td>
                         <td class="vert-align status"><span class="label
                             {% if (job.isActive) and (client.isActive) %}

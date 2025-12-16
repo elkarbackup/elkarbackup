@@ -44,10 +44,12 @@
                 </div>
                 {{ form_row(form.name) }}
                 {{ form_row(form.path) }}
-                <div class="form-group">
-                    <label class="control-label col-xs-12 col-md-3">{% trans %}Disk usage{% endtrans %}</label>
-                    <div class="col-xs-12 col-md-9"><input type="text" disabled="disabled" value="{{ (form.vars.value.diskUsage / 1024) | number_format(0)  }} MB" /></div>
-                </div>
+                {% if duEnabled %}
+                  <div class="form-group">
+                      <label class="control-label col-xs-12 col-md-3">{% trans %}Disk usage{% endtrans %}</label>
+                      <div class="col-xs-12 col-md-9"><input type="text" disabled="disabled" value="{{ (form.vars.value.diskUsage / 1024) | number_format(0)  }} MB" /></div>
+                  </div>
+                {% endif %}
                 {{ form_row(form.description) }}
                 {{ form_row(form.isActive) }}
                 {{ form_row(form.notificationsTo) }}
