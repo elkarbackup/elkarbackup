@@ -81,6 +81,7 @@ class RunJobCommand extends LoggingCommand
         $retains    = $job->getPolicy()->getRetains();
         $includes   = array();
         $include    = $job->getInclude();
+        $duEnabled  = $container->getParameter('diskUsage_enabled');
         if ($include) {
             $includes = explode("\n", $include);
             foreach($includes as &$theInclude) {
@@ -236,14 +237,9 @@ class RunJobCommand extends LoggingCommand
             $data['ELKARBACKUP_JOB_RUN_SIZE']      = $job_run_size;
             $data['ELKARBACKUP_JOB_STARTTIME']     = $job_starttime;
             $data['ELKARBACKUP_JOB_ENDTIME']       = $job_endtime;
-            
-            // Renew the DB connection
-            $em = $this->getContainer()->get('doctrine')->getManager();
-            if ($em->getConnection()->ping() === false) {
-                $em->getConnection()->close();
-                $em->getConnection()->connect();
-            }
-            
+
+            $this->renew_db_connection();
+
             $queue = $container
             ->get('doctrine')
             ->getRepository('App:Queue')
@@ -272,17 +268,22 @@ class RunJobCommand extends LoggingCommand
         
         
         /* setDiskUsage()*/
-        $this->info('Client "%clientid%", Job "%jobid%" du begin.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
-        // if diskus is installed, use that as it is so much faster than plain du
-        if (trim(shell_exec('command -v diskus'))) {
-            $du = (int)shell_exec(sprintf("diskus '%s' | awk -F '[() ]' '{print $0 / 1024}'", $job->getSnapshotRoot()));
+        if ($duEnabled){
+            $this->info('Client "%clientid%", Job "%jobid%" du begin.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
+            // if diskus is installed, use that as it is so much faster than plain du
+            if (trim(shell_exec('command -v diskus'))) {
+                $du = (int)shell_exec(sprintf("diskus '%s' | awk -F '[() ]' '{print $0 / 1024}'", $job->getSnapshotRoot()));
+            } else {
+                $du = (int)shell_exec(sprintf("du -ks '%s' | sed 's/\t.*//'", $job->getSnapshotRoot()));
+            }
+            $this->renew_db_connection();
+            $job->setDiskUsage($du);
+            $this->info('Client "%clientid%", Job "%jobid%" du end.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
+            return $ok;
         } else {
-            $du = (int)shell_exec(sprintf("du -ks '%s' | sed 's/\t.*//'", $job->getSnapshotRoot()));
+            $this->info('Client "%clientid%", Job "%jobid%" du skipped.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
+            return $ok;
         }
-        $job->setDiskUsage($du);
-        $this->info('Client "%clientid%", Job "%jobid%" du end.', array('%clientid%' => $job->getClient()->getId(), '%jobid%' => $job->getId()), $context);
-        
-        return $ok;
     }
     
     protected function captureErrorFromLogfile($logfile){
@@ -364,4 +365,18 @@ class RunJobCommand extends LoggingCommand
         return $runnableRetains;
     }
 
+    /*
+     * Renew the database connection
+     * If the connection is not alive, close and reconnect
+     * Prevents a server gone away message after long jobs
+     */
+    protected function renew_db_connection()
+    {
+        // Renew the DB connection
+        $em = $this->getContainer()->get('doctrine')->getManager();
+        if ($em->getConnection()->ping() === false) {
+            $em->getConnection()->close();
+            $em->getConnection()->connect();
+        }
+    }
 }

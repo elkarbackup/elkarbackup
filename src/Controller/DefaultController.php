@@ -362,10 +362,12 @@ class DefaultController extends AbstractController
             array('%clientid%' => $id),
             array('link' => $this->router->generateClientRoute($id))
         );
-        
         return $this->render(
             'default/client.html.twig',
-            array('form' => $form->createView())
+            array(
+                'form' => $form->createView(),
+                'duEnabled' => $this->getParameter('diskUsage_enabled')
+            )
         );
     }
 
@@ -487,7 +489,10 @@ class DefaultController extends AbstractController
         
         return $this->render(
             'default/job.html.twig',
-            array('form' => $form->createView())
+            array(
+                'form' => $form->createView(),
+                'duEnabled' => $this->getParameter('diskUsage_enabled')
+            )
         );
     }
     
@@ -1293,7 +1298,8 @@ class DefaultController extends AbstractController
             0,
             PHP_ROUND_HALF_UP
         );
-        
+        $fsDiskUsageEnabled = $this->getParameter('diskUsage_enabled');
+
         $repository = $this->getDoctrine()->getRepository('App:Client');
         $query = $repository->createQueryBuilder('c')->addOrderBy('c.id', 'ASC');
         
