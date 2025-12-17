@@ -142,3 +142,4 @@ The following environment variables are also honored for configuring your ElkarB
 | SYMFONY__EB__PUBLIC__KEY         | /app/.ssh/id_rsa.pub           | ssh public key path                                  |
 | SYMFONY__EB__MAX__PARALLEL__JOBS | 1                              | max parallel jobs                                    |
 | SYMFONY__EB__POST__ON__PRE__FAIL | true                           | post on pre fail                                     |
+| SYMFONY__EB__DISK_USAGE_ENABLED  | true                           | Run diskUsage statistics after job completeion       |

@@ -26,4 +26,5 @@ parameters:
     home: /var/lib/elkarbackup
     max_parallel_jobs: 1
     post_on_pre_fail: true
-    app.version: 'v2.3.5'
+    diskUsage_enabled: true
+    app.version: 'v2.3.7'
