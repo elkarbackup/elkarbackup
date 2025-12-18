@@ -81,7 +81,7 @@ class RunJobCommand extends LoggingCommand
         $retains    = $job->getPolicy()->getRetains();
         $includes   = array();
         $include    = $job->getInclude();
-        $duEnabled  = $container->getParameter('diskUsage_enabled');
+        $duEnabled  = filter_var($container->getParameter('diskUsage_enabled'), FILTER_VALIDATE_BOOLEAN);
         if ($include) {
             $includes = explode("\n", $include);
             foreach($includes as &$theInclude) {
