@@ -366,7 +366,7 @@ class DefaultController extends AbstractController
             'default/client.html.twig',
             array(
                 'form' => $form->createView(),
-                'duEnabled' => $this->getParameter('diskUsage_enabled')
+                'duEnabled' => filter_var($container->getParameter('diskUsage_enabled'), FILTER_VALIDATE_BOOLEAN)
             )
         );
     }
@@ -491,7 +491,7 @@ class DefaultController extends AbstractController
             'default/job.html.twig',
             array(
                 'form' => $form->createView(),
-                'duEnabled' => $this->getParameter('diskUsage_enabled')
+                'duEnabled' => filter_var($container->getParameter('diskUsage_enabled'), FILTER_VALIDATE_BOOLEAN)
             )
         );
     }
@@ -1298,7 +1298,7 @@ class DefaultController extends AbstractController
             0,
             PHP_ROUND_HALF_UP
         );
-        $fsDiskUsageEnabled = $this->getParameter('diskUsage_enabled');
+        $fsDiskUsageEnabled = filter_var($container->getParameter('diskUsage_enabled'), FILTER_VALIDATE_BOOLEAN);
 
         $repository = $this->getDoctrine()->getRepository('App:Client');
         $query = $repository->createQueryBuilder('c')->addOrderBy('c.id', 'ASC');
@@ -1333,7 +1333,11 @@ class DefaultController extends AbstractController
         
         return $this->render(
             'default/clients.html.twig',
-            array('pagination' => $pagination,'fsDiskUsage' => $fsDiskUsage)
+            array(
+                'pagination' => $pagination,
+                'fsDiskUsage' => $fsDiskUsage,
+                'fsDiskUsageEnabled' => $fsDiskUsageEnabled
+            )
         );
     }
     
