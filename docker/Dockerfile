@@ -153,8 +153,10 @@ CMD []
 VOLUME /app/backups
 EXPOSE 80
 
-LABEL maintainer="Xabi Ezpeleta <xezpeleta@gmail.com>"
-LABEL org.opencontainers.image.description="Elkarbackup Container Image"
-LABEL org.opencontainers.image.source=https://github.com/elkarbackup/elkarbackup
-LABEL org.opencontainers.image.url=https://github.com/elkarbackup/elkarbackup/blob/master/docker/README.md
-LABEL org.opencontainers.image.documentation=https://github.com/elkarbackup/elkarbackup/blob/master/docker/README.md
+LABEL org.opencontainers.image.description="Open source backup solution for your network"
+LABEL org.opencontainers.image.documentation="https://github.com/elkarbackup/elkarbackup/blob/master/docker/README.md"
+LABEL org.opencontainers.image.licenses="BSD-3-Clause"
+LABEL org.opencontainers.image.source="https://github.com/elkarbackup/elkarbackup"
+LABEL org.opencontainers.image.title="ElkarBackup"
+LABEL org.opencontainers.image.url="https://github.com/elkarbackup/elkarbackup/blob/master/docker/README.md"
+LABEL org.opencontainers.image.vendor="ElkarBackup Project"
