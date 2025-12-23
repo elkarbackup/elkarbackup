@@ -287,6 +287,36 @@ policy_help: |
   Snapshots einmal pro Monat.
   <h4>Jährlich</h4>
   Snapshots einmal pro Jahr.
+client_help: |
+  <h4>Name</h4>
+  Dies ist der Bezeichner für den Client. Er erscheint in Listen und Kombinationsfeldern. Der Name muss unter allen Clients eindeutig sein; bei Verwendung eines bereits existierenden Namens gibt die Anwendung eine Fehlermeldung aus.
+  <h4>Url</h4>
+  Dies ist die Verbindungszeichenfolge für den Client. Die Anwendung verwendet diesen Wert zusammen mit dem Pfad des Jobs als vollständige URL für den Job. Typische Werte für dieses Feld sind:
+  <ul>
+    <li>Der Wert kann leer sein. Dies ist sinnvoll, wenn die zu sichernden Daten im lokalen Dateisystem eingebunden sind.</li>
+    <li><i>user@domain.name</i> stellt eine Verbindung per SSH zur Maschine <i>domain.name</i> her und verwendet <i>user</i als Benutzer für die Verbindung.</li>
+    <li><i>user@domain.name:</i> Der Doppelpunkt ist zu beachten. Wie oben, jedoch wird statt einer SSH-Verbindung eine Verbindung zum entfernten rsync-Server hergestellt.</li>
+  </ul>
+  <h4>Limit</h4>
+  Die Menge an Speicherplatz in GB, die dieser Client verwenden darf. -1 bedeutet „keine Begrenzung“. Wird der konfigurierte Schwellenwert erreicht (standardmäßig 80 %), sendet die Anwendung eine Warnung an die in jedem Job definierten Benachrichtigungsempfänger. Überschreitet die Datenträgernutzung das Kontingent, werden Backup-Jobs von der Anwendung mit einem Fehler verworfen.
+  <h4>Auslastung Speicher</h4>
+  Der aktuell von diesem Client belegte Speicherplatz.
+  <h4>Beschreibung</h4>
+  Freitext zur Beschreibung des Clients. Hier können beliebige hilfreiche Informationen hinterlegt werden.
+  <h4>Aktiv</h4>
+  Ist dieses Kontrollkästchen nicht aktiviert, werden keine Snapshots erstellt.
+  <h4>Pre- und Postskripts</h4
+  Skripte, die vor und nach jedem Job dieses Clients ausgeführt werden. Beispiele sind das Öffnen von VPN-Verbindungen oder das Einrichten freigegebener Ordner. Sind mehrere Pre- oder Post-Skripte ausgewählt, erfolgt die Ausführung in alphabetischer Reihenfolge (aufsteigend für Pre-Skripte und absteigend für Post-Skripte).
+  <h4>Eigentümer</h4>
+  Dieser Benutzer ist berechtigt, den Client und dessen Jobs zu verwalten. Eine Änderung des Besitzers ist nur durch Administratoren möglich.
+  <h4>Maximum parallel jobs</h4>
+  Dieser Parameter legt die maximale Anzahl paralleler Jobs fest, die für diesen Client gleichzeitig ausgeführt werden dürfen.
+  <h4>Advanced</h4>
+  <ul>
+  <li><b>SSH args</b>: Benutzerdefinierte SSH-Argumente. Beispiel: -p2222 (Verbindung über den SSH-Port TCP/2222)</li>
+  <li><b>Rsync short args</b>: Benutzerdefinierte kurze Rsync-Argumente. Bereits enthalten: -a</li>
+  <li><b>Rsync long args</b>: Benutzerdefinierte lange Rsync-Argumente. Beispiel: --bwlimit=500 (begrenzt die verwendete Bandbreite auf 200 KB/s). Bereits enthalten: --delete --numeric-ids --relative --delete-excluded --stats</li>
+  </ul>
 client_job_help: |
   <h4>Aufgaben</h4>
   Hier werden die wichtigsten Parameter einer Aufgabe zum angelegten Gerät bearbeitet. Vergiss' nicht, die Änderungen zu speichern.
