@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
-docker build -t elkarbackup/debpkg .
+DIR=$(dirname $(readlink -f "$0"))
+
+docker build -t elkarbackup/debpkg "$DIR"
 
 docker run --rm \
-	   -v $(pwd)/../..:/data/elkarbackup \
-	   -v $(pwd):/export \
+	   -v "$DIR"/../..:/data/elkarbackup \
+	   -v "$DIR":/export \
 		 -e UID=$(id -u) \
 		 -e GID=$(id -g) \
 		 elkarbackup/debpkg
