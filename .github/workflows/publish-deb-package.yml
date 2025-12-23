@@ -1,0 +1,26 @@
+name: Build and publish Debian package
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  deb:
+    name: Build and publish Debian package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Build Debian package
+        run: ./docker/debpkg/run.sh
+
+      - name: Attach Debian package to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          fail_on_unmatched_files: true
+          files: ./build/*
+          generate_release_notes: true
+          make_latest: true
+          prerelease: false
+          draft: false
