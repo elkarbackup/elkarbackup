@@ -13,7 +13,7 @@ fi
 ## (PHP_TZ defaults to TZ)
 
 if [ ! -z "$TZ" ];then
-  ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+  ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
   
   if [ -z "$PHP_TZ" ];then
     PHP_TZ="$TZ"
@@ -21,12 +21,12 @@ if [ ! -z "$TZ" ];then
 fi
 
 if [ ! -z "$PHP_TZ" ];then
-  printf "[PHP]\ndate.timezone = ${PHP_TZ}\n" > /usr/local/etc/php/conf.d/tzone.ini
+  printf "[PHP]\ndate.timezone = %s\n" "${PHP_TZ}" > /usr/local/etc/php/conf.d/tzone.ini
 fi
 
 # Ensure better experience for users of synology or qnap devices
 # Set EB_ACL automatically
-if [ -f /proc/syno_platform ] || [ $(uname -r) == *"qnap"* ]; then
+if [ -f /proc/syno_platform ] || [[ "$(uname -r)" == *"qnap"* ]]; then
   EB_ACL="disabled"
 fi
 
@@ -34,8 +34,16 @@ fi
 ## Only if SYMFONY__SECRET has the default value
 
 if [ ! -z "$SYMFONY__EB__SECRET" ] && [ "$SYMFONY__EB__SECRET" == "ThisTokenIsNotSoSecretChangeItElkarbackup" ];then
-  SYMFONY__EB__SECRET=`tr -dc A-Za-z0-9 </dev/urandom | head -c 40`
+  SYMFONY__EB__SECRET=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 40)
 fi
+
+# Update sudoers file if a custom upload dir is set via env variable
+UPLOADS_PATH="${SYMFONY__EB__UPLOAD__DIR:-/app/uploads}"
+UPLOADS_PATH="${UPLOADS_PATH%%+(/)}/"
+if ! grep -qF "Cmnd_Alias ELKARBACKUP_SCRIPTS=${UPLOADS_PATH}*" /etc/sudoers.d/elkarbackup; then
+  sed -i "s|^Cmnd_Alias ELKARBACKUP_SCRIPTS=.*$|Cmnd_Alias ELKARBACKUP_SCRIPTS=${UPLOADS_PATH}*|" /etc/sudoers.d/elkarbackup
+fi
+unset UPLOADS_PATH
 
 # Run commands
 if [ ! -z "$1" ]; then
@@ -51,7 +59,7 @@ until mysqladmin ping -h "${SYMFONY__DATABASE__HOST}" --silent; do
   sleep 1
 done
 
-cd "${EB_DIR}"
+cd "${EB_DIR}" || exit 1
 
 # Empty sessions
 rm -rf var/sessions/*

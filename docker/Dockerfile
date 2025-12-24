@@ -33,7 +33,8 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV DOCKERDIR=./docker
 
 ## Composer install
-COPY composer.json composer.lock .
+COPY composer.json composer.lock ./
+
 COPY config/parameters.yaml.dist /app/elkarbackup/config/parameters.yaml.dist
 COPY $DOCKERDIR/parameters.yaml.docker /app/elkarbackup/config/parameters.yaml
 RUN set -ex && \
@@ -42,7 +43,7 @@ RUN set -ex && \
       composer update --no-interaction --no-audit
 
 ## Composer install
-COPY composer.json composer.lock .
+COPY composer.json composer.lock ./
 COPY config/parameters.yaml.dist config/
 RUN set -ex && \
       cd /app/elkarbackup && \
