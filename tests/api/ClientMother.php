@@ -50,7 +50,7 @@ class ClientMother
         return $response;
     }
 
-    private function createClientName(): string
+    private static function createClientName(): string
     {
         $time = new \DateTime();
         $clientName = 'client_'.$time->getTimestamp().'_'.rand(1000, 9999);

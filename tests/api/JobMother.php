@@ -60,7 +60,7 @@ class JobMother
         return $response;
     }
 
-    private function createJobName(): string
+    private static function createJobName(): string
     {
         $time = new \DateTime();
         $jobName = 'job_'.$time->getTimestamp().'_'.rand(1000, 9999);
