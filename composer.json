@@ -111,7 +111,7 @@
 		"phpunit/phpunit": "8.5.52",
 		"symfony/browser-kit": "^4.4",
 		"symfony/css-selector": "^4.4",
-		"symfony/http-client": "4.4.*",
+		"symfony/http-client": "5.4.*",
 		"symfony/phpunit-bridge": "^5.2"
 	}
 }
