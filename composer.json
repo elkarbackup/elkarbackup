@@ -41,7 +41,7 @@
 		"symfony/yaml": "4.4.*",
 		"twbs/bootstrap": "^3.3",
 		"twig/extra-bundle": "^2.12|^3.0",
-		"twig/twig": "^2.12"
+		"twig/twig": "^3.11"
 	},
 	"scripts" : {
 		"post-install-cmd" : [
