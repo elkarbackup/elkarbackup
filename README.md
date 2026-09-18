@@ -19,6 +19,15 @@ ElkarBackup is a free open-source backup solution based on RSync/RSnapshot
 - Pre-scripts & Post-scripts
 - Multilanguage (English, Basque, Spanish, German, French)
 
+## Easypanel
+
+If you'd rather not set up the Docker/database stack yourself, [Easypanel](https://easypanel.io) is a self-hosted deployment platform with a one-click ElkarBackup template:
+
+[![Deploy on Easypanel][easypanel-btn]][easypanel-deploy]
+
+[easypanel-btn]: https://easypanel.io/img/deploy-on-easypanel-40.svg
+[easypanel-deploy]: https://easypanel.io/templates/elkarbackup
+
 ## Documentation
 * [User Guide](http://docs.elkarbackup.org/)
 * [FAQ](https://github.com/elkarbackup/elkarbackup/wiki/FAQ)
