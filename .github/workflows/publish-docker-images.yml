@@ -42,7 +42,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
           flavor: |
-            latest=true
+            latest=auto
 
       - name: Set up Quemu
         uses: docker/setup-qemu-action@v3

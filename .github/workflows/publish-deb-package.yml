@@ -21,6 +21,6 @@ jobs:
           fail_on_unmatched_files: true
           files: ./docker/debpkg/build/*
           generate_release_notes: true
-          make_latest: true
-          prerelease: false
+          make_latest: ${{ !contains(github.ref_name, '-') }}
+          prerelease: ${{ contains(github.ref_name, '-') }}
           draft: false
