@@ -7,15 +7,17 @@
 namespace App\Lib;
 
 use Symfony\Bridge\Monolog\Logger;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * This class can be used as base class for those commands which need
  * to log "things" in the elkarbackup application.
  */
-abstract class LoggingCommand extends ContainerAwareCommand
+abstract class LoggingCommand extends Command
 {
     private $logger;
+    private $container;
     
     const ERR_CODE_PRE_FAIL = -1;
     const ERR_CODE_NO_RUN = -2;
@@ -35,10 +37,16 @@ abstract class LoggingCommand extends ContainerAwareCommand
     const TYPE_PRE = 'PRE';
     const TYPE_POST = 'POST';
     
-    public function __construct(Logger $logger)
+    public function __construct(Logger $logger, ContainerInterface $container)
     {
         $this->logger = $logger;
+        $this->container = $container;
         parent::__construct();
+    }
+
+    protected function getContainer(): ContainerInterface
+    {
+        return $this->container;
     }
     
     abstract protected function getNameForLogs();

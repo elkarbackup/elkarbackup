@@ -197,7 +197,7 @@ class Job
     /**
      * Get id
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -383,7 +383,7 @@ class Job
     /**
      * Set isActive
      *
-     * @param boolean $isActive
+     * @param bool $isActive
      * @return Job
      */
     public function setIsActive($isActive)
@@ -396,7 +396,7 @@ class Job
     /**
      * Get isActive
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsActive()
     {
@@ -453,7 +453,7 @@ class Job
     /**
      * Set minNotificationLevel
      *
-     * @param integer $minNotificationLevel
+     * @param int $minNotificationLevel
      * @return Job
      */
     public function setMinNotificationLevel($minNotificationLevel)
@@ -466,7 +466,7 @@ class Job
     /**
      * Get minNotificationLevel
      *
-     * @return integer
+     * @return int
      */
     public function getMinNotificationLevel()
     {
@@ -522,7 +522,7 @@ class Job
     /**
      * Set Priority
      *
-     * @param integer $Priority
+     * @param int $Priority
      * @return Job
      */
     public function setPriority($Priority)
@@ -535,7 +535,7 @@ class Job
     /**
      * Get Priority
      *
-     * @return integer
+     * @return int
      */
     public function getPriority()
     {
@@ -545,7 +545,7 @@ class Job
     /**
      * Set useLocalPermissions
      *
-     * @param boolean $useLocalPermissions
+     * @param bool $useLocalPermissions
      * @return Job
      */
     public function setUseLocalPermissions($useLocalPermissions)
@@ -557,7 +557,7 @@ class Job
     /**
      * Get useLocalPermissions
      *
-     * @return boolean
+     * @return bool
      */
     public function getUseLocalPermissions()
     {

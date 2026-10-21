@@ -28,7 +28,7 @@ class ClientInput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getId(): int
     {
@@ -36,7 +36,7 @@ class ClientInput
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsActive(): bool
     {
@@ -44,7 +44,7 @@ class ClientInput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getMaxParallelJobs(): int
     {
@@ -60,7 +60,7 @@ class ClientInput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getOwner(): ?int
     {
@@ -86,7 +86,7 @@ class ClientInput
     /**
      * Quota given in MiB
      * 
-     * @return integer
+     * @return int
      */
     public function getQuota(): int
     {
@@ -134,7 +134,7 @@ class ClientInput
     }
 
     /**
-     * @param boolean $isActive
+     * @param bool $isActive
      */
     public function setIsActive(bool $isActive): void
     {
@@ -142,7 +142,7 @@ class ClientInput
     }
 
     /**
-     * @param integer $maxParallelJobs
+     * @param int $maxParallelJobs
      */
     public function setMaxParallelJobs(int $maxParallelJobs): void
     {
@@ -157,7 +157,7 @@ class ClientInput
     }
 
     /**
-     * @param integer $owner
+     * @param int $owner
      */
     public function setOwner(int $owner): void
     {
@@ -181,7 +181,7 @@ class ClientInput
     }
 
     /**
-     * @param integer $quota
+     * @param int $quota
      */
     public function setQuota(int $quota): void
     {

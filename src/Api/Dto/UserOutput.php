@@ -18,7 +18,7 @@ class UserOutput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -26,7 +26,7 @@ class UserOutput
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsActive()
     {
@@ -58,7 +58,7 @@ class UserOutput
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      */
     public function setId($id)
     {
@@ -66,7 +66,7 @@ class UserOutput
     }
 
     /**
-     * @param boolean $isActive
+     * @param bool $isActive
      */
     public function setIsActive($isActive)
     {

@@ -16,7 +16,7 @@ class PolicyOutput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getId()
     {

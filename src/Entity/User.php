@@ -10,7 +10,8 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Api\Dto\UserOutput;
 use App\Lib\Globals;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Validator\Constraint as SecurityAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -22,7 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ORM\Entity
  */
-class User implements AdvancedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     const SUPERUSER_ID = 1;
     /**
@@ -118,6 +119,11 @@ class User implements AdvancedUserInterface
         return $this->username;
     }
 
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->username;
+    }
+
     /**
      * @inheritDoc
      */
@@ -129,7 +135,7 @@ class User implements AdvancedUserInterface
     /**
      * @inheritDoc
      */
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -161,7 +167,7 @@ class User implements AdvancedUserInterface
     /**
      * Get id
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -207,7 +213,7 @@ class User implements AdvancedUserInterface
     /**
      * Set isActive
      *
-     * @param boolean $isActive
+     * @param bool $isActive
      * @return User
      */
     public function setIsActive($isActive)
@@ -220,7 +226,7 @@ class User implements AdvancedUserInterface
     /**
      * Get isActive
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsActive()
     {
@@ -279,7 +285,7 @@ class User implements AdvancedUserInterface
     /**
      * Set linesperpage
      *
-     * @param integer $linesperpage
+     * @param int $linesperpage
      * @return User
      */
     public function setLinesperpage($linesperpage)
@@ -292,7 +298,7 @@ class User implements AdvancedUserInterface
     /**
      * Get linesperpage
      *
-     * @return integer
+     * @return int
      */
     public function getLinesperpage()
     {

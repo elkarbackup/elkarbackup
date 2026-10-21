@@ -2,7 +2,7 @@
 ## Bootstrap & Build elkarbackup
 ##
 
-FROM php:7.4-cli-alpine
+FROM php:8.3-cli-alpine
 
 WORKDIR /app/elkarbackup
 
@@ -33,22 +33,22 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV DOCKERDIR=./docker
 
 ## Composer install
-COPY composer.json composer.lock ./
+COPY composer.json composer.lock symfony.lock ./
 
 COPY config/parameters.yaml.dist /app/elkarbackup/config/parameters.yaml.dist
 COPY $DOCKERDIR/parameters.yaml.docker /app/elkarbackup/config/parameters.yaml
 RUN set -ex && \
       cd /app/elkarbackup && \
       mkdir -p public/css public/fonts public/js public/js/bootstrap public/js/moment public/js/jquery && \
-      composer update --no-interaction --no-audit
+      composer install --no-interaction
 
 ## Composer install
-COPY composer.json composer.lock ./
+COPY composer.json composer.lock symfony.lock ./
 COPY config/parameters.yaml.dist config/
 RUN set -ex && \
       cd /app/elkarbackup && \
       mkdir -p public/css public/fonts public/js public/js/bootstrap public/js/moment public/js/jquery && \
-      composer update --no-interaction --no-audit
+      composer install --no-interaction
 
 ## Copy Elkarbackup from this repo
 COPY . /app/elkarbackup
@@ -77,7 +77,7 @@ RUN sed -i \
 ##
 
 
-FROM php:7.4-apache-bullseye
+FROM php:8.3-apache-bookworm
 RUN apt-get update && apt-get install -y \
       default-mysql-client \
       acl \

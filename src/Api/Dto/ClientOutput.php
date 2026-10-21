@@ -30,7 +30,7 @@ class ClientOutput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getDiskUsage()
     {
@@ -38,7 +38,7 @@ class ClientOutput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -46,7 +46,7 @@ class ClientOutput
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsActive()
     {
@@ -54,7 +54,7 @@ class ClientOutput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getMaxParallelJobs()
     {
@@ -69,7 +69,7 @@ class ClientOutput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getOwner()
     {
@@ -95,7 +95,7 @@ class ClientOutput
     /**
      * Quota given in MiB
      * 
-     * @return integer
+     * @return int
      */
     public function getQuota()
     {
@@ -151,7 +151,7 @@ class ClientOutput
     }
 
     /**
-     * @param integer $diskUsage
+     * @param int $diskUsage
      */
     public function setDiskUsage($diskUsage)
     {
@@ -159,7 +159,7 @@ class ClientOutput
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      */
     public function setId($id)
     {
@@ -167,7 +167,7 @@ class ClientOutput
     }
 
     /**
-     * @param boolean $isActive
+     * @param bool $isActive
      */
     public function setIsActive($isActive)
     {
@@ -175,7 +175,7 @@ class ClientOutput
     }
 
     /**
-     * @param integer $maxParallelJobs
+     * @param int $maxParallelJobs
      */
     public function setMaxParallelJobs($maxParallelJobs)
     {
@@ -191,7 +191,7 @@ class ClientOutput
     }
 
     /**
-     * @param integer $owner
+     * @param int $owner
      */
     public function setOwner($owner)
     {
@@ -215,7 +215,7 @@ class ClientOutput
     }
 
     /**
-     * @param integer $quota
+     * @param int $quota
      */
     public function setQuota($quota)
     {

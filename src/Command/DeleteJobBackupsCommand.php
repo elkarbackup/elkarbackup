@@ -8,19 +8,27 @@ namespace App\Command;
 
 use App\Lib\Globals;
 use Symfony\Bridge\Monolog\Logger;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DeleteJobBackupsCommand extends ContainerAwareCommand
+class DeleteJobBackupsCommand extends Command
 {
     private $logger;
+    private $container;
     
-    public function __construct(Logger $logger)
+    public function __construct(Logger $logger, ContainerInterface $container)
     {
         $this->logger = $logger;
+        $this->container = $container;
         parent::__construct();
+    }
+
+    protected function getContainer(): ContainerInterface
+    {
+        return $this->container;
     }
     
     protected function configure()

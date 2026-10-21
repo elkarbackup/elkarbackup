@@ -42,3 +42,8 @@ Thumbs.db
 
 # Test data
 docker/test_e2e/tmp/
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

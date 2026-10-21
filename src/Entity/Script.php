@@ -207,7 +207,7 @@ class Script
     /**
      * Get id
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -268,7 +268,7 @@ class Script
     /**
      * Set isClientPre
      *
-     * @param boolean $isClientPre
+     * @param bool $isClientPre
      * @return Script
      */
     public function setIsClientPre($isClientPre)
@@ -280,7 +280,7 @@ class Script
     /**
      * Get isClientPre
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsClientPre()
     {
@@ -290,7 +290,7 @@ class Script
     /**
      * Set isJobPre
      *
-     * @param boolean $isJobPre
+     * @param bool $isJobPre
      * @return Script
      */
     public function setIsJobPre($isJobPre)
@@ -302,7 +302,7 @@ class Script
     /**
      * Get isJobPre
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsJobPre()
     {
@@ -312,7 +312,7 @@ class Script
     /**
      * Set isClientPost
      *
-     * @param boolean $isClientPost
+     * @param bool $isClientPost
      * @return Script
      */
     public function setIsClientPost($isClientPost)
@@ -324,7 +324,7 @@ class Script
     /**
      * Get isClientPost
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsClientPost()
     {
@@ -334,7 +334,7 @@ class Script
     /**
      * Set isJobPost
      *
-     * @param boolean $isJobPost
+     * @param bool $isJobPost
      * @return Script
      */
     public function setIsJobPost($isJobPost)
@@ -346,7 +346,7 @@ class Script
     /**
      * Get isJobPost
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsJobPost()
     {

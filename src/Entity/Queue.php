@@ -74,7 +74,7 @@ class Queue
 
     /**
      * Get id
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -156,7 +156,7 @@ class Queue
     /**
      * Set priority
      *
-     * @param integer $priority
+     * @param int $priority
      * 
      * @return Queue
      */
@@ -200,7 +200,7 @@ class Queue
     /**
      * Set aborted
      * 
-     * @param boolean $aborted
+     * @param bool $aborted
      * 
      * @return Queue
      */

@@ -24,7 +24,7 @@ class JobOutput
     private $lastResult = null;
 
     /**
-     * @return integer
+     * @return int
      */
     public function getBackupLocation()
     {
@@ -32,7 +32,7 @@ class JobOutput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getClient()
     {
@@ -48,7 +48,7 @@ class JobOutput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getDiskUsage()
     {
@@ -64,7 +64,7 @@ class JobOutput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -80,7 +80,7 @@ class JobOutput
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsActive()
     {
@@ -88,7 +88,7 @@ class JobOutput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getMinNotificationLevel()
     {
@@ -128,7 +128,7 @@ class JobOutput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getPolicy()
     {
@@ -160,7 +160,7 @@ class JobOutput
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getUseLocalPermissions()
     {
@@ -176,7 +176,7 @@ class JobOutput
     }
 
     /**
-     * @param integer $backupLocation
+     * @param int $backupLocation
      */
     public function setBackupLocation($backupLocation)
     {
@@ -184,7 +184,7 @@ class JobOutput
     }
 
     /**
-     * @param integer $client
+     * @param int $client
      */
     public function setClient($client)
     {
@@ -200,7 +200,7 @@ class JobOutput
     }
 
     /**
-     * @param integer $diskUsage
+     * @param int $diskUsage
      */
     public function setDiskUsage($diskUsage)
     {
@@ -216,7 +216,7 @@ class JobOutput
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      */
     public function setId($id)
     {
@@ -232,7 +232,7 @@ class JobOutput
     }
 
     /**
-     * @param boolean $isActive
+     * @param bool $isActive
      */
     public function setIsActive($isActive)
     {
@@ -240,7 +240,7 @@ class JobOutput
     }
 
     /**
-     * @param integer $minNotificationLevel
+     * @param int $minNotificationLevel
      */
     public function setMinNotificationLevel($minNotificationLevel)
     {
@@ -280,7 +280,7 @@ class JobOutput
     }
 
     /**
-     * @param integer $policy
+     * @param int $policy
      */
     public function setPolicy($policy)
     {
@@ -312,7 +312,7 @@ class JobOutput
     }
 
     /**
-     * @param boolean $useLocalPermissions
+     * @param bool $useLocalPermissions
      */
     public function setUseLocalPermissions($useLocalPermissions)
     {

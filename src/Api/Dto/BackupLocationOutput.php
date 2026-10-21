@@ -25,7 +25,7 @@ class BackupLocationOutput
         return $this->host;
     }
     /**
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -33,7 +33,7 @@ class BackupLocationOutput
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getMaxParallelJobs()
     {
@@ -65,7 +65,7 @@ class BackupLocationOutput
     }
 
     /**
-     * @param integer $id
+     * @param int $id
      */
     public function setId($id)
     {
@@ -73,7 +73,7 @@ class BackupLocationOutput
     }
 
     /**
-     * @param integer $maxParallelJobs
+     * @param int $maxParallelJobs
      */
     public function setMaxParallelJobs($maxParallelJobs)
     {

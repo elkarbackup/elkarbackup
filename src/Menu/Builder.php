@@ -22,7 +22,7 @@ class Builder implements ContainerAwareInterface
      *
      * @param  array    $params     The parameters to build the query string. Optional.
      *
-     * @param  boolean  $absolute   Whether to generate an absolute URL or not. Optional.
+     * @param  bool  $absolute   Whether to generate an absolute URL or not. Optional.
      *
      * @return string   Something like "onClick: function(){document.location.href='/home';}"
      *

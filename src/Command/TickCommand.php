@@ -15,12 +15,13 @@ use App\Lib\Globals;
 use App\Lib\LoggingCommand;
 use App\Logger\LoggerHandler;
 use Symfony\Bridge\Monolog\Logger;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Lock\Store\FlockStore;
-use Symfony\Component\Lock\Factory;
+use Symfony\Component\Lock\LockFactory;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -52,10 +53,10 @@ class TickCommand extends LoggingCommand
     const BACKUP_STATUS_OK = 'OK';
     const BACKUP_STATUS_FAIL = 'FAIL';
     
-    public function __construct(LoggerHandler $loggerHandler, Logger $logger)
+    public function __construct(LoggerHandler $loggerHandler, Logger $logger, ContainerInterface $container)
     {
         $this->loggerHandler = $loggerHandler;
-        parent::__construct($logger);
+        parent::__construct($logger, $container);
     }
     protected function configure()
     {
@@ -78,7 +79,7 @@ class TickCommand extends LoggingCommand
         $logHandler->startRecordingMessages();
         
         $store    = new FlockStore(sys_get_temp_dir());
-        $factory  = new Factory($store);
+        $factory  = new LockFactory($store);
         $lockHandler = $factory->createLock('tick.lock', null, false);
         
             if ($lockHandler->acquire()) {
@@ -835,7 +836,7 @@ EOF;
         $idJob            = $job->getId();
         $translator       = $container->get('translator');
         $recipients       = array();
-        $engine           = $container->get('templating');
+        $engine           = $container->get('twig');
         $filteredMessages = array();
 
 

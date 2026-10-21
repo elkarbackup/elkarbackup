@@ -24,7 +24,7 @@ class LoggerHandler extends AbstractProcessingHandler implements ContainerAwareI
     private $container;
     private $em;
     private $messages;
-    private $isRecordingMessage;
+    private $isRecordingMessages;
 
     public function __construct(EntityManagerInterface $em, $level = Logger::DEBUG, $bubble = true)
     {
@@ -37,7 +37,7 @@ class LoggerHandler extends AbstractProcessingHandler implements ContainerAwareI
     /**
      * {@inheritdoc}
      */
-    protected function write(array $record)
+    protected function write(array $record): void
     {
         $logRecord = new LogRecord($record['channel'],
                                    $record['datetime'],

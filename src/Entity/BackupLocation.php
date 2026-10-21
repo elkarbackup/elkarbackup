@@ -63,7 +63,7 @@ class BackupLocation
     /**
      * Get max parallel jobs
      *
-     * @return integer
+     * @return int
      */
     public function getMaxParallelJobs()
     {
@@ -73,7 +73,7 @@ class BackupLocation
     /**
      * Set max parallel jobs
      *
-     * @param integer $maxParallelJobs
+     * @param int $maxParallelJobs
      * @return Client
      */
     public function setMaxParallelJobs($maxParallelJobs)
@@ -84,7 +84,7 @@ class BackupLocation
     /**
      * Get id
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {

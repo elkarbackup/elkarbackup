@@ -7,24 +7,31 @@
 namespace App\Command;
 
 use App\Entity\User;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Console\Command\Command;
 
-class CreateAdminUserCommand extends ContainerAwareCommand
+class CreateAdminUserCommand extends Command
 {
     private $encoderFactory;
+    private $container;
     /**
      * {@inheritDoc}
      * @see \Symfony\Component\Console\Command\Command::__construct()
      */
-    public function __construct(EncoderFactoryInterface $encoder)
+    public function __construct(EncoderFactoryInterface $encoder, ContainerInterface $container)
     {
         $this->encoderFactory = $encoder;
+        $this->container = $container;
         parent::__construct();
+    }
+
+    protected function getContainer(): ContainerInterface
+    {
+        return $this->container;
     }
     
     protected function configure()

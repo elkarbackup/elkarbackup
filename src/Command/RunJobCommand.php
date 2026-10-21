@@ -73,7 +73,7 @@ class RunJobCommand extends LoggingCommand
         $rsnapshot  = $container->getParameter('rsnapshot');
         $logDir     = $container->get('kernel')->getLogDir();
         $tmpDir     = $container->getParameter('tmp_dir');
-        $engine     = $container->get('templating');
+        $engine     = $container->get('twig');
         $idClient   = $job->getClient()->getId();
         $client     = $job->getClient();
         $idJob      = $job->getId();

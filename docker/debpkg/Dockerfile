@@ -8,7 +8,7 @@
 #    	elkarbackup:deb
 #
 
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 
 # Install required dependencies (git included)
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \

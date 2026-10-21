@@ -4,7 +4,7 @@ namespace App\Command;
 use Symfony\Component\Console\Command\Command;
 use App\Lib\LoggingCommand;
 use Symfony\Bridge\Monolog\Logger;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,19 +12,26 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
 
-class RemoteRestoreCommand extends ContainerAwareCommand
+class RemoteRestoreCommand extends Command
 {
     private $logger;
+    private $container;
     
     const PARAM_URL = 'url';
     const PARAM_SOURCE_PATH = 'sourcePath';
     const PARAM_REMOTE_PATH = 'remotePath';
     const PARAM_SSHARGS = 'sshArgs';
     
-    public function __construct(Logger $logger)
+    public function __construct(Logger $logger, ContainerInterface $container)
     {
         $this->logger = $logger;
+        $this->container = $container;
         parent::__construct();
+    }
+
+    protected function getContainer(): ContainerInterface
+    {
+        return $this->container;
     }
     
     protected function configure()
@@ -67,17 +74,18 @@ class RemoteRestoreCommand extends ContainerAwareCommand
         $logger->info('Starting restore job ',$context);
         $manager->flush();
 
-        $process = new Process($cmd);
+        $process = Process::fromShellCommandline($cmd);
         $process->run();
 
         if(!$process->isSuccessful()) {
               $logger->error('Error message ' . $process->getErrorOutput(), $context);
               $manager->flush();
-              return;
+              return 1;
         } else {
               $logger->info('Restored successfully',$context);
               $manager->flush();
         }
+        return 0;
 
     }
 }

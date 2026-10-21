@@ -314,7 +314,7 @@ class Policy
     /**
      * Get id
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -440,7 +440,7 @@ class Policy
     /**
      * Set hourlyCount
      *
-     * @param integer $hourlyCount
+     * @param int $hourlyCount
      * @return Policy
      */
     public function setHourlyCount($hourlyCount)
@@ -453,7 +453,7 @@ class Policy
     /**
      * Get hourlyCount
      *
-     * @return integer
+     * @return int
      */
     public function getHourlyCount()
     {
@@ -555,7 +555,7 @@ class Policy
     /**
      * Set dailyCount
      *
-     * @param integer $dailyCount
+     * @param int $dailyCount
      * @return Policy
      */
     public function setDailyCount($dailyCount)
@@ -568,7 +568,7 @@ class Policy
     /**
      * Get dailyCount
      *
-     * @return integer
+     * @return int
      */
     public function getDailyCount()
     {
@@ -670,7 +670,7 @@ class Policy
     /**
      * Set weeklyCount
      *
-     * @param integer $weeklyCount
+     * @param int $weeklyCount
      * @return Policy
      */
     public function setWeeklyCount($weeklyCount)
@@ -683,7 +683,7 @@ class Policy
     /**
      * Get weeklyCount
      *
-     * @return integer
+     * @return int
      */
     public function getWeeklyCount()
     {
@@ -785,7 +785,7 @@ class Policy
     /**
      * Set monthlyCount
      *
-     * @param integer $monthlyCount
+     * @param int $monthlyCount
      * @return Policy
      */
     public function setMonthlyCount($monthlyCount)
@@ -798,7 +798,7 @@ class Policy
     /**
      * Get monthlyCount
      *
-     * @return integer
+     * @return int
      */
     public function getMonthlyCount()
     {
@@ -900,7 +900,7 @@ class Policy
     /**
      * Set yearlyCount
      *
-     * @param integer $yearlyCount
+     * @param int $yearlyCount
      * @return Policy
      */
     public function setYearlyCount($yearlyCount)
@@ -913,7 +913,7 @@ class Policy
     /**
      * Get yearlyCount
      *
-     * @return integer
+     * @return int
      */
     public function getYearlyCount()
     {
@@ -969,7 +969,7 @@ class Policy
     /**
      * Set syncFirst
      *
-     * @param boolean $syncFirst
+     * @param bool $syncFirst
      * @return Policy
      */
     public function setSyncFirst($syncFirst)
@@ -982,7 +982,7 @@ class Policy
     /**
      * Get syncFirst
      *
-     * @return boolean
+     * @return bool
      */
     public function getSyncFirst()
     {

@@ -21,7 +21,7 @@ class JobInput
     private $token = null;
     private $useLocalPermissions = true;
     /**
-     * @return integer
+     * @return int
      */
     public function getBackupLocation(): int
     {
@@ -29,7 +29,7 @@ class JobInput
     }
     
     /**
-     * @return integer
+     * @return int
      */
     public function getClient(): int
     {
@@ -53,7 +53,7 @@ class JobInput
     }
     
     /**
-     * @return integer
+     * @return int
      */
     public function getId(): int
     {
@@ -69,7 +69,7 @@ class JobInput
     }
     
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsActive(): bool
     {
@@ -77,7 +77,7 @@ class JobInput
     }
     
     /**
-     * @return integer
+     * @return int
      */
     public function getMinNotificationLevel(): int
     {
@@ -117,7 +117,7 @@ class JobInput
     }
     
     /**
-     * @return integer
+     * @return int
      */
     public function getPolicy(): int
     {
@@ -149,7 +149,7 @@ class JobInput
     }
     
     /**
-     * @return boolean
+     * @return bool
      */
     public function getUseLocalPermissions(): bool
     {
@@ -157,7 +157,7 @@ class JobInput
     }
     
     /**
-     * @param integer $backupLocation
+     * @param int $backupLocation
      */
     public function setBackupLocation(int $backupLocation): void
     {
@@ -165,7 +165,7 @@ class JobInput
     }
     
     /**
-     * @param integer $client
+     * @param int $client
      */
     public function setClient(int $client): void
     {
@@ -197,7 +197,7 @@ class JobInput
     }
     
     /**
-     * @param boolean $isActive
+     * @param bool $isActive
      */
     public function setIsActive(bool $isActive): void
     {
@@ -205,7 +205,7 @@ class JobInput
     }
     
     /**
-     * @param integer $minNotificationLevel
+     * @param int $minNotificationLevel
      */
     public function setMinNotificationLevel(int $minNotificationLevel): void
     {
@@ -245,7 +245,7 @@ class JobInput
     }
     
     /**
-     * @param integer $policy
+     * @param int $policy
      */
     public function setPolicy(int $policy): void
     {
@@ -277,7 +277,7 @@ class JobInput
     }
     
     /**
-     * @param boolean $useLocalPermissions
+     * @param bool $useLocalPermissions
      */
     public function setUseLocalPermissions(bool $useLocalPermissions): void
     {

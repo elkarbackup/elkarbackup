@@ -146,7 +146,7 @@ class Client
     /**
      * Get max parallel jobs
      *
-     * @return integer
+     * @return int
      */
     public function getMaxParallelJobs()
     {
@@ -156,7 +156,7 @@ class Client
     /**
      * Set max parallel jobs
      *
-     * @param integer $maxParallelJobs
+     * @param int $maxParallelJobs
      * @return Client
      */
     public function setMaxParallelJobs($maxParallelJobs)
@@ -218,7 +218,7 @@ class Client
     /**
      * Get id
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -311,7 +311,7 @@ class Client
     /**
      * Set isActive
      *
-     * @param boolean $isActive
+     * @param bool $isActive
      * @return Client
      */
     public function setIsActive($isActive)
@@ -324,7 +324,7 @@ class Client
     /**
      * Get isActive
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsActive()
     {

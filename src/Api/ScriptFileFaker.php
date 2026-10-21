@@ -1,7 +1,6 @@
 <?php
 namespace App\Api;
 
-use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ScriptFileFaker extends \Faker\Provider\Base
@@ -20,10 +19,9 @@ class ScriptFileFaker extends \Faker\Provider\Base
             throw new \Exception('Copy failed');
         }
         
-        $mimetype = MimeTypeGuesser::getInstance()->guess($path);
-        $size = filesize($path);
-        
-        $file = new UploadedFile($path, $filename, $mimetype, $size, null, true);
+        $mimetype = mime_content_type($path) ?: null;
+
+        $file = new UploadedFile($path, $filename, $mimetype, null, true);
         
         return $file;
     }

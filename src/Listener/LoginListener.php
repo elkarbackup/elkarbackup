@@ -7,7 +7,7 @@
 namespace App\Listener;
 
 use Symfony\Bridge\Monolog\Logger;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -34,9 +34,9 @@ class LoginListener
 	/**
 	 * Add the login event to the log record.
 	 *
-	 * @param  Event $event
+	 * @param  InteractiveLoginEvent $event
 	 */
-	public function onSecurityInteractiveLogin(Event $event)
+	public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
 	{
         $logger   = $this->logger;
         $trans    = $this->container->get('translator');

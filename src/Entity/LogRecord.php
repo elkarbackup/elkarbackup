@@ -86,7 +86,7 @@ class LogRecord
     /**
      * Get id
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -142,7 +142,7 @@ class LogRecord
     /**
      * Set level
      *
-     * @param integer $level
+     * @param int $level
      * @return LogRecord
      */
     public function setLevel($level)
@@ -155,7 +155,7 @@ class LogRecord
     /**
      * Get level
      *
-     * @return integer
+     * @return int
      */
     public function getLevel()
     {
@@ -234,7 +234,7 @@ class LogRecord
     /**
      * Set userId
      *
-     * @param integer $userId
+     * @param int $userId
      * @return LogRecord
      */
     public function setUserId($userId)
@@ -247,7 +247,7 @@ class LogRecord
     /**
      * Get userId
      *
-     * @return integer
+     * @return int
      */
     public function getUserId()
     {

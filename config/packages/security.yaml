@@ -17,6 +17,7 @@ security:
             security: false
         api:
             pattern: ^/api/
+            user_checker: App\Security\UserChecker
             http_basic:
                 realm: Elkarbackup API Area
         #runjob:
@@ -26,6 +27,7 @@ security:
         secured_area:
             pattern:    ^/
             anonymous:  true
+            user_checker: App\Security\UserChecker
             form_login:
                 check_path: /login_check
                 login_path: /login

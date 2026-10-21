@@ -28,7 +28,7 @@ class WebUserLoggerProcessor extends WebProcessor implements ContainerAwareInter
         $this->security = $security;
     }
 
-    public function __invoke(array $record)
+    public function __invoke(array $record): array
     {
         $record = parent::__invoke($record);
         $record['extra'] = array_merge(

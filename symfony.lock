@@ -46,6 +46,15 @@
     "doctrine/dbal": {
         "version": "2.12.1"
     },
+    "doctrine/deprecations": {
+        "version": "1.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.0",
+            "ref": "fdd756167454623e21f1d769c5b814b243782a67"
+        }
+    },
     "doctrine/doctrine-bundle": {
         "version": "2.0",
         "recipe": {
@@ -194,6 +203,20 @@
     "phpdocumentor/type-resolver": {
         "version": "1.4.0"
     },
+    "phpunit/phpunit": {
+        "version": "8.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "4.7",
+            "ref": "4eea8d6a476c8e9eb28c56725a4c0716df7d14c1"
+        },
+        "files": [
+            ".env.test",
+            "phpunit.xml.dist",
+            "tests/bootstrap.php"
+        ]
+    },
     "psr/cache": {
         "version": "1.0.1"
     },
@@ -263,9 +286,6 @@
     },
     "symfony/css-selector": {
         "version": "v4.4.20"
-    },
-    "symfony/debug": {
-        "version": "v4.4.19"
     },
     "symfony/dependency-injection": {
         "version": "v4.4.19"
@@ -348,12 +368,6 @@
     "symfony/http-kernel": {
         "version": "v4.4.19"
     },
-    "symfony/inflector": {
-        "version": "v4.4.19"
-    },
-    "symfony/intl": {
-        "version": "v4.4.20"
-    },
     "symfony/lock": {
         "version": "4.4",
         "recipe": {
@@ -365,9 +379,6 @@
         "files": [
             "config/packages/lock.yaml"
         ]
-    },
-    "symfony/mime": {
-        "version": "v4.4.19"
     },
     "symfony/monolog-bridge": {
         "version": "v4.4.19"
@@ -504,9 +515,6 @@
             "config/packages/swiftmailer.yaml",
             "config/packages/test/swiftmailer.yaml"
         ]
-    },
-    "symfony/templating": {
-        "version": "v4.4.19"
     },
     "symfony/test-pack": {
         "version": "v1.0.7"
